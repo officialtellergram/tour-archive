@@ -52,6 +52,15 @@ if (!existsSync(DIST)) {
     for (const secret of ['EBAY_CLIENT_SECRET', 'DEPOP_API_KEY']) {
       if (src.includes(secret)) errors.push(`${file} references ${secret} — secrets must stay server-side`);
     }
+
+    // The snapshot URL must be a clean path join. A base without a trailing
+    // slash once shipped "/repo-nameapi/inventory.json" — a 404 that degrades
+    // silently to the seed catalogue, so nothing else catches it.
+    const snapRef = src.match(/[`"']([^`"']*api\/inventory\.json)[`"']/)?.[1];
+    const isDynamicJoin = snapRef && /[{}]/.test(snapRef); // `${base}api/…` — normalized at runtime
+    if (snapRef && !isDynamicJoin && !/(^|\/)api\/inventory\.json$/.test(snapRef)) {
+      errors.push(`${file} fetches a malformed snapshot URL "${snapRef}" — base path joined without a slash`);
+    }
   }
   notes.push(`dist: ${assets.length} asset(s), ${js.length} script bundle(s)`);
 }

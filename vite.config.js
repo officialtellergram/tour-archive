@@ -11,7 +11,15 @@ import { resolve } from 'node:path';
  * URLs, the router, the inventory snapshot — reads Vite's BASE_URL, so nothing
  * else needs to know.
  */
-const base = process.env.BASE_PATH || '/';
+/*
+ * Normalized to always start AND end with "/". GitHub's configure-pages action
+ * emits "/repo-name" with no trailing slash, while local testing tends to use
+ * "/repo-name/" — and `BASE_URL + 'api/inventory.json'` silently produces
+ * "/repo-nameapi/…" for one of them. That exact bug shipped: the live site
+ * 404'd its inventory snapshot and quietly fell back to the seed catalogue.
+ */
+const raw = process.env.BASE_PATH || '/';
+const base = `/${raw.replace(/^\/+|\/+$/g, '')}/`.replace('//', '/');
 
 /**
  * GitHub Pages has no redirect rules, so a client-routed deep link like

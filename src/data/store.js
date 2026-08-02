@@ -38,10 +38,12 @@ import {
  * `BASE_URL` is Vite's build-time base (`/` for a user site, `/repo-name/` for
  * a project page), so the snapshot resolves correctly either way.
  */
-const BASE_URL = import.meta.env?.BASE_URL || '/';
+// Belt and braces on the trailing slash — a base of "/repo-name" (no slash)
+// once produced "/repo-nameapi/inventory.json" in production.
+const BASE_URL = (import.meta.env?.BASE_URL || '/').replace(/\/*$/, '/');
 const LIVE_API = import.meta.env?.VITE_API_BASE || (import.meta.env?.DEV ? 'http://localhost:5181' : '');
 const INVENTORY_URL = LIVE_API
-  ? `${LIVE_API}/api/inventory`
+  ? `${LIVE_API.replace(/\/+$/, '')}/api/inventory`
   : `${BASE_URL}api/inventory.json`;
 const BASIC_STOCK = 'basic-stock';
 
