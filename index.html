@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tour Archive — Vintage golf, sourced by tournament</title>
+    <meta
+      name="description"
+      content="Vintage and thrifted golf apparel catalogued by the championship it belongs to. One of one, every piece."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Racing-green shield carrying the bespoke T, same geometry as houseCrest() -->
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 150'%3E%3Cpath d='M60,5 L114,25 L114,74 C114,107 91,130 60,145 C29,130 6,107 6,74 L6,25 Z' fill='%230D2718'/%3E%3Cpath d='M29,45 L91,45 L91,65 L83,65 L83,57 L66,57 L66,101 L77,101 L77,112 L43,112 L43,101 L54,101 L54,57 L37,57 L37,65 L29,65 Z' fill='%23F4F0E6'/%3E%3C/svg%3E"
+    />
+  </head>
+  <body>
+    <!-- paper grain overlay -->
+    <svg class="grain" aria-hidden="true">
+      <filter id="grain-filter">
+        <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch" />
+        <feColorMatrix type="saturate" values="0" />
+      </filter>
+      <rect width="100%" height="100%" filter="url(#grain-filter)" />
+    </svg>
+
+    <div class="scroll-rail" aria-hidden="true"><span data-scroll-progress></span></div>
+    <div class="cursor" data-cursor aria-hidden="true"><span data-cursor-label></span></div>
+
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header data-site-header></header>
+    <main id="main" data-outlet tabindex="-1"></main>
+    <footer data-site-footer></footer>
+
+    <div class="page-veil" data-veil aria-hidden="true"></div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

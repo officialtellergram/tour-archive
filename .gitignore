@@ -1,0 +1,11 @@
+node_modules/
+dist/
+shots/
+dev.log
+dev.err.log
+.env
+.cache/
+api.log
+api.err.log
+prev.log
+prev.err.log

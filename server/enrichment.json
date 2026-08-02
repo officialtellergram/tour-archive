@@ -1,0 +1,19 @@
+{
+  "_comment": "Catalogue number -> archive metadata, for stock that is live on eBay/Depop but not yet written up in src/data/collections.js. Keys are lowercase catalogue numbers (the 'DS-01' in an eBay SKU of 'TA-DS-01'). Anything here overlays the curated catalogue; anything with no record lands in Basic Stock with its garment and colourway inferred from the listing title. Keys beginning with _ are ignored.",
+
+  "_example": {
+    "collection": "duel-in-the-sun",
+    "name": "Cable-Knit Lambswool Slipover",
+    "brand": "Pringle of Scotland",
+    "year": "1979",
+    "category": "Knitwear",
+    "garment": "vest",
+    "size": "M",
+    "condition": "Excellent",
+    "colorway": ["#E4CF8E", "#C9B172", "#7C6B3E"],
+    "colorName": "Gorse Yellow",
+    "story": "One or two sentences of provenance.",
+    "details": ["100% lambswool, full-fashioned", "Made in Hawick, Scotland"],
+    "measurements": { "Chest": "21\"", "Length": "25.5\"" }
+  }
+}

@@ -1,0 +1,76 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # Stock is a build-time snapshot, so rebuilding is how it refreshes.
+  # 07:20 UTC daily — an off-the-hour minute, to avoid the crowd on :00.
+  schedule:
+    - cron: '20 7 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Let a running deploy finish rather than cancelling it half-published.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # The site checks before it ships. These need no browser and no network.
+      - name: Verify
+        run: npm run check
+
+      - uses: actions/configure-pages@v5
+        id: pages
+
+      - name: Build
+        env:
+          # A project site is served from /<repo>/; a user or org site from /.
+          # configure-pages resolves which, so the base is never hand-maintained.
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          # Demo stock for the preview. Delete this line once the eBay keys are
+          # in repository secrets and the channel is switched on below.
+          MOCK_CHANNELS: '1'
+          # Live channels — set these as repository secrets when ready.
+          EBAY_ENABLED: ${{ secrets.EBAY_ENABLED }}
+          EBAY_ENV: ${{ secrets.EBAY_ENV }}
+          EBAY_CLIENT_ID: ${{ secrets.EBAY_CLIENT_ID }}
+          EBAY_CLIENT_SECRET: ${{ secrets.EBAY_CLIENT_SECRET }}
+          EBAY_SELLER_USERNAME: ${{ secrets.EBAY_SELLER_USERNAME }}
+          DEPOP_ENABLED: ${{ secrets.DEPOP_ENABLED }}
+          DEPOP_API_KEY: ${{ secrets.DEPOP_API_KEY }}
+          DEPOP_SHOP_ID: ${{ secrets.DEPOP_SHOP_ID }}
+        run: npm run build:pages
+
+      - name: Check the deploy is sane
+        run: node scripts/deploy.mjs
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

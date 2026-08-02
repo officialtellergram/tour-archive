@@ -1,0 +1,33 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[functions]
+  node_bundler = "esbuild"
+
+# Client-side routing: /collections/duel-in-the-sun and friends are real routes,
+# not files on disk. Without this, a direct load or refresh of any route other
+# than "/" returns Netlify's 404 instead of the app.
+#
+# This must stay LAST — redirects are evaluated in order, and the API endpoints
+# are served by the function's own `config.path`, which is matched before
+# redirects. Anything not a real file falls through to the SPA shell.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    # Vite fingerprints asset filenames, so they are safe to cache immutably.
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
