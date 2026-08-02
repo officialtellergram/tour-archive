@@ -31,8 +31,8 @@ function headerHTML() {
         Menu
       </button>
       <a class="wordmark" href="/" aria-label="${BRAND.name} — home">
-        <img class="wordmark-logo" src="${BASE_URL}brand/logo.png" alt="${BRAND.name}" />
-        <small>${BRAND.mark} · ${BRAND.since}</small>
+        ${BRAND.mark}
+        <small>${BRAND.since}</small>
       </a>
       <nav class="nav nav--right" aria-label="Secondary">
         ${NAV_SECONDARY.map(

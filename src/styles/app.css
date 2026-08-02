@@ -330,6 +330,7 @@ h3.display {
   gap: 1.5rem;
 }
 
+/* Header carries the text wordmark; the TA signature lives in the hero. */
 .wordmark {
   font-family: var(--display);
   font-size: 1.35rem;
@@ -339,14 +340,6 @@ h3.display {
   grid-column: 2;
   justify-self: center;
   white-space: nowrap;
-  display: grid;
-  justify-items: center;
-  gap: 2px;
-}
-.wordmark-logo {
-  height: 44px;
-  width: auto;
-  mix-blend-mode: multiply;
 }
 .wordmark small {
   display: block;
