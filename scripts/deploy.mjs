@@ -120,6 +120,22 @@ if (!existsSync(snapshot)) {
       }
     }
 
+    // Canary: the featured event's collection must exist in what ships. A stale
+    // editor buffer once reverted collections.js between commits and `git add -A`
+    // swept it into an unrelated commit — deleting the flagship Tour Championship
+    // page while every routing and render check stayed green.
+    try {
+      const { featuredEvent } = await import('../src/data/events.js');
+      const ev = featuredEvent();
+      if (ev && !data.collections.some((c) => c.id === ev.collection)) {
+        errors.push(
+          `the featured event's collection "${ev.collection}" is missing from the snapshot — data file reverted?`
+        );
+      }
+    } catch (err) {
+      warnings.push(`could not verify featured collection: ${err.message}`);
+    }
+
     const kb = (readFileSync(snapshot).length / 1024).toFixed(0);
     notes.push(
       `snapshot: ${data.items.length} items, ${data.counts?.syndicated ?? 0} syndicated, ${kb} KB`
