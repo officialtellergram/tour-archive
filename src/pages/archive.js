@@ -115,11 +115,19 @@ export function archive() {
         <div data-hero-cta>
           <ul class="facts">
             <li><span>Available now</span><b>${items().filter(isAvailable).length} pieces</b></li>
-            <li><span>Opening 14 August</span><b>${items().filter((i) => i.upcoming).length} pieces</b></li>
+            <li><span>Reserved for drops</span><b>${items().filter((i) => i.upcoming).length} pieces</b></li>
             <li><span>Sold &amp; archived</span><b>${items().filter((i) => i.sold).length} pieces</b></li>
             <li><span>Collections</span><b>${collections().length}</b></li>
-            <li><span>Earliest piece</span><b>${Math.min(...items().map((i) => Number(i.year)))}</b></li>
-            <li><span>Latest piece</span><b>${Math.max(...items().map((i) => Number(i.year)))}</b></li>
+            ${(() => {
+              // Dated pieces only — "1990s" is honest, but it isn't a number.
+              const years = items()
+                .map((i) => Number(i.year))
+                .filter((y) => Number.isFinite(y));
+              return years.length
+                ? `<li><span>Earliest piece</span><b>${Math.min(...years)}</b></li>
+                   <li><span>Latest piece</span><b>${Math.max(...years)}</b></li>`
+                : `<li><span>Photography</span><b>In house, as found</b></li>`;
+            })()}
           </ul>
         </div>
       </div>

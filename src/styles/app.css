@@ -634,6 +634,13 @@ h3.display {
   width: clamp(61px, 6.4vw, 90px);
   height: auto;
 }
+
+/* The TA signature mark — brand art, sits above the display headline. */
+.hero-logo {
+  width: clamp(84px, 9vw, 128px);
+  height: auto;
+  mix-blend-mode: multiply; /* ink on paper, even if the PNG carries any white */
+}
 .hero-crest .crest-shield {
   fill: var(--racing-green);
 }
@@ -721,8 +728,27 @@ h3.display {
   will-change: transform;
   transition: transform 0.9s var(--ease);
 }
+.plate .plate-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.9s var(--ease);
+}
+.card:hover .plate .plate-photo {
+  transform: scale(1.035);
+}
+.plate--photo::after {
+  /* photography carries its own light — drop the drawn-plate vignette */
+  background: linear-gradient(180deg, transparent 82%, rgba(22, 21, 15, 0.08) 100%);
+}
 .plate--lg {
   aspect-ratio: 1 / 1;
+}
+.plate--lg.plate--photo {
+  /* hanger shots are portrait — keep their sleeves */
+  aspect-ratio: 4 / 5;
 }
 .plate::after {
   content: '';

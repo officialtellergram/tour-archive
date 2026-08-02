@@ -5,6 +5,22 @@ import { getCollection, itemsIn, isAvailable } from '../data/store.js';
 
 export const money = (n) => `$${n.toLocaleString('en-US')}`;
 
+const BASE_URL = (import.meta.env?.BASE_URL || '/').replace(/\/*$/, '/');
+
+/** Resolve an item's photo: absolute URLs pass through, repo paths get the base. */
+export const photoURL = (item) =>
+  !item.photo ? '' : /^https?:\/\//i.test(item.photo) ? item.photo : `${BASE_URL}${item.photo}`;
+
+/** Real photography when we have it; the drawn plate otherwise. */
+export function plateMedia(item, opts = {}) {
+  const url = photoURL(item);
+  if (url) {
+    return `<img class="plate-photo" src="${url}" alt="${String(item.name).replace(/"/g, '&quot;')}"
+      loading="lazy" />`;
+  }
+  return garmentSVG(item, opts);
+}
+
 export function plateTag(item) {
   if (item.sold) return `<span class="plate-tag plate-tag--sold">Sold</span>`;
   if (item.upcoming) return `<span class="plate-tag plate-tag--soon">14 Aug</span>`;
@@ -22,9 +38,9 @@ export function productCard(item) {
   return `
   <a class="card ${item.sold ? 'is-sold' : ''}" href="/item/${item.id}"
      data-cursor-text="${item.sold ? 'Archived' : 'View'}">
-    <div class="plate">
+    <div class="plate ${item.photo ? 'plate--photo' : ''}">
       ${plateTag(item)}
-      ${garmentSVG(item)}
+      ${plateMedia(item)}
     </div>
     <div class="card-body">
       <div class="card-brand">
@@ -65,8 +81,14 @@ export function collectionTile(collection) {
       </div>
       <p class="tile-sum">${collection.summary}</p>
       <div class="tile-meta" style="padding-top:.6rem;border-top:1px solid var(--rule);margin-top:.6rem">
-        <span>${stock.length} pieces</span>
-        <span>${live ? `${live} available` : 'Fully archived'}</span>
+        ${
+          stock.length
+            ? `<span>${stock.length} piece${stock.length === 1 ? '' : 's'}</span>
+               <span>${live ? `${live} available` : 'Fully archived'}</span>`
+            : collection.status === 'upcoming'
+            ? `<span>First drop</span><span>Wardrobe in assembly</span>`
+            : `<span>Research file</span><span>Wardrobe in sourcing</span>`
+        }
       </div>
     </div>
   </a>`;

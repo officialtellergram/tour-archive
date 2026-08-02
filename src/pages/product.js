@@ -1,6 +1,6 @@
 import { getItem, getCollection, itemsIn, itemStatus, isAvailable } from '../data/store.js';
 import { garmentSVG } from '../components/garment.js';
-import { productCard, breadcrumb, money, plateTag, sectionHead } from '../components/ui.js';
+import { productCard, breadcrumb, money, plateTag, plateMedia, sectionHead } from '../components/ui.js';
 import { toast } from '../lib/motion.js';
 
 export const channelName = (item) =>
@@ -62,21 +62,25 @@ export function product({ id }) {
       ])}
 
       <div class="pdp-grid">
-        <!-- media -->
+        <!-- media: photography when we have it, drawn views otherwise -->
         <div class="pdp-media" data-reveal>
-          <div class="plate plate--lg" data-pdp-stage>
+          <div class="plate plate--lg ${item.photo ? 'plate--photo' : ''}" data-pdp-stage>
             ${plateTag(item)}
-            ${garmentSVG(item, { view: 'front' })}
+            ${plateMedia(item, { view: 'front' })}
           </div>
-          <div class="pdp-thumbs" data-pdp-thumbs>
-            ${views
-              .map(
-                (v, i) => `
-              <button class="plate" data-view="${v}" aria-pressed="${i === 0}"
-                aria-label="View ${v}">${garmentSVG(item, { view: v })}</button>`
-              )
-              .join('')}
-          </div>
+          ${
+            item.photo
+              ? ''
+              : `<div class="pdp-thumbs" data-pdp-thumbs>
+                  ${views
+                    .map(
+                      (v, i) => `
+                    <button class="plate" data-view="${v}" aria-pressed="${i === 0}"
+                      aria-label="View ${v}">${garmentSVG(item, { view: v })}</button>`
+                    )
+                    .join('')}
+                </div>`
+          }
         </div>
 
         <!-- info -->

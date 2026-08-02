@@ -106,23 +106,40 @@ for (const item of items) {
     errors.push(`${where}: price must be a positive number`);
 }
 
+/*
+ * Collections are research files and the items in collections.js are catalogue
+ * RECORDS (enrichment for real listings), not displayed stock — displayed stock
+ * comes from the photo manifest and the marketplaces at runtime. So the audit
+ * checks editorial integrity here, not stock consistency.
+ */
 for (const c of collections) {
-  const stock = items.filter((i) => i.collection === c.id);
-  if (!stock.length) errors.push(`collection ${c.id}: has no inventory`);
   if (!['live', 'archived', 'upcoming'].includes(c.status))
     errors.push(`collection ${c.id}: unknown status "${c.status}"`);
   if (!Array.isArray(c.palette) || c.palette.length !== 3)
     errors.push(`collection ${c.id}: palette must be exactly 3 colours`);
   if (!c.essay?.length) warnings.push(`collection ${c.id}: no essay copy`);
   if (!c.sources?.length) warnings.push(`collection ${c.id}: no cited sources`);
-  // status vs inventory consistency
-  const available = stock.filter((i) => !i.sold && !i.upcoming).length;
-  if (c.status === 'archived' && available)
-    errors.push(`collection ${c.id}: marked archived but ${available} piece(s) still available`);
-  if (c.status === 'upcoming' && stock.some((i) => !i.upcoming))
-    errors.push(`collection ${c.id}: marked upcoming but has non-upcoming pieces`);
-  if (c.status === 'live' && !available)
-    errors.push(`collection ${c.id}: marked live but nothing is available`);
+}
+
+/* The photo manifest is displayed stock — hold it to the item standard. */
+{
+  const manifestPath = join(ROOT, 'public', 'stock', 'manifest.json');
+  try {
+    const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
+    for (const s of manifest.items || []) {
+      const where = `stock ${s.id}`;
+      if (s._missing) { warnings.push(`${where}: photo file is missing`); continue; }
+      if (!s.file) errors.push(`${where}: no photo file`);
+      if (!Array.isArray(s.colorway) || s.colorway.length !== 3)
+        errors.push(`${where}: colorway must be exactly 3 colours`);
+      if (typeof s.price !== 'number' || s.price <= 0)
+        errors.push(`${where}: price must be a positive number`);
+      if (!KNOWN_GARMENTS.has(s.garment))
+        errors.push(`${where}: garment "${s.garment}" has no silhouette in garment.js`);
+    }
+  } catch {
+    warnings.push('public/stock/manifest.json missing or unreadable');
+  }
 }
 
 /* ------------------------------------------------------------------ */
@@ -139,6 +156,8 @@ for (const file of files) {
     let href = m[1];
     if (!href || href.startsWith('#')) continue;
     if (/^(mailto:|tel:|data:)/i.test(href)) continue;
+    // Vite build-time placeholders (asset paths, not routes)
+    if (href.startsWith('%BASE_URL%')) continue;
     if (/^(https?:)?\/\//i.test(href)) {
       if (!/^https:/i.test(href) && !href.startsWith('//'))
         warnings.push(`${rel}: non-https external link — ${href}`);

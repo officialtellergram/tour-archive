@@ -22,13 +22,49 @@ export const BRAND = {
 
 export const collections = [
   {
+    id: 'tour-championship-2026',
+    drop: 'Drop No. 01',
+    name: 'The Tour Championship',
+    place: 'East Lake, Atlanta',
+    years: '2026',
+    status: 'upcoming',
+    statusLabel: 'First drop',
+    releaseNote: 'Opens tournament week',
+    heroLine: 'Thirty players, Bobby Jones’s home club, and the first drop in the archive.',
+    summary:
+      'Our opening collection, released around the 2026 TOUR Championship at East Lake — Atlanta golf tradition, Jones-era knitwear, and the sun-struck colour of Georgia in late August.',
+    // Derived from the course itself: sun-struck zoysia fairway, August haze,
+    // Piedmont clay. See the research file in the repo for the reasoning.
+    palette: ['#7D8B5A', '#B8C3C0', '#3B342D'],
+    accent: '#A65C3C',
+    essay: [
+      'The season ends where American golf grew up. Bobby Jones was six years old, standing beside his father, on the day East Lake’s course opened in July 1908; it is where Stewart Maiden taught him the swing, where he played his first round and his last, and the club whose junior championship he won at nine before winning thirteen majors in twenty tries. The tournament trophy is a sterling replica of Calamity Jane — the hickory-shafted putter that survived the 1925 clubhouse fire because Jones would not leave it in the bag room.',
+      'The modern game’s richest week is settled with a copy of an amateur’s putter from a hundred years ago. That is the whole thesis of this archive in a single object, and it is why the first drop opens here: Jones-era knitwear silhouettes, Atlanta club clothing, and lighter Southern lambswool in the register of zoysia fairways and Piedmont clay rather than Highland tweed.',
+      'It is also a finite moment. From 2028 the finale begins rotating venues, making 2026 one of the last two years the season ends at East Lake as an annual fixture. Pieces are being photographed and catalogued now — the drop opens tournament week, 27 to 30 August.',
+    ],
+    facts: [
+      { k: 'Championship', v: '2026 TOUR Championship' },
+      { k: 'Rounds', v: '27 – 30 August 2026' },
+      { k: 'Course', v: 'East Lake Golf Club, Atlanta' },
+      { k: 'Field', v: 'FedEx Cup final 30' },
+      { k: 'Defending', v: 'Tommy Fleetwood, −18' },
+      { k: 'Trophy', v: 'Calamity Jane replica' },
+    ],
+    sources: [
+      { label: 'PGA Tour — 2026 TOUR Championship', url: 'https://www.pgatour.com/tournaments/2026/tour-championship/R2026060/overview' },
+      { label: 'East Lake Golf Club — history', url: 'https://eastlakegolfclub.com/history/' },
+      { label: 'New Georgia Encyclopedia — Bobby Jones', url: 'https://www.georgiaencyclopedia.org/articles/people/bobby-jones-1902-1971/' },
+      { label: 'AJC — East Lake and the rotation era', url: 'https://www.ajc.com/sports/2026/06/east-lake-out-as-permanent-host-for-tour-championship-after-2027/' },
+    ],
+  },
+  {
     id: 'duel-in-the-sun',
-    drop: 'Drop No. 07',
+    drop: 'File No. 07',
     name: 'Duel in the Sun',
     place: 'Turnberry, Ayrshire',
     years: '1977 — 1986',
-    status: 'live',
-    statusLabel: 'Now open',
+    status: 'archived',
+    statusLabel: 'Archive file',
     releaseNote: 'Released 12 July',
     heroLine: 'Two men, a heatwave, and the last nine holes of the 106th Open.',
     summary:
@@ -53,12 +89,12 @@ export const collections = [
   },
   {
     id: 'the-clambake',
-    drop: 'Drop No. 06',
+    drop: 'File No. 06',
     name: 'The Clambake',
     place: 'Monterey Peninsula, California',
     years: '1947 — 1985',
-    status: 'live',
-    statusLabel: 'Now open',
+    status: 'archived',
+    statusLabel: 'Archive file',
     releaseNote: 'Released 14 June',
     heroLine: 'Bing put up three thousand dollars of his own money. Golf never recovered.',
     summary:
@@ -83,12 +119,12 @@ export const collections = [
   },
   {
     id: 'georgia-pines',
-    drop: 'Drop No. 05',
+    drop: 'File No. 05',
     name: 'Georgia Pines',
     place: 'Augusta, Georgia',
     years: '1968 — 1992',
-    status: 'live',
-    statusLabel: 'Low stock',
+    status: 'archived',
+    statusLabel: 'Archive file',
     releaseNote: 'Released 3 April',
     heroLine: 'Pine, azalea and the particular green of a Southern spring.',
     summary:
@@ -112,12 +148,12 @@ export const collections = [
   },
   {
     id: 'war-on-the-shore',
-    drop: 'Drop No. 04',
+    drop: 'File No. 04',
     name: 'War on the Shore',
     place: 'Kiawah Island, South Carolina',
     years: '1979 — 1995',
     status: 'archived',
-    statusLabel: 'Archived',
+    statusLabel: 'Archive file',
     releaseNote: 'Sold out 22 February',
     heroLine: 'Crested sweaters, team stripes, and the most hostile week the Ryder Cup ever had.',
     summary:
@@ -142,12 +178,12 @@ export const collections = [
   },
   {
     id: 'desert-classic',
-    drop: 'Drop No. 03',
+    drop: 'File No. 03',
     name: 'Desert Classic',
     place: 'Palm Springs, California',
     years: '1965 — 1988',
     status: 'archived',
-    statusLabel: 'Archived',
+    statusLabel: 'Archive file',
     releaseNote: 'Sold out 5 January',
     heroLine: 'Bob Hope, five rounds, and the loudest trousers in the history of the tour.',
     summary:
@@ -171,12 +207,12 @@ export const collections = [
   },
   {
     id: 'the-amateur-line',
-    drop: 'Drop No. 08',
+    drop: 'File No. 08',
     name: 'The Amateur Line',
     place: 'Walker Cup & the collegiate circuit',
     years: '1971 — 1993',
-    status: 'upcoming',
-    statusLabel: 'Opens 14 August',
+    status: 'archived',
+    statusLabel: 'Archive file',
     releaseNote: 'Registration open',
     heroLine: 'The last golf played for nothing at all.',
     summary:

@@ -354,7 +354,8 @@ export function mergeInventory({ seed = [], channels = [] }) {
   }
 
   for (const item of seed) {
-    if (!claimed.has(item.id)) out.push({ ...item, channel: 'archive', syndicated: false });
+    if (!claimed.has(item.id))
+      out.push({ ...item, channel: item.channel || 'archive', syndicated: false });
   }
 
   return out;

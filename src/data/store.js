@@ -17,12 +17,12 @@
 import {
   BRAND,
   collections as seedCollections,
-  items as seedItems,
   journal,
   getJournal,
   eras,
   eraOf,
 } from './collections.js';
+import { featuredEvent, eventPhase, daysUntil, dateRange } from './events.js';
 
 /**
  * Where stock comes from, in order of preference:
@@ -52,30 +52,32 @@ const basicStockCollection = {
   id: BASIC_STOCK,
   drop: 'Open stock',
   name: 'Basic Stock',
-  place: 'eBay & Depop',
+  place: 'Photographed in house',
   years: 'Mixed',
   status: 'live',
   statusLabel: 'Now open',
   releaseNote: 'Listed continuously',
   heroLine: 'Everything that isn’t tied to a championship — sold as we find it.',
   summary:
-    'Open stock listed on eBay and Depop. Good pieces that don’t belong to a drop, catalogued as they come in.',
+    'Open stock, photographed in house and syndicated to eBay and Depop as it is listed. Good pieces that don’t belong to a drop, catalogued as they come in.',
   palette: ['#B9AE93', '#8C8570', '#3F3B31'],
   accent: '#8C8570',
   essay: [
     'Not everything we buy belongs to a championship. A clean lambswool crew with no story attached is still a clean lambswool crew, and it goes up here rather than being forced into a collection it has no claim to.',
-    'This stock lives on eBay and Depop, and this page mirrors it. Prices and availability come straight from the marketplace; when something sells there, it disappears from here on the next sync.',
+    'Pieces are photographed in house and listed here first; as each goes up on eBay or Depop, the listing takes over price and availability and checkout completes on the marketplace.',
   ],
   facts: [
-    { k: 'Channel', v: 'eBay & Depop' },
+    { k: 'Photographed', v: 'In house, as found' },
     { k: 'Grouping', v: 'None — open stock' },
-    { k: 'Restocked', v: 'Continuously' },
+    { k: 'Syndication', v: 'eBay & Depop as listed' },
   ],
   sources: [],
 };
 
 let state = {
-  items: seedItems,
+  // No stock until the snapshot/API answers — the curated records in
+  // collections.js are enrichment, not listings, so nothing fake is ever shown.
+  items: [],
   collections: seedCollections,
   source: 'seed',
   generatedAt: null,
@@ -108,6 +110,9 @@ export async function init({ timeout = 4000 } = {}) {
     if (items.some((i) => i.collection === BASIC_STOCK)) {
       collections.push(basicStockCollection);
     }
+
+    // Boot comment above predates the pivot: the fallback is now an EMPTY
+    // shop, never fake stock.
 
     state = {
       items,
@@ -153,7 +158,7 @@ export const itemStatus = (item) =>
   item.sold
     ? 'Sold'
     : item.upcoming
-    ? 'Opens 14 Aug'
+    ? 'Reserved for the drop'
     : item.syndicated
     ? `Available on ${item.channel === 'depop' ? 'Depop' : 'eBay'}`
     : 'Available — 1 of 1';
@@ -161,3 +166,10 @@ export const itemStatus = (item) =>
 export const categories = () => [...new Set(state.items.map((i) => i.category))].sort();
 
 export { BRAND, journal, getJournal, eras, eraOf, BASIC_STOCK };
+export { featuredEvent, eventPhase, daysUntil, dateRange };
+
+/** The collection record backing the currently featured event. */
+export function featuredCollection(now = Date.now()) {
+  const ev = featuredEvent(now);
+  return ev ? { event: ev, collection: getCollection(ev.collection) } : null;
+}

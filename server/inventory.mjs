@@ -6,13 +6,58 @@
  * production, which defeats the point of having one.
  */
 
+import { readFileSync, existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { config } from './config.mjs';
 import { fetchEbayListings, EbayApiError } from './channels/ebay.mjs';
 import { fetchDepopListings } from './channels/depop.mjs';
-import { mapEbayItem, mapDepopProduct, mergeInventory } from './normalize.mjs';
-import { items as seedItems, collections as seedCollections } from '../src/data/collections.js';
+import { mapEbayItem, mapDepopProduct, mergeInventory, applyEnrichment } from './normalize.mjs';
+import { collections as seedCollections } from '../src/data/collections.js';
 
 export const CACHE_KEY = 'inventory';
+
+const MANIFEST_PATH = fileURLToPath(new URL('../public/stock/manifest.json', import.meta.url));
+
+/**
+ * Photographed stock — the site's own listings, from the drop-folder manifest.
+ *
+ * This replaced the curated SVG mock inventory: since real photography exists,
+ * nothing without a photograph is displayed for sale. The curated records in
+ * collections.js persist as *enrichment* (they surface when a real listing
+ * carries their catalogue number) but are no longer stock themselves.
+ */
+export function manifestStock() {
+  if (!existsSync(MANIFEST_PATH)) return [];
+  try {
+    const manifest = JSON.parse(readFileSync(MANIFEST_PATH, 'utf8'));
+    return (manifest.items || [])
+      .filter((i) => !i._missing)
+      .map((i) => {
+        const { _ingested, _source, _missing, file, ...item } = i;
+        return applyEnrichment({
+          collection: 'basic-stock',
+          sold: false,
+          upcoming: false,
+          story: '',
+          details: [],
+          measurements: {},
+          market: {
+            label: 'Comparable listings',
+            url: `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(
+              `${item.brand} ${item.name}`.trim()
+            )}`,
+          },
+          ...item,
+          // relative to the deploy base; the frontend prefixes BASE_URL
+          photo: `stock/${file}`,
+          channel: 'site',
+        });
+      });
+  } catch (err) {
+    console.warn(`[inventory] stock manifest unreadable: ${err.message}`);
+    return [];
+  }
+}
 
 async function fetchChannels() {
   const listings = [];
@@ -63,7 +108,9 @@ async function fetchChannels() {
 
 export async function buildInventory() {
   const { listings, sources } = await fetchChannels();
-  const merged = mergeInventory({ seed: seedItems, channels: listings });
+  const stock = manifestStock();
+  sources.push({ channel: 'site', ok: true, count: stock.length });
+  const merged = mergeInventory({ seed: stock, channels: listings });
 
   return {
     generatedAt: new Date().toISOString(),

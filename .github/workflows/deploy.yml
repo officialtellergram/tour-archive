@@ -44,9 +44,6 @@ jobs:
           # A project site is served from /<repo>/; a user or org site from /.
           # configure-pages resolves which, so the base is never hand-maintained.
           BASE_PATH: ${{ steps.pages.outputs.base_path }}
-          # Demo stock for the preview. Delete this line once the eBay keys are
-          # in repository secrets and the channel is switched on below.
-          MOCK_CHANNELS: '1'
           # Live channels — set these as repository secrets when ready.
           EBAY_ENABLED: ${{ secrets.EBAY_ENABLED }}
           EBAY_ENV: ${{ secrets.EBAY_ENV }}

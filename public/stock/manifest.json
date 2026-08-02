@@ -1,0 +1,92 @@
+{
+  "_comment": "Editable record of photographed stock. `npm run ingest` adds entries for new photos dropped in Desktop/Tour Archive; it never overwrites fields you have edited here.",
+  "items": [
+    {
+      "id": "stock-slazenger-golden-horseshoe-wind-shirt",
+      "file": "slazenger-golden-horseshoe-wind-shirt.jpg",
+      "catalogue": null,
+      "name": "Slazenger Wind Shirt, Golden Horseshoe",
+      "brand": "Slazenger",
+      "year": "1990s",
+      "category": "Outerwear",
+      "garment": "windshirt",
+      "size": "See photos",
+      "condition": "Very Good",
+      "price": 95,
+      "colorway": [
+        "#2E6E63",
+        "#1C4640",
+        "#22252A"
+      ],
+      "colorName": "Teal Glen Check",
+      "story": "Pullover wind shirt in a teal glen check with black knit trim, carrying the crest of the Golden Horseshoe — the Robert Trent Jones course at Williamsburg, Virginia. Sourced a county over from where it was first worn.",
+      "details": [
+        "Woven check shell, knit collar and cuffs",
+        "Golden Horseshoe GC embroidered crest",
+        "Slazenger panther sleeve patch",
+        "Raglan sleeve, boxy 1990s cut"
+      ],
+      "measurements": {},
+      "_ingested": "2026-08-02",
+      "_source": "IMG_0371.JPEG"
+    },
+    {
+      "id": "stock-masters-peter-millar-quarter-zip-blue",
+      "file": "masters-peter-millar-quarter-zip-blue.jpg",
+      "catalogue": null,
+      "name": "Masters Collection Quarter-Zip, Peter Millar",
+      "brand": "Peter Millar",
+      "year": "2010s",
+      "category": "Knitwear",
+      "garment": "sweater",
+      "size": "L",
+      "condition": "Excellent",
+      "price": 148,
+      "colorway": [
+        "#7FA8D9",
+        "#5b86b8",
+        "#2F4A6E"
+      ],
+      "colorName": "Augusta Sky",
+      "story": "Masters Collection performance quarter-zip by Peter Millar in a clear Carolina blue, with the yellow-map tournament logo at the chest. Grounds-only merchandise — it never retailed outside the gates.",
+      "details": [
+        "Masters Collection by Peter Millar",
+        "Tournament logo embroidery",
+        "Contrast white half-zip placket",
+        "Performance knit, mock collar"
+      ],
+      "measurements": {},
+      "_ingested": "2026-08-02",
+      "_source": "IMG_0378.JPEG"
+    },
+    {
+      "id": "stock-peter-millar-club-quarter-zip-navy",
+      "file": "peter-millar-club-quarter-zip-navy.jpg",
+      "catalogue": null,
+      "name": "Peter Millar Club Quarter-Zip, Navy",
+      "brand": "Peter Millar",
+      "year": "2010s",
+      "category": "Knitwear",
+      "garment": "sweater",
+      "size": "L",
+      "condition": "Very Good",
+      "price": 110,
+      "colorway": [
+        "#232A38",
+        "#161C27",
+        "#8C93A3"
+      ],
+      "colorName": "Club Navy",
+      "story": "Peter Millar quarter-zip in deep navy with a heathered collar lining and an embroidered members' crest dated 1908 at the shoulder. Private-club issue — the quiet kind of provenance.",
+      "details": [
+        "Peter Millar, interlock knit",
+        "Members' crest embroidery, est. 1908",
+        "Heather grey collar facing",
+        "Quarter-zip with leather pull"
+      ],
+      "measurements": {},
+      "_ingested": "2026-08-02",
+      "_source": "IMG_0383.JPEG"
+    }
+  ]
+}
