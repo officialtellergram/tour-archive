@@ -1,4 +1,12 @@
-import { collections, itemsIn, isAvailable, getCollection } from '../data/store.js';
+import {
+  collections,
+  itemsIn,
+  isAvailable,
+  getCollection,
+  featuredEvent,
+  dateRange,
+  BASIC_STOCK,
+} from '../data/store.js';
 import { collectionTile, productCard, breadcrumb, sectionHead, marquee } from '../components/ui.js';
 
 /* ------------------------------------------------------------------ */
@@ -15,16 +23,24 @@ export function collectionsIndex() {
       ${breadcrumb([{ label: 'Home', href: '/' }, { label: 'Collections' }])}
       <div class="coll-hero-grid" data-hero>
         <div>
-          <p class="eyebrow" data-hero-meta><span>${collections().length} drops to date · ${
-    collections().filter((c) => c.status === 'live').length
-  } open now</span></p>
+          ${(() => {
+            const real = collections().filter((c) => c.id !== BASIC_STOCK);
+            const drops = real.filter((c) => c.status !== 'archived');
+            const files = real.filter((c) => c.status === 'archived');
+            const ev = featuredEvent();
+            return `
+          <p class="eyebrow" data-hero-meta><span>${drops.length} drop${
+              drops.length === 1 ? '' : 's'
+            } · ${files.length} research files</span></p>
           <h1 class="display" style="margin:.6rem 0 1.4rem;font-size:clamp(3rem,8vw,7.5rem)">
             <span class="line-mask"><span>The Collections</span></span>
           </h1>
           <p class="lede" data-hero-cta>
-            Every piece we buy is placed into the championship era it came from —
-            ${collections().length} groupings, released as drops. Live, archived, and one still to open.
-          </p>
+            Every piece we buy is placed into the championship era it came from. One drop —
+            opening ${ev ? dateRange(ev) : 'soon'} — and ${files.length} research files feeding
+            the sourcing list behind it.
+          </p>`;
+          })()}
         </div>
         <div data-hero-cta>
           <p class="eyebrow" style="margin-bottom:.9rem">Drop register</p>
@@ -57,6 +73,28 @@ export function collectionsIndex() {
 /* ------------------------------------------------------------------ */
 /* /collections/:id — detail                                           */
 /* ------------------------------------------------------------------ */
+
+/**
+ * The status rows under the fact list. With zero stock, what they say depends
+ * entirely on WHY there is zero stock: an upcoming drop is being assembled, an
+ * archive file is research. The old `live-count : 'Fully archived'` ternary
+ * told visitors the first drop was already over — the worst possible copy on
+ * the flagship page.
+ */
+function statusRows(c, stock, live) {
+  if (stock.length) {
+    return `<li><span>In this collection</span><b>${stock.length} piece${
+      stock.length === 1 ? '' : 's'
+    }</b></li>
+    <li><span>Status</span><b>${live ? `${live} available` : 'Fully archived'}</b></li>`;
+  }
+  if (c.status === 'upcoming') {
+    return `<li><span>Drop opens</span><b>Tournament week</b></li>
+    <li><span>Status</span><b>Wardrobe in assembly</b></li>`;
+  }
+  return `<li><span>Type</span><b>Research file</b></li>
+  <li><span>Status</span><b>Feeding the sourcing list</b></li>`;
+}
 
 export function collectionDetail({ id }) {
   const c = getCollection(id);
@@ -95,8 +133,7 @@ export function collectionDetail({ id }) {
           <div data-hero-cta>
             <ul class="facts">
               ${c.facts.map((f) => `<li><span>${f.k}</span><b>${f.v}</b></li>`).join('')}
-              <li><span>In this drop</span><b>${stock.length} pieces</b></li>
-              <li><span>Status</span><b>${live ? `${live} available` : 'Fully archived'}</b></li>
+              ${statusRows(c, stock, live)}
             </ul>
           </div>
         </div>
@@ -133,18 +170,46 @@ export function collectionDetail({ id }) {
       </div>
     </section>
 
-    <section class="section" id="pieces">
-      <div class="wrap">
-        ${sectionHead({
-          eyebrow: `${stock.length} pieces · one of each`,
-          title: 'The pieces',
-          link: { href: '/archive', label: 'Search everything' },
-        })}
-        <div class="grid-products" data-stagger>
-          ${stock.map(productCard).join('')}
-        </div>
-      </div>
-    </section>
+    ${
+      stock.length
+        ? `<section class="section" id="pieces">
+            <div class="wrap">
+              ${sectionHead({
+                eyebrow: `${stock.length} piece${stock.length === 1 ? '' : 's'} · one of each`,
+                title: 'The pieces',
+                link: { href: '/archive', label: 'Search everything' },
+              })}
+              <div class="grid-products" data-stagger>
+                ${stock.map(productCard).join('')}
+              </div>
+            </div>
+          </section>`
+        : `<section class="section" id="pieces">
+            <div class="wrap">
+              <div class="empty-state" style="border-bottom:0">
+                <p class="eyebrow">${c.status === 'upcoming' ? 'Wardrobe in assembly' : 'Research file'}</p>
+                <h3 class="display" style="font-size:clamp(1.8rem,3vw,2.8rem)">
+                  ${
+                    c.status === 'upcoming'
+                      ? 'The pieces arrive with the drop'
+                      : 'This file feeds the sourcing list'
+                  }
+                </h3>
+                <p class="lede" style="text-align:center">
+                  ${
+                    c.status === 'upcoming'
+                      ? 'Pieces are photographed and catalogued as they are acquired — check the shop for what is already available.'
+                      : 'When pieces surface that belong under this file, they are photographed, catalogued and listed in the shop.'
+                  }
+                </p>
+                <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center">
+                  <a class="btn btn--solid" href="/archive?filter=available" data-magnetic>In the shop now</a>
+                  <a class="btn" href="/sell" data-magnetic>Sell to the archive</a>
+                </div>
+              </div>
+            </div>
+          </section>`
+    }
 
     <section class="section--tight section" style="border-top:1px solid var(--rule)">
       <div class="wrap" style="display:flex;justify-content:space-between;gap:2rem;flex-wrap:wrap">

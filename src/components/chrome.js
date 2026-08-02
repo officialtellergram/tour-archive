@@ -7,6 +7,8 @@ import { BRAND, collections, items, isAvailable } from '../data/store.js';
 import { openDrawer, closeDrawer, toast } from '../lib/motion.js';
 import { currentPath, applyBaseToLinks, stripBase } from '../lib/router.js';
 
+const BASE_URL = (import.meta.env?.BASE_URL || '/').replace(/\/*$/, '/');
+
 export const NAV_PRIMARY = [
   { label: 'Collections', href: '/collections' },
   { label: 'The Archive', href: '/archive' },
@@ -29,8 +31,8 @@ function headerHTML() {
         Menu
       </button>
       <a class="wordmark" href="/" aria-label="${BRAND.name} — home">
-        ${BRAND.mark}
-        <small>${BRAND.since}</small>
+        <img class="wordmark-logo" src="${BASE_URL}brand/logo.png" alt="${BRAND.name}" />
+        <small>${BRAND.mark} · ${BRAND.since}</small>
       </a>
       <nav class="nav nav--right" aria-label="Secondary">
         ${NAV_SECONDARY.map(
@@ -110,7 +112,7 @@ function footerHTML() {
             <li><a href="/method">Our Method</a></li>
             <li><a href="/sell">Sell to Us</a></li>
             <li><a href="/sizing">Sizing &amp; Condition</a></li>
-            <li><a href="mailto:archive@tourarchive.example">Contact</a></li>
+            <li><a href="mailto:officialtellergram@gmail.com">Contact</a></li>
           </ul>
         </div>
       </div>

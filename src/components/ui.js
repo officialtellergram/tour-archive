@@ -23,7 +23,7 @@ export function plateMedia(item, opts = {}) {
 
 export function plateTag(item) {
   if (item.sold) return `<span class="plate-tag plate-tag--sold">Sold</span>`;
-  if (item.upcoming) return `<span class="plate-tag plate-tag--soon">14 Aug</span>`;
+  if (item.upcoming) return `<span class="plate-tag plate-tag--soon">Drop 01</span>`;
   // Syndicated stock checks out on the marketplace, so say so on the card
   // rather than surprising the buyer at the button.
   if (item.syndicated && item.channel === 'ebay')

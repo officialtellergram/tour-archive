@@ -1,10 +1,12 @@
-  /**
- * TOUR ARCHIVE — inventory + collection research
+/**
+ * TOUR ARCHIVE — collection research + catalogue records
  *
- * Collections are grouped by tournament / championship moment. Historical notes are
- * sourced from public records (see `sources` on each collection). Garments are
- * representative of the era and are illustrative mock inventory for this prototype —
- * every item carries a `market` link to comparable listings in the live resale market.
+ * Collections are research files grouped by tournament / championship moment;
+ * historical notes are sourced from public records (see `sources` on each).
+ * The `items` below are CATALOGUE RECORDS, not displayed stock — they enrich a
+ * real listing when it carries the matching TA-XX-NN catalogue number, and are
+ * never shown for sale on their own. Displayed stock comes from the photo
+ * manifest (public/stock/) and the marketplaces.
  */
 
 export const BRAND = {
@@ -59,13 +61,13 @@ export const collections = [
   },
   {
     id: 'duel-in-the-sun',
-    drop: 'File No. 07',
+    drop: 'File No. 01',
     name: 'Duel in the Sun',
     place: 'Turnberry, Ayrshire',
     years: '1977 — 1986',
     status: 'archived',
     statusLabel: 'Archive file',
-    releaseNote: 'Released 12 July',
+    releaseNote: 'File published July',
     heroLine: 'Two men, a heatwave, and the last nine holes of the 106th Open.',
     summary:
       'Sun-bleached Scottish knitwear from the Ailsa course era — cable vests, gorse-yellow lambswool and wind shirts cut for a links gale.',
@@ -89,13 +91,13 @@ export const collections = [
   },
   {
     id: 'the-clambake',
-    drop: 'File No. 06',
+    drop: 'File No. 02',
     name: 'The Clambake',
     place: 'Monterey Peninsula, California',
     years: '1947 — 1985',
     status: 'archived',
     statusLabel: 'Archive file',
-    releaseNote: 'Released 14 June',
+    releaseNote: 'File published June',
     heroLine: 'Bing put up three thousand dollars of his own money. Golf never recovered.',
     summary:
       'Fog-grey cardigans, cypress-green windcheaters and Monterey pro-am knitwear from the celebrity era at Pebble Beach and Cypress Point.',
@@ -119,13 +121,13 @@ export const collections = [
   },
   {
     id: 'georgia-pines',
-    drop: 'File No. 05',
+    drop: 'File No. 03',
     name: 'Georgia Pines',
     place: 'Augusta, Georgia',
     years: '1968 — 1992',
     status: 'archived',
     statusLabel: 'Archive file',
-    releaseNote: 'Released 3 April',
+    releaseNote: 'File published April',
     heroLine: 'Pine, azalea and the particular green of a Southern spring.',
     summary:
       'The Southern spring swing — pine-green lambswool, azalea pink piqué and the pastel-on-cream palette of April golf in Georgia.',
@@ -154,7 +156,7 @@ export const collections = [
     years: '1979 — 1995',
     status: 'archived',
     statusLabel: 'Archive file',
-    releaseNote: 'Sold out 22 February',
+    releaseNote: 'File published February',
     heroLine: 'Crested sweaters, team stripes, and the most hostile week the Ryder Cup ever had.',
     summary:
       'Team-issue crests and match-play stripes. Ryder Cup–era knitwear from the crested-sweater decades through Kiawah in 1991.',
@@ -163,7 +165,7 @@ export const collections = [
     essay: [
       'Crested sweaters ruled Ryder Cup dressing with an iron fist through the seventies and into the early eighties — a crew or V-neck, a chest crest, a year embroidered underneath, and very little else. The 1981 baby-blue run is the high-water mark of the template.',
       'By 1991 the tone had changed. Kiawah Island — "the War on the Shore" — was the most openly hostile week the match has produced, and the clothing turned with it: block stripes, heavier team shells, visors.',
-      'This drop is the crest-and-stripe archive. It sold through in nine days. It is kept online because half our customer emails are still about it.',
+      'This file is the crest-and-stripe reference: the template we buy against whenever team-issue knitwear surfaces. It anchors the sourcing list for a future Ryder Cup drop.',
     ],
     facts: [
       { k: 'Defining match', v: '1991, Kiawah Island Ocean Course' },
@@ -178,13 +180,13 @@ export const collections = [
   },
   {
     id: 'desert-classic',
-    drop: 'File No. 03',
+    drop: 'File No. 05',
     name: 'Desert Classic',
     place: 'Palm Springs, California',
     years: '1965 — 1988',
     status: 'archived',
     statusLabel: 'Archive file',
-    releaseNote: 'Sold out 5 January',
+    releaseNote: 'File published January',
     heroLine: 'Bob Hope, five rounds, and the loudest trousers in the history of the tour.',
     summary:
       'Palm Springs in full colour — mesh knits, terry visors and the polyester slacks that the desert pro-am made unavoidable.',
@@ -207,13 +209,13 @@ export const collections = [
   },
   {
     id: 'the-amateur-line',
-    drop: 'File No. 08',
+    drop: 'File No. 06',
     name: 'The Amateur Line',
     place: 'Walker Cup & the collegiate circuit',
     years: '1971 — 1993',
     status: 'archived',
     statusLabel: 'Archive file',
-    releaseNote: 'Registration open',
+    releaseNote: 'Research file',
     heroLine: 'The last golf played for nothing at all.',
     summary:
       'Walker Cup and collegiate-issue pieces — heavyweight rugbies, tipped cardigans, blazer-weight knits with university crests.',
@@ -222,13 +224,12 @@ export const collections = [
     essay: [
       'Amateur golf dresses differently. There are no sponsors on the chest, so the crest does all the work — a university shield, a national badge, a year and nothing more.',
       'This drop pulls from the Walker Cup and the American collegiate circuit between 1971 and 1993: heavyweight cotton rugbies with rubber buttons, tipped lambswool cardigans, and the sort of navy V-neck that has been worn under a blazer for a century.',
-      'Registration is open now. The drop opens 14 August at nine, and, as always, one of each.',
+      'This file feeds the sourcing list: crested rugbies, tipped cardigans and blazer-weight knits are what we hunt for under it. When enough of the wardrobe is assembled, it becomes a drop.',
     ],
     facts: [
       { k: 'Competition', v: 'Walker Cup & NCAA circuit' },
       { k: 'Marking', v: 'Crest only — no sponsor' },
-      { k: 'Opens', v: '14 August, 09:00' },
-      { k: 'Pieces in drop', v: '6' },
+      { k: 'Status', v: 'Sourcing' },
     ],
     sources: [
       { label: 'Erthe Golf — the return of retro style', url: 'https://erthegolf.com/blogs/news/vintage-golf-clothing-the-return-of-retro-style-in-modern-golf-fashion' },
@@ -561,7 +562,7 @@ export const items = [
     category: 'Shirting', size: 'L', condition: 'Excellent', price: 220, upcoming: true,
     colorway: ['#25324F', '#EDE6D8', '#8A6A2F'], colorName: 'Navy & Cream',
     story: 'Twelve-ounce cotton, rubber buttons, twill neck reinforcement. Built for a sport it was never used for and better for it.',
-    details: ['12oz cotton jersey', 'Rubber buttons, twill placket', 'Made in Canada', 'Opens 14 August'],
+    details: ['12oz cotton jersey', 'Rubber buttons, twill placket', 'Made in Canada', 'Catalogue record'],
     measurements: { Chest: '23.5"', Length: '29"', Sleeve: '25"' },
     market: { label: 'Comparable heavyweight rugbies', url: EBAY('vintage Barbarian rugby shirt made in Canada heavyweight') },
   },
@@ -571,7 +572,7 @@ export const items = [
     category: 'Knitwear', size: 'M', condition: 'Excellent', price: 275, upcoming: true,
     colorway: ['#EDE6D8', '#25324F', '#8A6A2F'], colorName: 'Cream & Navy',
     story: 'Cricket-tipped lambswool cardigan, navy and gold at the V and cuff. Amateur golf, university lawn, blazer weather.',
-    details: ['Lambswool, cricket tipping', 'Made in Hawick, Scotland', 'Original horn buttons', 'Opens 14 August'],
+    details: ['Lambswool, cricket tipping', 'Made in Hawick, Scotland', 'Original horn buttons', 'Catalogue record'],
     measurements: { Chest: '21.5"', Length: '27"', Sleeve: '24.5"' },
     market: { label: 'Comparable tipped cardigans', url: EBAY('vintage cricket cardigan lambswool tipped made in Scotland') },
   },
@@ -581,7 +582,7 @@ export const items = [
     category: 'Knitwear', size: 'L', condition: 'Very Good', price: 190, upcoming: true,
     colorway: ['#25324F', '#1A2338', '#8A6A2F'], colorName: 'Collegiate Navy',
     story: 'Navy V-neck with a chain-stitched university shield at the chest. No sponsor, no logo — the crest does all the work.',
-    details: ['Wool blend, V-neck', 'Chain-stitch crest', 'Made in USA', 'Opens 14 August'],
+    details: ['Wool blend, V-neck', 'Chain-stitch crest', 'Made in USA', 'Catalogue record'],
     measurements: { Chest: '22.5"', Length: '26.5"', Sleeve: '25"' },
     market: { label: 'Comparable crest knits', url: ETSY('vintage collegiate crest v-neck sweater navy') },
   },
@@ -591,7 +592,7 @@ export const items = [
     category: 'Outerwear', size: 'M', condition: 'Excellent', price: 310, upcoming: true,
     colorway: ['#25324F', '#EDE6D8', '#8A6A2F'], colorName: 'Match Navy',
     story: 'Unstructured cotton shell cut on blazer lines — patch pockets, three buttons, no padding. Wears as a jacket, packs like a shirt.',
-    details: ['Cotton poplin, unstructured', 'Patch pockets, three button', 'Made in USA', 'Opens 14 August'],
+    details: ['Cotton poplin, unstructured', 'Patch pockets, three button', 'Made in USA', 'Catalogue record'],
     measurements: { Chest: '22"', Length: '28"', Sleeve: '24.5"' },
     market: { label: 'Comparable unstructured shells', url: EBAY('vintage Gant cotton unstructured blazer jacket made in USA') },
   },
@@ -601,7 +602,7 @@ export const items = [
     category: 'Shirting', size: 'M', condition: 'Very Good', price: 135, upcoming: true,
     colorway: ['#EDE6D8', '#25324F', '#8A6A2F'], colorName: 'Cream & Gold',
     story: 'Twin-tipped piqué in cream with navy and gold at the collar. The tennis-to-golf crossover in its most restrained form.',
-    details: ['Cotton piqué, twin tipped', 'Laurel wreath chest mark', 'Made in England', 'Opens 14 August'],
+    details: ['Cotton piqué, twin tipped', 'Laurel wreath chest mark', 'Made in England', 'Catalogue record'],
     measurements: { Chest: '20.5"', Length: '27.5"', Shoulder: '17"' },
     market: { label: 'Comparable Fred Perry piqué', url: EBAY('vintage Fred Perry twin tipped polo made in England') },
   },
@@ -611,7 +612,7 @@ export const items = [
     category: 'Trousers', size: '33 × 31', condition: 'Excellent', price: 240, upcoming: true,
     colorway: ['#5D6470', '#454B55', '#EDE6D8'], colorName: 'Grey Flannel',
     story: 'Mid-grey flannel, flat front, full rise. Autumn amateur golf, then straight into the clubhouse without changing.',
-    details: ['Wool flannel, flat front', 'Full rise, cuffed hem', 'Made in USA', 'Opens 14 August'],
+    details: ['Wool flannel, flat front', 'Full rise, cuffed hem', 'Made in USA', 'Catalogue record'],
     measurements: { Waist: '33"', Inseam: '31"', Rise: '12.5"' },
     market: { label: 'Comparable flannel trousers', url: EBAY('vintage Southwick grey flannel trousers made in USA') },
   },
@@ -671,13 +672,18 @@ export const getJournal = (id) => journal.find((j) => j.id === id) || null;
 
 export const isAvailable = (item) => !item.sold && !item.upcoming;
 export const itemStatus = (item) =>
-  item.sold ? 'Sold' : item.upcoming ? 'Opens 14 Aug' : 'Available — 1 of 1';
+  item.sold ? 'Sold' : item.upcoming ? 'Reserved for the drop' : 'Available — 1 of 1';
 
 export const categories = [...new Set(items.map((i) => i.category))].sort();
-export const eras = ['1968 — 1975', '1976 — 1983', '1984 — 1993'];
+export const eras = ['1968 — 1975', '1976 — 1983', '1984 — 1993', '1994 — 2005', 'Modern'];
 export const eraOf = (item) => {
-  const y = Number(item.year);
+  // "1979" and "1990s" both date a garment; Number("1990s") is NaN, and the
+  // old fall-through filed 2010s fleece under 1984–1993.
+  const y = Number(String(item.year).match(/(19|20)\d{2}/)?.[0]);
+  if (!Number.isFinite(y)) return null;
   if (y <= 1975) return eras[0];
   if (y <= 1983) return eras[1];
-  return eras[2];
+  if (y <= 1993) return eras[2];
+  if (y <= 2005) return eras[3];
+  return eras[4];
 };

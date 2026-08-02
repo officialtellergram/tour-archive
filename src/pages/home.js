@@ -195,7 +195,7 @@ export function home() {
           <h2 class="display" style="margin:.6rem 0 1.4rem">Three agreements,<br />or we don't buy it.</h2>
           <p style="color:rgba(244,240,230,.74);font-weight:300;max-width:48ch">
             Label, construction, and the way a garment has aged. Two out of three is not a
-            purchase. Everything we list is dated, measured flat, and photographed as found.
+            purchase. Everything we list is dated, graded honestly, and photographed as found.
           </p>
           <a class="btn" href="/method" style="border-color:rgba(244,240,230,.4);color:var(--parchment);margin-top:1.6rem" data-magnetic>
             Read the standard

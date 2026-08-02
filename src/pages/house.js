@@ -1,6 +1,6 @@
 /** House pages: /method, /sell, /sizing, and the 404. */
 
-import { BRAND, collections, items, isAvailable } from '../data/store.js';
+import { BRAND, collections, items, isAvailable, BASIC_STOCK } from '../data/store.js';
 import { breadcrumb, marquee, sectionHead } from '../components/ui.js';
 import { toast } from '../lib/motion.js';
 
@@ -38,7 +38,7 @@ export function method() {
   <div class="wrap">
     <div class="stat-row" data-reveal>
       <div class="stat"><b data-count="${items().length}">0</b><span>Pieces catalogued</span></div>
-      <div class="stat"><b data-count="${collections().length}">0</b><span>Championship collections</span></div>
+      <div class="stat"><b data-count="${collections().filter((c) => c.id !== BASIC_STOCK).length}">0</b><span>Files &amp; drops</span></div>
       <div class="stat"><b data-count="${items().filter(isAvailable).length}">0</b><span>Available today</span></div>
       <div class="stat"><b>1 of 1</b><span>Every listing</span></div>
     </div>
@@ -188,8 +188,9 @@ export function sizing() {
           <span class="line-mask"><span>Condition</span></span>
         </h1>
         <p class="lede" data-hero-cta>
-          Nothing in this archive was cut to a modern block. Every listing carries flat
-          measurements — chest is pit-to-pit, length is centre-back from the neck seam.
+          Nothing in this archive was cut to a modern block, so buy on measurements rather
+          than the label. Measurements are taken flat — chest pit-to-pit, length centre-back
+          — and anything not yet measured is measured on request, same day.
         </p>
       </div>
     </div>

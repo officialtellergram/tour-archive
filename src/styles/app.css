@@ -339,6 +339,14 @@ h3.display {
   grid-column: 2;
   justify-self: center;
   white-space: nowrap;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+}
+.wordmark-logo {
+  height: 44px;
+  width: auto;
+  mix-blend-mode: multiply;
 }
 .wordmark small {
   display: block;

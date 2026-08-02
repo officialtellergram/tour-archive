@@ -56,22 +56,55 @@ function chip(group, value, label, active) {
     aria-pressed="${active ? 'true' : 'false'}">${label}</button>`;
 }
 
+/**
+ * Only offer filters that can match something — a chip whose answer is always
+ * "No pieces" is navigation that lies. Each group keeps its "All", and a group
+ * with fewer than two real options disappears entirely.
+ */
 function filterBar(state, count) {
+  const all = items();
+  const statusChips = AVAIL.filter(
+    (a) =>
+      a.id === 'all' ||
+      (a.id === 'available' && all.some(isAvailable)) ||
+      (a.id === 'upcoming' && all.some((i) => i.upcoming)) ||
+      (a.id === 'sold' && all.some((i) => i.sold))
+  );
+  const collChips = collections().filter((c) => all.some((i) => i.collection === c.id));
+  const eraChips = eras.filter((e) => all.some((i) => eraOf(i) === e));
+
+  const group = (label, chips) =>
+    chips.trim() ? `<span class="label">${label}</span>${chips}` : '';
+
   return `
   <div class="filters" data-filters>
-    <span class="label">Status</span>
-    ${AVAIL.map((a) => chip('filter', a.id, a.label, state.filter === a.id)).join('')}
-    <span class="label" style="margin-left:1rem">Collection</span>
-    ${chip('collection', 'all', 'All', state.collection === 'all')}
-    ${collections()
-      .map((c) => chip('collection', c.id, c.name, state.collection === c.id))
-      .join('')}
-    <span class="label" style="margin-left:1rem">Type</span>
-    ${chip('category', 'all', 'All', state.category === 'all')}
-    ${categories().map((c) => chip('category', c, c, state.category === c)).join('')}
-    <span class="label" style="margin-left:1rem">Era</span>
-    ${chip('era', 'all', 'All', state.era === 'all')}
-    ${eras.map((e) => chip('era', e, e, state.era === e)).join('')}
+    ${group(
+      'Status',
+      statusChips.length > 1
+        ? statusChips.map((a) => chip('filter', a.id, a.label, state.filter === a.id)).join('')
+        : ''
+    )}
+    ${group(
+      'Collection',
+      collChips.length > 1
+        ? chip('collection', 'all', 'All', state.collection === 'all') +
+            collChips.map((c) => chip('collection', c.id, c.name, state.collection === c.id)).join('')
+        : ''
+    )}
+    ${group(
+      'Type',
+      categories().length > 1
+        ? chip('category', 'all', 'All', state.category === 'all') +
+            categories().map((c) => chip('category', c, c, state.category === c)).join('')
+        : ''
+    )}
+    ${group(
+      'Era',
+      eraChips.length > 1
+        ? chip('era', 'all', 'All', state.era === 'all') +
+            eraChips.map((e) => chip('era', e, e, state.era === e)).join('')
+        : ''
+    )}
     <span class="count" data-result-count>${count} ${count === 1 ? 'piece' : 'pieces'}</span>
   </div>`;
 }
@@ -134,7 +167,7 @@ export function archive() {
     </div>
   </section>
 
-  ${marquee(['One of one', 'No restocks', 'Measured flat', 'Condition graded', 'Free UK & US returns'])}
+  ${marquee(['One of one', 'No restocks', 'Photographed in house', 'Condition graded', 'Submissions welcome'])}
 
   <div class="wrap">
     ${filterBar(state, list.length)}

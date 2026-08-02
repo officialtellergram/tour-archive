@@ -1,4 +1,4 @@
-import { getItem, getCollection, itemsIn, itemStatus, isAvailable } from '../data/store.js';
+import { getItem, getCollection, itemsIn, itemStatus, isAvailable, featuredEvent, dateRange } from '../data/store.js';
 import { garmentSVG } from '../components/garment.js';
 import { productCard, breadcrumb, money, plateTag, plateMedia, sectionHead } from '../components/ui.js';
 import { toast } from '../lib/motion.js';
@@ -25,7 +25,10 @@ function primaryAction(item) {
     return `<button class="btn btn--solid" data-reserve data-magnetic>Reserve this piece</button>`;
   }
   if (item.upcoming) {
-    return `<button class="btn btn--solid" data-notify data-magnetic>Notify me — opens 14 Aug</button>`;
+    const ev = featuredEvent();
+    return `<button class="btn btn--solid" data-notify data-magnetic>Notify me — opens ${
+      ev ? dateRange(ev) : 'with the drop'
+    }</button>`;
   }
   return `<button class="btn is-disabled" disabled>Sold — archive reference</button>`;
 }
@@ -34,7 +37,7 @@ function secondaryAction(item) {
   // For syndicated stock the primary button already is the listing, so the
   // secondary slot is better spent on a way to ask us about the piece.
   if (isAvailable(item) && item.syndicated) {
-    return `<a class="btn btn--ghost" href="mailto:archive@tourarchive.example?subject=${encodeURIComponent(
+    return `<a class="btn btn--ghost" href="mailto:officialtellergram@gmail.com?subject=${encodeURIComponent(
       `${item.name} (${item.id})`
     )}">Ask about this piece</a>`;
   }
@@ -121,7 +124,9 @@ export function product({ id }) {
 
           <div class="accordion">
             <div class="accordion-item is-open">
-              <button class="accordion-trigger">Measurements, flat <i>+</i></button>
+              <button class="accordion-trigger">${
+                Object.keys(item.measurements).length ? 'Measurements, flat' : 'Sizing &amp; condition'
+              } <i>+</i></button>
               <div class="accordion-panel"><div>
                 <table class="spec-table">
                   ${Object.entries(item.measurements)
@@ -130,6 +135,13 @@ export function product({ id }) {
                   <tr><th>Labelled size</th><td>${item.size}</td></tr>
                   <tr><th>Condition</th><td>${item.condition}</td></tr>
                 </table>
+                ${
+                  Object.keys(item.measurements).length
+                    ? ''
+                    : `<p style="margin:.9rem 0 0;color:var(--ink-faint);font-size:.9rem">
+                        Flat measurements are taken before shipping — ask and we'll send them same day.
+                      </p>`
+                }
               </div></div>
             </div>
             <div class="accordion-item">
@@ -152,9 +164,9 @@ export function product({ id }) {
               <button class="accordion-trigger">Shipping &amp; returns <i>+</i></button>
               <div class="accordion-panel"><div>
                 <p style="color:var(--ink-soft);font-weight:300;margin:0">
-                  Shipped within two working days, tracked and insured. Fourteen-day returns on
-                  everything except pieces sold as-is. Sizing runs to period cut — read the flat
-                  measurements above, not the label.
+                  Marketplace listings ship on that marketplace's terms. For pieces sold here,
+                  shipping and returns are agreed when you reserve — tracked, and never sold
+                  unseen. Sizing runs to period cut, so buy on measurements rather than the label.
                   <a href="/sizing" style="border-bottom:1px solid var(--rule-strong)">Sizing &amp; condition guide</a>.
                 </p>
               </div></div>

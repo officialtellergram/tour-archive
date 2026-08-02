@@ -64,7 +64,7 @@ export function daysUntil(event, now = Date.now()) {
   return Math.max(0, Math.ceil((parse(event.starts) - now) / day));
 }
 
-/** Human date range: "20 – 23 August 2026". */
+/** Human date range: "27 – 30 August 2026". */
 export function dateRange(event) {
   const s = new Date(`${event.starts}T12:00:00Z`);
   const e = new Date(`${event.ends}T12:00:00Z`);
