@@ -26,10 +26,18 @@ function toAppPath(pathname) {
   return p.replace(/\/+$/, '') || '/';
 }
 
-/** Re-apply the deploy base to an app path. */
+/**
+ * Re-apply the deploy base to an app path. IDEMPOTENT — hrefs in the DOM have
+ * already been prefixed by applyBaseToLinks, and the click handler feeds them
+ * straight back through navigate(). Prefixing twice produced
+ * /tour-archive/tour-archive → "Out of bounds" on every clicked link in
+ * production, while every direct-URL test passed. Clicks and loads must go
+ * through the same normalisation.
+ */
 export function withBase(appPath) {
   if (!BASE) return appPath;
   if (/^(https?:)?\/\//i.test(appPath)) return appPath;
+  if (appPath === BASE || appPath.startsWith(`${BASE}/`)) return appPath;
   return `${BASE}${appPath.startsWith('/') ? '' : '/'}${appPath}`;
 }
 
