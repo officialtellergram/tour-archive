@@ -1,109 +1,88 @@
-# Deploying the preview
+# Deploying the preview — GitHub Pages
 
-Everything is configured. `npm run deploy:check` passes. What's left needs your
-Netlify account, so it needs you.
-
-Two routes. Pick by whether you want the eBay/Depop stock in the preview.
-
----
-
-## Route A — CLI deploy  ⏱ ~5 min  ✅ recommended
-
-Keeps the inventory API, so the preview shows the full experience: eBay and
-Depop badges, "Buy on eBay" redirects, Basic Stock. No Git repo needed.
+The repo is committed locally, the Pages build is configured and verified, and
+the GitHub CLI is installed. **Three commands remain, and they need your GitHub
+login:**
 
 ```bash
 cd "C:\Users\Karen Plankton\Desktop\claret-archive"
 
-npm i -g netlify-cli
-netlify login                 # opens a browser — this is the bit only you can do
-netlify deploy --build        # draft URL, safe to check first
-netlify deploy --build --prod # publishes the shareable link
+gh auth login          # opens a browser — sign into your GitHub account
+gh repo create tour-archive --public --source . --push
+gh api repos/{owner}/tour-archive/pages -X POST -f build_type=workflow
 ```
 
-Then, so friends see the demo stock rather than just the curated catalogue:
+Then watch the first deploy: `gh run watch`. When it finishes, the site is at
 
-```bash
-netlify env:set MOCK_CHANNELS 1
-netlify deploy --build --prod
+```
+https://<your-username>.github.io/tour-archive/
 ```
 
-`netlify deploy` prints the URL. That's what you send.
+That's the link to send. (If the last command errors saying Pages already
+exists, that's fine — it means GitHub enabled it automatically.)
 
----
+`gh repo create … --push` publishes the code as a **public repo** — the site,
+the server adapters, the research data. No secrets are in it (`.env` is
+gitignored and the deploy check proves nothing leaks into the bundle), but if
+you'd rather keep the code private while friends see the site, use `--private`
+instead; Pages on a private repo requires GitHub Pro, so on a free account the
+repo must be public.
 
-## Route B — drag and drop  ⏱ ~1 min  ⚠️ no API
+## How this deployment works
 
-1. `npm run build`
-2. Drag the **`dist`** folder onto <https://app.netlify.com/drop>
+GitHub Pages is static-only — no server, no functions. Two things make the full
+experience work anyway:
 
-Fastest possible, but Netlify Drop only takes the publish folder, so the
-function doesn't come with it. The site still works completely — it falls back
-to the curated catalogue, all 36 pieces, every collection and page. You just
-lose the eBay/Depop badges and the "Buy on eBay" buttons, because there's no API
-to serve them.
+**The inventory ships as a build-time snapshot.** `npm run build:pages` runs the
+exact same `buildInventory` pipeline as the local server and writes the merged
+result to `dist/api/inventory.json`; the site fetches that file. This is a good
+fit, not a compromise: the data is read-only and every visitor was already being
+served the same 15-minute cache. Freshness comes from rebuilding — the workflow
+redeploys **daily at 07:20 UTC** and on every push, so stock refreshes on its
+own. The eBay/Depop badges and "Buy on eBay" redirects all work.
 
-Fine if you're showing the design. Not fine if you're showing the integration.
+**Deep links survive via `404.html`.** Pages has no redirect rules, but it
+serves `404.html` for unknown paths — so the build writes an identical copy of
+`index.html` there, and `/collections/duel-in-the-sun` loads fine on refresh.
+The build also handles the `/tour-archive/` URL prefix automatically (verified
+locally at that base path before this was committed).
 
----
+## The workflow (`.github/workflows/deploy.yml`)
 
-## What's already set up
+On every push to `main`, daily on schedule, or manually from the Actions tab:
 
-| | |
-| --- | --- |
-| `netlify.toml` | build command, publish dir, functions dir, Node 22 |
-| SPA fallback | `/* → /index.html 200` — without it every route except `/` 404s on refresh |
-| `netlify/functions/api.mjs` | `/api/health` and `/api/inventory`, serverless |
-| Asset caching | hashed bundles immutable for a year, `index.html` always revalidated |
-| `src/data/store.js` | calls a **relative** `/api` in builds, `localhost:5181` only in dev |
+1. `npm run check` — audit, smoke, integration. A broken build never deploys.
+2. `npm run build:pages` — site + inventory snapshot.
+3. `node scripts/deploy.mjs` — deploy-specific sanity (SPA fallback present,
+   base path correct, snapshot non-empty, no secrets in the bundle).
+4. Publish to Pages.
 
-The function imports the same `buildInventory` the local server uses, so the
-preview is real evidence about production rather than a lookalike code path.
+## Going live with real eBay stock later
 
-## Environment variables on Netlify
+Add these as **repository secrets** (Settings → Secrets and variables →
+Actions), then delete the `MOCK_CHANNELS: '1'` line from the workflow:
 
-Set these in **Site configuration → Environment variables** (or `netlify env:set`).
-Never commit them — `.env` is gitignored and `deploy:check` fails the build if a
-secret reaches the browser bundle.
+```
+EBAY_ENABLED=true   EBAY_ENV=production
+EBAY_CLIENT_ID=…    EBAY_CLIENT_SECRET=…   EBAY_SELLER_USERNAME=…
+```
 
-| Variable | For the preview | Later, live |
-| --- | --- | --- |
-| `MOCK_CHANNELS` | `1` | remove it |
-| `EBAY_ENABLED` | — | `true` |
-| `EBAY_ENV` | — | `production` |
-| `EBAY_CLIENT_ID` | — | your App ID |
-| `EBAY_CLIENT_SECRET` | — | your Cert ID |
-| `EBAY_SELLER_USERNAME` | — | your eBay username |
-| `DEPOP_ENABLED` / `DEPOP_API_KEY` / `DEPOP_SHOP_ID` | — | after the partnership |
+The daily rebuild then snapshots your real listings. Same later for Depop once
+the partnership lands. When the domain arrives, add it under Pages → Custom
+domain — the base path becomes `/` and the build adjusts itself.
 
-## When the domain arrives
+## Netlify
 
-Add it under **Domain management** and point the DNS at Netlify. Nothing in the
-code changes — the API is same-origin and relative, so it follows the domain
-automatically. If you later move the API to its own host, set `VITE_API_BASE` at
-build time and rebuild.
-
-## Two things worth knowing
-
-**Serverless has no persistent cache.** The disk cache degrades to in-memory: it
-survives while the function is warm and refetches on a cold start. At a
-15-minute TTL that's still far inside eBay's daily call allowance, and it's why
-there's no `POST /api/sync` on Netlify — a cold start does the same job.
-
-**This is a preview, not production.** The reserve/notify/sell forms take no
-payment and transmit nothing, and the inventory is curated demo stock. If
-friends might mistake it for a live shop, say so when you send the link.
-
----
+The Netlify config (`netlify.toml`, `netlify/functions/`) is still in the repo
+and still works — the password screen you hit was Netlify's site-level
+protection setting, not something this project set. Keeping both costs nothing;
+delete them if you want one clear path.
 
 ## Before every deploy
 
 ```bash
-npm run check:all     # audit + smoke + integration + layout
-npm run deploy:check  # build, then verify the deploy config
+npm run check:all              # audit + smoke + integration + layout
+npm run build:pages && node scripts/deploy.mjs
 ```
 
-`deploy:check` is the one that catches deploy-specific failures — a missing SPA
-fallback, a bundle hard-coding `localhost:5181`, a secret leaking into the
-frontend, or a function that doesn't load. All of those pass the other checks
-and then break in production.
+Pushing to `main` runs the same checks in CI anyway — that's the point.
