@@ -1,10 +1,14 @@
 # Where your action is needed
 
-The integration is built and tested. It cannot go live until the items below are
-done, because every one of them needs an account, a signature, or a business
-decision that I can't make from here.
-
-Ordered by what blocks the most.
+> **Reprioritized (3 Aug 2026): nothing below blocks the live site.** The
+> manual bridge (paste `channel` + `listingUrl` into the stock manifest) runs
+> the store end to end — all six eBay listings are live with redirect-out
+> checkout. The APIs are now *automation upgrades*, wanted for exactly two
+> things: **automatic sold/price sync** (until then: when a piece sells, set
+> `"sold": true` on its manifest entry and push) and **zero-touch scale** once
+> listings are flooded in faster than URLs are pleasant to paste (~20+
+> concurrent). eBay: keep the support thread warm, it's free. Depop: shelve the
+> partnership until Depop volume justifies the paperwork.
 
 ---
 

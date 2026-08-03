@@ -38,5 +38,10 @@ listing) and it reverts to plain site stock.
 This is the manual bridge until the official APIs are wired; those will take
 over the same fields automatically.
 
+**When a piece sells on the marketplace**, add `"sold": true` to its entry and
+push — the site strikes the price and marks it "Sold — archive reference".
+This is the one recurring manual duty of running without the APIs; miss it and
+buyers click through to a dead listing.
+
 Keep files under ~1.5 MB each (they ship with the site). The ingest warns on
 oversized files.
