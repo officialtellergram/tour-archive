@@ -14,9 +14,15 @@ forever? This fixes that. Two pages, no app to install, works on your phone.
 
 ## Signing the desk
 
-Right now the desk runs in **practice mode**: the first visit asks for your
-first name, and that's it. One honest catch — in practice mode, anything you
-add saves **only to your own device**. It's a sandbox until the shared
+The first visit on each device asks for two things:
+
+1. **The desk passphrase** — one phrase for the whole team, handed out in the
+   group chat or in person (capitals don't matter). Asked once per device,
+   then remembered. Don't have it? Any founder does.
+2. **Your first name** — so the team knows who found what.
+
+One honest catch — the desk currently runs in **practice mode**, and anything
+you add saves **only to your own device**. It's a sandbox until the shared
 database is switched on, so play freely, but don't retire the group chat yet.
 
 *(Once the shared desk goes live, the first visit on each device will instead

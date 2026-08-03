@@ -45,6 +45,14 @@ else gets "Email address not authorized." Fixing that means custom SMTP, which
 on Resend's free tier requires a DNS-verified domain we don't own yet. All of
 that infrastructure to avoid a password, for four people.
 
+**Practice mode gets its own gate:** a single shared team passphrase, checked
+against a SHA-256 hash committed in `src/curate/config.js` (the phrase itself
+never enters the repo; rotate with `scripts/desk-pass.mjs`). Input is trimmed
+and lowercased before hashing so phone keyboards can't fumble it, and the
+device stays trusted after one entry. On a static site this is honestly a
+velvet rope — it keeps passers-by out of the desk UI, and since practice data
+is device-local there is nothing server-side to steal. Live mode ignores it.
+
 So: **the Technical Officer creates each account in the dashboard**
 (Authentication → Users → Add user, auto-confirm) and hands the password over
 in person or by text. Sign in once per device; refresh tokens never expire, so

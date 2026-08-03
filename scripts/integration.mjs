@@ -530,6 +530,31 @@ await checkAsync('practice adapter: seed, add, dupe, decide, undo', async () => 
   equal(undone.decided_at, null, 'undo clears the decision time');
 });
 
+await checkAsync('desk passphrase hashing is normalized and verifiable', async () => {
+  equal(
+    await curate.hashPassphrase('abc'),
+    'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad',
+    'known SHA-256 vector'
+  );
+  equal(
+    await curate.hashPassphrase('  ABC '),
+    await curate.hashPassphrase('abc'),
+    'trim + lowercase before hashing (phone keyboards auto-capitalize)'
+  );
+  equal(await curate.verifyPassphrase('definitely-not-it'), false, 'wrong phrase refused');
+});
+
+await checkAsync('practice desk refuses entry without the passphrase', async () => {
+  await curate.initCurate();
+  let refused = false;
+  try {
+    await curate.signIn('Intruder', 'wrong-phrase');
+  } catch {
+    refused = true;
+  }
+  assert(refused, 'sign-in with a wrong passphrase must throw');
+});
+
 check('STATUSES and the SQL check constraint cannot drift apart', () => {
   const sql = readFileSync(new URL('../supabase/curation.sql', import.meta.url), 'utf8');
   const m = sql.match(/check \(status in \(([^)]+)\)\)/);

@@ -17,3 +17,16 @@ export const SUPABASE_ANON_KEY = '';
 
 /** Table name in Supabase — matches supabase/curation.sql. */
 export const FINDS_TABLE = 'curation_finds';
+
+/**
+ * Practice-mode desk passphrase — SHA-256 of the phrase, never the phrase
+ * itself. One passphrase for the whole team, asked once per device; input is
+ * trimmed and lowercased before hashing so phone keyboards can't fumble it.
+ *
+ * To rotate: `node scripts/desk-pass.mjs "the new phrase"` prints the hash —
+ * paste it here and push. (This is a velvet rope on a static site, not a
+ * vault: it keeps passers-by out of the desk UI. Real per-person auth arrives
+ * with live mode, which ignores this entirely.)
+ */
+export const DESK_PASSPHRASE_HASH =
+  '2bd0e79a9c408ef7ebca59d68ba5763057bbb7815498cf76f2535098f131f50c';

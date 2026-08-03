@@ -44,6 +44,15 @@ team data needs a Supabase project, which only you can create:
 **Never** put the `service_role` key anywhere in this repo or the frontend —
 that one bypasses every access rule. The desk only ever needs the anon key.
 
+**Meanwhile (practice mode) the desk is passphrase-gated.** One shared team
+passphrase, asked once per device before the name; case doesn't matter. Only
+its SHA-256 hash lives in the repo (`src/curate/config.js`) — the phrase
+itself was handed to you in chat and should travel by text, not by commit. To
+rotate: `node scripts/desk-pass.mjs "the new phrase"` → paste the hash into
+config → push. Be honest about what it is: a velvet rope on a static site
+that keeps passers-by out of the desk UI — real per-person auth is the live
+mode above, which ignores the passphrase entirely.
+
 ---
 
 ## 1. eBay — get API credentials  ⏱ ~1 hour, self-serve
@@ -165,21 +174,19 @@ Until this lands, the Depop channel stays off and the site works without it.
 
 ---
 
-## 3. Send me the OpenAPI YAML  ⏱ 1 minute
+## 3. ~~Send me the OpenAPI YAML~~  ✔ found & filed (3 Aug 2026)
 
-You mentioned one was open, but I couldn't find it on disk — I searched Desktop,
-Downloads, Documents and the temp directories.
+Located at last — it was living in `D:\COOKING STREAMS\YOUTUBE CONTENT\STOCK
+FOOTAGE\openapi.yaml`, which is why every Desktop/Downloads/Documents search
+missed it. Now committed as `server/depop-openapi.yaml` (Depop **Seller API**,
+OpenAPI 3.1, staging server `partnerapi-staging.depop.com`, scopes
+`products_read` … `shop_read`).
 
-**Paste the full path**, or drop it at
-`Desktop\claret-archive\server\depop-openapi.yaml`.
-
-Why it matters: the eBay adapter is written against published documentation and
-I'm confident in it. The **Depop adapter's field names are a documented guess** —
-the terms page tells us what the API covers but not its response shapes. I've
-confined every assumption to one function (`mapDepopProduct` in
-`server/normalize.mjs`) and the paths in `server/channels/depop.mjs`, so
-correcting them against the real spec is a small job. But until then, treat that
-adapter as unverified.
+Remaining follow-up, deliberately parked with the Depop partnership itself:
+verify `mapDepopProduct` in `server/normalize.mjs` and the paths in
+`server/channels/depop.mjs` against this spec before ever enabling the
+channel. The adapter's field names were a documented guess; now there is a
+document to check them against.
 
 ---
 

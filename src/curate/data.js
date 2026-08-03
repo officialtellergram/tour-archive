@@ -19,7 +19,7 @@
  * must survive validListingUrl() before they are stored or ever put in an href.
  */
 
-import { SUPABASE_URL, SUPABASE_ANON_KEY, FINDS_TABLE } from './config.js';
+import { SUPABASE_URL, SUPABASE_ANON_KEY, FINDS_TABLE, DESK_PASSPHRASE_HASH } from './config.js';
 
 /* ------------------------------------------------------------------ */
 /* Pure helpers (exercised directly by scripts/integration.mjs)        */
@@ -141,6 +141,20 @@ export function nameFromEmail(email) {
 
 export const STATUSES = ['new', 'shortlist', 'pass', 'bought'];
 
+/**
+ * SHA-256 hex of a passphrase, normalized (trim + lowercase) so a phone
+ * keyboard's auto-capitalize can't lock a founder out. Web Crypto — present
+ * in every modern browser on HTTPS/localhost, and in Node 18+ for the tests.
+ */
+export async function hashPassphrase(raw) {
+  const text = String(raw ?? '').trim().toLowerCase();
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+/** True when the offered phrase matches the team passphrase in config. */
+export const verifyPassphrase = async (raw) => (await hashPassphrase(raw)) === DESK_PASSPHRASE_HASH;
+
 /* ------------------------------------------------------------------ */
 /* Mode selection                                                      */
 /* ------------------------------------------------------------------ */
@@ -209,7 +223,7 @@ function lsRead() {
   } catch {
     /* corrupt or unavailable — reseed */
   }
-  return { name: '', finds: SEED() };
+  return { name: '', unlocked: false, finds: SEED() };
 }
 
 function lsWrite(state) {
@@ -224,10 +238,25 @@ let practiceState = null;
 const practice = {
   async init() {
     practiceState = lsRead();
-    return { mode: 'practice', user: practiceState.name ? { name: practiceState.name } : null };
+    // both the passphrase AND a name are needed to be "at the desk" — a
+    // pre-passphrase state that stored a name is re-gated, keeping its finds
+    const user =
+      practiceState.unlocked && practiceState.name ? { name: practiceState.name } : null;
+    return { mode: 'practice', user, locked: !practiceState.unlocked };
   },
-  user: () => (practiceState?.name ? { name: practiceState.name, email: '' } : null),
-  async signIn(name) {
+  user: () =>
+    practiceState?.unlocked && practiceState?.name
+      ? { name: practiceState.name, email: '' }
+      : null,
+  async signIn(name, passphrase) {
+    if (!practiceState.unlocked) {
+      if (!(await verifyPassphrase(passphrase))) {
+        throw new Error(
+          'That’s not the desk passphrase. It’s handed around the founders — ask and you shall receive.'
+        );
+      }
+      practiceState.unlocked = true;
+    }
     const clean = String(name).trim().slice(0, 40);
     if (!clean) throw new Error('A name, so the team knows who found what.');
     practiceState.name = clean;
@@ -235,6 +264,7 @@ const practice = {
     return { name: clean };
   },
   async signOut() {
+    // the device stays trusted (unlocked survives); only the identity clears
     practiceState.name = '';
     lsWrite(practiceState);
   },
@@ -301,7 +331,8 @@ const live = {
     const { data } = await supa.auth.getSession();
     const email = data.session?.user?.email;
     liveUser = email ? { name: nameFromEmail(email), email } : null;
-    return { mode: 'live', user: liveUser };
+    // live mode has real per-person auth; the practice passphrase plays no part
+    return { mode: 'live', user: liveUser, locked: false };
   },
   user() {
     /* refreshed by init/signIn; synchronous read for render convenience */

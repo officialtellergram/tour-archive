@@ -51,20 +51,34 @@ const STATUS_COPY = {
 };
 
 /** Sign-in / name card, rendered by the gate when nobody is at the desk. */
-function gateHTML() {
+function gateHTML(locked = true) {
   const sellNote = `<p class="curate-help" style="margin-top:1.2rem">This is the team’s buying
     desk. Selling us a piece? <a href="/sell">Sell to Us</a> is the door you want.</p>`;
   if (!isLive()) {
     return `
     <div class="curate-card curate-gate">
-      <p class="eyebrow">The desk is open</p>
+      <p class="eyebrow">${locked ? 'Team only' : 'The desk is open'}</p>
       <h3 class="display" style="margin:.4rem 0 1rem">Sign the desk</h3>
       <form data-gate-form class="curate-form">
+        ${
+          locked
+            ? `<label><span class="eyebrow">Desk passphrase</span>
+          <input name="passphrase" type="password" required autocomplete="off"
+            autocapitalize="none" spellcheck="false" placeholder="Handed around the founders" />
+        </label>`
+            : ''
+        }
         <label><span class="eyebrow">Your first name</span>
           <input name="name" required maxlength="40" autocomplete="given-name" placeholder="So the team knows who found what" />
         </label>
         <button class="btn btn--solid" type="submit" data-magnetic>Take the desk</button>
         <p class="curate-error" data-gate-error role="alert"></p>
+        ${
+          locked
+            ? `<p class="curate-help">One passphrase for the whole team, asked once per device.
+        Don’t have it? Any founder does.</p>`
+            : ''
+        }
       </form>
       ${sellNote}
     </div>`;
@@ -110,7 +124,7 @@ async function gate(app, ready) {
     return;
   }
 
-  app.innerHTML = gateHTML();
+  app.innerHTML = gateHTML(boot.locked !== false);
   applyBaseToLinks(app);
   initMagnetic(app);
   const form = app.querySelector('[data-gate-form]');
@@ -122,7 +136,7 @@ async function gate(app, ready) {
     try {
       const user = isLive()
         ? await signIn(form.email.value.trim(), form.password.value)
-        : await signIn(form.name.value);
+        : await signIn(form.name.value, form.passphrase?.value ?? '');
       if (!app.isConnected) return;
       toast(`Welcome to the desk, ${user.name}`);
       await ready(user);

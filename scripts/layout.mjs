@@ -84,6 +84,7 @@ const PROBE = `(() => {
  */
 const CURATE_SEED = JSON.stringify({
   name: 'Probe',
+  unlocked: true, // past the passphrase gate — the probe measures the desk, not the door
   finds: [
     {
       id: 'probe-1',
@@ -135,7 +136,11 @@ function probeExpr(route) {
   const readySel = route === '/curate' ? '[data-drop-form]' : '[data-deck-stage] .deck-card';
   return `(() => {
     const KEY = 'ta-curate-practice-v1';
-    if (!localStorage.getItem(KEY)) {
+    // reseed stale profiles too (probe ports are deterministic, so profiles
+    // survive across runs — a pre-passphrase seed would stall at the gate)
+    let cur = null;
+    try { cur = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch {}
+    if (!cur || !cur.unlocked) {
       localStorage.setItem(KEY, ${JSON.stringify(CURATE_SEED)});
       location.reload();
       return JSON.stringify({ ready: 'seeding', mounted: false });
