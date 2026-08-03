@@ -34,11 +34,12 @@ done
 gh run watch "$RUN" --repo "$REPO" --exit-status >/dev/null && echo "✔ deploy green (run $RUN)" || { echo "✖ deploy failed"; exit 1; }
 
 # Origin verification with a unique query — bypasses the CDN window entirely.
+# PYTHONIOENCODING: the Windows console is cp1252 and chokes on unicode marks.
 BUST=$(date +%s)
-curl -s "$BASE/api/inventory.json?v=$BUST" | python -c "
+curl -s "$BASE/api/inventory.json?v=$BUST" | PYTHONIOENCODING=utf-8 python -c "
 import json,sys
 d=json.load(sys.stdin)
 photos=sum(1 for i in d['items'] if i.get('photo'))
-print(f\"✔ origin snapshot: {d['counts']['total']} items · {photos} with photos · {d['counts']['syndicated']} syndicated\")
+print('OK origin snapshot:', d['counts']['total'], 'items /', photos, 'with photos /', d['counts']['syndicated'], 'syndicated')
 "
 echo "note: plain URLs (and open browser tabs) lag up to 10 min behind — that is the CDN, not the deploy."
