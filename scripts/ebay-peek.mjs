@@ -85,6 +85,17 @@ try {
       sock.send(JSON.stringify({ id: i, method: 'Runtime.evaluate', params: { expression, returnByValue: true } }));
     });
 
+  const IMAGES_PROBE = `(() => {
+    const urls = new Set();
+    const og = document.querySelector('meta[property="og:image"]')?.content;
+    if (og) urls.add(og);
+    document.querySelectorAll('.ux-image-carousel img, .ux-image-carousel-item img').forEach((img) => {
+      const src = img.src || img.dataset?.src || '';
+      if (/ebayimg\\.com/.test(src)) urls.add(src.replace(/s-l\\d+/, 's-l1600'));
+    });
+    return JSON.stringify({ count: urls.size, images: [...urls].slice(0, 8) });
+  })()`;
+
   const DIAG_PROBE = `JSON.stringify({ title: document.title,
     url: location.href.slice(0,120),
     h1: document.querySelector('h1')?.textContent?.trim()?.slice(0,140),
@@ -95,7 +106,10 @@ try {
   for (let i = 0; i < 20; i++) {
     await sleep(1000);
     const raw = await evaluate(
-      MODE === 'seller' ? SELLER_PROBE : MODE === 'diag' ? DIAG_PROBE : ITEM_PROBE
+      MODE === 'seller' ? SELLER_PROBE
+      : MODE === 'diag' ? DIAG_PROBE
+      : MODE === 'images' ? IMAGES_PROBE
+      : ITEM_PROBE
     );
     const data = raw ? JSON.parse(raw) : null;
     if (data && (data.title || data.count)) {

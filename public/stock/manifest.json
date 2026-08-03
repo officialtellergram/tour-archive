@@ -95,7 +95,7 @@
     {
       "id": "stock-ryder-cup-print-polo",
       "name": "Ryder Cup Print Polo",
-      "brand": "Unattributed",
+      "brand": "Knights Sportswear",
       "year": "—",
       "category": "Shirting",
       "garment": "polo",
@@ -108,7 +108,7 @@
         "#DED6C6"
       ],
       "colorName": "Team Print",
-      "story": "Vintage polo carrying a Ryder Cup print — team navy and cardinal. Photographed on the listing; our studio shots follow.",
+      "story": "All-over print of vintage golf-ball labels — Colonel, Classic Cup, Kro-Flite — on a navy polo by Knights Sportswear. Nineties golf kitsch of the best kind.",
       "details": [
         "Checkout completes on eBay",
         "Full photographs and condition notes on the listing"
@@ -116,7 +116,9 @@
       "measurements": {},
       "channel": "ebay",
       "listingUrl": "https://www.ebay.com/itm/407115434329",
-      "_ingested": "2026-08-02"
+      "_ingested": "2026-08-02",
+      "file": "ryder-cup-print-polo.jpg",
+      "_source": "own listing photo, i.ebayimg.com"
     },
     {
       "id": "stock-sun-faded-golf-pullover",
@@ -142,7 +144,9 @@
       "measurements": {},
       "channel": "ebay",
       "listingUrl": "https://www.ebay.com/itm/407115266576",
-      "_ingested": "2026-08-02"
+      "_ingested": "2026-08-02",
+      "file": "sun-faded-golf-pullover.jpg",
+      "_source": "own listing photo, i.ebayimg.com"
     },
     {
       "id": "stock-university-of-kentucky-polo",
@@ -168,7 +172,9 @@
       "measurements": {},
       "channel": "ebay",
       "listingUrl": "https://www.ebay.com/itm/407115420034",
-      "_ingested": "2026-08-02"
+      "_ingested": "2026-08-02",
+      "file": "university-of-kentucky-polo.jpg",
+      "_source": "own listing photo, i.ebayimg.com"
     },
     {
       "id": "stock-bugle-boy-polo",
@@ -194,7 +200,9 @@
       "measurements": {},
       "channel": "ebay",
       "listingUrl": "https://www.ebay.com/itm/407115464142",
-      "_ingested": "2026-08-02"
+      "_ingested": "2026-08-02",
+      "file": "bugle-boy-polo.jpg",
+      "_source": "own listing photo, i.ebayimg.com"
     }
   ]
 }
