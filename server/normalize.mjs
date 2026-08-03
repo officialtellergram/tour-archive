@@ -354,8 +354,10 @@ export function mergeInventory({ seed = [], channels = [] }) {
   }
 
   for (const item of seed) {
+    // Manifest entries with a pasted listingUrl arrive already syndicated —
+    // keep that, don't flatten it back to a site-only listing.
     if (!claimed.has(item.id))
-      out.push({ ...item, channel: item.channel || 'archive', syndicated: false });
+      out.push({ ...item, channel: item.channel || 'archive', syndicated: item.syndicated ?? false });
   }
 
   return out;

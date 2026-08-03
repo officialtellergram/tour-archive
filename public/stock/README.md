@@ -21,5 +21,22 @@ Optional extras:
 - A file named `hero-<collection-id>.jpg` (e.g. `hero-tour-championship-2026.jpg`)
   is used as that collection's landing hero backdrop instead of stock.
 
+## Linking a piece to its Depop or eBay listing (no API needed)
+
+When a piece goes up on Depop or eBay, add two fields to its manifest entry:
+
+```json
+"channel": "depop",
+"listingUrl": "https://www.depop.com/products/yourshop-the-listing/"
+```
+
+The site then shows the Depop badge on its card and a **Buy on Depop** button
+that sends the buyer to your listing — checkout completes on the platform.
+Same with `"channel": "ebay"` and an eBay item URL. Remove the fields (or the
+listing) and it reverts to plain site stock.
+
+This is the manual bridge until the official APIs are wired; those will take
+over the same fields automatically.
+
 Keep files under ~1.5 MB each (they ship with the site). The ingest warns on
 oversized files.

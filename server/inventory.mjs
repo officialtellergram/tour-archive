@@ -26,33 +26,53 @@ const MANIFEST_PATH = fileURLToPath(new URL('../public/stock/manifest.json', imp
  * collections.js persist as *enrichment* (they surface when a real listing
  * carries their catalogue number) but are no longer stock themselves.
  */
+const CHANNEL_LABELS = { depop: 'View on Depop', ebay: 'View on eBay' };
+
+/**
+ * One manifest entry → one archive item. Exported pure so the integration
+ * check can hold it to the same standard as the API mappers.
+ *
+ * Manual syndication: give an entry `listingUrl` (and `channel`: depop|ebay)
+ * and it becomes a syndicated listing — marketplace badge, "Buy on Depop"
+ * redirect, checkout on the platform. This is the no-scraping answer to
+ * mirroring our own Depop shop: we know our own listings, so we paste the URL
+ * rather than harvest it. The official APIs replace the paste when they land,
+ * through the exact same fields.
+ */
+export function mapManifestItem(entry) {
+  const { _ingested, _source, _missing, file, listingUrl, ...item } = entry;
+
+  const channel = listingUrl && CHANNEL_LABELS[item.channel] ? item.channel : 'site';
+  const syndicated = channel !== 'site';
+
+  return applyEnrichment({
+    collection: 'basic-stock',
+    sold: false,
+    upcoming: false,
+    story: '',
+    details: [],
+    measurements: {},
+    market: syndicated
+      ? { label: CHANNEL_LABELS[channel], url: listingUrl }
+      : {
+          label: 'Comparable listings',
+          url: `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(
+            `${item.brand || ''} ${item.name || ''}`.trim()
+          )}`,
+        },
+    ...item,
+    // relative to the deploy base; the frontend prefixes BASE_URL
+    photo: `stock/${file}`,
+    channel,
+    syndicated,
+  });
+}
+
 export function manifestStock() {
   if (!existsSync(MANIFEST_PATH)) return [];
   try {
     const manifest = JSON.parse(readFileSync(MANIFEST_PATH, 'utf8'));
-    return (manifest.items || [])
-      .filter((i) => !i._missing)
-      .map((i) => {
-        const { _ingested, _source, _missing, file, ...item } = i;
-        return applyEnrichment({
-          collection: 'basic-stock',
-          sold: false,
-          upcoming: false,
-          story: '',
-          details: [],
-          measurements: {},
-          market: {
-            label: 'Comparable listings',
-            url: `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(
-              `${item.brand} ${item.name}`.trim()
-            )}`,
-          },
-          ...item,
-          // relative to the deploy base; the frontend prefixes BASE_URL
-          photo: `stock/${file}`,
-          channel: 'site',
-        });
-      });
+    return (manifest.items || []).filter((i) => !i._missing).map(mapManifestItem);
   } catch (err) {
     console.warn(`[inventory] stock manifest unreadable: ${err.message}`);
     return [];

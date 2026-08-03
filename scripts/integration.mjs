@@ -314,6 +314,57 @@ check('site-only drops keep a comparables link, not a checkout link', () => {
 });
 
 /* ------------------------------------------------------------------ */
+/* Manual syndication via the photo manifest                           */
+/* ------------------------------------------------------------------ */
+
+const { mapManifestItem } = await import('../server/inventory.mjs');
+
+const manifestPlain = {
+  id: 'stock-test-crew', file: 'test-crew.jpg', name: 'Test Crew', brand: 'Testbrand',
+  year: '1990s', category: 'Knitwear', garment: 'sweater', size: 'L',
+  condition: 'Very Good', price: 100, colorway: ['#111111', '#222222', '#333333'],
+  colorName: 'Test', _ingested: '2026-08-02', _source: 'IMG_0001.JPEG',
+};
+
+check('a plain manifest entry is site stock with a comparables link', () => {
+  const item = mapManifestItem(manifestPlain);
+  equal(item.channel, 'site', 'channel');
+  equal(item.syndicated, false, 'not syndicated');
+  equal(item.photo, 'stock/test-crew.jpg', 'photo path');
+  assert(item.market.url.includes('ebay.com/sch'), 'comparables search link');
+});
+
+check('a manifest entry with a pasted Depop URL becomes a Depop listing', () => {
+  const item = mapManifestItem({
+    ...manifestPlain,
+    channel: 'depop',
+    listingUrl: 'https://www.depop.com/products/tourarchive-test-crew/',
+  });
+  equal(item.channel, 'depop', 'channel');
+  equal(item.syndicated, true, 'syndicated — gets the badge and Buy button');
+  equal(item.market.label, 'View on Depop', 'label');
+  equal(item.market.url, 'https://www.depop.com/products/tourarchive-test-crew/', 'redirect target');
+});
+
+check('a listingUrl without a recognised channel stays safely site stock', () => {
+  const item = mapManifestItem({ ...manifestPlain, listingUrl: 'https://example.com/x' });
+  equal(item.channel, 'site', 'unknown channel does not syndicate');
+  equal(item.syndicated, false, 'not syndicated');
+});
+
+check('manual syndication survives the merge', () => {
+  const depopItem = mapManifestItem({
+    ...manifestPlain,
+    channel: 'depop',
+    listingUrl: 'https://www.depop.com/products/tourarchive-test-crew/',
+  });
+  const merged = mergeInventory({ seed: [depopItem], channels: [] });
+  equal(merged.length, 1, 'one item');
+  equal(merged[0].syndicated, true, 'still syndicated after merge');
+  equal(merged[0].channel, 'depop', 'still depop after merge');
+});
+
+/* ------------------------------------------------------------------ */
 /* eBay error handling                                                 */
 /* ------------------------------------------------------------------ */
 
