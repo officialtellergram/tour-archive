@@ -129,7 +129,8 @@ for (const c of collections) {
     for (const s of manifest.items || []) {
       const where = `stock ${s.id}`;
       if (s._missing) { warnings.push(`${where}: photo file is missing`); continue; }
-      if (!s.file) errors.push(`${where}: no photo file`);
+      if (!s.file && !s.listingUrl)
+        errors.push(`${where}: needs a photo file or a listingUrl — otherwise there is nothing to show or sell`);
       if (!Array.isArray(s.colorway) || s.colorway.length !== 3)
         errors.push(`${where}: colorway must be exactly 3 colours`);
       if (typeof s.price !== 'number' || s.price <= 0)

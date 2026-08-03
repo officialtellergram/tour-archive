@@ -160,7 +160,9 @@ export const itemStatus = (item) =>
     : item.upcoming
     ? 'Reserved for the drop'
     : item.syndicated
-    ? `Available on ${item.channel === 'depop' ? 'Depop' : 'eBay'}`
+    ? item.listings?.length > 1
+      ? 'Available on eBay & Depop'
+      : `Available on ${item.channel === 'depop' ? 'Depop' : 'eBay'}`
     : 'Available — 1 of 1';
 
 export const categories = () => [...new Set(state.items.map((i) => i.category))].sort();

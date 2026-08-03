@@ -40,10 +40,28 @@ const CHANNEL_LABELS = { depop: 'View on Depop', ebay: 'View on eBay' };
  * through the exact same fields.
  */
 export function mapManifestItem(entry) {
-  const { _ingested, _source, _missing, file, listingUrl, ...item } = entry;
+  const { _ingested, _source, _missing, file, listingUrl, listings: rawListings, ...item } = entry;
 
-  const channel = listingUrl && CHANNEL_LABELS[item.channel] ? item.channel : 'site';
-  const syndicated = channel !== 'site';
+  /*
+   * Every listed piece will eventually live on BOTH marketplaces, and the item
+   * page then offers a simple checkout choice. `listings` is that future shape,
+   * supported today: either paste the array form —
+   *   "listings": [{ "channel": "ebay", "url": "…" }, { "channel": "depop", "url": "…" }]
+   * — or the single-channel shorthand (`channel` + `listingUrl`). Both normalise
+   * to the same array; the PDP renders one Buy button per entry.
+   */
+  const listings = (
+    Array.isArray(rawListings)
+      ? rawListings
+      : listingUrl
+      ? [{ channel: item.channel, url: listingUrl }]
+      : []
+  )
+    .filter((l) => l && CHANNEL_LABELS[l.channel] && /^https:\/\//.test(l.url || ''))
+    .map((l) => ({ channel: l.channel, url: l.url, label: CHANNEL_LABELS[l.channel] }));
+
+  const syndicated = listings.length > 0;
+  const channel = syndicated ? listings[0].channel : 'site';
 
   return applyEnrichment({
     collection: 'basic-stock',
@@ -52,17 +70,19 @@ export function mapManifestItem(entry) {
     story: '',
     details: [],
     measurements: {},
+    ...item,
     market: syndicated
-      ? { label: CHANNEL_LABELS[channel], url: listingUrl }
+      ? { label: listings[0].label, url: listings[0].url }
       : {
           label: 'Comparable listings',
           url: `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(
             `${item.brand || ''} ${item.name || ''}`.trim()
           )}`,
         },
-    ...item,
-    // relative to the deploy base; the frontend prefixes BASE_URL
-    photo: `stock/${file}`,
+    listings,
+    // Relative to the deploy base; the frontend prefixes BASE_URL. Entries
+    // without a photo yet (listing-only stock) render the drawn plate instead.
+    photo: file ? `stock/${file}` : '',
     channel,
     syndicated,
   });

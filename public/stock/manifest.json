@@ -12,7 +12,7 @@
       "garment": "windshirt",
       "size": "See photos",
       "condition": "Very Good",
-      "price": 95,
+      "price": 100,
       "colorway": [
         "#2E6E63",
         "#1C4640",
@@ -28,7 +28,9 @@
       ],
       "measurements": {},
       "_ingested": "2026-08-02",
-      "_source": "IMG_0371.JPEG"
+      "_source": "IMG_0371.JPEG",
+      "channel": "ebay",
+      "listingUrl": "https://www.ebay.com/itm/407115489714"
     },
     {
       "id": "stock-masters-peter-millar-quarter-zip-blue",
@@ -63,30 +65,136 @@
       "id": "stock-peter-millar-club-quarter-zip-navy",
       "file": "peter-millar-club-quarter-zip-navy.jpg",
       "catalogue": null,
-      "name": "Peter Millar Club Quarter-Zip, Navy",
+      "name": "Peter Millar Quarter-Zip, CC of Virginia",
       "brand": "Peter Millar",
       "year": "2010s",
       "category": "Knitwear",
       "garment": "sweater",
       "size": "L",
       "condition": "Very Good",
-      "price": 110,
+      "price": 75,
       "colorway": [
         "#232A38",
         "#161C27",
         "#8C93A3"
       ],
       "colorName": "Club Navy",
-      "story": "Peter Millar quarter-zip in deep navy with a heathered collar lining and an embroidered members' crest dated 1908 at the shoulder. Private-club issue — the quiet kind of provenance.",
+      "story": "Peter Millar quarter-zip in deep navy carrying the crest of the Country Club of Virginia, Richmond — founded 1908, and the crest says so. Club-issue knitwear from the state we source in, shipped from Richmond.",
       "details": [
         "Peter Millar, interlock knit",
-        "Members' crest embroidery, est. 1908",
+        "Country Club of Virginia crest, est. 1908",
         "Heather grey collar facing",
         "Quarter-zip with leather pull"
       ],
       "measurements": {},
       "_ingested": "2026-08-02",
-      "_source": "IMG_0383.JPEG"
+      "_source": "IMG_0383.JPEG",
+      "channel": "ebay",
+      "listingUrl": "https://www.ebay.com/itm/407115514561"
+    },
+    {
+      "id": "stock-ryder-cup-print-polo",
+      "name": "Ryder Cup Print Polo",
+      "brand": "Unattributed",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "See listing",
+      "condition": "See listing",
+      "price": 25,
+      "colorway": [
+        "#1F3352",
+        "#8E2436",
+        "#DED6C6"
+      ],
+      "colorName": "Team Print",
+      "story": "Vintage polo carrying a Ryder Cup print — team navy and cardinal. Photographed on the listing; our studio shots follow.",
+      "details": [
+        "Checkout completes on eBay",
+        "Full photographs and condition notes on the listing"
+      ],
+      "measurements": {},
+      "channel": "ebay",
+      "listingUrl": "https://www.ebay.com/itm/407115434329",
+      "_ingested": "2026-08-02"
+    },
+    {
+      "id": "stock-sun-faded-golf-pullover",
+      "name": "Sun-Faded Golf Pullover",
+      "brand": "Unattributed",
+      "year": "—",
+      "category": "Knitwear",
+      "garment": "sweater",
+      "size": "See listing",
+      "condition": "See listing",
+      "price": 45,
+      "colorway": [
+        "#B9AE93",
+        "#8C8570",
+        "#5E594A"
+      ],
+      "colorName": "Sun-Faded",
+      "story": "Honest sun fade on a vintage golf pullover — the kind of even, earned colour no dye lot can fake.",
+      "details": [
+        "Checkout completes on eBay",
+        "Full photographs and condition notes on the listing"
+      ],
+      "measurements": {},
+      "channel": "ebay",
+      "listingUrl": "https://www.ebay.com/itm/407115266576",
+      "_ingested": "2026-08-02"
+    },
+    {
+      "id": "stock-university-of-kentucky-polo",
+      "name": "University of Kentucky Polo",
+      "brand": "Unattributed",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "See listing",
+      "condition": "See listing",
+      "price": 25,
+      "colorway": [
+        "#3B6ABF",
+        "#27509E",
+        "#14284F"
+      ],
+      "colorName": "Kentucky Blue",
+      "story": "Vintage University of Kentucky polo — collegiate blue, crest doing all the work.",
+      "details": [
+        "Checkout completes on eBay",
+        "Full photographs and condition notes on the listing"
+      ],
+      "measurements": {},
+      "channel": "ebay",
+      "listingUrl": "https://www.ebay.com/itm/407115420034",
+      "_ingested": "2026-08-02"
+    },
+    {
+      "id": "stock-bugle-boy-polo",
+      "name": "Bugle Boy Polo",
+      "brand": "Unattributed",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "See listing",
+      "condition": "See listing",
+      "price": 15,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Stone",
+      "story": "Vintage Bugle Boy polo — 1990s mall-brand ease, priced like it.",
+      "details": [
+        "Checkout completes on eBay",
+        "Full photographs and condition notes on the listing"
+      ],
+      "measurements": {},
+      "channel": "ebay",
+      "listingUrl": "https://www.ebay.com/itm/407115464142",
+      "_ingested": "2026-08-02"
     }
   ]
 }

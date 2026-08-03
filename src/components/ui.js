@@ -26,6 +26,8 @@ export function plateTag(item) {
   if (item.upcoming) return `<span class="plate-tag plate-tag--soon">Drop 01</span>`;
   // Syndicated stock checks out on the marketplace, so say so on the card
   // rather than surprising the buyer at the button.
+  if (item.syndicated && item.listings?.length > 1)
+    return `<span class="plate-tag plate-tag--channel">eBay · Depop</span>`;
   if (item.syndicated && item.channel === 'ebay')
     return `<span class="plate-tag plate-tag--channel">eBay</span>`;
   if (item.syndicated && item.channel === 'depop')

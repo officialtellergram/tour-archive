@@ -265,6 +265,11 @@ function baseItem({
       label: channel === 'ebay' ? 'View on eBay' : 'View on Depop',
       url: url || '#',
     },
+    // One entry today; when a piece is listed on both marketplaces the PDP
+    // renders a checkout choice from this array.
+    listings: [
+      { channel, url: url || '#', label: channel === 'ebay' ? 'View on eBay' : 'View on Depop' },
+    ],
     enriched: false,
   };
 
@@ -380,6 +385,7 @@ function pickLive(listing) {
     currency: listing.currency,
     sold: listing.sold,
     market: listing.market,
+    listings: listing.listings,
     photo: listing.photo || '',
   };
 }

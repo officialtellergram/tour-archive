@@ -18,8 +18,18 @@ export const channelName = (item) =>
  */
 function primaryAction(item) {
   if (isAvailable(item) && item.syndicated) {
-    return `<a class="btn btn--solid" href="${item.market.url}" target="_blank" rel="noopener"
-      data-magnetic>Buy on ${channelName(item)} <span aria-hidden="true">↗</span></a>`;
+    // One button per marketplace the piece is listed on. Today that is usually
+    // one; the intended end state is every piece on both, and this is already
+    // the simple checkout choice for that day.
+    const listings = item.listings?.length
+      ? item.listings
+      : [{ channel: item.channel, url: item.market.url }];
+    return listings
+      .map(
+        (l) => `<a class="btn btn--solid" href="${l.url}" target="_blank" rel="noopener"
+      data-magnetic>Buy on ${l.channel === 'depop' ? 'Depop' : 'eBay'} <span aria-hidden="true">↗</span></a>`
+      )
+      .join('');
   }
   if (isAvailable(item)) {
     return `<button class="btn btn--solid" data-reserve data-magnetic>Reserve this piece</button>`;
@@ -108,7 +118,9 @@ export function product({ id }) {
           ${
             isAvailable(item) && item.syndicated
               ? `<p class="eyebrow" style="margin:-.4rem 0 0">
-                   Checkout completes on ${channelName(item)} — you’ll be taken to the listing
+                   Checkout completes on ${
+                     item.listings?.length > 1 ? 'the marketplace you choose' : channelName(item)
+                   } — you’ll be taken to the listing
                  </p>`
               : ''
           }

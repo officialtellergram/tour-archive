@@ -152,6 +152,7 @@ for (const file of products) {
 
 let missing = 0;
 for (const item of manifest.items) {
+  if (!item.file) continue; // listing-only entry — no photo to go missing
   const gone = !files.includes(item.file);
   if (gone && !item._missing) { item._missing = true; missing += 1; }
   if (!gone && item._missing) delete item._missing;

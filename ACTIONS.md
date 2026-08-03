@@ -10,6 +10,19 @@ Ordered by what blocks the most.
 
 ## 1. eBay — get API credentials  ⏱ ~1 hour, self-serve
 
+> **Status (2 Aug 2026):** application **rejected**; you're in contact with eBay
+> developer support to resolve it. Common causes worth checking in that thread:
+> incomplete business details on the production keyset request, a mismatch
+> between developer-account and seller-account identity, or the API License
+> Agreement not fully accepted. When approved, set
+> `EBAY_SELLER_USERNAME=tourarchive`.
+>
+> **Meanwhile the site doesn't wait:** the manual bridge is live. Every current
+> eBay listing is wired into the archive by pasted URL (`channel` +
+> `listingUrl` in `public/stock/manifest.json`) with a "Buy on eBay" redirect —
+> see the stock README. New listing → add its URL to the manifest → push. The
+> API takes over the same fields automatically once credentials land.
+
 This is the one you can finish today. eBay's developer programme is self-serve.
 
 1. Register at **developer.ebay.com** and join the eBay Developers Program (free).
