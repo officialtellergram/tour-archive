@@ -95,10 +95,16 @@ repos), enable branch protection on `main` so CI must pass before merge —
 which the workflow already enforces in spirit. Each teammate gets Codespaces
 free-tier hours on their own account.
 
-## The curation tool (downstream, ~$0)
+## The curation tool (built 3 Aug 2026, ~$0)
 
-The "drop links for review meetings" system is one Supabase table and one
-authed page in this same repo — no new hosting, no new stack:
+> **Status: live in practice mode.** `/curate` + `/curate/review` shipped —
+> link-drop portal, swipe-deck review (right = shortlist, left = pass), verdict
+> summary. Runs on localStorage until the Supabase project is created
+> (ACTIONS.md § Curation Desk, ~15 min); design record in
+> docs/CURATE-DESIGN.md, cofounder instructions in docs/CURATE-GUIDE.md.
+
+The original design sketch, for reference — one Supabase table and one
+authed page in this same repo, no new hosting, no new stack:
 
 - **Table `curation_finds`:** url, title, note, price_seen, source
   (ebay/depop/thrift/estate), suggested_collection, submitted_by, status

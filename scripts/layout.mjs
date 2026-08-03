@@ -31,8 +31,9 @@ const ROUTES = [
   '/', '/collections', '/collections/duel-in-the-sun', '/collections/the-amateur-line',
   '/archive', '/archive?filter=available', '/item/ds-01', '/item/ws-04',
   '/journal', '/journal/reading-a-neck-label', '/method', '/sell', '/sizing', '/nope',
+  '/curate', '/curate/review',
 ];
-const WIDTHS = [1600, 1180, 520];
+const WIDTHS = [1600, 1180, 520, 390];
 
 const C = { red: '\x1b[31m', yellow: '\x1b[33m', green: '\x1b[32m', dim: '\x1b[2m', off: '\x1b[0m' };
 
@@ -73,6 +74,78 @@ const PROBE = `(() => {
     offenders: out.slice(0, 12),
   });
 })()`;
+
+/**
+ * The curate routes hide their real layout behind a name gate — an unseeded
+ * probe would measure the gate card three times and call the deck "covered".
+ * So for those routes the probe first plants a practice-mode state (with
+ * deliberately long, unbroken strings to stress wrapping), reloads once, and
+ * only measures after the desk/deck has actually rendered.
+ */
+const CURATE_SEED = JSON.stringify({
+  name: 'Probe',
+  finds: [
+    {
+      id: 'probe-1',
+      url: 'https://www.ebay.com/itm/999999999901?utm_source=layoutprobe',
+      title: 'Extraordinarily long single-line title of a Slazenger lambswool sweater to stress the card layout at narrow widths',
+      note: 'Averyverylongunbrokenstringthatwouldblowoutanycontainerwithoutoverflowwrapanywhereonthecardbody plus a normal tail.',
+      price: 1234.56,
+      source: 'eBay',
+      collection: '',
+      submitted_by: 'Probe Teammate With A Long Name',
+      status: 'new',
+      decided_by: '',
+      created_at: '2026-08-01T12:00:00',
+      decided_at: null,
+    },
+    {
+      id: 'probe-2',
+      url: 'https://www.depop.com/products/probe-vintage-golf-pullover/',
+      title: 'Sun-faded windshirt',
+      note: '',
+      price: 28,
+      source: 'Depop',
+      collection: '',
+      submitted_by: 'Probe',
+      status: 'new',
+      decided_by: '',
+      created_at: '2026-08-02T12:00:00',
+      decided_at: null,
+    },
+    {
+      id: 'probe-3',
+      url: 'https://www.ebay.com/itm/999999999903',
+      title: 'Already shortlisted piece',
+      note: 'Keeps the pile list showing a decided row.',
+      price: 55,
+      source: 'eBay',
+      collection: '',
+      submitted_by: 'Probe',
+      status: 'shortlist',
+      decided_by: 'Probe',
+      created_at: '2026-07-30T12:00:00',
+      decided_at: '2026-08-02T12:00:00',
+    },
+  ],
+});
+
+function probeExpr(route) {
+  if (!route.startsWith('/curate')) return PROBE;
+  const readySel = route === '/curate' ? '[data-drop-form]' : '[data-deck-stage] .deck-card';
+  return `(() => {
+    const KEY = 'ta-curate-practice-v1';
+    if (!localStorage.getItem(KEY)) {
+      localStorage.setItem(KEY, ${JSON.stringify(CURATE_SEED)});
+      location.reload();
+      return JSON.stringify({ ready: 'seeding', mounted: false });
+    }
+    if (!document.querySelector('${readySel}')) {
+      return JSON.stringify({ ready: 'waiting-for-desk', mounted: false });
+    }
+    return ${PROBE};
+  })()`;
+}
 
 /* ------------------------------------------------------------------ */
 /* Minimal CDP client                                                  */
@@ -213,7 +286,7 @@ async function probe(route, width) {
   try {
     await waitForDevTools(port);
     const wsUrl = await pageTarget(port, `${BASE}${route}`);
-    return await evaluateWhenReady(wsUrl, PROBE);
+    return await evaluateWhenReady(wsUrl, probeExpr(route));
   } finally {
     child.kill();
   }

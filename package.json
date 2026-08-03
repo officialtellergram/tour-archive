@@ -22,6 +22,7 @@
     "vite": "^8.1.5"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.112.0",
     "animejs": "^4.5.0",
     "motion": "^12.43.0"
   }

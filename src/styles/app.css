@@ -28,6 +28,7 @@
   /* metrics */
   --gutter: clamp(1.25rem, 4vw, 4.5rem);
   --maxw: 1560px;
+  --maxw-desk: 980px; /* the Curation Desk's working column */
   --header-h: 92px;
 
   /* motion */
@@ -1631,5 +1632,523 @@ h3.display {
   }
   .pdp-actions {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ==================================================================
+   CURATION DESK  (/curate, /curate/review — the cofounder tool)
+   ================================================================== */
+
+.curate-ribbon {
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  background: var(--parchment-deep);
+  border: 1px solid var(--rule);
+  border-left-color: var(--brass);
+  padding: 0.85rem 1.1rem;
+  margin: 1.6rem 0 0;
+  max-width: 52ch;
+  line-height: 1.8;
+}
+
+.curate-app {
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  max-width: var(--maxw-desk);
+}
+
+.curate-card {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  padding: clamp(1.5rem, 3.5vw, 2.75rem);
+}
+.curate-gate {
+  max-width: 520px;
+}
+
+.curate-form {
+  display: grid;
+  gap: 1.2rem;
+}
+.curate-form label {
+  display: grid;
+  gap: 0.45rem;
+}
+.curate-form label .eyebrow i {
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--ink-faint);
+}
+.curate-form input,
+.curate-form textarea,
+.curate-form select {
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--rule-strong);
+  padding: 0.7rem 0;
+  font: inherit;
+  color: inherit;
+  outline: none;
+  border-radius: 0;
+}
+.curate-form textarea {
+  border: 1px solid var(--rule);
+  padding: 0.9rem;
+  resize: vertical;
+}
+.curate-form select {
+  appearance: none;
+  cursor: pointer;
+  /* the house disclosure glyph, brass, so the select doesn't impersonate a text input */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath d='M1 1l4.5 4.5L10 1' fill='none' stroke='%23a8874f' stroke-width='1.2'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.2rem center;
+  padding-right: 1.6rem;
+}
+.curate-form input:focus,
+.curate-form textarea:focus,
+.curate-form select:focus {
+  border-color: var(--green);
+}
+.curate-form button[type='submit'] {
+  justify-self: start;
+}
+.curate-form-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.2rem;
+}
+
+.curate-hint {
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--green);
+  min-height: 1em;
+}
+.curate-error,
+.curate-note {
+  font-family: var(--display);
+  font-size: 0.95rem;
+  font-weight: 300;
+  line-height: 1.6;
+  margin: 0;
+  min-height: 1em;
+}
+.curate-error {
+  color: var(--claret);
+}
+.curate-note {
+  color: var(--ink-soft);
+}
+.curate-error:empty,
+.curate-note:empty {
+  display: none;
+}
+.curate-help {
+  font-size: 0.9rem;
+  color: var(--ink-faint);
+  font-weight: 300;
+  margin: 0;
+  line-height: 1.7;
+}
+.curate-help a {
+  color: var(--green);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.curate-deskbar {
+  display: flex;
+  align-items: baseline;
+  gap: 1.4rem;
+  flex-wrap: wrap;
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 0.8rem;
+}
+.curate-deskbar b {
+  color: var(--ink);
+  font-weight: 500;
+}
+.curate-counter {
+  color: var(--green);
+}
+.curate-deskbar .curate-textbtn {
+  margin-left: auto;
+}
+
+.curate-textbtn {
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  background: none;
+  border: 0;
+  color: var(--green);
+  cursor: pointer;
+  white-space: nowrap;
+  align-self: start;
+  /* hairline underline, but a finger-sized hit area */
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 4px;
+  text-decoration: underline;
+  text-decoration-color: var(--rule-strong);
+  text-underline-offset: 4px;
+}
+.curate-textbtn:hover {
+  color: var(--claret);
+  text-decoration-color: var(--claret);
+}
+.curate-textbtn[disabled] {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.curate-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  align-items: center;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.curate-stats .stat {
+  padding: clamp(1.2rem, 2.5vw, 2rem) 1rem;
+}
+/* the true :last-child is the CTA, so close the ruled row after the third stat */
+.curate-stats .stat:nth-child(3) {
+  border-right: 0;
+}
+
+.curate-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+}
+.curate-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.2rem;
+  padding: 1.1rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+.curate-row[data-status='pass'] .curate-row-title,
+.curate-row[data-status='pass'] .curate-row-note {
+  color: var(--ink-faint);
+}
+.curate-row-main {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+  flex: 1;
+}
+.curate-row-tags {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.curate-row-tags .plate-tag {
+  position: static;
+}
+.curate-status {
+  font-family: var(--sans);
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 0.4rem 0.65rem;
+  border: 1px solid var(--rule);
+  color: var(--ink-faint);
+}
+.curate-status--shortlist {
+  border-color: var(--green);
+  color: var(--green);
+}
+.curate-status--bought {
+  background: var(--green);
+  border-color: var(--green);
+  color: var(--parchment);
+}
+.curate-status--pass {
+  border-style: dashed;
+}
+.curate-row-title {
+  font-family: var(--display);
+  font-size: clamp(1.15rem, 2vw, 1.45rem);
+  font-weight: 400;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+  display: inline-block;
+  padding-block: 0.3rem;
+  margin-block: -0.3rem;
+}
+.curate-row-title:hover {
+  color: var(--claret);
+}
+.curate-row-note {
+  margin: 0;
+  font-weight: 300;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  overflow-wrap: anywhere;
+}
+.curate-row-meta {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.curate-steps {
+  margin: 0;
+  padding: 0 0 0 1.1rem;
+  display: grid;
+  gap: 0.7rem;
+  font-weight: 300;
+  color: var(--ink-soft);
+  line-height: 1.7;
+}
+.curate-steps b {
+  font-weight: 500;
+  color: var(--ink);
+}
+
+/* ------------------------------ the deck --------------------------- */
+
+.deck-stage {
+  position: relative;
+  /* explicit width, not max-width: every child is absolutely positioned, so
+     without it the grid item sizes to max-content — which is zero, and the
+     whole deck renders invisible */
+  width: min(100%, 430px);
+  justify-self: center;
+  margin: 0;
+  height: min(62vh, 470px);
+  scroll-margin-top: calc(var(--header-h) + 1rem);
+}
+.deck-card {
+  position: absolute;
+  inset: 0;
+  background: var(--card);
+  border: 1px solid var(--rule-strong);
+  box-shadow: 0 18px 45px -28px color-mix(in srgb, var(--ink) 45%, transparent);
+  /* pan-y: a finger can still scroll the page over the card; horizontal
+     drags stay ours. touch-action:none ate the only scroll gesture a phone
+     arriving below the fold actually tries. */
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+  will-change: transform;
+  transform-origin: 50% 120%;
+  overflow: hidden;
+}
+.deck-card:active {
+  cursor: grabbing;
+}
+
+.deck-card-body {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto auto auto;
+  gap: 0.9rem;
+  padding: clamp(1.4rem, 4vw, 2.2rem);
+}
+.deck-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.deck-card-top .plate-tag {
+  position: static;
+}
+.deck-price {
+  font-family: var(--display);
+  font-size: 1.6rem;
+  font-weight: 300;
+  color: var(--green);
+}
+.deck-title {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(1.6rem, 4.5vw, 2.2rem);
+  line-height: 1.15;
+  margin: 0;
+  align-self: center;
+  overflow-wrap: anywhere;
+}
+.deck-note {
+  margin: 0;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--ink-soft);
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.deck-meta {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.deck-link {
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--green);
+  border-top: 1px solid var(--rule);
+  padding-top: 0.9rem;
+}
+.deck-link:hover {
+  color: var(--claret);
+}
+
+/* rubber stamps — the verdict, visible mid-drag. Placed in the card's middle
+   band so neither collides with the source chip or the price in the top row. */
+.deck-stamp {
+  position: absolute;
+  top: 5.5rem;
+  z-index: 3;
+  font-family: var(--sans);
+  font-size: clamp(1rem, 3vw, 1.3rem);
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border: 3px double currentColor;
+  opacity: 0;
+  pointer-events: none;
+}
+.deck-stamp--yes {
+  left: 1.75rem;
+  color: var(--green);
+  transform: rotate(-12deg);
+}
+.deck-stamp--no {
+  right: 1.75rem;
+  color: var(--claret);
+  transform: rotate(12deg);
+}
+
+.deck-controls {
+  display: flex;
+  justify-content: center;
+  gap: clamp(1.2rem, 4vw, 2.2rem);
+  margin-top: 1.8rem;
+}
+.deck-btn {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  border: 1px solid var(--rule-strong);
+  background: var(--card);
+  font-family: var(--display);
+  font-size: 1.5rem;
+  color: var(--ink-soft);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  gap: 0;
+  line-height: 1;
+  transition: transform 0.25s var(--ease), border-color 0.25s var(--ease), color 0.25s var(--ease);
+}
+.deck-btn small {
+  font-family: var(--sans);
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.deck-btn:hover {
+  transform: translateY(-3px);
+}
+/* the verdict buttons wear their verdict — shortlist green, pass claret */
+.deck-btn--yes {
+  border-color: var(--green);
+  color: var(--green);
+}
+.deck-btn--yes:hover {
+  background: var(--green);
+  color: var(--parchment);
+}
+.deck-btn--pass {
+  border-color: var(--claret);
+  color: var(--claret);
+}
+.deck-btn--pass:hover {
+  background: var(--claret);
+  color: var(--parchment);
+}
+.deck-btn--undo {
+  width: 58px;
+  height: 58px;
+  align-self: center;
+  font-size: 1.1rem;
+}
+.deck-btn[disabled] {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.curate-verdict {
+  margin-top: 1.5rem;
+}
+.curate-verdict-actions {
+  display: flex;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+  margin-top: 1.4rem;
+}
+.curate-deck-hint {
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .curate-form-row {
+    grid-template-columns: 1fr;
+  }
+  .curate-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  /* re-assert the ruled row: the global ≤640 .stat rule swaps right borders
+     for bottom borders, which doubles this row's own frame */
+  .curate-stats .stat {
+    border-right: 1px solid var(--rule);
+    border-bottom: 0;
+  }
+  .curate-stats .stat:nth-child(3) {
+    border-right: 0;
+  }
+  .curate-stats .btn {
+    grid-column: 1 / -1;
+    justify-self: stretch !important;
+    justify-content: center;
+    margin: 0 0 1.1rem;
+  }
+  .curate-row {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .curate-row .curate-textbtn {
+    align-self: flex-start;
+  }
+  .deck-stage {
+    height: min(58vh, 430px);
   }
 }

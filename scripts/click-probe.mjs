@@ -95,6 +95,7 @@ try {
     ['a[href$="/journal"]', '/journal', 'Journal'],
     ['.wordmark', '/', 'landing again'],
     ['a[href$="/method"]', '/method', 'Our Method'],
+    ['a[href$="/curate"]', '/curate', 'Curation Desk'],
   ];
 
   for (const [selector, expectedAppPath, label] of journey) {

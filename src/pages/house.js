@@ -122,7 +122,7 @@ export function sell() {
           </ul>
         </div>
 
-        <form class="prose" data-sell-form data-reveal style="display:grid;gap:1.1rem">
+        <form data-sell-form data-reveal style="display:grid;gap:1.1rem">
           <label style="display:grid;gap:.4rem">
             <span class="eyebrow">Your name</span>
             <input required name="name" style="background:none;border:0;border-bottom:1px solid var(--rule-strong);padding:.7rem 0;font:inherit;color:inherit;outline:none" />

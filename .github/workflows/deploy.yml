@@ -58,6 +58,23 @@ jobs:
       - name: Check the deploy is sane
         run: node scripts/deploy.mjs
 
+      # Supabase free projects pause after ~7 idle days of DATABASE activity —
+      # so the ping must run a real query (PostgREST as anon; RLS returns []
+      # but Postgres still executes it). /auth/v1/health would answer from
+      # memory and keep nothing alive. Runs even when the build is red
+      # (a week of red builds must not also pause the database), never fails
+      # the job, and no-ops until the repo variables are set (ACTIONS.md § 0).
+      - name: Keep Supabase awake
+        if: ${{ always() && vars.SUPABASE_URL != '' && vars.SUPABASE_ANON_KEY != '' }}
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ vars.SUPABASE_ANON_KEY }}
+        run: |
+          curl -sf --max-time 20 "$SUPABASE_URL/rest/v1/curation_finds?select=id&limit=1" \
+            -H "apikey: $SUPABASE_ANON_KEY" -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+            -o /dev/null \
+            && echo "supabase awake" || echo "supabase ping failed (non-fatal)"
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

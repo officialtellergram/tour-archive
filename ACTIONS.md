@@ -12,6 +12,40 @@
 
 ---
 
+## 0. Curation Desk — switch on the shared room  ⏱ ~15 min, self-serve
+
+The desk (`/curate` + `/curate/review`) works today in **practice mode** —
+per-device saves, seeded with examples, fine for showing the founders. Shared
+team data needs a Supabase project, which only you can create:
+
+1. **supabase.com → New project** (free tier; the org allows 2 active free
+   projects and T42 is the first, so this is the second and last free slot).
+   Name it `tour-archive`, pick a strong DB password (vault it — you rarely
+   need it again), region close to Virginia.
+2. **SQL Editor → New query** → paste the whole of `supabase/curation.sql` →
+   Run. That creates the `curation_finds` table with team-only access rules.
+3. **Authentication → Sign In / Providers** → turn **off** "Allow new users to
+   sign up". (Invite-only is the security model — signed-in = cofounder.)
+4. **Authentication → Users → Add user → Create new user** for each cofounder:
+   their email + a password you make up, **Auto Confirm User ✓**. Hand each
+   password over by text or in person. (No emails are ever sent — the built-in
+   mailer only delivers 2/hour and only to org members, so password accounts
+   are the deliberate design, not a shortcut. See docs/CURATE-DESIGN.md.)
+5. **Project Settings → Data API** → copy the **Project URL** and the
+   **anon/public key** into `src/curate/config.js` and push. The anon key is
+   public by design — committing it is correct. The site flips from practice
+   to live mode on the next deploy, automatically.
+6. **Repo → Settings → Secrets and variables → Actions → Variables**: add
+   `SUPABASE_URL` and `SUPABASE_ANON_KEY` (same two values). The daily deploy
+   then pings the database so the free project never pauses from idleness
+   (free projects sleep after ~7 quiet days; this is the $0 mitigation).
+7. Send the cofounders `docs/CURATE-GUIDE.md` — it's written for them.
+
+**Never** put the `service_role` key anywhere in this repo or the frontend —
+that one bypasses every access rule. The desk only ever needs the anon key.
+
+---
+
 ## 1. eBay — get API credentials  ⏱ ~1 hour, self-serve
 
 > **Status (2 Aug 2026):** application **rejected**; you're in contact with eBay

@@ -11,6 +11,7 @@
  * the partnership.
  */
 
+import { readFileSync } from 'node:fs';
 import {
   mapEbayItem,
   mapDepopProduct,
@@ -394,10 +395,158 @@ check('rate limits and server errors are marked retryable', () => {
 });
 
 /* ------------------------------------------------------------------ */
+/* Curation Desk — the pure layer under the cofounder tool             */
+/* ------------------------------------------------------------------ */
+
+const curate = await import('../src/curate/data.js');
+
+check('esc neutralises markup in untrusted text', () => {
+  equal(
+    curate.esc(`<img src=x onerror="alert('1')">&`),
+    '&lt;img src=x onerror=&quot;alert(&#39;1&#39;)&quot;&gt;&amp;',
+    'all five specials escaped'
+  );
+});
+
+check('listing URL gate accepts real links and nothing else', () => {
+  assert(curate.validListingUrl('https://www.ebay.com/itm/407115514561'), 'plain https accepted');
+  equal(
+    curate.validListingUrl('ebay.com/itm/12345'),
+    'https://ebay.com/itm/12345',
+    'bare domain gets https'
+  );
+  equal(curate.validListingUrl('javascript:alert(1)'), null, 'javascript: rejected');
+  equal(curate.validListingUrl('data:text/html,hi'), null, 'data: rejected');
+  equal(curate.validListingUrl('just some words'), null, 'prose rejected');
+  equal(curate.validListingUrl('http://localhost'), null, 'dotless host rejected');
+});
+
+check('normalized URL key survives share-link noise', () => {
+  const clean = curate.normalizeUrl('https://www.ebay.com/itm/407115514561');
+  equal(
+    curate.normalizeUrl(
+      'https://ebay.com/itm/407115514561/?mkcid=16&mkevt=1&_trkparms=abc&utm_source=share#dtl'
+    ),
+    clean,
+    'tracking params, hash, www and trailing slash all ignored'
+  );
+  assert(
+    curate.normalizeUrl('https://x.com/a?b=1&a=2') === curate.normalizeUrl('https://x.com/a?a=2&b=1'),
+    'param order does not split the key'
+  );
+  assert(
+    curate.normalizeUrl('https://www.ebay.com/itm/1') !== curate.normalizeUrl('https://www.ebay.com/itm/2'),
+    'different listings stay different'
+  );
+});
+
+check('marketplace source inferred from hostname', () => {
+  equal(curate.sourceOf('https://www.ebay.com/itm/1'), 'eBay', 'ebay');
+  equal(curate.sourceOf('https://www.ebay.co.uk/itm/1'), 'eBay', 'ebay intl');
+  equal(curate.sourceOf('https://www.depop.com/products/x/'), 'Depop', 'depop');
+  equal(curate.sourceOf('https://shop.example.com/thing'), 'shop.example.com', 'unknown host falls back to hostname');
+  equal(curate.sourceOf('nonsense'), '', 'invalid URL yields empty source');
+});
+
+check('display title prefers typed title, then slug, then host', () => {
+  equal(curate.displayTitle({ title: ' Slazenger V-neck ', url: 'https://x.com/a' }), 'Slazenger V-neck', 'typed title wins');
+  equal(
+    curate.displayTitle({ title: '', url: 'https://www.depop.com/products/vintage-golf-pullover-navy/' }),
+    'vintage golf pullover navy',
+    'slug prettified'
+  );
+  equal(
+    curate.displayTitle({ title: '', url: 'https://www.ebay.com/itm/407115514561' }),
+    'Listing on ebay.com',
+    'opaque numeric path falls back to host'
+  );
+});
+
+check('tally counts statuses for the stat row', () => {
+  const t = curate.tally([
+    { status: 'new' }, { status: 'new' }, { status: 'shortlist' }, { status: 'pass' },
+    { status: 'pass' }, { status: 'pass' }, { status: 'bought' }, { status: 'weird' },
+  ]);
+  equal(t.new, 2, 'new');
+  equal(t.shortlist, 1, 'shortlist');
+  equal(t.pass, 3, 'pass');
+  equal(t.bought, 1, 'bought');
+});
+
+check('name from email reads like a person', () => {
+  equal(curate.nameFromEmail('sam.h@example.com'), 'Sam H', 'dot split + caps');
+  equal(curate.nameFromEmail(''), 'Teammate', 'empty falls back');
+});
+
+check('pile day labels', () => {
+  // timestamps WITHOUT a zone suffix parse as local time, so these hold in
+  // any timezone a contributor or CI runner happens to be in
+  const now = new Date('2026-08-03T18:00:00');
+  equal(curate.whenLabel('2026-08-03T09:00:00', now), 'Today', 'same day');
+  equal(curate.whenLabel('2026-08-02T23:00:00', now), 'Yesterday', 'previous day');
+  assert(/Jul/.test(curate.whenLabel('2026-07-28T12:00:00', now)), 'older dates name the day');
+});
+
+/* The practice adapter is the mode cofounders meet first — exercise the whole
+   lifecycle in-memory (Node has no localStorage; the adapter shrugs that off). */
+async function checkAsync(name, fn) {
+  checks += 1;
+  try {
+    await fn();
+  } catch (err) {
+    failures.push(`${name}: ${err.message}`);
+  }
+}
+
+await checkAsync('practice adapter: seed, add, dupe, decide, undo', async () => {
+  const boot = await curate.initCurate();
+  equal(boot.mode, 'practice', 'no supabase config → practice mode');
+  const seeded = await curate.listFinds();
+  assert(seeded.length >= 3, 'seeded with example finds');
+  assert(seeded.every((f) => f.status === 'new'), 'seeds start unreviewed');
+
+  const added = await curate.addFind({
+    url: 'https://www.ebay.com/itm/407115514561',
+    title: 'CC of Virginia quarter-zip',
+    source: 'eBay',
+    submitted_by: 'Test',
+  });
+  assert(added.ok && added.find.id, 'add returns the stored find');
+  equal(added.find.status, 'new', 'new find lands unreviewed');
+
+  const dupe = await curate.addFind({
+    url: 'https://ebay.com/itm/407115514561/?utm_source=share&mkcid=16',
+    submitted_by: 'Test2',
+  });
+  assert(!dupe.ok, 'share-link variant of the same listing is refused');
+  equal(dupe.dupe.submitted_by, 'Test', 'dupe reports who dropped it first');
+
+  const decided = await curate.setStatus(added.find.id, 'shortlist', 'Test');
+  equal(decided.status, 'shortlist', 'decision recorded');
+  equal(decided.decided_by, 'Test', 'decider recorded');
+  const undone = await curate.setStatus(added.find.id, 'new', 'Test');
+  equal(undone.status, 'new', 'undo restores the pile');
+  equal(undone.decided_by, '', 'undo clears the decider');
+  equal(undone.decided_at, null, 'undo clears the decision time');
+});
+
+check('STATUSES and the SQL check constraint cannot drift apart', () => {
+  const sql = readFileSync(new URL('../supabase/curation.sql', import.meta.url), 'utf8');
+  const m = sql.match(/check \(status in \(([^)]+)\)\)/);
+  assert(m, 'SQL still declares the status check constraint');
+  const sqlStatuses = [...m[1].matchAll(/'([a-z]+)'/g)].map((x) => x[1]).sort();
+  equal(
+    JSON.stringify(sqlStatuses),
+    JSON.stringify([...curate.STATUSES].sort()),
+    'same status vocabulary in JS and SQL'
+  );
+});
+
+/* ------------------------------------------------------------------ */
 
 const C = { red: '\x1b[31m', green: '\x1b[32m', dim: '\x1b[2m', off: '\x1b[0m' };
 console.log(`\n${C.dim}── Tour Archive · marketplace integration ──${C.off}`);
-console.log(`${C.dim}   ${checks} checks over eBay + Depop mapping, enrichment and merge${C.off}`);
+console.log(`${C.dim}   ${checks} checks over eBay + Depop mapping, merge and the Curation Desk${C.off}`);
 
 if (failures.length) {
   console.log(`\n${C.red}✖ ${failures.length} failure(s)${C.off}`);

@@ -18,6 +18,7 @@ import { archive, mountArchive } from './pages/archive.js';
 import { product, mountProduct } from './pages/product.js';
 import { journalIndex, journalEntry } from './pages/journal.js';
 import { method, sell, mountSell, sizing, notFound } from './pages/house.js';
+import { curate, mountCurate, curateReview, mountCurateReview } from './pages/curate.js';
 
 import { getCollection, getItem, getJournal, init as initStore, status as storeStatus } from './data/store.js';
 
@@ -37,6 +38,8 @@ route('/journal/:id', journalEntry, {
 route('/method', method, { title: 'Our Method' });
 route('/sell', sell, { title: 'Sell to Us' });
 route('/sizing', sizing, { title: 'Sizing & Condition' });
+route('/curate', curate, { title: 'Curation Desk' });
+route('/curate/review', curateReview, { title: 'Review Session' });
 
 setNotFound(notFound);
 
@@ -46,6 +49,8 @@ const MOUNTS = [
   [/^\/archive$/, mountArchive],
   [/^\/item\//, mountProduct],
   [/^\/sell$/, mountSell],
+  [/^\/curate$/, mountCurate],
+  [/^\/curate\/review$/, mountCurateReview],
 ];
 
 /* --------------------------- lifecycle ---------------------------- */

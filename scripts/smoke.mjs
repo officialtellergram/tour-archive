@@ -63,6 +63,7 @@ const { archive } = await import('../src/pages/archive.js');
 const { product } = await import('../src/pages/product.js');
 const { journalIndex, journalEntry } = await import('../src/pages/journal.js');
 const { method, sell, sizing, notFound } = await import('../src/pages/house.js');
+const { curate, curateReview } = await import('../src/pages/curate.js');
 
 const cases = [
   ['/', () => home()],
@@ -72,6 +73,8 @@ const cases = [
   ['/method', () => method()],
   ['/sell', () => sell()],
   ['/sizing', () => sizing()],
+  ['/curate', () => curate()],
+  ['/curate/review', () => curateReview()],
   ['/404', () => notFound('/no-such-page')],
   ['/collections/:bad', () => collectionDetail({ id: 'does-not-exist' })],
   ['/item/:bad', () => product({ id: 'does-not-exist' })],
