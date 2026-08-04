@@ -1,11 +1,11 @@
 node_modules/
 dist/
 shots/
-dev.log
-dev.err.log
-.env
 .cache/
-api.log
-api.err.log
-prev.log
-prev.err.log
+# every env variant except the documented example — ROBOT_PASSWORD lives in
+# .env, and .env.bak / .env.local / editor copies must never slip into a commit
+.env*
+!.env.example
+# any log, not just the ones we happen to produce today — a scheduled task
+# writing into the repo root is how a log gets committed by accident
+*.log

@@ -49,8 +49,8 @@ if (!existsSync(DIST)) {
     if (src.includes('localhost:5181')) {
       errors.push(`${file} hard-codes http://localhost:5181 — the deploy would call a dev machine`);
     }
-    for (const secret of ['EBAY_CLIENT_SECRET', 'DEPOP_API_KEY']) {
-      if (src.includes(secret)) errors.push(`${file} references ${secret} — secrets must stay server-side`);
+    for (const secret of ['EBAY_CLIENT_SECRET', 'DEPOP_API_KEY', 'ROBOT_PASSWORD', 'service_role']) {
+      if (src.includes(secret)) errors.push(`${file} references ${secret} — secrets must stay off the site`);
     }
 
     // The snapshot URL must be a clean path join. A base without a trailing
@@ -153,7 +153,7 @@ if (!existsSync(snapshot)) {
 const gitignore = existsSync(join(ROOT, '.gitignore'))
   ? readFileSync(join(ROOT, '.gitignore'), 'utf8')
   : '';
-check(/^\.env$/m.test(gitignore), '.env is not gitignored — real credentials could be committed');
+check(/^\.env\*?$/m.test(gitignore), '.env is not gitignored — real credentials could be committed');
 check(/^dist\/?$/m.test(gitignore), 'dist/ is not gitignored');
 
 if (existsSync(join(ROOT, '.env'))) {

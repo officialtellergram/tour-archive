@@ -54,8 +54,9 @@ Our tables — signups, submissions, curation finds — are kilobytes per row.
 **The two caveats that matter, and their mitigations:**
 
 1. **Free projects pause after 7 days without API requests.** Mitigation is
-   already built: the daily 07:20 UTC GitHub Action adds one step that pings
-   the Supabase health endpoint. The project never sleeps, cost $0.
+   already built: the daily 07:20 UTC GitHub Action runs a real query against
+   the `curation_finds` table (a health-endpoint ping would answer from memory
+   and keep nothing alive). The project never sleeps, cost $0.
 2. **No automated backups on Free.** Mitigation: a weekly GitHub Action runs
    `pg_dump` and commits the dump to a private repo (or uploads as an
    artifact). Ten lines of YAML, cost $0. Data that exists in one place
@@ -97,7 +98,7 @@ free-tier hours on their own account.
 
 ## The curation tool (built 3 Aug 2026, ~$0)
 
-> **Status: live in practice mode.** `/curate` + `/curate/review` shipped —
+> **Status: LIVE — shared Supabase room, email+password sign-in.** `/curate` + `/curate/review` shipped —
 > link-drop portal, swipe-deck review (right = shortlist, left = pass), verdict
 > summary. Runs on localStorage until the Supabase project is created
 > (ACTIONS.md § Curation Desk, ~15 min); design record in

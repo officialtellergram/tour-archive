@@ -21,6 +21,8 @@ import { applyBaseToLinks } from '../lib/router.js';
 import {
   initCurate, curUser, signIn, signOut, listFinds, addFind, setStatus, tally,
   isLive, esc, validListingUrl, sourceOf, displayTitle, whenLabel,
+  photoRef, isDressed, missingBits, dressState, isDeckReady, deckSplit,
+  showAnyway, showAllAnyway, DRESS_TRIES,
 } from '../curate/data.js';
 import { mountDeck } from '../curate/swipe.js';
 
@@ -37,17 +39,39 @@ const money = (n) =>
 const safeHref = (url) => esc(validListingUrl(url) || '#');
 
 /**
- * A find's photo, gated for rendering — the same pipeline the archive uses
- * (photoURL: absolute links pass through, repo paths get the deploy base).
- * Absolute URLs must survive the http(s) gate; anything scheme-ish that
- * isn't http(s) is refused before it can reach a src attribute.
+ * A find's photo, gated for rendering. The gate itself is photoRef() in the
+ * data layer — the SAME predicate the deck gate and the robot use — so the
+ * deck can never gate on one rule and render with another. Only the deploy-
+ * base prefixing (photoURL) stays here in the render layer.
  */
 function findPhotoSrc(f) {
-  const p = String(f.photo || '');
-  if (!p) return '';
-  if (/^https?:\/\//i.test(p)) return validListingUrl(p) || '';
-  if (!p.includes(':') && !p.startsWith('//') && /^[\w][\w./-]*$/.test(p)) return photoURL(f);
-  return '';
+  const ref = photoRef(f);
+  if (!ref) return '';
+  return ref.kind === 'absolute' ? ref.value : photoURL(f);
+}
+
+/* --------------- who dresses the finds, said honestly --------------- */
+
+/** Must never promise a robot on a device that has none. */
+const dresserLine = () =>
+  isLive()
+    ? 'The robot visits the listing and brings back the picture, the title and the price.'
+    : 'Nothing fetches pictures in practice mode — paste a photo link when you drop a find, or show it anyway.';
+
+const keepsTryingLine = () =>
+  isLive()
+    ? 'The robot keeps trying afterwards, so a picture that turns up later still lands on the card.'
+    : 'Practice finds keep whatever they were dropped with.';
+
+/** Global freshness — the machine-off signal. Practice mode says nothing. */
+function robotLine(finds) {
+  if (!isLive()) return '';
+  const stamps = finds.map((f) => Date.parse(f.looked_at)).filter((n) => !Number.isNaN(n));
+  if (!stamps.length) return 'The robot hasn’t been by yet.';
+  const w = whenLabel(new Date(Math.max(...stamps)).toISOString());
+  return w === 'Today' || w === 'Yesterday'
+    ? `The robot came by ${w.toLowerCase()}.`
+    : `The robot hasn’t been by since ${w}.`;
 }
 
 /** Small square thumbnail for pile and verdict rows. ALWAYS rendered — blank
@@ -314,24 +338,53 @@ const dropFormHTML = () => `
     </form>
   </div>`;
 
+/** One chip per row — never two, because "Waiting for review · Being dressed"
+    on the same line is a contradiction. */
+function newChip(f) {
+  const s = dressState(f);
+  if (s === 'waiting') return ['dressing', 'Being dressed'];
+  if (s === 'given-up') return ['bare', 'Still bare'];
+  return ['new', 'Waiting for review']; // dressed OR sent-anyway → it's in the deck
+}
+
 function pileRow(f) {
+  const state = f.status === 'new' ? dressState(f) : null;
+  const undressed = f.status === 'new' && !isDressed(f);
   const acted =
     f.status === 'shortlist'
       ? `<button class="curate-textbtn" data-mark="bought" data-id="${esc(f.id)}">Mark bought</button>`
       : f.status === 'pass'
       ? `<button class="curate-textbtn" data-mark="new" data-id="${esc(f.id)}">Back to the pile</button>`
+      : undressed && !f.show_anyway
+      ? `<button class="curate-textbtn" data-show-anyway data-id="${esc(f.id)}">Show it anyway</button>`
       : '';
+  const [chipKey, chipText] =
+    f.status === 'new' ? newChip(f) : [f.status, STATUS_COPY[f.status] || f.status];
   return `
-  <li class="curate-row" data-status="${esc(f.status)}" data-find-id="${esc(f.id)}">
+  <li class="curate-row" data-status="${esc(f.status)}" data-find-id="${esc(f.id)}"${
+    state ? ` data-dress="${esc(state)}"` : ''
+  }>
     ${thumb(f)}
     <div class="curate-row-main">
       <span class="curate-row-tags">${sourceTag(f)}
-        <span class="curate-status curate-status--${esc(f.status)}">${STATUS_COPY[f.status] || esc(f.status)}</span></span>
+        <span class="curate-status curate-status--${esc(chipKey)}">${esc(chipText)}</span></span>
       <a class="curate-row-title" href="${safeHref(f.url)}" target="_blank" rel="noopener noreferrer">${esc(displayTitle(f))}&nbsp;↗</a>
       ${f.note ? `<p class="curate-row-note">${esc(f.note)}</p>` : ''}
+      ${
+        undressed && !f.show_anyway
+          ? `<p class="curate-row-dress">${
+              state === 'given-up'
+                ? `The robot couldn’t get what this card needs.${
+                    Number(f.dress_tries) ? ` Tried ${Number(f.dress_tries)} time${Number(f.dress_tries) === 1 ? '' : 's'}.` : ''
+                  } ${esc(missingBits(f))}`
+                : `${esc(missingBits(f))} ${esc(dresserLine())}`
+            }</p>`
+          : ''
+      }
       <p class="curate-row-meta">
         ${f.price || f.price === 0 ? `${money(f.price)} · ` : ''}found by ${esc(f.submitted_by || 'the team')} · ${esc(whenLabel(f.created_at))}
         ${f.status !== 'new' && f.decided_by ? ` · ${(STATUS_COPY[f.status] || f.status).toLowerCase()} by ${esc(f.decided_by)}` : ''}
+        ${f.status === 'new' && f.show_anyway && !isDressed(f) ? ' · shown anyway' : ''}
       </p>
     </div>
     ${acted}
@@ -340,22 +393,34 @@ function pileRow(f) {
 
 function deskHTML(user, finds) {
   const t = tally(finds);
+  const split = deckSplit(finds);
   const rows = finds.map(pileRow).join('');
   const emptyCopy = isLive()
     ? 'Nothing here yet. Paste the first link above and it appears for the whole team.'
     : 'Nothing here yet. Paste the first link above — in practice mode it stays on this device.';
+  const cta = split.ready
+    ? `Review the pile (${split.ready})`
+    : split.waiting
+    ? 'See what’s waiting'
+    : 'Review session';
   return `
   ${deskBar(user)}
   ${dropFormHTML()}
   <div class="curate-stats">
-    <div class="stat"><b>${t.new}</b><span>Waiting for review</span></div>
+    <div class="stat"><b>${split.ready}</b><span>Ready to review</span></div>
     <div class="stat"><b>${t.shortlist}</b><span>Shortlisted</span></div>
     <div class="stat"><b>${t.bought}</b><span>Bought</span></div>
     <a class="btn btn--solid" href="/curate/review" data-magnetic
-       style="align-self:center;justify-self:end">${
-         t.new ? `Review the pile (${t.new})` : 'Review session'
-       }</a>
+       style="align-self:center;justify-self:end">${cta}</a>
   </div>
+  ${
+    split.waiting
+      ? `<p class="curate-help curate-dress-summary">${split.waiting} ${
+          split.waiting === 1 ? 'find is' : 'finds are'
+        } still being dressed — a card needs a picture and a name before it reaches the deck.
+        ${esc(dresserLine())} ${esc(robotLine(finds))}</p>`
+      : ''
+  }
   <div class="curate-pile">
     <div class="section-head" style="margin-bottom:1rem">
       <div>
@@ -403,6 +468,7 @@ export function mountCurate(outlet) {
     wireSignOut(app, mount);
     wireDropForm(app, user, show);
     wireMarks(app, user, show);
+    wireShowAnyway(app, user, show);
   }
 
   mount();
@@ -516,7 +582,9 @@ function wireDropForm(app, user, refresh) {
     const fallback = displayTitle({ title: '', url });
     if (!untitledWarned && !form.title.value.trim() && fallback.startsWith('Listing on ')) {
       untitledWarned = true;
-      noteEl.textContent = `No title — at the meeting this card will just say “${fallback}”. Add a few words about what it is, or press Add again to drop it as-is.`;
+      noteEl.textContent = `No title — this one won’t reach the deck until it has a name. Add a few words about what it is, or press Add again to drop it as-is${
+        isLive() ? ' and let the robot try' : ''
+      }.`;
       return;
     }
     const photoRaw = form.photo.value.trim();
@@ -561,13 +629,13 @@ function wireDropForm(app, user, refresh) {
       await refresh(user);
       // the refresh rebuilt the DOM — confirm the entry on the FRESH card
       // (a toast is gone in 3 seconds; this note stays until the next paste)
-      // and light up the row it landed in.
+      // and light up the row it landed in. The copy is honest about the gate:
+      // a bare link is in the pile but NOT yet in the deck.
       const freshNote = app.querySelector('[data-drop-note]');
       if (freshNote) {
-        const waiting = app.querySelector('.curate-stats .stat b')?.textContent;
-        freshNote.textContent = `Logged — “${displayTitle(result.find)}” is in the pile${
-          waiting ? `, ${waiting} waiting for review` : ''
-        }.`;
+        freshNote.textContent = isDressed(result.find)
+          ? `Logged — “${displayTitle(result.find)}” is in the pile, ready for the meeting.`
+          : `Logged — “${displayTitle(result.find)}” is in the pile. It’s being dressed: a card needs a picture and a name before it reaches the deck. ${dresserLine()}`;
         freshNote.classList.add('curate-note--logged');
       }
       app.querySelector(`[data-find-id="${result.find.id}"]`)?.classList.add('is-new');
@@ -593,6 +661,49 @@ function wireMarks(app, user, refresh) {
       }
     })
   );
+}
+
+/** "Show it anyway" — the per-row escape hatch. A second tap anywhere on the
+    team is a quiet no-op, not an error. */
+function wireShowAnyway(app, user, refresh) {
+  app.querySelectorAll('[data-show-anyway]').forEach((b) =>
+    b.addEventListener('click', async () => {
+      b.disabled = true;
+      try {
+        const done = await showAnyway(b.dataset.id);
+        toast(done ? 'Sent through — it will be dealt at the next review' : 'Someone already sent that one through');
+        await refresh(user);
+      } catch (err) {
+        b.disabled = false;
+        toast(err.message);
+      }
+    })
+  );
+}
+
+/** The bulk hatch, two-press confirmed, only ever at the moment of failure. */
+function wireDealAnyway(app, user, waiting, refresh) {
+  const btn = app.querySelector('[data-deal-anyway]');
+  if (!btn) return;
+  const original = btn.textContent;
+  let armed = false;
+  btn.addEventListener('click', async () => {
+    if (!armed) {
+      armed = true;
+      btn.textContent = `Yes — deal ${waiting.length} as ${waiting.length === 1 ? 'it is' : 'they are'}`;
+      return;
+    }
+    btn.disabled = true;
+    try {
+      await showAllAnyway(waiting.map((f) => f.id));
+      await refresh(user); // full remount → the deck deals. Never a live-queue mutation.
+    } catch (err) {
+      btn.disabled = false;
+      armed = false;
+      btn.textContent = original;
+      toast(err.message);
+    }
+  });
 }
 
 /** Refresh the pile when the tab regains focus (teammates add while you look away). */
@@ -684,13 +795,15 @@ function reviewCardHTML(f) {
   </div>`;
 }
 
-function verdictHTML(decided) {
+function verdictHTML(decided, waiting = []) {
   const listed = decided.filter((d) => d.dir === 'right');
   const passed = decided.length - listed.length;
   return `
   <div class="curate-card curate-verdict" data-verdict>
     <p class="eyebrow">The verdict</p>
-    <h3 class="display" style="margin:.4rem 0 1rem">Pile clear${listed.length ? ` — ${listed.length} for the shortlist` : ''}</h3>
+    <h3 class="display" style="margin:.4rem 0 1rem">${
+      waiting.length ? `Deck done — ${waiting.length} still being dressed` : 'Pile clear'
+    }${listed.length ? ` — ${listed.length} for the shortlist` : ''}</h3>
     ${
       listed.length
         ? `<ul class="curate-list">${listed
@@ -710,10 +823,19 @@ function verdictHTML(decided) {
         : `<p class="curate-help">Nothing shortlisted this round.</p>`
     }
     <p class="curate-row-meta" style="margin-top:.8rem">${passed} passed${passed ? ' — still on the desk if anyone wants to argue' : ''}.</p>
+    ${
+      waiting.length
+        ? `<div style="margin-top:1rem">
+            <p class="eyebrow" style="margin-bottom:.4rem">Still being dressed</p>
+            <ul class="curate-list">${waiting.map(pileRow).join('')}</ul>
+          </div>`
+        : ''
+    }
     <p class="curate-help" style="margin-top:.6rem">This summary lives only on this screen —
       copy it before you leave. The shortlist itself is safe on the desk.</p>
     <div class="curate-verdict-actions">
       ${listed.length ? `<button class="btn btn--solid" data-copy-verdict data-magnetic>Copy the shortlist</button>` : ''}
+      ${waiting.length ? `<button class="btn" data-deal-anyway data-magnetic>Deal them anyway (${waiting.length})</button>` : ''}
       <a class="btn" href="/curate" data-magnetic>Back to the desk</a>
     </div>
   </div>`;
@@ -747,10 +869,42 @@ export function mountCurateReview(outlet) {
       return;
     }
     if (!app.isConnected) return;
-    // oldest first — nothing rots at the bottom of the pile
-    const pile = finds.filter((f) => f.status === 'new').reverse();
+    const unreviewed = finds.filter((f) => f.status === 'new');
+    // THE DECK GATE: dressed, or explicitly sent through. Oldest first —
+    // nothing rots at the bottom of the pile.
+    const pile = unreviewed.filter(isDeckReady).reverse();
+    const waiting = unreviewed.filter((f) => !isDeckReady(f));
     const decided = [];
 
+    // (b) nothing dealable, but finds ARE waiting — the screen this gate
+    // exists for. Never says "empty" over an undealt pile.
+    if (!pile.length && waiting.length) {
+      if (hintEl) hintEl.style.display = 'none';
+      app.innerHTML = `
+        ${deskBar(user)}
+        <div class="curate-card">
+          <p class="eyebrow">Still being dressed</p>
+          <h3 class="display" style="margin:.4rem 0 1rem">Nothing is ready to review yet</h3>
+          <p class="curate-help">${waiting.length} ${waiting.length === 1 ? 'find is' : 'finds are'} in the pile,
+            but ${waiting.length === 1 ? 'it hasn’t' : 'none have'} got both a picture and a name yet.
+            ${esc(dresserLine())} ${esc(robotLine(finds))}</p>
+          <ul class="curate-list" style="margin-top:1.2rem">${waiting.map(pileRow).join('')}</ul>
+          <p class="curate-help" style="margin-top:1rem">Show them as they are and the meeting gets a bare
+            link with whatever was typed. ${esc(keepsTryingLine())}</p>
+          <div class="curate-verdict-actions">
+            <button class="btn btn--solid" data-deal-anyway data-magnetic>Deal them anyway (${waiting.length})</button>
+            <a class="btn" href="/curate" data-magnetic>Back to the desk</a>
+          </div>
+        </div>`;
+      applyBaseToLinks(app);
+      initMagnetic(app);
+      wireSignOut(app, mount);
+      wireShowAnyway(app, user, show);
+      wireDealAnyway(app, user, waiting, show);
+      return;
+    }
+
+    // (c) genuinely nothing — only reachable when it is true
     if (!pile.length) {
       if (hintEl) hintEl.style.display = 'none';
       app.innerHTML = `
@@ -768,9 +922,13 @@ export function mountCurateReview(outlet) {
       return;
     }
 
+    // (a) deal, and say almost nothing — one quiet state note beside the
+    // counter. It is a state, not a promise: the deck is a snapshot.
     if (hintEl) hintEl.style.display = '';
     app.innerHTML = `
-      ${deskBar(user, `<span class="curate-counter" data-deck-count>${pile.length} to review</span>`)}
+      ${deskBar(user, `<span class="curate-counter" data-deck-count>${pile.length} to review</span>${
+        waiting.length ? `<span class="curate-waiting-note">${waiting.length} still being dressed</span>` : ''
+      }`)}
       <div class="deck-stage" data-deck-stage></div>
       <div class="deck-controls">
         <button class="deck-btn deck-btn--pass" data-deck-pass type="button" aria-label="Pass">✕<small>Pass</small></button>
@@ -805,9 +963,11 @@ export function mountCurateReview(outlet) {
         app.querySelector('[data-deck-yes]').style.display = 'none';
         if (hintEl) hintEl.style.display = 'none';
         counter.textContent = 'done';
-        controls.insertAdjacentHTML('afterend', verdictHTML(decided));
+        controls.insertAdjacentHTML('afterend', verdictHTML(decided, waiting));
         applyBaseToLinks(app);
         initMagnetic(app);
+        wireShowAnyway(app, user, show);
+        wireDealAnyway(app, user, waiting, show);
         // mark-bought patches the row in place — a full re-render here would
         // replace the verdict with the "pile is empty" screen mid-celebration
         app.querySelectorAll('[data-verdict] [data-mark]').forEach((b) =>

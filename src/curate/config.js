@@ -9,7 +9,7 @@
  * The anon key is designed to be public — it ships in every Supabase-backed
  * frontend on the internet. Row-level security plus invite-only login is what
  * actually guards the table, so committing these here is correct, not a leak.
- * (The service_role key is the secret one; it must never appear in this repo.)
+ * (Supabase's master key is the secret one; it must never appear in this repo.)
  */
 
 export const SUPABASE_URL = 'https://ulavwoubrjyvbbaxaweh.supabase.co';

@@ -84,7 +84,7 @@ const PROBE = `(() => {
  */
 /* Bump whenever the seed shape changes — probe profiles persist across runs,
    and a stale seed silently un-measures whatever the new fields render. */
-const SEED_V = 2;
+const SEED_V = 3;
 
 const CURATE_SEED = JSON.stringify({
   name: 'Probe',
@@ -105,6 +105,9 @@ const CURATE_SEED = JSON.stringify({
       decided_by: '',
       created_at: '2026-08-01T12:00:00',
       decided_at: null,
+      dress_tries: 0,
+      looked_at: null,
+      show_anyway: false,
     },
     {
       id: 'probe-2',
@@ -113,12 +116,16 @@ const CURATE_SEED = JSON.stringify({
       note: '',
       price: 28,
       source: 'Depop',
+      photo: '',
       collection: '',
       submitted_by: 'Probe',
       status: 'new',
       decided_by: '',
       created_at: '2026-08-02T12:00:00',
       decided_at: null,
+      dress_tries: 0,
+      looked_at: null,
+      show_anyway: false,
     },
     {
       id: 'probe-3',
@@ -133,6 +140,45 @@ const CURATE_SEED = JSON.stringify({
       decided_by: 'Probe',
       created_at: '2026-07-30T12:00:00',
       decided_at: '2026-08-02T12:00:00',
+    },
+    {
+      // given-up: the "Still bare" chip + the longest reason line the UI makes
+      id: 'probe-4',
+      url: 'https://www.ebay.com/itm/999999999904',
+      title: '',
+      note: '',
+      price: null,
+      source: 'eBay',
+      photo: '',
+      collection: '',
+      submitted_by: 'Probe',
+      status: 'new',
+      decided_by: '',
+      created_at: '2026-07-20T12:00:00',
+      decided_at: null,
+      dress_tries: 3,
+      looked_at: '2026-07-30T12:00:00',
+      show_anyway: false,
+    },
+    {
+      // sent-anyway with no photo: keeps the TEXT-ONLY deck card measured now
+      // that the gate would otherwise keep bare cards out of the deck
+      id: 'probe-5',
+      url: 'https://www.depop.com/products/probe-shown-anyway/',
+      title: 'Shown-anyway piece with a real title',
+      note: 'Forced through by a person; the deck deals it bare.',
+      price: 32,
+      source: 'Depop',
+      photo: '',
+      collection: '',
+      submitted_by: 'Probe',
+      status: 'new',
+      decided_by: '',
+      created_at: '2026-08-01T12:00:00',
+      decided_at: null,
+      dress_tries: 1,
+      looked_at: '2026-08-02T12:00:00',
+      show_anyway: true,
     },
   ],
 });

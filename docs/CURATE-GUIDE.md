@@ -31,10 +31,11 @@ that's deliberate — asking is faster.
    appears under the button and the find lights up at the top of the pile —
    if you see those, your entry is in and the whole team can see it.
 
-**Do add a few words in "What is it?"** — an eBay link with no title shows up
-at the meeting as a card that just says "Listing on ebay.com", and nobody can
-vote on that. The desk will nudge you if you forget. Price and a note help
-too, but the title is the one that matters.
+**A card needs a picture and a name before it reaches the meeting.** Paste
+just the link and that's fine — the desk's robot visits the listing and
+brings back the picture, the title and the price on its own, usually within
+a few hours. Add the title and photo yourself and the find is ready the
+instant you drop it. Price never holds a find back.
 
 **Want the card to show the actual piece?** Long-press the listing's photo →
 **Copy image** (or "Copy image address") → paste it into **Photo link**. A
@@ -44,9 +45,12 @@ miniature? You probably copied
 the page link instead of the picture; long-press the photo itself and try
 again.
 
-*(Once the shared desk is on: forgot the photo? Leave it — the desk's robot
-visits eBay/Depop finds before the meeting and fills in the picture, title
-and price on its own. The paste field just gets it there instantly.)*
+**Why a find sometimes waits:** a find is *dressed* when it has a picture
+and a name someone (or the robot) wrote. Dressed finds are dealt at the
+meeting; the rest wait on the desk, visible, with a line saying exactly
+what's missing. If the robot can't get one — some sites won't open the door
+for it — the desk says so on the row, and you can tap **Show it anyway**:
+the card just arrives bare, and the robot keeps trying afterwards.
 
 If someone already dropped the same listing, the desk tells you who — nothing
 is added twice. If it says "Not a link", copy the address again from the
@@ -78,9 +82,10 @@ page and tap **Back to the pile**.
 
 ## The three numbers on the desk
 
-**Waiting for review** (finds nobody has voted on — the meeting's workload),
+**Ready to review** (dressed finds waiting on the meeting's vote),
 **Shortlisted** (agreed we want it, not yet bought), **Bought** (in hand or on
-the way).
+the way). Finds still being dressed are counted in the sentence under the
+numbers, with a note on each row saying what's missing.
 
 ## The one rule
 

@@ -2021,6 +2021,31 @@ h3.display {
 .curate-status--pass {
   border-style: dashed;
 }
+/* dressing states — same "not in play" language as --pass */
+.curate-status--dressing {
+  border-style: dashed;
+}
+.curate-status--bare {
+  border-color: var(--claret);
+  color: var(--claret);
+}
+.curate-row-dress {
+  margin: 0;
+  font-weight: 300;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  overflow-wrap: anywhere;
+}
+.curate-row[data-dress='given-up'] .curate-thumb--blank {
+  border-color: var(--rule);
+  border-style: dashed;
+}
+.curate-dress-summary {
+  padding: 1rem 0 0;
+}
+.curate-waiting-note {
+  color: var(--ink-faint);
+}
 .curate-row-title {
   font-family: var(--display);
   font-size: clamp(1.15rem, 2vw, 1.45rem);

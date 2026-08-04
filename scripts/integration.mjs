@@ -564,6 +564,114 @@ await checkAsync('practice desk refuses entry without the passphrase', async () 
   assert(refused, 'sign-in with a wrong passphrase must throw');
 });
 
+check('a find is dressed when it has a picture and a name — nothing else', () => {
+  const photo = 'stock/x.jpg';
+  assert(curate.isDressed({ photo, title: 'Slazenger V-neck' }), 'photo + title');
+  assert(!curate.isDressed({ photo, title: '   ' }), 'whitespace is not a name');
+  assert(!curate.isDressed({ photo: '', title: 'Named' }), 'no photo, no deck');
+  assert(!curate.isDressed({ photo: 'javascript:alert(1)', title: 'x' }), 'unsafe photo is no photo');
+  assert(!curate.isDressed({ photo: 'ftp://h.com/a.jpg', title: 'x' }), 'non-http absolute refused');
+  assert(curate.isDressed({ photo: 'https://i.ebayimg.com/a/s-l1600.jpg', title: 'x' }), 'absolute http ok');
+  // THE PRICE DECISION, asserted so it cannot be re-litigated by accident
+  assert(curate.isDressed({ photo, title: 'x', price: null }), 'a priceless find is still dressed');
+});
+
+check('displayTitle’s fallback does NOT count as a name', () => {
+  const bare = { url: 'https://www.ebay.com/itm/407115514561', title: '', photo: 'stock/x.jpg' };
+  assert(curate.displayTitle(bare), 'displayTitle always returns something');
+  equal(curate.isDressed(bare), false, 'but the URL-slug fallback never dresses a find');
+});
+
+check('the escape hatch overrides content, and giving up never auto-deals', () => {
+  const url = 'https://www.ebay.com/itm/1';
+  equal(curate.isDeckReady({ url, photo: '', title: '', show_anyway: true }), true, 'forced');
+  equal(curate.dressState({ url, photo: '', title: '', show_anyway: true }), 'sent-anyway');
+  equal(
+    curate.dressState({ url, photo: 'stock/x.jpg', title: 'x', show_anyway: true }),
+    'dressed',
+    'a dressed find stops shouting'
+  );
+  const now = new Date('2026-08-04T12:00:00');
+  const fresh = '2026-08-03T12:00:00';
+  equal(curate.dressState({ url, photo: '', title: '', dress_tries: 3, created_at: fresh }, now), 'given-up');
+  equal(curate.dressState({ url, photo: '', title: '', dress_tries: 1, created_at: fresh }, now), 'waiting');
+  equal(curate.dressState({ url: 'not a url', photo: '', title: '', created_at: fresh }, now), 'given-up', 'unopenable URL');
+  equal(
+    curate.dressState({ url, photo: '', title: '', dress_tries: 0, created_at: '2026-07-20T12:00:00' }, now),
+    'given-up',
+    'a week of nothing — walls never spend a try, staleness catches them'
+  );
+  equal(curate.isDeckReady({ url, photo: '', title: '', dress_tries: 9 }), false, 'giving up never auto-deals');
+});
+
+check('deckSplit accounts for every unreviewed find', () => {
+  const now = new Date('2026-08-04T12:00:00');
+  const url = 'https://www.ebay.com/itm/1';
+  const fresh = '2026-08-03T12:00:00';
+  const finds = [
+    { status: 'new', url, photo: 'stock/a.jpg', title: 'a', created_at: fresh },
+    { status: 'new', url, photo: '', title: 'b', created_at: fresh },
+    { status: 'new', url, photo: '', title: '', show_anyway: true, created_at: fresh },
+    { status: 'new', url, photo: '', title: '', dress_tries: 3, created_at: fresh },
+    { status: 'shortlist', url, photo: '', title: '', created_at: fresh },
+  ];
+  const s = curate.deckSplit(finds, now);
+  equal(s.ready, 2, 'dressed + forced');
+  equal(s.waiting, 2, 'undressed, unforced');
+  equal(s.givenUp, 1, 'of which given up');
+  equal(s.ready + s.waiting, curate.tally(finds).new, 'nothing falls between the two numbers');
+});
+
+check('the robot’s cool-down policy is due when the backoff says so', () => {
+  const url = 'https://www.ebay.com/itm/1';
+  const now = new Date('2026-08-04T12:00:00');
+  assert(curate.dueForRobot({ url, photo: '', title: '', dress_tries: 0, looked_at: null }, now), 'never considered → due');
+  assert(
+    !curate.dueForRobot({ url, photo: '', title: '', dress_tries: 1, looked_at: '2026-08-04T10:00:00' }, now),
+    '2h after first try < 6h backoff → not due'
+  );
+  assert(
+    curate.dueForRobot({ url, photo: '', title: '', dress_tries: 1, looked_at: '2026-08-04T02:00:00' }, now),
+    '10h after first try ≥ 6h backoff → due'
+  );
+  assert(!curate.dueForRobot({ url, photo: '', title: '', dress_tries: 3 }, now), 'spent tries → never due');
+  assert(!curate.dueForRobot({ url, photo: 'stock/x.jpg', title: 'x' }, now), 'dressed → never due');
+  assert(!curate.dueForRobot({ url: 'nope', photo: '', title: '' }, now), 'unopenable → never due');
+});
+
+check('the robot’s title write is cowardly', () => {
+  equal(curate.cleanScrapedTitle('Peter Millar CC of Virginia Q Zip | eBay'), 'Peter Millar CC of Virginia Q Zip', 'source suffix stripped');
+  equal(curate.cleanScrapedTitle('Pardon Our Interruption'), '', 'wall phrase refused');
+  equal(curate.cleanScrapedTitle('Access Denied'), '', 'wall phrase refused 2');
+  equal(curate.cleanScrapedTitle('eBay'), '', 'bare marketplace name refused');
+  equal(curate.cleanScrapedTitle('Depop | Depop'), '', 'marketplace after strip refused');
+  equal(curate.cleanScrapedTitle('short'), '', 'under 8 chars refused');
+  equal(curate.cleanScrapedTitle(''), '', 'empty refused');
+  equal(curate.cleanScrapedTitle('  Slazenger lambswool V-neck  '), 'Slazenger lambswool V-neck', 'honest title passes');
+});
+
+check('every dressing column exists in the SQL', () => {
+  const sql = readFileSync(new URL('../supabase/curation.sql', import.meta.url), 'utf8');
+  for (const col of ['show_anyway', 'dress_tries', 'looked_at'])
+    assert(new RegExp(`add column if not exists\\s+${col}\\b`).test(sql), `${col} has an idempotent alter`);
+});
+
+await checkAsync('practice escape hatch: forced once, no-op twice, survives re-read', async () => {
+  await curate.initCurate();
+  const finds = await curate.listFinds();
+  const bare = finds.find((f) => !curate.isDressed(f) && f.status === 'new');
+  assert(bare, 'the seed always carries an undressed find');
+  assert(finds.some((f) => curate.isDressed(f)), 'and a dressed one — it demonstrates both states');
+  assert(finds.every((f) => f.show_anyway === false), 'practice ships false, never undefined');
+  assert(finds.every((f) => typeof f.dress_tries === 'number'), 'tries are numbers, never undefined');
+  const forced = await curate.showAnyway(bare.id);
+  equal(forced.show_anyway, true, 'override recorded');
+  equal(await curate.showAnyway(bare.id), null, 'a second tap is a no-op, not an error');
+  const after = await curate.listFinds();
+  equal(after.find((f) => f.id === bare.id).show_anyway, true, 'and it survives a re-read');
+  equal(curate.isDeckReady(after.find((f) => f.id === bare.id)), true, 'forced finds deal');
+});
+
 check('STATUSES and the SQL check constraint cannot drift apart', () => {
   const sql = readFileSync(new URL('../supabase/curation.sql', import.meta.url), 'utf8');
   const m = sql.match(/check \(status in \(([^)]+)\)\)/);

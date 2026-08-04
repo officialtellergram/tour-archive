@@ -28,6 +28,31 @@ create table if not exists public.curation_finds (
 -- late-added columns also get an explicit idempotent alter:
 alter table public.curation_finds add column if not exists photo_url text;
 
+-- Dressing state (added 4 Aug 2026). A find is DRESSED when it has a picture
+-- and a name; only dressed finds are dealt at the review meeting. These
+-- columns never gate anything on their own — readiness is derived from
+-- content in src/curate/data.js. They drive the robot's retry policy and
+-- record a human override.
+--   show_anyway  — written by the DESK only: a person chose to deal it bare.
+--                  The robot never reads or writes it.
+--   dress_tries  — written by the ROBOT only: page-reads spent on this find.
+--   looked_at    — written by the ROBOT only: the last time it CONSIDERED the
+--                  find (not "last attempt" — dressed rows get stamped too, so
+--                  they sink to the back of the robot's queue and stay there).
+alter table public.curation_finds add column if not exists show_anyway boolean not null default false;
+alter table public.curation_finds add column if not exists dress_tries integer not null default 0;
+alter table public.curation_finds add column if not exists looked_at   timestamptz;
+
+-- Blank is not a value. The site maps '' to null; this normalises anything
+-- typed by hand in the table editor so "is it dressed" has one answer.
+update public.curation_finds set photo_url = null where photo_url is not null and btrim(photo_url) = '';
+update public.curation_finds set title     = null where title     is not null and btrim(title)     = '';
+
+-- The robot's queue: never-considered first, then least recently considered.
+create index if not exists curation_finds_robot_queue_idx
+  on public.curation_finds (looked_at nulls first, created_at)
+  where status <> 'pass';
+
 create index if not exists curation_finds_status_idx
   on public.curation_finds (status, created_at desc);
 

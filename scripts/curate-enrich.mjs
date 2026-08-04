@@ -1,29 +1,39 @@
 /**
- * Procurement Desk photo backfill — the ebay-peek logic, wired to the pile.
+ * The desk's robot — dresses finds so the review deck can deal them.
  *
- * Cofounders paste bare listing links; this script gives those finds their
- * pictures. It drives a REAL browser (same reason ebay-peek does: eBay walls
- * off plain fetches, so the only honest reader is the thing a human uses),
- * visits each listing once, reads its og:image (and title/price when the
- * find lacks them), and writes the result back to the shared pile.
+ * Cofounders paste bare listing links; a card needs a picture and a name
+ * before it reaches the deck (THE definition lives in src/curate/data.js and
+ * is imported here — there is no second copy). This script visits each
+ * undressed find's listing in a REAL browser (eBay walls off anything else),
+ * reads og:image / og:title / price, and writes back what the find lacks.
  *
- * This is enrichment, not scraping: one page per find, sequentially, with a
- * breather between — the robot equivalent of a teammate opening each link.
+ * It is a reader, not a crawler: one page per find, sequentially, with a
+ * breather between, and it stops the whole round after two bot walls in a
+ * row — a wall is information about the session, not the listing, so walls
+ * never spend one of a find's three tries.
  *
- * Needs live mode: SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY in .env (the
- * service key stays local — it is never committed and never shipped).
- * Practice-mode piles live in each device's localStorage, which nothing on
- * this machine can reach — that is why the desk keeps its paste-a-photo field.
+ * It signs in as the ROBOT TEAMMATE ACCOUNT (ROBOT_EMAIL / ROBOT_PASSWORD in
+ * .env) — bound by the same row rules as every cofounder, revocable from the
+ * dashboard in one click. It never touches `status`, never touches
+ * `show_anyway`, never deletes, never runs git.
+ *
+ * Exit codes (the scheduled task's health signal):
+ *   0  swept — including "nothing was due" and a wall-stopped partial round
+ *   1  could not sweep at all (not configured, sign-in failed, browser died)
+ *   4  another sweep is already running (the wrapper logs it as a skip)
  *
  * Usage:
- *   node scripts/curate-enrich.mjs --url <listingUrl>   peek one listing, print
- *   node scripts/curate-enrich.mjs --dry                sweep the pile, print plan
- *   node scripts/curate-enrich.mjs [--max N]            sweep + write back (default 15)
+ *   node scripts/curate-enrich.mjs [--max N] [--dry] [--url <listing>]
  */
 
-import { spawn } from 'node:child_process';
-import { existsSync } from 'node:fs';
+import { spawn, spawnSync } from 'node:child_process';
+import { existsSync, mkdirSync, readFileSync, writeFileSync, rmSync, appendFileSync } from 'node:fs';
+import { join } from 'node:path';
 import '../server/config.mjs'; // side effect: loads .env into process.env
+import { SUPABASE_URL, SUPABASE_ANON_KEY, FINDS_TABLE } from '../src/curate/config.js';
+import {
+  isDressed, dueForRobot, dressState, cleanScrapedTitle, validListingUrl, DRESS_TRIES,
+} from '../src/curate/data.js';
 
 const BROWSER = [
   'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
@@ -42,14 +52,99 @@ const DRY = flag('--dry');
 const MAX = Number(value('--max', 15));
 const PORT = 9725;
 const PAUSE_MS = 4000;
+const WALL_STOP = 2; // consecutive walls that end the round
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-const C = { red: '\x1b[31m', green: '\x1b[32m', yellow: '\x1b[33m', dim: '\x1b[2m', off: '\x1b[0m' };
+/* ------------------------------- log ------------------------------- */
 
-/* ------------------------------------------------------------------ */
-/* Listing probe — og:image first (works on eBay, Depop, Etsy, most    */
-/* of the web); eBay-specific fallbacks for carousel + price.          */
-/* ------------------------------------------------------------------ */
+const LOG_PATH = process.env.DESK_SWEEP_LOG || '';
+function log(line) {
+  const stamped = `${new Date().toISOString()}  ${line}`;
+  console.log(stamped);
+  if (LOG_PATH) {
+    try {
+      appendFileSync(LOG_PATH, stamped + '\n');
+    } catch {
+      /* the log must never kill the sweep */
+    }
+  }
+}
+
+/* ------------------------- lock + cleanup -------------------------- */
+
+const STATE_DIR = join(process.env.LOCALAPPDATA || process.env.TEMP || '.', 'TourArchive');
+const LOCK_PATH = join(STATE_DIR, 'sweep.lock');
+let lockOwned = false;
+let child = null;
+let profileDir = null;
+
+function takeLock() {
+  mkdirSync(STATE_DIR, { recursive: true });
+  if (existsSync(LOCK_PATH)) {
+    try {
+      const { pid, started } = JSON.parse(readFileSync(LOCK_PATH, 'utf8'));
+      const fresh = Date.now() - Date.parse(started) < 60 * 60000;
+      let alive = false;
+      try {
+        process.kill(pid, 0);
+        alive = true;
+      } catch {
+        /* pid gone */
+      }
+      if (alive && fresh) return false;
+    } catch {
+      /* unreadable lock = stale */
+    }
+  }
+  writeFileSync(LOCK_PATH, JSON.stringify({ pid: process.pid, started: new Date().toISOString() }));
+  lockOwned = true;
+  return true;
+}
+
+function cleanup() {
+  if (child) {
+    try {
+      child.kill();
+    } catch {
+      /* already gone */
+    }
+    // /T is the point — Edge re-execs, and killing only the launcher leaves an
+    // orphan browser holding the debug port for the next run to attach to
+    try {
+      spawnSync('taskkill', ['/PID', String(child.pid), '/T', '/F'], { stdio: 'ignore' });
+    } catch {
+      /* best effort */
+    }
+    child = null;
+  }
+  if (profileDir) {
+    try {
+      rmSync(profileDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
+    } catch {
+      /* Windows briefly holds locks after exit; a leaked temp dir is harmless */
+    }
+    profileDir = null;
+  }
+  if (lockOwned) {
+    try {
+      rmSync(LOCK_PATH, { force: true });
+    } catch {
+      /* stale-lock detection covers this */
+    }
+    lockOwned = false;
+  }
+}
+process.on('exit', cleanup);
+process.on('SIGINT', () => {
+  cleanup();
+  process.exit(1);
+});
+process.on('SIGTERM', () => {
+  cleanup();
+  process.exit(1);
+});
+
+/* -------------------- listing probe (in-page) ---------------------- */
 
 const LISTING_PROBE = `(() => {
   const meta = (sel) => document.querySelector(sel)?.content?.trim() || '';
@@ -62,7 +157,7 @@ const LISTING_PROBE = `(() => {
     }
   }
   if (/ebayimg\\.com/.test(image)) image = image.replace(/s-l\\d+/, 's-l1600');
-  const title = meta('meta[property="og:title"]') || text('h1.x-item-title__mainTitle') || text('h1');
+  const ogTitle = meta('meta[property="og:title"]');
   const price =
     meta('meta[property="product:price:amount"]') ||
     meta('meta[property="og:price:amount"]') ||
@@ -70,28 +165,29 @@ const LISTING_PROBE = `(() => {
   const walled = /Pardon Our Interruption|Error Page|Access Denied|verify you are a human/i
     .test((document.title || '') + ' ' + (document.body?.textContent?.slice(0, 400) || ''));
   return JSON.stringify({
+    href: location.href,
     ready: document.readyState === 'complete',
     walled,
     image: /^https?:/.test(image) ? image : '',
-    title: title.replace(/\\s*\\|\\s*eBay\\s*$/i, '').slice(0, 140),
+    ogTitle: ogTitle.slice(0, 200),
     price: price ? Number(String(price).replace(/,/g, '')) : null,
   });
 })()`;
 
-/* ------------------------------------------------------------------ */
-/* One browser session, navigated listing to listing                   */
-/* ------------------------------------------------------------------ */
+/* ------------------ one browser, many listings --------------------- */
 
 async function withBrowser(fn) {
   if (!BROWSER) throw new Error('no Edge found');
-  const child = spawn(
+  profileDir = join(process.env.TEMP || '.', 'curate-enrich', `${process.pid}-${Date.now()}`);
+  mkdirSync(profileDir, { recursive: true });
+  child = spawn(
     BROWSER,
     [
       '--headless=new', '--disable-gpu', '--no-sandbox', '--no-first-run',
       // headless advertises itself in the UA and eBay error-pages it
       '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
       `--remote-debugging-port=${PORT}`,
-      `--user-data-dir=${process.env.TEMP}\\curate-enrich`,
+      `--user-data-dir=${profileDir}`,
       '--window-size=1400,1000',
       'about:blank',
     ],
@@ -138,6 +234,10 @@ async function withBrowser(fn) {
         );
       });
 
+    // The probe reads whatever DOM exists — including the PREVIOUS page's,
+    // in the instant before navigation commits. Track the last page's href
+    // and discard reads that still come from it.
+    let lastHref = 'about:blank';
     const peek = async (url) => {
       await evaluate(`location.href = ${JSON.stringify(url)}`);
       let best = null;
@@ -149,27 +249,28 @@ async function withBrowser(fn) {
         } catch {
           /* navigation mid-flight */
         }
-        if (data?.walled) return { error: 'bot wall' };
-        if (data?.image) {
-          best = data;
-          // the image arrives before the price node renders — linger briefly
-          // for the fuller read, but never lose the picture we already have
-          if (data.price || i >= 4) return best;
+        if (!data || data.href === lastHref) continue; // still the old page
+        if (data.walled) {
+          lastHref = data.href;
+          return { error: 'wall' };
         }
-        if (!best && data?.ready && i > 6) break; // settled without an og:image
+        if (data.image) {
+          best = data;
+          if (data.price || i >= 4) break;
+        }
+        if (!best && data.ready && i > 6) break;
       }
-      return best || { error: 'no image found on the page' };
+      if (best) lastHref = best.href;
+      return best || { error: 'no image' };
     };
 
     return await fn(peek);
   } finally {
-    child.kill();
+    cleanup();
   }
 }
 
-/* ------------------------------------------------------------------ */
-/* Modes                                                               */
-/* ------------------------------------------------------------------ */
+/* ------------------------------ modes ------------------------------ */
 
 if (SINGLE_URL) {
   const result = await withBrowser((peek) => peek(SINGLE_URL));
@@ -177,69 +278,200 @@ if (SINGLE_URL) {
   process.exit(result.error ? 1 : 0);
 }
 
-const SUPABASE_URL = process.env.SUPABASE_URL || '';
-const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+const ROBOT_EMAIL = process.env.ROBOT_EMAIL || '';
+const ROBOT_PASSWORD = process.env.ROBOT_PASSWORD || '';
 
-if (!SUPABASE_URL || !SERVICE_KEY) {
-  console.log(`${C.yellow}⚠ live mode is not configured — nothing to sweep.${C.off}
-
-The pile only becomes reachable when the shared database exists (practice-mode
-piles live in each cofounder's device). Set SUPABASE_URL and
-SUPABASE_SERVICE_ROLE_KEY in .env once the Supabase project is created
-(ACTIONS.md § 0), then re-run. To test the peek itself right now:
-
-  node scripts/curate-enrich.mjs --url https://www.ebay.com/itm/407115514561
-`);
-  process.exit(0);
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  log('could not sweep — live mode is not configured (src/curate/config.js)');
+  process.exit(1);
 }
-
-const { createClient } = await import('@supabase/supabase-js');
-const supa = createClient(SUPABASE_URL, SERVICE_KEY);
-
-const { data: finds, error } = await supa
-  .from('curation_finds')
-  .select('*')
-  .is('photo_url', null)
-  .neq('status', 'pass')
-  .order('created_at', { ascending: false })
-  .limit(MAX);
-if (error) {
-  console.error(`${C.red}✖ could not read the pile — ${error.message}${C.off}`);
+if (!ROBOT_EMAIL || !ROBOT_PASSWORD) {
+  log('could not sweep — the robot has no account yet.');
+  console.log(`
+Create it once (ACTIONS.md § 0): Supabase → Authentication → Users → Add user
+→ robot@tourarchive.us + a long generated password + Auto Confirm User ✓,
+then put ROBOT_EMAIL and ROBOT_PASSWORD in .env. The robot is a teammate
+account, not a master key — same row rules as everyone, revocable in one click.
+`);
   process.exit(1);
 }
 
-const candidates = (finds || []).filter((f) => /^https?:\/\//i.test(f.url));
-console.log(`${C.dim}── Procurement Desk · photo backfill ──${C.off}`);
-console.log(`${C.dim}   ${candidates.length} find(s) missing a photo (max ${MAX})${C.off}\n`);
-if (!candidates.length) process.exit(0);
+if (!DRY && !takeLock()) {
+  log('another sweep is already running — leaving it to finish');
+  process.exit(4);
+}
+
+// watchdog: belt to the scheduler's braces — the only guard against a peek
+// hanging inside the WebSocket rather than the poll loop
+const watchdog = setTimeout(() => {
+  log('watchdog — the sweep ran long and was stopped');
+  cleanup();
+  process.exit(1);
+}, 20 * 60000);
+watchdog.unref?.();
+
+const { createClient } = await import('@supabase/supabase-js');
+const supa = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: { persistSession: false, autoRefreshToken: false },
+});
+{
+  const { error } = await supa.auth.signInWithPassword({
+    email: ROBOT_EMAIL,
+    password: ROBOT_PASSWORD,
+  });
+  if (error) {
+    log(`could not sweep — the robot could not sign in (${error.message})`);
+    process.exit(1);
+  }
+}
+
+/* Fair queue: never-considered first (oldest drop first within), then least
+   recently considered. Read pages until the browser budget is full. */
+const rowToFind = (r) => ({
+  url: r.url,
+  photo: r.photo_url || '',
+  title: r.title || '',
+  dress_tries: r.dress_tries ?? 0,
+  looked_at: r.looked_at ?? null,
+  show_anyway: r.show_anyway === true,
+  status: r.status,
+  created_at: r.created_at,
+});
+
+const queue = [];
+const alreadyDressed = [];
+const now = new Date();
+for (let page = 0; page < 10 && queue.length < MAX; page++) {
+  const { data, error } = await supa
+    .from(FINDS_TABLE)
+    .select('*')
+    .neq('status', 'pass')
+    .lt('dress_tries', DRESS_TRIES)
+    .order('looked_at', { ascending: true, nullsFirst: true })
+    .order('created_at', { ascending: true })
+    .range(page * 100, page * 100 + 99);
+  if (error) {
+    log(`could not sweep — could not read the pile (${error.message})`);
+    process.exit(1);
+  }
+  for (const row of data || []) {
+    const find = rowToFind(row);
+    if (isDressed(find)) {
+      if (row.looked_at == null) alreadyDressed.push(row.id);
+      continue;
+    }
+    if (dueForRobot(find, now) && queue.length < MAX) queue.push(row);
+  }
+  if (!data || data.length < 100) break;
+}
+
+log(`start — ${queue.length} to look up (budget ${MAX})`);
 
 if (DRY) {
-  candidates.forEach((f) =>
-    console.log(`   would peek: ${f.title || '(untitled)'} — ${f.url.slice(0, 80)}`)
-  );
+  for (const row of queue) {
+    const find = rowToFind(row);
+    log(`  would look up: ${(row.title || row.url).slice(0, 70)} — ${dressState(find)} · tried ${find.dress_tries} of ${DRESS_TRIES}`);
+  }
+  log(`dry run — nothing written, no browser launched`);
   process.exit(0);
 }
 
-let enriched = 0;
+// dressed rows the robot has never stamped sink to the back of the queue
+if (alreadyDressed.length) {
+  await supa
+    .from(FINDS_TABLE)
+    .update({ looked_at: now.toISOString() })
+    .in('id', alreadyDressed.slice(0, 200));
+}
+
+if (!queue.length) {
+  log('done — nothing was due');
+  process.exit(0);
+}
+
+let dressed = 0;
+let gaveUp = 0;
+let noPicture = 0;
+let teammateFirst = 0;
+let wallStreak = 0;
+let wallStopped = false;
+
 await withBrowser(async (peek) => {
-  for (const find of candidates) {
-    const label = (find.title || find.url).slice(0, 60);
-    const result = await peek(find.url);
-    if (result.error) {
-      console.log(`${C.yellow}   ⚠ ${label} — ${result.error}${C.off}`);
+  for (const row of queue) {
+    const label = (row.title || row.url).slice(0, 60);
+    const peeked = await peek(row.url);
+    const stamp = new Date().toISOString();
+
+    if (peeked.error === 'wall') {
+      wallStreak += 1;
+      await supa.from(FINDS_TABLE).update({ looked_at: stamp }).eq('id', row.id).neq('status', 'pass');
+      log(`  door closed   ${label} — the site wouldn’t let us look`);
+      if (wallStreak >= WALL_STOP) {
+        wallStopped = true;
+        log('  stopping this round — walls lift; the next round will try again');
+        break;
+      }
+    } else if (peeked.error) {
+      wallStreak = 0;
+      const tries = (row.dress_tries ?? 0) + 1;
+      await supa
+        .from(FINDS_TABLE)
+        .update({ dress_tries: tries, looked_at: stamp })
+        .eq('id', row.id)
+        .neq('status', 'pass');
+      if (tries >= DRESS_TRIES) {
+        gaveUp += 1;
+        log(`  gave up       ${label} — no picture on this page, tried ${tries} of ${DRESS_TRIES}`);
+      } else {
+        noPicture += 1;
+        log(`  no picture    ${label} — tried ${tries} of ${DRESS_TRIES}`);
+      }
     } else {
-      const patch = { photo_url: result.image };
-      if (!find.title && result.title) patch.title = result.title;
-      if (find.price_seen == null && result.price) patch.price_seen = result.price;
-      const { error: writeErr } = await supa.from('curation_finds').update(patch).eq('id', find.id);
-      if (writeErr) console.log(`${C.red}   ✖ ${label} — ${writeErr.message}${C.off}`);
-      else {
-        enriched += 1;
-        console.log(`${C.green}   ✔ ${label}${patch.title ? ' (+title)' : ''}${patch.price_seen ? ' (+price)' : ''}${C.off}`);
+      wallStreak = 0;
+      const patch = { looked_at: stamp, dress_tries: (row.dress_tries ?? 0) + 1 };
+      const got = [];
+      if (!String(row.photo_url ?? '').trim() && validListingUrl(peeked.image)) {
+        patch.photo_url = peeked.image;
+        got.push('+picture');
+      }
+      // the title write is COWARDLY: only from og:title, only on a pass that
+      // yielded a picture, and only through the junk filter — one bad title
+      // would deal an unusable card the desk can never fix
+      if (!String(row.title ?? '').trim() && peeked.image) {
+        const t = cleanScrapedTitle(peeked.ogTitle, row.source || '');
+        if (t) {
+          patch.title = t;
+          got.push('+title');
+        }
+      }
+      if (row.price_seen == null && peeked.price > 0 && peeked.price < 100000) {
+        patch.price_seen = peeked.price;
+        got.push(`+$${peeked.price}`);
+      }
+      const { data: written } = await supa
+        .from(FINDS_TABLE)
+        .update(patch)
+        .eq('id', row.id)
+        .neq('status', 'pass') // a find a human just discarded stays discarded
+        .select('id');
+      if ((written || []).length === 0) {
+        teammateFirst += 1;
+        log(`  teammate first  ${label} — decided while we were looking`);
+      } else if (got.length) {
+        dressed += 1;
+        log(`  dressed       ${label}  ${got.join(' ')}`);
+      } else {
+        noPicture += 1;
+        log(`  nothing new   ${label}`);
       }
     }
     await sleep(PAUSE_MS); // a breather between listings — reader, not crawler
   }
 });
 
-console.log(`\n${C.green}✔ ${enriched}/${candidates.length} find(s) got their picture${C.off}\n`);
+log(
+  `done — ${dressed} dressed · ${noPicture} still waiting · ${gaveUp} gave up · ${teammateFirst} teammate first${
+    wallStopped ? ' · stopped at a wall' : ''
+  }`
+);
+process.exit(0);

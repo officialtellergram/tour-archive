@@ -68,25 +68,40 @@ team data needs a Supabase project, which only you can create:
 **Never** put the `service_role` key anywhere in this repo or the frontend —
 that one bypasses every access rule. The desk only ever needs the anon key.
 
-**Once live, photos backfill themselves.** `npm run curate:enrich` sweeps the
-pile for finds missing a picture, opens each listing in the same robot browser
-ebay-peek uses (a real browser is the only thing eBay's walls let read), and
-writes back the og:image — plus the title and asking price when the finder
-skipped them. Needs `SUPABASE_SERVICE_ROLE_KEY` in `.env` (local only, never
-committed). `--dry` previews, `--max N` caps a sweep, `--url <listing>` tests
-one page. Run it before review meetings, or schedule it like the T42 radar —
-it paces itself: one page per find, four seconds apart, newest first. It
-cannot help practice mode: those piles live inside each cofounder's device,
-which is exactly why the drop form keeps its paste-a-photo-link field.
+**The robot needs its own account (one dashboard minute).** The desk's review
+deck now deals only *dressed* finds — a card needs a picture and a name — and
+the robot is what dresses bare pasted links. It signs in as a teammate, not a
+master key:
 
-**Meanwhile (practice mode) the desk is passphrase-gated.** One shared team
-passphrase, asked once per device before the name; case doesn't matter. Only
-its SHA-256 hash lives in the repo (`src/curate/config.js`) — the phrase
-itself was handed to you in chat and should travel by text, not by commit. To
-rotate: `node scripts/desk-pass.mjs "the new phrase"` → paste the hash into
-config → push. Be honest about what it is: a velvet rope on a static site
-that keeps passers-by out of the desk UI — real per-person auth is the live
-mode above, which ignores the passphrase entirely.
+8. **Authentication → Users → Add user → Create new user**:
+   `robot@tourarchive.us` (any address you control works), a long generated
+   password, **Auto Confirm User ✓**. Same row rules as every cofounder;
+   revoking it is one click in the same screen.
+9. Put `ROBOT_EMAIL=` and `ROBOT_PASSWORD=` in `.env` (see `.env.example` —
+   `.env` is gitignored; these never reach the site or CI).
+10. **Re-run `supabase/curation.sql`** in the SQL Editor (it is idempotent —
+    re-pasting the whole file is the intended flow). This adds the dressing
+    columns (`show_anyway`, `dress_tries`, `looked_at`). **Run the SQL before
+    caring about the robot** — the site works without it, but "Show it
+    anyway" taps error politely until the columns exist.
+
+The rounds are already scheduled: the task **TourArchiveDeskSweep** runs
+`scripts/desk-sweep.ps1` at 07:40 / 12:40 / 17:40 / 22:40 (as you, real
+browser, never git, catches up after the machine was off). Health check:
+
+    Get-Content "$env:LOCALAPPDATA\TourArchive\desk-sweep.log" -Tail 12
+    Get-ScheduledTaskInfo TourArchiveDeskSweep | Select LastRunTime, LastTaskResult
+
+Hand-run any time with `npm run curate:enrich` (`--dry` previews the queue,
+`--url <listing>` tests one page). The robot never touches `status`, never
+touches `show_anyway`, and stops the whole round after two bot walls — a wall
+is information about the session, not the listing. If it can't dress a find
+in three tries the desk says so on the row and a human can still tap **Show
+it anyway** — nobody's meeting ever depends on this machine being on.
+
+**The practice-mode passphrase** (hash in `src/curate/config.js`, rotate via
+`scripts/desk-pass.mjs`) is retired while live mode is on — real per-person
+auth replaced it. It only matters again if the Supabase keys are ever emptied.
 
 ---
 

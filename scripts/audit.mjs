@@ -280,6 +280,23 @@ for (const m of mainSrc.matchAll(importRx)) {
 }
 
 /* ------------------------------------------------------------------ */
+/* 7. Secret names must never appear under src/ — the robot's password  */
+/* and the Supabase master key belong to .env and the robot script only */
+/* ------------------------------------------------------------------ */
+
+for (const file of files) {
+  if (!file.includes('src')) continue;
+  const src = readFileSync(file, 'utf8');
+  const rel = relative(ROOT, file);
+  for (const name of ['ROBOT_PASSWORD', 'service_role', 'SERVICE_ROLE']) {
+    if (src.includes(name)) errors.push(`${rel}: references ${name} — that credential must never reach the bundle`);
+  }
+  if (src.includes('signInWithPassword') && !rel.endsWith(join('curate', 'data.js'))) {
+    errors.push(`${rel}: signInWithPassword outside src/curate/data.js — auth has one home`);
+  }
+}
+
+/* ------------------------------------------------------------------ */
 /* Report                                                              */
 /* ------------------------------------------------------------------ */
 

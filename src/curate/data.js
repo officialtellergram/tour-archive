@@ -118,6 +118,122 @@ export function displayTitle(find) {
   return words.length > 3 && !/^\d+$/.test(words) ? words : `Listing on ${host}`;
 }
 
+/* ------------------------------------------------------------------ */
+/* Dressed / undressed — ONE definition, used by the deck, the robot   */
+/* and the guide. Derived from what the CARD CAN SHOW, never from what */
+/* the robot did: a find dressed by hand in the drop form has no robot */
+/* history and must reach the deck the instant it is dropped.          */
+/* ------------------------------------------------------------------ */
+
+/**
+ * A find's photo resolved to something renderable — or null.
+ * `absolute` carries the vetted http(s) URL; `repo` carries a repo-relative
+ * path the page prefixes with the deploy base. This is the ONLY place that
+ * decides whether a photo string may become a `src`.
+ */
+export function photoRef(find) {
+  const p = String(find?.photo ?? '').trim();
+  if (!p) return null;
+  if (/^https?:\/\//i.test(p)) {
+    const href = validListingUrl(p);
+    return href ? { kind: 'absolute', value: href } : null;
+  }
+  if (!p.includes(':') && !p.startsWith('//') && /^[\w][\w./-]*$/.test(p)) {
+    return { kind: 'repo', value: p };
+  }
+  return null;
+}
+
+/** Words a person or the robot actually wrote. NOT displayTitle() — that
+    never returns empty, so testing it would mark every bare link as dressed. */
+export const hasName = (find) => String(find?.title ?? '').trim() !== '';
+
+/** THE definition. Picture + name. Price is deliberately not part of it. */
+export const isDressed = (find) => Boolean(photoRef(find)) && hasName(find);
+
+/** What a waiting find is short of — for an honest row, never for the gate. */
+export function missingBits(find) {
+  const noPhoto = !photoRef(find);
+  const noName = !hasName(find);
+  if (noPhoto && noName) return 'No picture or name yet.';
+  if (noPhoto) return 'No picture yet.';
+  if (noName) return 'No name yet.';
+  return '';
+}
+
+/** Tries after which the robot stops on its own. Shared with the robot. */
+export const DRESS_TRIES = 3;
+/** Hours the robot waits before try 1→2→3. Robot-only, but lives beside
+    DRESS_TRIES so the policy reads as one sentence. */
+export const DRESS_BACKOFF_HOURS = [3, 6, 24];
+/** Days after which an undressed find stops claiming "being dressed". */
+export const DRESS_STALE_DAYS = 7;
+
+/** dressed · sent-anyway · given-up · waiting, in that precedence order.
+    'dressed' beats 'sent-anyway' on purpose: once the robot dresses a find a
+    human forced through, the row stops shouting and just becomes a card.
+    'given-up' has three triggers: the robot spent its tries, the URL can
+    never be opened, or a week has passed with nothing to show — the last two
+    matter because bot walls deliberately never spend a try. */
+export function dressState(find, now = new Date()) {
+  if (isDressed(find)) return 'dressed';
+  if (find?.show_anyway) return 'sent-anyway';
+  if (Number(find?.dress_tries || 0) >= DRESS_TRIES) return 'given-up';
+  if (!validListingUrl(find?.url)) return 'given-up';
+  const created = Date.parse(find?.created_at ?? '');
+  if (!Number.isNaN(created) && now - created > DRESS_STALE_DAYS * 86400000) return 'given-up';
+  return 'waiting';
+}
+
+/** THE DECK GATE. Dressed, or explicitly sent through by a person.
+    Note 'given-up' does NOT auto-deal — a person still has to choose. */
+export const isDeckReady = (find) => isDressed(find) || Boolean(find?.show_anyway);
+
+/** How the unreviewed pile splits: dealable now vs still being dressed.
+    INVARIANT: deckSplit(f).ready + deckSplit(f).waiting === tally(f).new */
+export function deckSplit(finds, now = new Date()) {
+  const out = { ready: 0, waiting: 0, givenUp: 0 };
+  for (const f of finds) {
+    if (f.status !== 'new') continue;
+    if (isDeckReady(f)) { out.ready += 1; continue; }
+    out.waiting += 1;
+    if (dressState(f, now) === 'given-up') out.givenUp += 1;
+  }
+  return out;
+}
+
+/** Robot-side: is this undressed find due another look right now?
+    Cool-down comes from DRESS_BACKOFF_HOURS keyed by tries so the schedule
+    never dictates retry pressure — the policy does. */
+export function dueForRobot(find, now = new Date()) {
+  if (isDressed(find)) return false;
+  if (!validListingUrl(find?.url)) return false;
+  const tries = Number(find?.dress_tries || 0);
+  if (tries >= DRESS_TRIES) return false;
+  const last = Date.parse(find?.looked_at ?? '');
+  if (Number.isNaN(last)) return true;
+  const waitHours = DRESS_BACKOFF_HOURS[Math.min(tries, DRESS_BACKOFF_HOURS.length - 1)];
+  return now - last >= waitHours * 3600000;
+}
+
+/**
+ * The robot's title write is COWARDLY by design: one junk title makes a bare
+ * find "dressed" and deals an unusable card the desk can never fix (there is
+ * no edit affordance). Accept only a real og:title, of real length, that is
+ * not a bot-wall phrase or the bare marketplace name.
+ */
+export function cleanScrapedTitle(raw, sourceLabel = '') {
+  let t = String(raw ?? '').trim();
+  if (!t) return '';
+  t = t.replace(/\s*[|\-–—]\s*(eBay|Depop|Etsy|Grailed|Poshmark|Mercari|Vinted)\s*$/i, '').trim();
+  if (t.length < 8) return '';
+  if (/pardon our interruption|error page|access denied|verify you are a human|robot check|just a moment/i.test(t)) return '';
+  const bare = t.toLowerCase();
+  if (['ebay', 'depop', 'etsy', 'grailed', 'poshmark', 'mercari', 'vinted'].includes(bare)) return '';
+  if (sourceLabel && bare === String(sourceLabel).toLowerCase()) return '';
+  return t.slice(0, 140);
+}
+
 /** "Today" / "Yesterday" / "Tue 28 Jul" for pile grouping. */
 export function whenLabel(iso, now = new Date()) {
   const then = new Date(iso);
@@ -178,6 +294,9 @@ export const isLive = () => Boolean(SUPABASE_URL && SUPABASE_ANON_KEY) && !pract
 
 const LS_KEY = 'ta-curate-practice-v1';
 
+/** Dressing bookkeeping every find carries, in both modes, never undefined. */
+const DRESS_DEFAULTS = { show_anyway: false, dress_tries: 0, looked_at: null };
+
 /* Example finds so the first practice-mode visit demonstrates itself.
    Two carry photos (our own stock photography — guaranteed to render),
    one deliberately doesn't, so both card variants introduce themselves. */
@@ -198,12 +317,13 @@ const SEED = () => {
       decided_by: '',
       created_at: ago(1),
       decided_at: null,
+      ...DRESS_DEFAULTS,
     },
     {
       id: 'example-2',
       url: 'https://www.ebay.com/sch/i.html?_nkw=vintage+sun+faded+golf+pullover',
       title: 'Sun-faded golf pullover, crest intact',
-      note: 'Example with a photo — paste a picture link when you drop a find and the card shows the piece.',
+      note: 'Example with a photo — a card needs a picture and a name before it reaches the deck.',
       price: 45,
       source: 'eBay',
       photo: 'stock/sun-faded-golf-pullover.jpg',
@@ -213,12 +333,13 @@ const SEED = () => {
       decided_by: '',
       created_at: ago(2),
       decided_at: null,
+      ...DRESS_DEFAULTS,
     },
     {
       id: 'example-3',
       url: 'https://www.depop.com/search/?q=vintage%20izod%20lacoste%20cardigan',
       title: 'Izod Lacoste grandpa cardigan, 1980s',
-      note: 'Example without a photo — the card still works, it just talks instead of shows.',
+      note: 'Example without a photo — it waits in the pile until it has one. Tap “Show it anyway” to deal it as-is.',
       price: 42,
       source: 'Depop',
       photo: '',
@@ -228,6 +349,7 @@ const SEED = () => {
       decided_by: '',
       created_at: ago(2),
       decided_at: null,
+      ...DRESS_DEFAULTS,
     },
   ];
 };
@@ -239,7 +361,12 @@ const SEED = () => {
 function lsRead() {
   try {
     const parsed = JSON.parse(localStorage.getItem(LS_KEY) || 'null');
-    if (parsed && Array.isArray(parsed.finds)) return parsed;
+    if (parsed && Array.isArray(parsed.finds)) {
+      // pre-existing devices upgrade cleanly: every find gains the dressing
+      // fields (JSON round-trips drop undefined, so ...f can't re-hole them)
+      parsed.finds = parsed.finds.map((f) => ({ ...DRESS_DEFAULTS, ...f }));
+      return parsed;
+    }
   } catch {
     /* corrupt or unavailable — reseed */
   }
@@ -297,6 +424,9 @@ const practice = {
     if (dupe) return { ok: false, dupe };
     const entry = {
       ...find,
+      // defaults AFTER ...find, so a caller cannot smuggle show_anyway: true
+      // in through the drop form
+      ...DRESS_DEFAULTS,
       id: `f-${Date.now().toString(36)}-${practiceState.finds.length}`,
       status: 'new',
       decided_by: '',
@@ -315,6 +445,22 @@ const practice = {
     find.decided_at = status === 'new' ? null : new Date().toISOString();
     lsWrite(practiceState);
     return find;
+  },
+  async showAnyway(id) {
+    const find = practiceState.finds.find((f) => f.id === id);
+    if (!find || find.show_anyway) return null;
+    find.show_anyway = true;
+    lsWrite(practiceState);
+    return find;
+  },
+  async showAllAnyway(ids) {
+    const set = new Set(ids);
+    const hit = practiceState.finds.filter((f) => set.has(f.id) && !f.show_anyway);
+    hit.forEach((f) => {
+      f.show_anyway = true;
+    });
+    lsWrite(practiceState);
+    return hit;
   },
 };
 
@@ -338,6 +484,11 @@ const fromRow = (r) => ({
   decided_by: r.decided_by || '',
   created_at: r.created_at,
   decided_at: r.decided_at,
+  // dressing bookkeeping — coerced so a not-yet-migrated database reads as
+  // "nothing forced, never tried" instead of undefined-driven branches
+  show_anyway: r.show_anyway === true,
+  dress_tries: r.dress_tries ?? 0,
+  looked_at: r.looked_at ?? null,
 });
 
 const live = {
@@ -417,6 +568,30 @@ const live = {
     if (error) throw new Error(`Could not record the decision — ${error.message}`);
     return fromRow(data);
   },
+  // compare-and-set, so a teammate who got there first silently wins;
+  // maybeSingle() because zero matched rows is "already done", not an error
+  async showAnyway(id) {
+    const { data, error } = await supa
+      .from(FINDS_TABLE)
+      .update({ show_anyway: true })
+      .eq('id', id)
+      .eq('show_anyway', false)
+      .select()
+      .maybeSingle();
+    if (error) throw new Error(`Could not send it through — ${error.message}`);
+    return data ? fromRow(data) : null;
+  },
+  async showAllAnyway(ids) {
+    if (!ids.length) return [];
+    const { data, error } = await supa
+      .from(FINDS_TABLE)
+      .update({ show_anyway: true })
+      .in('id', ids)
+      .eq('show_anyway', false)
+      .select();
+    if (error) throw new Error(`Could not send them through — ${error.message}`);
+    return (data || []).map(fromRow);
+  },
 };
 
 let liveUser = null;
@@ -440,6 +615,8 @@ export const signOut = () => backend().signOut();
 export const listFinds = () => backend().list();
 export const addFind = (find) => backend().add(find);
 export const setStatus = (id, status, decidedBy) => backend().setStatus(id, status, decidedBy);
+export const showAnyway = (id) => backend().showAnyway(id);
+export const showAllAnyway = (ids) => backend().showAllAnyway(ids);
 
 /** Tallies for the stat row. */
 export function tally(finds) {

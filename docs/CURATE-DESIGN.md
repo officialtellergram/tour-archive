@@ -87,6 +87,34 @@ Undo re-deals the last card. The deck ends in a **verdict view**: the
 shortlist with links, mark-bought buttons, and a copy-to-clipboard summary for
 the group chat.
 
+## Dressed before dealt (added 4 Aug 2026)
+
+> A find is *dressed* when it has a picture that will render and a name
+> someone wrote. Dressed finds are dealt at the meeting; the rest wait on the
+> desk, visible, until the robot dresses them or a person taps "Show it
+> anyway". Price is shown when we have it and never holds a find back.
+
+The definition lives once, as pure functions in `src/curate/data.js`
+(`isDressed`, `dressState`, `isDeckReady`, `deckSplit`) — the deck, the desk
+and the robot all import it; there is no second copy. Readiness is derived
+from **content**, never from robot bookkeeping, so a find dressed by hand in
+the drop form reaches the deck the instant it is dropped. Price is excluded
+deliberately: auctions and Best Offer listings — the finds most worth arguing
+about — often have no readable price, and it is the robot's flakiest read.
+
+The robot (`scripts/curate-enrich.mjs`, scheduled as TourArchiveDeskSweep)
+signs in as a teammate account and writes only `photo_url`/`title`/
+`price_seen` plus its own bookkeeping (`dress_tries`, `looked_at`); the desk
+writes only `status`/`decided_*` and the override (`show_anyway`) — disjoint
+column sets, so the two writers cannot contend. Its title write is cowardly
+(`cleanScrapedTitle`): one junk title would deal an unfixable card. Bot walls
+never spend one of a find's three tries — a wall is information about the
+session — so a week-old undressed find is retired by staleness instead, and
+the row always carries the human route. **No cofounder's ability to review
+ever depends on the founder's machine being on**: every waiting find is
+visible with a reason, and "Show it anyway" / "Deal them anyway" put any find
+into the deck under the same row rules every teammate already has.
+
 ## Security notes
 
 Pasted URLs/titles/notes are the site's first untrusted input. Everything user-
@@ -108,4 +136,5 @@ design; all real protection is RLS (`to authenticated`) and invite-only auth.
   (built 4 Aug) reuses the ebay-peek mechanism to sweep the live pile and
   backfill og:image + missing title/price, one listing at a time. The in-form
   photo field remains the instant path and the practice-mode path.
-- **Passwords** — one more thing to forget; codes arrive where invites did.
+- ~~Passwords — one more thing to forget~~ — reversed once the mailer limits
+  surfaced; see the auth section above. Passwords won.
