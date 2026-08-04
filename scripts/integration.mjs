@@ -398,6 +398,9 @@ check('rate limits and server errors are marked retryable', () => {
 /* Curation Desk — the pure layer under the cofounder tool             */
 /* ------------------------------------------------------------------ */
 
+// the curate checks exercise the PRACTICE adapter — never the network —
+// regardless of whether live credentials are wired into config.js
+globalThis.__CURATE_FORCE_PRACTICE__ = true;
 const curate = await import('../src/curate/data.js');
 
 check('esc neutralises markup in untrusted text', () => {

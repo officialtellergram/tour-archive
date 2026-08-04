@@ -146,7 +146,11 @@ function probeExpr(route) {
     // survive across runs — a pre-passphrase seed would stall at the gate)
     let cur = null;
     try { cur = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch {}
-    if (!cur || !cur.unlocked || cur.seedV !== ${SEED_V}) {
+    if (!cur || !cur.unlocked || cur.seedV !== ${SEED_V} ||
+        localStorage.getItem('ta-curate-force-practice') !== '1') {
+      // force practice mode so the probe measures the desk without real
+      // credentials, even now that live keys ship in the bundle
+      localStorage.setItem('ta-curate-force-practice', '1');
       localStorage.setItem(KEY, ${JSON.stringify(CURATE_SEED)});
       location.reload();
       return JSON.stringify({ ready: 'seeding', mounted: false });

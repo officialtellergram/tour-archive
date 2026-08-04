@@ -159,7 +159,22 @@ export const verifyPassphrase = async (raw) => (await hashPassphrase(raw)) === D
 /* Mode selection                                                      */
 /* ------------------------------------------------------------------ */
 
-export const isLive = () => Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
+/**
+ * Test escape hatch: the integration suite and the layout probe exercise the
+ * practice adapter and the desk's layouts without credentials, so they can
+ * force practice mode. Scoped to a device/process — forcing it on a real
+ * visit only sandboxes that visitor's own browser.
+ */
+function practiceForced() {
+  if (globalThis.__CURATE_FORCE_PRACTICE__) return true;
+  try {
+    return typeof localStorage !== 'undefined' && localStorage.getItem('ta-curate-force-practice') === '1';
+  } catch {
+    return false;
+  }
+}
+
+export const isLive = () => Boolean(SUPABASE_URL && SUPABASE_ANON_KEY) && !practiceForced();
 
 const LS_KEY = 'ta-curate-practice-v1';
 

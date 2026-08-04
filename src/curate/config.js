@@ -12,8 +12,9 @@
  * (The service_role key is the secret one; it must never appear in this repo.)
  */
 
-export const SUPABASE_URL = '';
-export const SUPABASE_ANON_KEY = '';
+export const SUPABASE_URL = 'https://ulavwoubrjyvbbaxaweh.supabase.co';
+export const SUPABASE_ANON_KEY =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVsYXZ3b3Vicmp5dmJiYXhhd2VoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU4NTkwMDYsImV4cCI6MjEwMTQzNTAwNn0.iF-JECurhGfABhwq6cLeof9jjPJAjvpgvvR5GNYaRO8';
 
 /** Table name in Supabase — matches supabase/curation.sql. */
 export const FINDS_TABLE = 'curation_finds';

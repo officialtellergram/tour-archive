@@ -14,21 +14,14 @@ forever? This fixes that. Two pages, no app to install, works on your phone.
 
 ## Signing the desk
 
-The first visit on each device asks for two things:
+The desk is **live and shared** — one pile for the whole team. The first
+visit on each device asks for your **email and password**, which were handed
+out personally (there's no sign-up button on purpose; the desk is team-only).
+You stay signed in on that device after that — it's a one-time step per
+phone or computer.
 
-1. **The desk passphrase** — one phrase for the whole team, handed out in the
-   group chat or in person (capitals don't matter). Asked once per device,
-   then remembered. Don't have it? Any founder does.
-2. **Your first name** — so the team knows who found what.
-
-One honest catch — the desk currently runs in **practice mode**, and anything
-you add saves **only to your own device**. It's a sandbox until the shared
-database is switched on, so play freely, but don't retire the group chat yet.
-
-*(Once the shared desk goes live, the first visit on each device will instead
-ask for an email and password — handed out personally, no sign-up button on
-purpose. You stay signed in after that. Lost password? Text the Technical
-Officer; there's no email-reset, and that's deliberate — asking is faster.)*
+Lost the password? Text the Technical Officer; there's no email-reset, and
+that's deliberate — asking is faster.
 
 ## When you find something (10 seconds)
 
@@ -36,7 +29,7 @@ Officer; there's no email-reset, and that's deliberate — asking is faster.)*
 2. Open the **Procurement Desk** from your home screen.
 3. Paste the link and tap **Add to the pile**. A green **"Logged"** line
    appears under the button and the find lights up at the top of the pile —
-   if you see those, your entry is in.
+   if you see those, your entry is in and the whole team can see it.
 
 **Do add a few words in "What is it?"** — an eBay link with no title shows up
 at the meeting as a card that just says "Listing on ebay.com", and nobody can
