@@ -15,7 +15,7 @@
  */
 
 import { collections } from '../data/store.js';
-import { breadcrumb } from '../components/ui.js';
+import { breadcrumb, photoURL } from '../components/ui.js';
 import { toast, initMagnetic } from '../lib/motion.js';
 import { applyBaseToLinks } from '../lib/router.js';
 import {
@@ -24,11 +24,42 @@ import {
 } from '../curate/data.js';
 import { mountDeck } from '../curate/swipe.js';
 
-const money = (n) => (n || n === 0 ? `$${Number(n).toLocaleString('en-US')}` : '');
+const money = (n) =>
+  n || n === 0
+    ? `$${Number(n).toLocaleString('en-US', {
+        minimumFractionDigits: Number(n) % 1 ? 2 : 0,
+        maximumFractionDigits: 2,
+      })}`
+    : '';
 
 /** The one place an untrusted URL becomes an href — re-gated at render, not
     just at entry, because live mode lets any teammate account write the column. */
 const safeHref = (url) => esc(validListingUrl(url) || '#');
+
+/**
+ * A find's photo, gated for rendering — the same pipeline the archive uses
+ * (photoURL: absolute links pass through, repo paths get the deploy base).
+ * Absolute URLs must survive the http(s) gate; anything scheme-ish that
+ * isn't http(s) is refused before it can reach a src attribute.
+ */
+function findPhotoSrc(f) {
+  const p = String(f.photo || '');
+  if (!p) return '';
+  if (/^https?:\/\//i.test(p)) return validListingUrl(p) || '';
+  if (!p.includes(':') && !p.startsWith('//') && /^[\w][\w./-]*$/.test(p)) return photoURL(f);
+  return '';
+}
+
+/** Small square thumbnail for pile and verdict rows. ALWAYS rendered — blank
+    when there's no photo (or the image dies) so mixed lists keep one left edge. */
+function thumb(f) {
+  const src = findPhotoSrc(f);
+  if (!src) return `<span class="curate-thumb curate-thumb--blank" aria-hidden="true"></span>`;
+  return `<span class="curate-thumb" data-photo-slot>
+      <img src="${esc(src)}" alt="" loading="lazy" referrerpolicy="no-referrer"
+        onerror="this.parentElement.classList.add('curate-thumb--blank');this.remove()" />
+    </span>`;
+}
 
 /* ------------------------------------------------------------------ */
 /* Shared fragments                                                    */
@@ -248,6 +279,15 @@ const dropFormHTML = () => `
           <input name="price" type="number" min="0" step="0.01" inputmode="decimal" placeholder="$" />
         </label>
       </div>
+      <label><span class="eyebrow">Photo link <i>(optional)</i></span>
+        <input name="photo" inputmode="url" autocomplete="off" spellcheck="false"
+          placeholder="Long-press the listing’s photo → Copy image address, paste it here" />
+        <span class="curate-hint" data-photo-hint></span>
+      </label>
+      <div class="curate-photo-preview" data-photo-preview hidden>
+        <img alt="" referrerpolicy="no-referrer" />
+        <span class="curate-hint">This is what the card shows at the meeting</span>
+      </div>
       <label><span class="eyebrow">Why it caught your eye <i>(optional)</i></span>
         <textarea name="note" rows="2" maxlength="500" placeholder="Condition, crest, era — anything the team should weigh"></textarea>
       </label>
@@ -274,6 +314,7 @@ function pileRow(f) {
       : '';
   return `
   <li class="curate-row" data-status="${esc(f.status)}" data-find-id="${esc(f.id)}">
+    ${thumb(f)}
     <div class="curate-row-main">
       <span class="curate-row-tags">${sourceTag(f)}
         <span class="curate-status curate-status--${esc(f.status)}">${STATUS_COPY[f.status] || esc(f.status)}</span></span>
@@ -332,7 +373,7 @@ export function mountCurate(outlet) {
     const dirty =
       form &&
       (form.url.value.trim() || form.title.value.trim() || form.note.value.trim() ||
-        form.price.value || form.collection.value);
+        form.price.value || form.photo.value.trim() || form.collection.value);
     if (dirty) return;
     const user = curUser();
     if (user) show(user);
@@ -375,6 +416,48 @@ function wireDropForm(app, user, refresh) {
     untitledWarned = false;
   });
 
+  // Photo link: prove it renders the moment it's pasted, not at the meeting.
+  // photoState feeds the submit guard — a link the preview has PROVEN dead
+  // must not ride into the pile just because it parses as a URL.
+  let photoState = 'empty'; // empty | checking | ok | bad
+  let photoWarned = false;
+  const photoHint = app.querySelector('[data-photo-hint]');
+  const preview = app.querySelector('[data-photo-preview]');
+  const previewImg = preview?.querySelector('img');
+  if (previewImg) {
+    previewImg.addEventListener('load', () => {
+      photoState = 'ok';
+      preview.hidden = false;
+      photoHint.textContent = '';
+    });
+    previewImg.addEventListener('error', () => {
+      photoState = 'bad';
+      preview.hidden = true;
+      if (form.photo.value.trim())
+        photoHint.textContent =
+          'That link doesn’t load as a picture — long-press the photo itself and choose “Copy image address”.';
+    });
+    form.photo.addEventListener('input', () => {
+      const raw = form.photo.value.trim();
+      preview.hidden = true;
+      photoHint.textContent = '';
+      errorEl.textContent = '';
+      photoWarned = false;
+      if (!raw) {
+        photoState = 'empty';
+        return;
+      }
+      const src = validListingUrl(raw);
+      if (!src) {
+        photoState = 'bad';
+        photoHint.textContent = 'That doesn’t look like a link yet.';
+        return;
+      }
+      photoState = 'checking';
+      previewImg.src = src; // load/error handlers above take it from here
+    });
+  }
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     errorEl.textContent = '';
@@ -393,6 +476,21 @@ function wireDropForm(app, user, refresh) {
       noteEl.textContent = `No title — at the meeting this card will just say “${fallback}”. Add a few words about what it is, or press Add again to drop it as-is.`;
       return;
     }
+    const photoRaw = form.photo.value.trim();
+    let photo = photoRaw ? validListingUrl(photoRaw) : '';
+    if (photoRaw && !photo) {
+      errorEl.textContent = 'The photo link isn’t a web address — fix it or clear the field.';
+      return;
+    }
+    if (photo && photoState === 'bad') {
+      if (!photoWarned) {
+        photoWarned = true;
+        noteEl.textContent =
+          'That photo link doesn’t show a picture, so the card would arrive broken. Fix the link, or press Add again to drop the find without a photo.';
+        return;
+      }
+      photo = ''; // second press: their call — drop it photoless, never broken
+    }
     const button = form.querySelector('button[type="submit"]');
     button.disabled = true;
     try {
@@ -402,6 +500,7 @@ function wireDropForm(app, user, refresh) {
         note: form.note.value.trim(),
         price: form.price.value === '' ? null : Number(form.price.value),
         source: sourceOf(url),
+        photo: photo || '',
         collection: form.collection.value,
         submitted_by: user.name,
       });
@@ -510,7 +609,7 @@ export function curateReview() {
       </div>
       <div class="curate-app">
         <p class="curate-help curate-deck-hint" data-deck-hint>
-          <span class="nav-hide-sm">Keyboard: ← pass · → shortlist · Z undo &nbsp;·&nbsp; </span><a href="/curate">back to the desk</a>
+          <span class="deck-kbd">Keyboard: ← pass · → shortlist · Z undo &nbsp;·&nbsp; </span><a href="/curate">back to the desk</a>
         </p>
       </div>
     </div>
@@ -518,8 +617,18 @@ export function curateReview() {
 }
 
 function reviewCardHTML(f) {
+  const src = findPhotoSrc(f);
   return `
-  <div class="deck-card-body">
+  <div class="deck-card-body ${src ? 'deck-card-body--photo' : ''}">
+    ${
+      src
+        ? `<div class="deck-photo" data-photo-slot>
+            <img class="plate-photo" src="${esc(src)}" alt="${esc(displayTitle(f))}"
+              loading="lazy" referrerpolicy="no-referrer" draggable="false"
+              onerror="this.closest('[data-photo-slot]').style.display='none';this.closest('.deck-card-body').classList.remove('deck-card-body--photo')" />
+          </div>`
+        : ''
+    }
     <div class="deck-card-top">
       ${sourceTag(f)}
       ${f.price || f.price === 0 ? `<span class="deck-price">${money(f.price)}</span>` : ''}
@@ -545,6 +654,7 @@ function verdictHTML(decided) {
             .map(
               ({ card: f }) => `
               <li class="curate-row" data-status="shortlist">
+                ${thumb(f)}
                 <div class="curate-row-main">
                   <span class="curate-row-tags">${sourceTag(f)}</span>
                   <a class="curate-row-title" href="${safeHref(f.url)}" target="_blank" rel="noopener noreferrer">${esc(displayTitle(f))}&nbsp;↗</a>

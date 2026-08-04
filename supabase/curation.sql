@@ -14,6 +14,7 @@ create table if not exists public.curation_finds (
   note text,
   price_seen numeric,
   source text,                           -- eBay / Depop / Etsy / … inferred from hostname
+  photo_url text,                        -- optional picture link pasted by the finder
   suggested_collection text,             -- collection id from the site, optional
   submitted_by text,                     -- display name of the finder
   status text not null default 'new'
@@ -22,6 +23,10 @@ create table if not exists public.curation_finds (
   created_at timestamptz not null default now(),
   decided_at timestamptz
 );
+
+-- `create table if not exists` silently skips column additions on re-run, so
+-- late-added columns also get an explicit idempotent alter:
+alter table public.curation_finds add column if not exists photo_url text;
 
 create index if not exists curation_finds_status_idx
   on public.curation_finds (status, created_at desc);

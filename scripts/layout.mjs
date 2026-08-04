@@ -82,8 +82,13 @@ const PROBE = `(() => {
  * deliberately long, unbroken strings to stress wrapping), reloads once, and
  * only measures after the desk/deck has actually rendered.
  */
+/* Bump whenever the seed shape changes — probe profiles persist across runs,
+   and a stale seed silently un-measures whatever the new fields render. */
+const SEED_V = 2;
+
 const CURATE_SEED = JSON.stringify({
   name: 'Probe',
+  seedV: SEED_V,
   unlocked: true, // past the passphrase gate — the probe measures the desk, not the door
   finds: [
     {
@@ -93,6 +98,7 @@ const CURATE_SEED = JSON.stringify({
       note: 'Averyverylongunbrokenstringthatwouldblowoutanycontainerwithoutoverflowwrapanywhereonthecardbody plus a normal tail.',
       price: 1234.56,
       source: 'eBay',
+      photo: 'stock/slazenger-golden-horseshoe-wind-shirt.jpg',
       collection: '',
       submitted_by: 'Probe Teammate With A Long Name',
       status: 'new',
@@ -140,7 +146,7 @@ function probeExpr(route) {
     // survive across runs — a pre-passphrase seed would stall at the gate)
     let cur = null;
     try { cur = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch {}
-    if (!cur || !cur.unlocked) {
+    if (!cur || !cur.unlocked || cur.seedV !== ${SEED_V}) {
       localStorage.setItem(KEY, ${JSON.stringify(CURATE_SEED)});
       location.reload();
       return JSON.stringify({ ready: 'seeding', mounted: false });

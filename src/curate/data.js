@@ -163,17 +163,20 @@ export const isLive = () => Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
 
 const LS_KEY = 'ta-curate-practice-v1';
 
-/* Example finds so the first practice-mode visit demonstrates itself. */
+/* Example finds so the first practice-mode visit demonstrates itself.
+   Two carry photos (our own stock photography — guaranteed to render),
+   one deliberately doesn't, so both card variants introduce themselves. */
 const SEED = () => {
   const ago = (days) => new Date(Date.now() - days * 86400000).toISOString();
   return [
     {
       id: 'example-1',
-      url: 'https://www.ebay.com/sch/i.html?_nkw=vintage+izod+lacoste+cardigan+golf',
-      title: 'Izod Lacoste grandpa cardigan, 1980s',
+      url: 'https://www.ebay.com/sch/i.html?_nkw=slazenger+vintage+golf+wind+shirt',
+      title: 'Slazenger Golden Horseshoe wind shirt',
       note: 'Example find — swipe it away on the review page to see how this works.',
-      price: 42,
+      price: 48,
       source: 'eBay',
+      photo: 'stock/slazenger-golden-horseshoe-wind-shirt.jpg',
       collection: '',
       submitted_by: 'Example',
       status: 'new',
@@ -183,11 +186,12 @@ const SEED = () => {
     },
     {
       id: 'example-2',
-      url: 'https://www.ebay.com/sch/i.html?_nkw=slazenger+vintage+knit+golf+sweater',
-      title: 'Slazenger lambswool V-neck, made in UK',
-      note: 'Example find. Real ones appear here the moment a teammate pastes a link.',
-      price: 35,
+      url: 'https://www.ebay.com/sch/i.html?_nkw=vintage+sun+faded+golf+pullover',
+      title: 'Sun-faded golf pullover, crest intact',
+      note: 'Example with a photo — paste a picture link when you drop a find and the card shows the piece.',
+      price: 45,
       source: 'eBay',
+      photo: 'stock/sun-faded-golf-pullover.jpg',
       collection: '',
       submitted_by: 'Example',
       status: 'new',
@@ -197,11 +201,12 @@ const SEED = () => {
     },
     {
       id: 'example-3',
-      url: 'https://www.depop.com/search/?q=vintage%20golf%20pullover',
-      title: 'Sun-faded windshirt, crest intact',
-      note: 'Example find — the deck ends with a verdict you can copy to the group chat.',
-      price: 28,
+      url: 'https://www.depop.com/search/?q=vintage%20izod%20lacoste%20cardigan',
+      title: 'Izod Lacoste grandpa cardigan, 1980s',
+      note: 'Example without a photo — the card still works, it just talks instead of shows.',
+      price: 42,
       source: 'Depop',
+      photo: '',
       collection: '',
       submitted_by: 'Example',
       status: 'new',
@@ -311,6 +316,7 @@ const fromRow = (r) => ({
   note: r.note || '',
   price: r.price_seen ?? null,
   source: r.source || '',
+  photo: r.photo_url || '',
   collection: r.suggested_collection || '',
   submitted_by: r.submitted_by || '',
   status: r.status,
@@ -364,6 +370,7 @@ const live = {
       note: find.note || null,
       price_seen: find.price ?? null,
       source: find.source || null,
+      photo_url: find.photo || null,
       suggested_collection: find.collection || null,
       submitted_by: find.submitted_by || null,
     };

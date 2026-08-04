@@ -43,6 +43,13 @@ at the meeting as a card that just says "Listing on ebay.com", and nobody can
 vote on that. The desk will nudge you if you forget. Price and a note help
 too, but the title is the one that matters.
 
+**Want the card to show the actual piece?** Long-press the listing's photo →
+**Copy image** (or "Copy image address") → paste it into **Photo link**. A
+little preview appears under the field the moment the link works — if you see
+the preview, the meeting sees the picture. No preview? You probably copied
+the page link instead of the picture; long-press the photo itself and try
+again.
+
 If someone already dropped the same listing, the desk tells you who — nothing
 is added twice. If it says "Not a link", copy the address again from the
 browser bar or the app's Share button.

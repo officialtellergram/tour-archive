@@ -1725,11 +1725,11 @@ h3.display {
 
 .curate-hint {
   font-family: var(--sans);
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.03em;
   color: var(--green);
   min-height: 1em;
+  line-height: 1.5;
 }
 .curate-error,
 .curate-note {
@@ -1755,6 +1755,47 @@ h3.display {
 .curate-error:empty,
 .curate-note:empty {
   display: none;
+}
+
+/* live proof that a pasted photo link actually renders */
+.curate-photo-preview {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.curate-photo-preview[hidden] {
+  /* display:flex would silently defeat the hidden attribute */
+  display: none;
+}
+.curate-photo-preview img {
+  flex: 0 0 88px;
+  width: 88px;
+  height: 88px;
+  object-fit: cover;
+  border: 1px solid var(--rule);
+  background: var(--card);
+  display: block;
+}
+
+/* pile / verdict thumbnails — a miniature plate */
+.curate-thumb {
+  flex: 0 0 64px;
+  width: 64px;
+  height: 64px;
+  border: 1px solid var(--rule);
+  background: var(--card);
+  overflow: hidden;
+}
+.curate-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* photoless rows keep the slot so mixed lists share one left edge */
+.curate-thumb--blank {
+  border-color: transparent;
+  background: none;
 }
 .curate-help {
   font-size: 0.9rem;
@@ -1989,11 +2030,58 @@ h3.display {
 }
 
 .deck-card-body {
+  --deck-pad: clamp(1.4rem, 4vw, 2.2rem);
   height: 100%;
   display: grid;
   grid-template-rows: auto 1fr auto auto auto;
   gap: 0.9rem;
-  padding: clamp(1.4rem, 4vw, 2.2rem);
+  padding: var(--deck-pad);
+}
+/* with a photo, every row's height is deterministic — a flexible note row
+   collapsed to zero and overprinted the meta line, so the only flexible row
+   is the link's, which pins itself to the bottom edge */
+.deck-card-body--photo {
+  grid-template-rows: auto auto auto auto auto 1fr;
+  gap: 0.6rem;
+}
+.deck-card-body--photo .deck-link {
+  align-self: end;
+}
+.deck-photo {
+  height: clamp(130px, 18vh, 190px);
+  margin: calc(var(--deck-pad) * -1) calc(var(--deck-pad) * -1) 0;
+  border-bottom: 1px solid var(--rule);
+  overflow: hidden;
+  position: relative;
+}
+.deck-photo .plate-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.deck-card-body--photo .deck-title {
+  font-size: clamp(1.3rem, 3.6vw, 1.7rem);
+  align-self: start;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.deck-card-body--photo .deck-note {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.deck-card-body--photo .deck-meta {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  align-self: start;
 }
 .deck-card-top {
   display: flex;
@@ -2060,6 +2148,8 @@ h3.display {
   font-weight: 500;
   padding: 0.5rem 1rem;
   border: 3px double currentColor;
+  /* a paper scrim — the verdict must read over any photograph */
+  background: color-mix(in srgb, var(--card) 85%, transparent);
   opacity: 0;
   pointer-events: none;
 }
@@ -2168,12 +2258,17 @@ h3.display {
     justify-content: center;
     margin: 0 0 1.1rem;
   }
+  /* thumbnails keep their left column on phones — stacking the 64px square
+     on its own line made rows three times taller than their content */
   .curate-row {
-    flex-direction: column;
-    gap: 0.6rem;
+    flex-wrap: wrap;
+    gap: 0.6rem 0.9rem;
   }
   .curate-row .curate-textbtn {
     align-self: flex-start;
+  }
+  .deck-kbd {
+    display: none;
   }
   .deck-stage {
     height: min(58vh, 430px);

@@ -509,10 +509,16 @@ await checkAsync('practice adapter: seed, add, dupe, decide, undo', async () => 
     url: 'https://www.ebay.com/itm/407115514561',
     title: 'CC of Virginia quarter-zip',
     source: 'eBay',
+    photo: 'https://i.ebayimg.com/images/g/fake/s-l1600.jpg',
     submitted_by: 'Test',
   });
   assert(added.ok && added.find.id, 'add returns the stored find');
   equal(added.find.status, 'new', 'new find lands unreviewed');
+  equal(
+    added.find.photo,
+    'https://i.ebayimg.com/images/g/fake/s-l1600.jpg',
+    'photo link survives the round trip'
+  );
 
   const dupe = await curate.addFind({
     url: 'https://ebay.com/itm/407115514561/?utm_source=share&mkcid=16',
