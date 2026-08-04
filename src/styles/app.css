@@ -1757,24 +1757,93 @@ h3.display {
   display: none;
 }
 
-/* live proof that a pasted photo link actually renders */
+/* live proof that a pasted photo link actually renders — a miniature of the
+   meeting card itself, dealt onto the desk at a slight tilt */
 .curate-photo-preview {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.6rem;
+  flex-wrap: wrap;
 }
 .curate-photo-preview[hidden] {
   /* display:flex would silently defeat the hidden attribute */
   display: none;
 }
-.curate-photo-preview img {
-  flex: 0 0 88px;
-  width: 88px;
-  height: 88px;
-  object-fit: cover;
-  border: 1px solid var(--rule);
+.preview-card {
+  margin: 0.4rem 0 0.2rem 0.4rem;
+  width: 208px;
+  flex: 0 0 auto;
   background: var(--card);
+  border: 1px solid var(--rule-strong);
+  box-shadow: 0 16px 32px -20px color-mix(in srgb, var(--ink) 50%, transparent);
+  transform: rotate(-1.5deg);
+}
+.preview-photo {
   display: block;
+  height: 132px;
+  border-bottom: 1px solid var(--rule);
+  overflow: hidden;
+}
+.preview-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.preview-card figcaption {
+  padding: 0.7rem 0.85rem 0.85rem;
+  display: grid;
+  gap: 0.4rem;
+}
+.preview-tags {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-height: 1.1rem;
+}
+.preview-tags .plate-tag {
+  position: static;
+}
+.preview-price {
+  font-family: var(--display);
+  font-size: 1.05rem;
+  font-weight: 300;
+  color: var(--green);
+  margin-left: auto;
+}
+.preview-title {
+  font-family: var(--display);
+  font-size: 1.08rem;
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--ink);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.curate-photo-preview .curate-hint {
+  max-width: 30ch;
+}
+@keyframes preview-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) rotate(-1.5deg) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(-1.5deg) scale(1);
+  }
+}
+.curate-photo-preview:not([hidden]) .preview-card {
+  animation: preview-in 0.5s var(--ease) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .curate-photo-preview:not([hidden]) .preview-card {
+    animation: none;
+  }
 }
 
 /* pile / verdict thumbnails — a miniature plate */

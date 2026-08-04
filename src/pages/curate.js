@@ -285,8 +285,17 @@ const dropFormHTML = () => `
         <span class="curate-hint" data-photo-hint></span>
       </label>
       <div class="curate-photo-preview" data-photo-preview hidden>
-        <img alt="" referrerpolicy="no-referrer" />
-        <span class="curate-hint">This is what the card shows at the meeting</span>
+        <figure class="preview-card">
+          <span class="preview-photo"><img alt="" referrerpolicy="no-referrer" draggable="false" /></span>
+          <figcaption>
+            <span class="preview-tags">
+              <span class="plate-tag plate-tag--channel" data-preview-source hidden></span>
+              <span class="preview-price" data-preview-price></span>
+            </span>
+            <span class="preview-title" data-preview-title>Untitled find</span>
+          </figcaption>
+        </figure>
+        <p class="curate-hint">The card the meeting sees — title and price fill in as you type.</p>
       </div>
       <label><span class="eyebrow">Why it caught your eye <i>(optional)</i></span>
         <textarea name="note" rows="2" maxlength="500" placeholder="Condition, crest, era — anything the team should weigh"></textarea>
@@ -414,6 +423,7 @@ function wireDropForm(app, user, refresh) {
     noteEl.textContent = '';
     noteEl.classList.remove('curate-note--logged');
     untitledWarned = false;
+    syncPreviewMeta();
   });
 
   // Photo link: prove it renders the moment it's pasted, not at the meeting.
@@ -424,11 +434,31 @@ function wireDropForm(app, user, refresh) {
   const photoHint = app.querySelector('[data-photo-hint]');
   const preview = app.querySelector('[data-photo-preview]');
   const previewImg = preview?.querySelector('img');
+
+  // the miniature is a LIVE preview — title, price and source mirror the form
+  const syncPreviewMeta = () => {
+    if (!preview || preview.hidden) return;
+    const url = validListingUrl(form.url.value);
+    const title =
+      form.title.value.trim() || (url ? displayTitle({ title: '', url }) : '') || 'Untitled find';
+    preview.querySelector('[data-preview-title]').textContent = title;
+    const price = form.price.value === '' ? null : Number(form.price.value);
+    preview.querySelector('[data-preview-price]').textContent =
+      price || price === 0 ? money(price) : '';
+    const source = url ? sourceOf(url) : '';
+    const chip = preview.querySelector('[data-preview-source]');
+    chip.textContent = source;
+    chip.hidden = !source;
+  };
+  form.title.addEventListener('input', syncPreviewMeta);
+  form.price.addEventListener('input', syncPreviewMeta);
+
   if (previewImg) {
     previewImg.addEventListener('load', () => {
       photoState = 'ok';
       preview.hidden = false;
       photoHint.textContent = '';
+      syncPreviewMeta();
     });
     previewImg.addEventListener('error', () => {
       photoState = 'bad';
@@ -456,6 +486,19 @@ function wireDropForm(app, user, refresh) {
       photoState = 'checking';
       previewImg.src = src; // load/error handlers above take it from here
     });
+  }
+
+  // dev-only: /curate?preview-demo=1 fills the form so the miniature can be
+  // eyeballed without typing. Stripped from production builds by Vite.
+  if (import.meta.env?.DEV && new URLSearchParams(location.search).get('preview-demo') === '1') {
+    form.url.value = 'https://www.ebay.com/itm/407115514561';
+    form.title.value = 'Peter Millar CC of Virginia quarter-zip';
+    form.price.value = '75';
+    form.url.dispatchEvent(new Event('input'));
+    form.title.dispatchEvent(new Event('input'));
+    // 127.0.0.1 keeps the dotted-hostname gate happy where localhost cannot
+    form.photo.value = `${location.origin.replace('localhost', '127.0.0.1')}/stock/peter-millar-club-quarter-zip-navy.jpg`;
+    form.photo.dispatchEvent(new Event('input'));
   }
 
   form.addEventListener('submit', async (e) => {

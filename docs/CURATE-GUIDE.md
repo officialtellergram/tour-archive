@@ -38,8 +38,9 @@ too, but the title is the one that matters.
 
 **Want the card to show the actual piece?** Long-press the listing's photo →
 **Copy image** (or "Copy image address") → paste it into **Photo link**. A
-little preview appears under the field the moment the link works — if you see
-the preview, the meeting sees the picture. No preview? You probably copied
+miniature of the actual card appears under the field the moment the link
+works — photo, title and price, exactly what the meeting will see. No
+miniature? You probably copied
 the page link instead of the picture; long-press the photo itself and try
 again.
 
