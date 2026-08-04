@@ -12,7 +12,7 @@
 
 ---
 
-## 0. Curation Desk — switch on the shared room  ⏱ ~15 min, self-serve
+## 0. Procurement Desk — switch on the shared room  ⏱ ~15 min, self-serve
 
 The desk (`/curate` + `/curate/review`) works today in **practice mode** —
 per-device saves, seeded with examples, fine for showing the founders. Shared

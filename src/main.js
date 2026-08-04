@@ -38,7 +38,7 @@ route('/journal/:id', journalEntry, {
 route('/method', method, { title: 'Our Method' });
 route('/sell', sell, { title: 'Sell to Us' });
 route('/sizing', sizing, { title: 'Sizing & Condition' });
-route('/curate', curate, { title: 'Curation Desk' });
+route('/curate', curate, { title: 'Procurement Desk' });
 route('/curate/review', curateReview, { title: 'Review Session' });
 
 setNotFound(notFound);

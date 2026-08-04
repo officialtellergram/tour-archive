@@ -173,12 +173,12 @@ export function curate() {
   return `
   <section class="section" style="padding-top:calc(var(--header-h) + 4rem)">
     <div class="wrap">
-      ${breadcrumb([{ label: 'Home', href: '/' }, { label: 'Curation Desk' }])}
+      ${breadcrumb([{ label: 'Home', href: '/' }, { label: 'Procurement Desk' }])}
       <div class="coll-hero-grid" data-hero>
         <div>
           <p class="eyebrow" data-hero-meta><span>Acquisitions · team only</span></p>
-          <h1 class="display" style="margin:.6rem 0 1.2rem;font-size:clamp(2.6rem,6vw,5.5rem)">
-            <span class="line-mask"><span>The Curation</span></span>
+          <h1 class="display" style="margin:.6rem 0 1.2rem;font-size:clamp(2.6rem,6vw,5.5rem);font-weight:600">
+            <span class="line-mask"><span>The Procurement</span></span>
             <span class="line-mask"><span>Desk</span></span>
           </h1>
           <p class="lede" data-hero-cta>
@@ -273,7 +273,7 @@ function pileRow(f) {
       ? `<button class="curate-textbtn" data-mark="new" data-id="${esc(f.id)}">Back to the pile</button>`
       : '';
   return `
-  <li class="curate-row" data-status="${esc(f.status)}">
+  <li class="curate-row" data-status="${esc(f.status)}" data-find-id="${esc(f.id)}">
     <div class="curate-row-main">
       <span class="curate-row-tags">${sourceTag(f)}
         <span class="curate-status curate-status--${esc(f.status)}">${STATUS_COPY[f.status] || esc(f.status)}</span></span>
@@ -371,6 +371,7 @@ function wireDropForm(app, user, refresh) {
     hint.textContent = src ? `${src} — recognised` : '';
     errorEl.textContent = '';
     noteEl.textContent = '';
+    noteEl.classList.remove('curate-note--logged');
     untitledWarned = false;
   });
 
@@ -416,6 +417,18 @@ function wireDropForm(app, user, refresh) {
           : 'Saved to this device — the team sees it once the shared desk is on'
       );
       await refresh(user);
+      // the refresh rebuilt the DOM — confirm the entry on the FRESH card
+      // (a toast is gone in 3 seconds; this note stays until the next paste)
+      // and light up the row it landed in.
+      const freshNote = app.querySelector('[data-drop-note]');
+      if (freshNote) {
+        const waiting = app.querySelector('.curate-stats .stat b')?.textContent;
+        freshNote.textContent = `Logged — “${displayTitle(result.find)}” is in the pile${
+          waiting ? `, ${waiting} waiting for review` : ''
+        }.`;
+        freshNote.classList.add('curate-note--logged');
+      }
+      app.querySelector(`[data-find-id="${result.find.id}"]`)?.classList.add('is-new');
     } catch (err) {
       errorEl.textContent = err.message;
     } finally {
@@ -462,7 +475,7 @@ export function curateReview() {
     <div class="wrap">
       ${breadcrumb([
         { label: 'Home', href: '/' },
-        { label: 'Curation Desk', href: '/curate' },
+        { label: 'Procurement Desk', href: '/curate' },
         { label: 'Review' },
       ])}
       <div class="coll-hero-grid" data-hero>
@@ -556,7 +569,7 @@ function verdictHTML(decided) {
 function verdictText(decided) {
   const listed = decided.filter((d) => d.dir === 'right');
   const lines = [
-    `Tour Archive — curation verdict (${new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'short' })})`,
+    `Tour Archive — procurement verdict (${new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'short' })})`,
     `Shortlisted ${listed.length} of ${decided.length}:`,
     ...listed.map(({ card: f }) =>
       `• ${displayTitle(f)}${f.price || f.price === 0 ? ` — ${money(f.price)}` : ''}${f.source ? ` (${f.source})` : ''}\n  ${f.url}`

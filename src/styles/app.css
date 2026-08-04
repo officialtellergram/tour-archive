@@ -1746,6 +1746,12 @@ h3.display {
 .curate-note {
   color: var(--ink-soft);
 }
+/* the "your entry got logged" confirmation — persists until the next paste */
+.curate-note--logged {
+  color: var(--green);
+  border-left: 2px solid var(--green);
+  padding-left: 0.7rem;
+}
 .curate-error:empty,
 .curate-note:empty {
   display: none;
@@ -1847,6 +1853,27 @@ h3.display {
 .curate-row[data-status='pass'] .curate-row-title,
 .curate-row[data-status='pass'] .curate-row-note {
   color: var(--ink-faint);
+}
+/* a freshly logged find lands with a wash that settles into the pile */
+.curate-row.is-new {
+  animation: curate-row-landed 3s var(--ease) both;
+}
+@keyframes curate-row-landed {
+  0%,
+  35% {
+    background: color-mix(in srgb, var(--brass) 16%, transparent);
+    box-shadow: inset 3px 0 0 var(--green);
+  }
+  100% {
+    background: transparent;
+    box-shadow: inset 3px 0 0 transparent;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .curate-row.is-new {
+    animation: none;
+    box-shadow: inset 3px 0 0 var(--green);
+  }
 }
 .curate-row-main {
   display: grid;

@@ -1,4 +1,4 @@
-# The Curation Desk — how to use it (for the team)
+# The Procurement Desk — how to use it (for the team)
 
 You know how we send each other eBay links in the chat and they scroll away
 forever? This fixes that. Two pages, no app to install, works on your phone.
@@ -33,8 +33,10 @@ Officer; there's no email-reset, and that's deliberate — asking is faster.)*
 ## When you find something (10 seconds)
 
 1. In the eBay/Depop/wherever app, tap **Share → Copy link** on the listing.
-2. Open the **Curation Desk** from your home screen.
-3. Paste the link and tap **Add to the pile**.
+2. Open the **Procurement Desk** from your home screen.
+3. Paste the link and tap **Add to the pile**. A green **"Logged"** line
+   appears under the button and the find lights up at the top of the pile —
+   if you see those, your entry is in.
 
 **Do add a few words in "What is it?"** — an eBay link with no title shows up
 at the meeting as a card that just says "Listing on ebay.com", and nobody can

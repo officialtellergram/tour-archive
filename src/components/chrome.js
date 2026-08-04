@@ -112,7 +112,7 @@ function footerHTML() {
             <li><a href="/method">Our Method</a></li>
             <li><a href="/sell">Sell to Us</a></li>
             <li><a href="/sizing">Sizing &amp; Condition</a></li>
-            <li><a href="/curate">Curation Desk</a></li>
+            <li><a href="/curate">Procurement Desk</a></li>
             <li><a href="mailto:officialtellergram@gmail.com">Contact</a></li>
           </ul>
         </div>
