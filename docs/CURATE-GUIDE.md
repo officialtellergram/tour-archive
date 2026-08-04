@@ -50,6 +50,10 @@ the preview, the meeting sees the picture. No preview? You probably copied
 the page link instead of the picture; long-press the photo itself and try
 again.
 
+*(Once the shared desk is on: forgot the photo? Leave it — the desk's robot
+visits eBay/Depop finds before the meeting and fills in the picture, title
+and price on its own. The paste field just gets it there instantly.)*
+
 If someone already dropped the same listing, the desk tells you who — nothing
 is added twice. If it says "Not a link", copy the address again from the
 browser bar or the app's Share button.

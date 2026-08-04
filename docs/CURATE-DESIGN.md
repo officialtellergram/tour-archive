@@ -102,6 +102,10 @@ design; all real protection is RLS (`to authenticated`) and invite-only auth.
 - **Realtime sync** — meeting cadence doesn't need it; refetch on focus and
   after actions is indistinguishable in practice. Revisit if two people ever
   swipe the same deck simultaneously.
-- **Auto-fetching link titles/images** — cross-origin blocked in the browser;
-  needs an edge function. Queued as the first live-mode upgrade, not MVP.
+- **Auto-fetching link titles/images IN the browser** — cross-origin blocked,
+  and eBay bot-walls plain server fetches too; only a real browser gets the
+  page. So the automation lives out-of-band instead: `scripts/curate-enrich.mjs`
+  (built 4 Aug) reuses the ebay-peek mechanism to sweep the live pile and
+  backfill og:image + missing title/price, one listing at a time. The in-form
+  photo field remains the instant path and the practice-mode path.
 - **Passwords** — one more thing to forget; codes arrive where invites did.

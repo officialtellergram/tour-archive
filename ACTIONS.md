@@ -44,6 +44,17 @@ team data needs a Supabase project, which only you can create:
 **Never** put the `service_role` key anywhere in this repo or the frontend —
 that one bypasses every access rule. The desk only ever needs the anon key.
 
+**Once live, photos backfill themselves.** `npm run curate:enrich` sweeps the
+pile for finds missing a picture, opens each listing in the same robot browser
+ebay-peek uses (a real browser is the only thing eBay's walls let read), and
+writes back the og:image — plus the title and asking price when the finder
+skipped them. Needs `SUPABASE_SERVICE_ROLE_KEY` in `.env` (local only, never
+committed). `--dry` previews, `--max N` caps a sweep, `--url <listing>` tests
+one page. Run it before review meetings, or schedule it like the T42 radar —
+it paces itself: one page per find, four seconds apart, newest first. It
+cannot help practice mode: those piles live inside each cofounder's device,
+which is exactly why the drop form keeps its paste-a-photo-link field.
+
 **Meanwhile (practice mode) the desk is passphrase-gated.** One shared team
 passphrase, asked once per device before the name; case doesn't matter. Only
 its SHA-256 hash lives in the repo (`src/curate/config.js`) — the phrase
