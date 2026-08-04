@@ -3,7 +3,7 @@
 You know how we send each other eBay links in the chat and they scroll away
 forever? This fixes that. Two pages, no app to install, works on your phone.
 
-**The desk:** https://officialtellergram.github.io/tour-archive/curate
+**The desk:** https://tourarchive.us/curate
 
 ## Put it on your home screen (once, 20 seconds)
 
@@ -54,7 +54,7 @@ browser bar or the app's Share button.
 ## At the meeting
 
 Tap **Review the pile** on the desk (or go straight to
-https://officialtellergram.github.io/tour-archive/curate/review).
+https://tourarchive.us/curate/review).
 
 The pile comes up one card at a time, like a dating app:
 

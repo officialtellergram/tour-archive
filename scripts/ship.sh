@@ -14,7 +14,7 @@
 set -euo pipefail
 
 REPO="officialtellergram/tour-archive"
-BASE="https://officialtellergram.github.io/tour-archive"
+BASE="https://tourarchive.us"
 export PATH="$PATH:/c/Program Files/GitHub CLI"
 export GH_TOKEN="${GH_TOKEN:-$(printf 'protocol=https\nhost=github.com\n\n' | git credential fill 2>/dev/null | grep '^password=' | cut -d= -f2)}"
 

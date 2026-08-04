@@ -9,7 +9,7 @@
  *
  * Usage: node scripts/click-probe.mjs <baseUrl>
  *   e.g. node scripts/click-probe.mjs http://localhost:4180/tour-archive/
- *        node scripts/click-probe.mjs https://officialtellergram.github.io/tour-archive/
+ *        node scripts/click-probe.mjs https://tourarchive.us/
  */
 
 import { spawn } from 'node:child_process';
