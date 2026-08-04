@@ -12,6 +12,30 @@
 
 ---
 
+## 0a. tourarchive.us — point the domain at the site  ⏱ ~5 min + DNS wait
+
+Purchased 4 Aug 2026. Two halves, both one-time:
+
+1. **At the registrar (DNS records):**
+   - Apex `tourarchive.us` → four **A records**:
+     `185.199.108.153` · `185.199.109.153` · `185.199.110.153` · `185.199.111.153`
+   - `www` → **CNAME** to `officialtellergram.github.io`
+   - (Optional IPv6 AAAA: `2606:50c0:8000::153` / `:8001::153` / `:8002::153` / `:8003::153`)
+2. **Repo → Settings → Pages → Custom domain:** enter `tourarchive.us` → Save.
+   Wait for the DNS check to go green, then tick **Enforce HTTPS** (the
+   certificate can take from minutes to a few hours after DNS propagates).
+
+Nothing in the code needs touching — `configure-pages` hands the build `/`
+instead of `/tour-archive/` automatically on the next deploy, and the old
+github.io URL redirects. Aftercare (Claude's job, post-cutover): update the
+hardcoded origins in `scripts/ship.sh`, `scripts/click-probe.mjs`, the docs,
+and Supabase's Site URL. Heads-ups: the `.us` registry forbids WHOIS privacy
+(registrant info is public — registry policy, not a registrar upsell), and
+practice-mode desk piles don't migrate across origins (sandbox data; each
+device re-enters the passphrase once on the new domain).
+
+---
+
 ## 0. Procurement Desk — switch on the shared room  ⏱ ~15 min, self-serve
 
 The desk (`/curate` + `/curate/review`) works today in **practice mode** —
