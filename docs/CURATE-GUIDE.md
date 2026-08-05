@@ -32,17 +32,17 @@ that's deliberate — asking is faster.
    if you see those, your entry is in and the whole team can see it.
 
 **A card needs a picture and a name before it reaches the meeting.** Paste
-just the link and that's fine — the desk's robot visits the listing and
-brings back the picture, the title and the price on its own, usually within
-a few hours. Add the title yourself and the robot only has the picture left
-to fetch. Price never holds a find back.
+just the link and that's fine — **Tourbot** visits the listing and brings
+back the image, the title and the price on its own, usually within a few
+hours. Add the title yourself and Tourbot only has the image left to fetch.
+Price never holds a find back.
 
-**Why a find sometimes waits:** a find is *dressed* when it has a picture
-and a name someone (or the robot) wrote. Dressed finds are dealt at the
-meeting; the rest wait on the desk, visible, with a line saying exactly
-what's missing. If the robot can't get one — some sites won't open the door
-for it — the desk says so on the row, and you can tap **Show it anyway**:
-the card just arrives bare, and the robot keeps trying afterwards.
+**Why a find sometimes waits:** a card needs an image and a name before it
+is dealt. Anything still waiting shows on the desk with an "Image pending"
+note and a line saying what's missing. If Tourbot can't get one — some sites
+won't open the door for it — the desk says so on the row, and you can tap
+**View without images**: the card arrives written instead of pictured, and
+Tourbot keeps trying afterwards.
 
 If someone already dropped the same listing, the desk tells you who — nothing
 is added twice. If it says "Not a link", copy the address again from the
@@ -99,7 +99,8 @@ sitting above the pile.
 **Ready to review** (dressed finds waiting on the meeting's vote),
 **Shortlisted** (agreed we want it, not yet bought — *this one is a link*:
 tap it to jump to the shortlist block), **Bought** (in hand or on the way). Finds still being dressed are counted in the sentence under the
-numbers, with a note on each row saying what's missing.
+numbers ("Images for 2 items pending — Tourbot swept the listings 3h ago"),
+with a note on each row saying what's missing.
 
 ## The one rule
 

@@ -50,28 +50,37 @@ function findPhotoSrc(f) {
   return ref.kind === 'absolute' ? ref.value : photoURL(f);
 }
 
-/* --------------- who dresses the finds, said honestly --------------- */
+/* ------------- who fetches the images, said honestly ---------------- */
 
-/** Must never promise a robot on a device that has none. */
+/** Must never promise Tourbot on a device that has none. */
 const dresserLine = () =>
   isLive()
-    ? 'The robot visits the listing and brings back the picture, the title and the price.'
-    : 'Nothing fetches pictures in practice mode, so a practice find stays a bare link — “Show it anyway” deals it at the meeting.';
+    ? 'Tourbot fetches the image, title and price on its own.'
+    : 'Nothing fetches images in practice mode — “View without images” deals it at the meeting.';
 
 const keepsTryingLine = () =>
   isLive()
-    ? 'The robot keeps trying afterwards, so a picture that turns up later still lands on the card.'
+    ? 'Tourbot keeps trying afterwards — an image that turns up later still lands on the card.'
     : 'Practice finds keep whatever they were dropped with.';
 
-/** Global freshness — the machine-off signal. Practice mode says nothing. */
-function robotLine(finds) {
+/** "3h 12m ago" — compact, phone-glanceable. */
+function agoLabel(ms) {
+  const mins = Math.floor(ms / 60000);
+  if (mins < 1) return 'just now';
+  const d = Math.floor(mins / 1440);
+  const h = Math.floor((mins % 1440) / 60);
+  const m = mins % 60;
+  if (d) return `${d}d ${h}h ago`;
+  if (h) return `${h}h ${m}m ago`;
+  return `${m}m ago`;
+}
+
+/** Tourbot freshness — the machine-off signal. Practice mode says nothing. */
+function tourbotLine(finds) {
   if (!isLive()) return '';
   const stamps = finds.map((f) => Date.parse(f.looked_at)).filter((n) => !Number.isNaN(n));
-  if (!stamps.length) return 'The robot hasn’t been by yet.';
-  const w = whenLabel(new Date(Math.max(...stamps)).toISOString());
-  return w === 'Today' || w === 'Yesterday'
-    ? `The robot came by ${w.toLowerCase()}.`
-    : `The robot hasn’t been by since ${w}.`;
+  if (!stamps.length) return 'Tourbot hasn’t swept the listings yet.';
+  return `Tourbot swept the listings ${agoLabel(Date.now() - Math.max(...stamps))}.`;
 }
 
 /** Small square plate for pile, shortlist and verdict rows. ALWAYS rendered —
@@ -362,8 +371,8 @@ const dropFormHTML = () => `
     on the same line is a contradiction. */
 function newChip(f) {
   const s = dressState(f);
-  if (s === 'waiting') return ['dressing', 'Being dressed'];
-  if (s === 'given-up') return ['bare', 'Still bare'];
+  if (s === 'waiting') return ['dressing', 'Image pending'];
+  if (s === 'given-up') return ['bare', 'No image'];
   return ['new', 'Waiting for review']; // dressed OR sent-anyway → it's in the deck
 }
 
@@ -376,7 +385,7 @@ function pileRow(f) {
       : f.status === 'pass'
       ? `<button class="curate-textbtn" data-mark="new" data-id="${esc(f.id)}">Back to the pile</button>`
       : undressed && !f.show_anyway
-      ? `<button class="curate-textbtn" data-show-anyway data-id="${esc(f.id)}">Show it anyway</button>`
+      ? `<button class="curate-textbtn" data-show-anyway data-id="${esc(f.id)}">View without images</button>`
       : '';
   const [chipKey, chipText] =
     f.status === 'new' ? newChip(f) : [f.status, STATUS_COPY[f.status] || f.status];
@@ -395,10 +404,10 @@ function pileRow(f) {
           ? `<p class="curate-row-dress">${
               state === 'given-up'
                 ? isLive()
-                  ? `The robot couldn’t get what this card needs.${
-                      Number(f.dress_tries) ? ` Tried ${Number(f.dress_tries)} time${Number(f.dress_tries) === 1 ? '' : 's'}.` : ''
-                    } ${esc(missingBits(f))}`
-                  : `Nothing here fetches pictures, so this one stays a bare link. ${esc(missingBits(f))}`
+                  ? `Tourbot couldn’t get what this card needs${
+                      Number(f.dress_tries) ? ` — tried ${Number(f.dress_tries)} time${Number(f.dress_tries) === 1 ? '' : 's'}` : ''
+                    }. ${esc(missingBits(f))}`
+                  : `Nothing here fetches images. ${esc(missingBits(f))}`
                 : `${esc(missingBits(f))} ${esc(dresserLine())}`
             }</p>`
           : ''
@@ -406,7 +415,7 @@ function pileRow(f) {
       <p class="curate-row-meta">
         ${f.price || f.price === 0 ? `${money(f.price)} · ` : ''}found by ${esc(f.submitted_by || 'the team')} · ${esc(whenLabel(f.created_at))}
         ${f.status !== 'new' && f.decided_by ? ` · ${(STATUS_COPY[f.status] || f.status).toLowerCase()} by ${esc(f.decided_by)}` : ''}
-        ${f.status === 'new' && f.show_anyway && !isDressed(f) ? ' · shown anyway' : ''}
+        ${f.status === 'new' && f.show_anyway && !isDressed(f) ? ' · viewing without image' : ''}
       </p>
     </div>
     ${acted}
@@ -443,10 +452,9 @@ export function deskHTML(user, finds) {
   </div>
   ${
     split.waiting
-      ? `<p class="curate-help curate-dress-summary">${split.waiting} ${
-          split.waiting === 1 ? 'find is' : 'finds are'
-        } ${isLive() ? 'still being dressed' : 'still bare'} — a card needs a picture and a name before it reaches the deck.
-        ${esc(dresserLine())} ${esc(robotLine(finds))}</p>`
+      ? `<p class="curate-help curate-dress-summary">Images for ${split.waiting} item${
+          split.waiting === 1 ? '' : 's'
+        } pending — ${esc(isLive() ? tourbotLine(finds) : 'nothing fetches images in practice mode.')}</p>`
       : ''
   }
   ${
@@ -568,7 +576,7 @@ function wireDropForm(app, user, refresh) {
     if (!untitledWarned && !form.title.value.trim() && fallback.startsWith('Listing on ')) {
       untitledWarned = true;
       noteEl.textContent = `No title — this one won’t reach the deck until it has a name. Add a few words about what it is, or press Add again to drop it as-is${
-        isLive() ? ' and let the robot try' : ''
+        isLive() ? ' and let Tourbot try' : ''
       }.`;
       return;
     }
@@ -604,7 +612,7 @@ function wireDropForm(app, user, refresh) {
       const freshNote = app.querySelector('[data-drop-note]');
       if (freshNote) {
         freshNote.textContent = isLive()
-          ? `Logged — “${displayTitle(result.find)}” is in the pile. It’s being dressed: a card needs a picture and a name before it reaches the deck. ${dresserLine()}`
+          ? `Logged — “${displayTitle(result.find)}” is in the pile. ${dresserLine()}`
           : `Logged — “${displayTitle(result.find)}” is in the pile. ${dresserLine()}`;
         freshNote.classList.add('curate-note--logged');
       }
@@ -660,7 +668,7 @@ function wireDealAnyway(app, user, waiting, refresh) {
   btn.addEventListener('click', async () => {
     if (!armed) {
       armed = true;
-      btn.textContent = `Yes — deal ${waiting.length} as ${waiting.length === 1 ? 'it is' : 'they are'}`;
+      btn.textContent = `Yes — view ${waiting.length} without image${waiting.length === 1 ? '' : 's'}`;
       return;
     }
     btn.disabled = true;
@@ -776,7 +784,7 @@ export function verdictHTML(decided, waiting = [], deskShortlist = 0) {
   <div class="curate-card curate-verdict" data-verdict>
     <p class="eyebrow">The verdict</p>
     <h3 class="display" style="margin:.4rem 0 1rem">${
-      waiting.length ? `Deck done — ${waiting.length} still being dressed` : 'Pile clear'
+      waiting.length ? `Deck done — ${waiting.length} image${waiting.length === 1 ? '' : 's'} pending` : 'Pile clear'
     }${listed.length ? ` — ${listed.length} for the shortlist` : ''}</h3>
     ${
       listed.length
@@ -789,7 +797,7 @@ export function verdictHTML(decided, waiting = [], deskShortlist = 0) {
     ${
       waiting.length
         ? `<div style="margin-top:1rem">
-            <p class="eyebrow" style="margin-bottom:.4rem">Still being dressed</p>
+            <p class="eyebrow" style="margin-bottom:.4rem">Images pending</p>
             <ul class="curate-list">${waiting.map(pileRow).join('')}</ul>
           </div>`
         : ''
@@ -802,7 +810,7 @@ export function verdictHTML(decided, waiting = [], deskShortlist = 0) {
       }</p>
     <div class="curate-verdict-actions">
       ${listed.length ? `<button class="btn btn--solid" data-copy-verdict data-magnetic>Copy the shortlist</button>` : ''}
-      ${waiting.length ? `<button class="btn" data-deal-anyway data-magnetic>Deal them anyway (${waiting.length})</button>` : ''}
+      ${waiting.length ? `<button class="btn" data-deal-anyway data-magnetic>View without images (${waiting.length})</button>` : ''}
       ${deskOutButton(onDesk)}
     </div>
   </div>`;
@@ -851,14 +859,13 @@ export function mountCurateReview(outlet) {
       app.innerHTML = `
         ${deskBar(user)}
         <div class="curate-card">
-          <p class="eyebrow">Still being dressed</p>
+          <p class="eyebrow">Images pending</p>
           <h3 class="display" style="margin:.4rem 0 1rem">Nothing is ready to review yet</h3>
-          <p class="curate-help">${waiting.length} ${waiting.length === 1 ? 'find is' : 'finds are'} in the pile,
-            but ${waiting.length === 1 ? 'it hasn’t' : 'none have'} got both a picture and a name yet.
-            ${esc(dresserLine())} ${esc(robotLine(finds))}</p>
+          <p class="curate-help">Images for ${waiting.length} item${waiting.length === 1 ? '' : 's'} pending —
+            ${esc(isLive() ? tourbotLine(finds) : 'nothing fetches images in practice mode.')}</p>
           <ul class="curate-list" style="margin-top:1.2rem">${waiting.map(pileRow).join('')}</ul>
-          <p class="curate-help" style="margin-top:1rem">Show them as they are and the meeting gets a bare
-            link with whatever was typed. ${esc(keepsTryingLine())}</p>
+          <p class="curate-help" style="margin-top:1rem">View them without images and the meeting gets the
+            written card with whatever was typed. ${esc(keepsTryingLine())}</p>
           ${
             onDesk
               ? `<p class="curate-help" style="margin-top:.6rem">${shortlistCount(onDesk)} already on the
@@ -866,7 +873,7 @@ export function mountCurateReview(outlet) {
               : ''
           }
           <div class="curate-verdict-actions">
-            <button class="btn btn--solid" data-deal-anyway data-magnetic>Deal them anyway (${waiting.length})</button>
+            <button class="btn btn--solid" data-deal-anyway data-magnetic>View without images (${waiting.length})</button>
             ${deskOutButton(onDesk)}
           </div>
         </div>`;
@@ -904,7 +911,7 @@ export function mountCurateReview(outlet) {
     app.innerHTML = `
       ${deskBar(user, `<span class="curate-counter" data-deck-count>${pile.length} to review</span>` +
         `<span class="curate-counter" data-deck-shortlisted hidden>0 shortlisted</span>` +
-        (waiting.length ? `<span class="curate-waiting-note">${waiting.length} still being dressed</span>` : '')
+        (waiting.length ? `<span class="curate-waiting-note">${waiting.length} image${waiting.length === 1 ? '' : 's'} pending</span>` : '')
       )}
       <div class="deck-stage" data-deck-stage></div>
       <div class="deck-controls">
