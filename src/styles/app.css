@@ -1314,6 +1314,9 @@ h3.display {
   bottom: 2rem;
   transform: translate(-50%, 120%);
   z-index: 9995;
+  /* GLOBAL: a role="status" bar with no interactive children must never
+     swallow a tap — on short viewports it can sit over the deck's ✓/✕ */
+  pointer-events: none;
   background: var(--green);
   color: var(--parchment);
   padding: 0.95rem 1.6rem;
@@ -1757,95 +1760,6 @@ h3.display {
   display: none;
 }
 
-/* live proof that a pasted photo link actually renders — a miniature of the
-   meeting card itself, dealt onto the desk at a slight tilt */
-.curate-photo-preview {
-  display: flex;
-  align-items: center;
-  gap: 1.6rem;
-  flex-wrap: wrap;
-}
-.curate-photo-preview[hidden] {
-  /* display:flex would silently defeat the hidden attribute */
-  display: none;
-}
-.preview-card {
-  margin: 0.4rem 0 0.2rem 0.4rem;
-  width: 208px;
-  flex: 0 0 auto;
-  background: var(--card);
-  border: 1px solid var(--rule-strong);
-  box-shadow: 0 16px 32px -20px color-mix(in srgb, var(--ink) 50%, transparent);
-  transform: rotate(-1.5deg);
-}
-.preview-photo {
-  display: block;
-  height: 132px;
-  border-bottom: 1px solid var(--rule);
-  overflow: hidden;
-}
-.preview-photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-.preview-card figcaption {
-  padding: 0.7rem 0.85rem 0.85rem;
-  display: grid;
-  gap: 0.4rem;
-}
-.preview-tags {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  min-height: 1.1rem;
-}
-.preview-tags .plate-tag {
-  position: static;
-}
-.preview-price {
-  font-family: var(--display);
-  font-size: 1.05rem;
-  font-weight: 300;
-  color: var(--green);
-  margin-left: auto;
-}
-.preview-title {
-  font-family: var(--display);
-  font-size: 1.08rem;
-  font-weight: 400;
-  line-height: 1.25;
-  color: var(--ink);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-.curate-photo-preview .curate-hint {
-  max-width: 30ch;
-}
-@keyframes preview-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px) rotate(-1.5deg) scale(0.97);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) rotate(-1.5deg) scale(1);
-  }
-}
-.curate-photo-preview:not([hidden]) .preview-card {
-  animation: preview-in 0.5s var(--ease) both;
-}
-@media (prefers-reduced-motion: reduce) {
-  .curate-photo-preview:not([hidden]) .preview-card {
-    animation: none;
-  }
-}
-
 /* pile / verdict thumbnails — a miniature plate */
 .curate-thumb {
   flex: 0 0 64px;
@@ -1946,6 +1860,11 @@ h3.display {
 .curate-stats .stat:nth-child(3) {
   border-right: 0;
 }
+/* the shortlist tile is the only stat that leads anywhere; the hover lands on
+   the number because .stat b sets its own colour and would ignore the parent */
+.curate-stats a.stat:hover b {
+  color: var(--claret);
+}
 
 .curate-list {
   list-style: none;
@@ -1984,6 +1903,44 @@ h3.display {
     animation: none;
     box-shadow: inset 3px 0 0 var(--green);
   }
+}
+
+/* the shortlist plate — bigger, because a shortlist is looked at, not scanned.
+   Placed AFTER .curate-row so align-items:center actually wins source order. */
+.curate-row--shortlist {
+  align-items: center;
+}
+.curate-thumb--shortlist {
+  flex: 0 0 96px;
+  width: 96px;
+  height: auto; /* aspect-ratio can't drive a fixed height */
+  aspect-ratio: 1;
+  border-color: var(--rule-strong);
+}
+/* rows stay `cover`: at 96px a contained 3:4 leaves slivers that read as a
+   rendering fault. 38% seats the crop on the chest and the crest, not the hem. */
+.curate-thumb--shortlist img {
+  object-position: 50% 38%;
+}
+.curate-row-price {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 1.15rem;
+  font-weight: 300;
+  line-height: 1.2;
+  color: var(--green); /* on parchment green survives — off the scrim */
+}
+
+/* both doors into the shortlist — the stat tile and /curate#shortlist — land
+   here, and the header is fixed. Same clearance the deck stage uses. */
+.curate-shortlist {
+  scroll-margin-top: calc(var(--header-h) + 1rem);
+}
+
+/* the session counter is hidden until the first right-swipe — keep the
+   attribute authoritative even if this class ever grows a display of its own */
+.curate-counter[hidden] {
+  display: none;
 }
 .curate-row-main {
   display: grid;
@@ -2096,11 +2053,20 @@ h3.display {
   /* explicit width, not max-width: every child is absolutely positioned, so
      without it the grid item sizes to max-content — which is zero, and the
      whole deck renders invisible */
-  width: min(100%, 430px);
+  /* 420 × 560 is exactly 3:4 — the ratio of every photograph in public/stock
+     and of eBay's portrait s-l1600 crops. At that ratio `contain` and `cover`
+     are the same picture, so the safe fit costs nothing on the common case. */
+  width: min(100%, 420px);
   justify-self: center;
   margin: 0;
-  height: min(62vh, 470px);
+  height: min(72vh, 560px);
+  /* svh is the toolbar-down viewport: with the URL bar showing, 72vh
+     overshoots and pushes the ✓/✕ off screen. Older engines drop this line. */
+  height: min(72svh, 560px);
   scroll-margin-top: calc(var(--header-h) + 1rem);
+}
+.deck-controls {
+  scroll-margin-bottom: 1rem;
 }
 .deck-card {
   position: absolute;
@@ -2131,51 +2097,131 @@ h3.display {
   gap: 0.9rem;
   padding: var(--deck-pad);
 }
-/* with a photo, every row's height is deterministic — a flexible note row
-   collapsed to zero and overprinted the meta line, so the only flexible row
-   is the link's, which pins itself to the bottom edge */
+/* ---- the photo IS the card ---- */
 .deck-card-body--photo {
-  grid-template-rows: auto auto auto auto auto 1fr;
-  gap: 0.6rem;
+  --deck-fade: clamp(2.6rem, 8vw, 4rem); /* height of the scrim's fade AND the
+                                            caption's top padding — one number,
+                                            so no glyph can sit in weak alpha */
+  padding: 0;
+  gap: 0;
+  grid-template-rows: 1fr auto; /* photograph | caption */
 }
-.deck-card-body--photo .deck-link {
-  align-self: end;
-}
+
+/* inert unless the card is in photo mode: after the onerror demotion the
+   emptied slot must NOT become a sixth grid item and shift the text rows */
 .deck-photo {
-  height: clamp(130px, 18vh, 190px);
-  margin: calc(var(--deck-pad) * -1) calc(var(--deck-pad) * -1) 0;
-  border-bottom: 1px solid var(--rule);
+  display: none;
+}
+.deck-card-body--photo .deck-photo {
+  display: block;
+  position: absolute;
+  inset: 0;
+  /* -1 paints the photo above the card's own background but BELOW the card's
+     in-flow content — which is what lets the source chip escape the caption
+     and pin itself to the card's top-left with a single node */
+  z-index: -1;
+  margin: 0;
+  border: 0;
+  height: auto;
   overflow: hidden;
-  position: relative;
 }
 .deck-photo .plate-photo {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  /* the whole garment, always. cover cuts the sleeves off any listing photo
+     that isn't 3:4 — which is most of Depop and half of eBay. */
+  object-fit: contain;
+  /* only bites on off-ratio photos: seats them high, so free space collects
+     at the bottom where the scrim eats it, not at the top as a blank band */
+  object-position: 50% 15%;
 }
-.deck-card-body--photo .deck-title {
-  font-size: clamp(1.3rem, 3.6vw, 1.7rem);
-  align-self: start;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+
+/* ---- the caption: the scrim, and everything on it ---- */
+.deck-cap {
+  display: contents; /* text-only card = exactly the shipped grid */
 }
-.deck-card-body--photo .deck-note {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+.deck-card-body--photo .deck-cap {
+  display: grid;
+  grid-row: 2;
+  grid-template-rows: auto minmax(0, auto) auto; /* price | title | pill */
+  gap: 0.55rem;
+  align-content: end;
+  padding: var(--deck-fade) var(--deck-pad) clamp(1.1rem, 3vw, 1.5rem);
+  background: linear-gradient(
+    to top,
+    rgba(22, 21, 15, 0.9) 0%,
+    rgba(22, 21, 15, 0.86) calc(100% - var(--deck-fade)),
+    rgba(22, 21, 15, 0) 100%
+  );
+  color: var(--parchment);
 }
+.deck-card-body--photo .deck-note,
 .deck-card-body--photo .deck-meta {
+  display: none;
+}
+
+/* the source chip escapes to the card's top-left — .deck-cap is a static grid
+   item, so the nearest positioned ancestor is .deck-card itself */
+.deck-card-body--photo .deck-card-top .plate-tag {
+  position: absolute;
+  top: 0.9rem;
+  left: 0.9rem;
+  max-width: calc(100% - 1.8rem);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  /* green-on-green vanishes over a dark photograph: a light hairline + a hint
+     of shadow make the chip read as paper on any listing shot */
+  border-color: color-mix(in srgb, var(--parchment) 55%, transparent);
+  box-shadow: 0 6px 16px -10px rgba(22, 21, 15, 0.9);
+}
+
+.deck-card-body--photo .deck-price {
+  font-size: 1.25rem;
+  line-height: 1.1;
+  color: var(--parchment); /* NOT --green: green on ink is unreadable */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.deck-card-body--photo .deck-title {
+  font-size: clamp(1.5rem, 4.4vw, 2rem);
+  line-height: 1.12;
+  color: var(--parchment);
   align-self: start;
+  /* belt AND braces: the max-height holds even where line-clamp doesn't */
+  max-height: 2.24em; /* 2 × 1.12 */
+  min-height: 0;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* the outbound link: a bounded pill, and the card's only dead zone —
+   bottom-LEFT, out of the right thumb's resting arc */
+.deck-card-body--photo .deck-link {
+  justify-self: start;
+  max-width: min(60%, 15rem);
+  min-height: 44px;
+  padding: 0 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  color: var(--parchment);
+  border: 1px solid color-mix(in srgb, var(--parchment) 45%, transparent);
+  background: color-mix(in srgb, var(--ink) 35%, transparent);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.deck-card-body--photo .deck-link:hover {
+  background: color-mix(in srgb, var(--parchment) 92%, transparent);
+  border-color: var(--parchment);
+  color: var(--green);
 }
 .deck-card-top {
   display: flex;
@@ -2365,6 +2411,11 @@ h3.display {
     display: none;
   }
   .deck-stage {
-    height: min(58vh, 430px);
+    height: min(66vh, 500px);
+    height: min(66svh, 500px);
+  }
+  .curate-thumb--shortlist {
+    flex-basis: 72px;
+    width: 72px;
   }
 }

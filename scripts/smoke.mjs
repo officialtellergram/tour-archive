@@ -63,7 +63,9 @@ const { archive } = await import('../src/pages/archive.js');
 const { product } = await import('../src/pages/product.js');
 const { journalIndex, journalEntry } = await import('../src/pages/journal.js');
 const { method, sell, sizing, notFound } = await import('../src/pages/house.js');
-const { curate, curateReview } = await import('../src/pages/curate.js');
+const { curate, curateReview, deskHTML, verdictHTML, reviewCardHTML } = await import(
+  '../src/pages/curate.js'
+);
 
 const cases = [
   ['/', () => home()],
@@ -114,9 +116,55 @@ for (const [label, fn] of cases) {
   bytes += html.length;
 }
 
+/* ------------------------------------------------------------------ */
+/* Desk renderers — mount-time templates the routes never exercise.    */
+/* These are where a merge ships a ReferenceError behind a green CI:   */
+/* the route shells render, the desk blanks. No dead-end check here —  */
+/* reviewCardHTML legitimately emits only external hrefs.              */
+/* ------------------------------------------------------------------ */
+
+const smokeUser = { name: 'Smoke', email: '' };
+const dressed = {
+  id: 'sm-1', url: 'https://www.ebay.com/itm/1', title: 'Dressed find', note: 'A note.',
+  price: 55, source: 'eBay', photo: 'stock/x.jpg', collection: '', submitted_by: 'Smoke',
+  status: 'new', decided_by: '', created_at: '2026-08-01T12:00:00', decided_at: null,
+  show_anyway: false, dress_tries: 0, looked_at: null,
+};
+const bare = { ...dressed, id: 'sm-2', url: 'https://www.depop.com/products/x/', title: '', photo: '', price: null };
+const listed = { ...dressed, id: 'sm-3', status: 'shortlist', decided_by: 'Smoke' };
+
+const deskCases = [
+  ['deskHTML (with shortlist)', () => deskHTML(smokeUser, [dressed, bare, listed])],
+  ['deskHTML (no shortlist)', () => deskHTML(smokeUser, [dressed, bare])],
+  ['verdictHTML (shortlisted + waiting)', () => verdictHTML([{ card: dressed, dir: 'right' }, { card: bare, dir: 'left' }], [bare], 1)],
+  ['verdictHTML (nothing listed)', () => verdictHTML([{ card: bare, dir: 'left' }], [], 0)],
+  ['reviewCardHTML (photo)', () => reviewCardHTML(dressed)],
+  ['reviewCardHTML (text-only)', () => reviewCardHTML(bare)],
+];
+
+for (const [label, fn] of deskCases) {
+  let html;
+  try {
+    html = fn();
+  } catch (err) {
+    errors.push(`${label}: threw — ${err.message}`);
+    continue;
+  }
+  if (typeof html !== 'string' || html.trim().length < 100) {
+    errors.push(`${label}: rendered ${html?.length ?? 0} bytes (looks empty)`);
+    continue;
+  }
+  if (html.includes('${')) errors.push(`${label}: unresolved template literal in output`);
+  if (/>\s*undefined\s*</.test(html) || html.includes('undefined,'))
+    errors.push(`${label}: "undefined" leaked into the markup`);
+  if (html.includes('[object Object]')) errors.push(`${label}: "[object Object]" leaked into the markup`);
+  if (html.includes('NaN')) errors.push(`${label}: "NaN" leaked into the markup`);
+  rendered += 1;
+}
+
 const C = { red: '\x1b[31m', green: '\x1b[32m', dim: '\x1b[2m', off: '\x1b[0m' };
 console.log(`\n${C.dim}── Tour Archive · render smoke ──${C.off}`);
-console.log(`${C.dim}   ${rendered}/${cases.length} views rendered · ${(bytes / 1024).toFixed(0)} KB markup${C.off}`);
+console.log(`${C.dim}   ${rendered}/${cases.length + deskCases.length} views rendered · ${(bytes / 1024).toFixed(0)} KB markup${C.off}`);
 
 if (errors.length) {
   console.log(`\n${C.red}✖ ${errors.length} render error(s)${C.off}`);

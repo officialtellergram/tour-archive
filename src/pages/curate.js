@@ -56,7 +56,7 @@ function findPhotoSrc(f) {
 const dresserLine = () =>
   isLive()
     ? 'The robot visits the listing and brings back the picture, the title and the price.'
-    : 'Nothing fetches pictures in practice mode — paste a photo link when you drop a find, or show it anyway.';
+    : 'Nothing fetches pictures in practice mode, so a practice find stays a bare link — “Show it anyway” deals it at the meeting.';
 
 const keepsTryingLine = () =>
   isLive()
@@ -74,16 +74,57 @@ function robotLine(finds) {
     : `The robot hasn’t been by since ${w}.`;
 }
 
-/** Small square thumbnail for pile and verdict rows. ALWAYS rendered — blank
-    when there's no photo (or the image dies) so mixed lists keep one left edge. */
-function thumb(f) {
+/** Small square plate for pile, shortlist and verdict rows. ALWAYS rendered —
+    blank when there's no photo (or the image dies) so mixed lists keep one
+    left edge. `mod` selects a size variant; the photo gate never forks. */
+function thumb(f, mod = '') {
+  const cls = `curate-thumb${mod ? ` curate-thumb--${mod}` : ''}`;
   const src = findPhotoSrc(f);
-  if (!src) return `<span class="curate-thumb curate-thumb--blank" aria-hidden="true"></span>`;
-  return `<span class="curate-thumb" data-photo-slot>
+  if (!src) return `<span class="${cls} curate-thumb--blank" aria-hidden="true"></span>`;
+  return `<span class="${cls}" data-photo-slot>
       <img src="${esc(src)}" alt="" loading="lazy" referrerpolicy="no-referrer"
         onerror="this.parentElement.classList.add('curate-thumb--blank');this.remove()" />
     </span>`;
 }
+
+/** The only Mark-bought button in the file. */
+const markBoughtBtn = (f) =>
+  `<button class="curate-textbtn" data-mark="bought" data-id="${esc(f.id)}">Mark bought</button>`;
+
+/**
+ * THE shortlist row. One treatment, two consumers: the verdict list and the
+ * desk's shortlist block. Photo-forward but still a ledger — a bigger plate,
+ * the name and the price stacked beside it, the action where it always is.
+ * Never reads f.status/f.decided_by (verdict cards are deck objects whose
+ * local status is still 'new'); never emits data-find-id (the is-new
+ * highlighter's first-match query must keep hitting the pile).
+ */
+function shortlistRow(f, action = '') {
+  return `
+  <li class="curate-row curate-row--shortlist" data-status="shortlist">
+    ${thumb(f, 'shortlist')}
+    <div class="curate-row-main">
+      <span class="curate-row-tags">${sourceTag(f)}</span>
+      <a class="curate-row-title" href="${safeHref(f.url)}" target="_blank" rel="noopener noreferrer">${esc(displayTitle(f))}&nbsp;↗</a>
+      ${f.price || f.price === 0 ? `<p class="curate-row-price">${money(f.price)}</p>` : ''}
+      <p class="curate-row-meta">found by ${esc(f.submitted_by || 'the team')}</p>
+    </div>
+    ${action}
+  </li>`;
+}
+
+/**
+ * ONE address for the shortlist. Every screen that ends a review session gets
+ * this and only this way out. Falls back to the plain desk link when there is
+ * nothing to point at, so the fragment is never a dead address.
+ */
+const deskOutButton = (shortlisted, solid = false) =>
+  shortlisted
+    ? `<a class="btn${solid ? ' btn--solid' : ''}" href="/curate#shortlist" data-magnetic>See the shortlist</a>`
+    : `<a class="btn${solid ? ' btn--solid' : ''}" href="/curate" data-magnetic>Back to the desk</a>`;
+
+/** "One find is" / "3 finds are" — for the end-of-session screens. */
+const shortlistCount = (n) => (n === 1 ? 'One find is' : `${n} finds are`);
 
 /* ------------------------------------------------------------------ */
 /* Shared fragments                                                    */
@@ -273,8 +314,8 @@ export function curate() {
             <ol class="curate-steps">
               <li><b>Find.</b> eBay, Depop, a thrift aisle, anywhere. Copy the listing’s
               link — on a phone, Share → Copy link.</li>
-              <li><b>Drop.</b> Paste it into the desk, with a note if there is one.
-              It joins the pile the moment you do.</li>
+              <li><b>Drop.</b> Paste it into the desk. It joins the pile
+              the moment you do.</li>
               <li><b>Review.</b> At the meeting, the pile is taken one card at a time.
               Shortlisted finds keep their links, ready to buy.</li>
             </ol>
@@ -303,27 +344,6 @@ const dropFormHTML = () => `
           <input name="price" type="number" min="0" step="0.01" inputmode="decimal" placeholder="$" />
         </label>
       </div>
-      <label><span class="eyebrow">Photo link <i>(optional)</i></span>
-        <input name="photo" inputmode="url" autocomplete="off" spellcheck="false"
-          placeholder="Long-press the listing’s photo → Copy image address, paste it here" />
-        <span class="curate-hint" data-photo-hint></span>
-      </label>
-      <div class="curate-photo-preview" data-photo-preview hidden>
-        <figure class="preview-card">
-          <span class="preview-photo"><img alt="" referrerpolicy="no-referrer" draggable="false" /></span>
-          <figcaption>
-            <span class="preview-tags">
-              <span class="plate-tag plate-tag--channel" data-preview-source hidden></span>
-              <span class="preview-price" data-preview-price></span>
-            </span>
-            <span class="preview-title" data-preview-title>Untitled find</span>
-          </figcaption>
-        </figure>
-        <p class="curate-hint">The card the meeting sees — title and price fill in as you type.</p>
-      </div>
-      <label><span class="eyebrow">Why it caught your eye <i>(optional)</i></span>
-        <textarea name="note" rows="2" maxlength="500" placeholder="Condition, crest, era — anything the team should weigh"></textarea>
-      </label>
       <label><span class="eyebrow">Files under <i>(optional)</i></span>
         <select name="collection">
           <option value="">— let the meeting decide —</option>
@@ -352,7 +372,7 @@ function pileRow(f) {
   const undressed = f.status === 'new' && !isDressed(f);
   const acted =
     f.status === 'shortlist'
-      ? `<button class="curate-textbtn" data-mark="bought" data-id="${esc(f.id)}">Mark bought</button>`
+      ? markBoughtBtn(f)
       : f.status === 'pass'
       ? `<button class="curate-textbtn" data-mark="new" data-id="${esc(f.id)}">Back to the pile</button>`
       : undressed && !f.show_anyway
@@ -374,9 +394,11 @@ function pileRow(f) {
         undressed && !f.show_anyway
           ? `<p class="curate-row-dress">${
               state === 'given-up'
-                ? `The robot couldn’t get what this card needs.${
-                    Number(f.dress_tries) ? ` Tried ${Number(f.dress_tries)} time${Number(f.dress_tries) === 1 ? '' : 's'}.` : ''
-                  } ${esc(missingBits(f))}`
+                ? isLive()
+                  ? `The robot couldn’t get what this card needs.${
+                      Number(f.dress_tries) ? ` Tried ${Number(f.dress_tries)} time${Number(f.dress_tries) === 1 ? '' : 's'}.` : ''
+                    } ${esc(missingBits(f))}`
+                  : `Nothing here fetches pictures, so this one stays a bare link. ${esc(missingBits(f))}`
                 : `${esc(missingBits(f))} ${esc(dresserLine())}`
             }</p>`
           : ''
@@ -391,9 +413,10 @@ function pileRow(f) {
   </li>`;
 }
 
-function deskHTML(user, finds) {
+export function deskHTML(user, finds) {
   const t = tally(finds);
   const split = deckSplit(finds);
+  const listed = finds.filter((f) => f.status === 'shortlist');
   const rows = finds.map(pileRow).join('');
   const emptyCopy = isLive()
     ? 'Nothing here yet. Paste the first link above and it appears for the whole team.'
@@ -408,7 +431,12 @@ function deskHTML(user, finds) {
   ${dropFormHTML()}
   <div class="curate-stats">
     <div class="stat"><b>${split.ready}</b><span>Ready to review</span></div>
-    <div class="stat"><b>${t.shortlist}</b><span>Shortlisted</span></div>
+    ${
+      // the shortlist's front door. A dead link at 0 is worse than no link.
+      listed.length
+        ? `<a class="stat" href="#shortlist"><b>${listed.length}</b><span>Shortlisted</span></a>`
+        : `<div class="stat"><b>0</b><span>Shortlisted</span></div>`
+    }
     <div class="stat"><b>${t.bought}</b><span>Bought</span></div>
     <a class="btn btn--solid" href="/curate/review" data-magnetic
        style="align-self:center;justify-self:end">${cta}</a>
@@ -417,15 +445,30 @@ function deskHTML(user, finds) {
     split.waiting
       ? `<p class="curate-help curate-dress-summary">${split.waiting} ${
           split.waiting === 1 ? 'find is' : 'finds are'
-        } still being dressed — a card needs a picture and a name before it reaches the deck.
+        } ${isLive() ? 'still being dressed' : 'still bare'} — a card needs a picture and a name before it reaches the deck.
         ${esc(dresserLine())} ${esc(robotLine(finds))}</p>`
+      : ''
+  }
+  ${
+    listed.length
+      ? `<div class="curate-pile curate-shortlist" id="shortlist">
+          <div class="section-head" style="margin-bottom:1rem">
+            <div>
+              <p class="eyebrow">The shortlist</p>
+              <h3 class="display" style="margin-top:.5rem">${listed.length} waiting to be bought</h3>
+            </div>
+          </div>
+          <ul class="curate-list curate-list--shortlist">${listed
+            .map((f) => shortlistRow(f, markBoughtBtn(f)))
+            .join('')}</ul>
+        </div>`
       : ''
   }
   <div class="curate-pile">
     <div class="section-head" style="margin-bottom:1rem">
       <div>
         <p class="eyebrow">The pile</p>
-        <h3 class="display" style="margin-top:.5rem">Newest first</h3>
+        <h3 class="display" style="margin-top:.5rem">Everything, newest first</h3>
       </div>
     </div>
     ${
@@ -440,14 +483,19 @@ export function mountCurate(outlet) {
   const app = outlet.querySelector('[data-curate-app]');
   if (!app) return;
 
+  // /curate#shortlist arrives before the desk exists — the router scrolls to
+  // top and never reads the hash. Honour it here, ONCE per visit: focus
+  // refreshes and Mark-bought re-runs of show() must not yank the page down.
+  let hashHonoured = false;
+
   const mount = () => gate(app, show);
   wirePileRefreshOnFocus(app, () => {
     // returning from a listing tab must never eat a half-typed drop form
     const form = app.querySelector('[data-drop-form]');
     const dirty =
       form &&
-      (form.url.value.trim() || form.title.value.trim() || form.note.value.trim() ||
-        form.price.value || form.photo.value.trim() || form.collection.value);
+      (form.url.value.trim() || form.title.value.trim() ||
+        form.price.value || form.collection.value);
     if (dirty) return;
     const user = curUser();
     if (user) show(user);
@@ -469,6 +517,10 @@ export function mountCurate(outlet) {
     wireDropForm(app, user, show);
     wireMarks(app, user, show);
     wireShowAnyway(app, user, show);
+    if (!hashHonoured && location.hash === '#shortlist') {
+      hashHonoured = true; // one attempt per visit, found or not
+      app.querySelector('#shortlist')?.scrollIntoView({ block: 'start' });
+    }
   }
 
   mount();
@@ -489,7 +541,6 @@ function wireDropForm(app, user, refresh) {
     noteEl.textContent = '';
     noteEl.classList.remove('curate-note--logged');
     untitledWarned = false;
-    syncPreviewMeta();
   });
 
   // Photo link: prove it renders the moment it's pasted, not at the meeting.
@@ -500,72 +551,6 @@ function wireDropForm(app, user, refresh) {
   const photoHint = app.querySelector('[data-photo-hint]');
   const preview = app.querySelector('[data-photo-preview]');
   const previewImg = preview?.querySelector('img');
-
-  // the miniature is a LIVE preview — title, price and source mirror the form
-  const syncPreviewMeta = () => {
-    if (!preview || preview.hidden) return;
-    const url = validListingUrl(form.url.value);
-    const title =
-      form.title.value.trim() || (url ? displayTitle({ title: '', url }) : '') || 'Untitled find';
-    preview.querySelector('[data-preview-title]').textContent = title;
-    const price = form.price.value === '' ? null : Number(form.price.value);
-    preview.querySelector('[data-preview-price]').textContent =
-      price || price === 0 ? money(price) : '';
-    const source = url ? sourceOf(url) : '';
-    const chip = preview.querySelector('[data-preview-source]');
-    chip.textContent = source;
-    chip.hidden = !source;
-  };
-  form.title.addEventListener('input', syncPreviewMeta);
-  form.price.addEventListener('input', syncPreviewMeta);
-
-  if (previewImg) {
-    previewImg.addEventListener('load', () => {
-      photoState = 'ok';
-      preview.hidden = false;
-      photoHint.textContent = '';
-      syncPreviewMeta();
-    });
-    previewImg.addEventListener('error', () => {
-      photoState = 'bad';
-      preview.hidden = true;
-      if (form.photo.value.trim())
-        photoHint.textContent =
-          'That link doesn’t load as a picture — long-press the photo itself and choose “Copy image address”.';
-    });
-    form.photo.addEventListener('input', () => {
-      const raw = form.photo.value.trim();
-      preview.hidden = true;
-      photoHint.textContent = '';
-      errorEl.textContent = '';
-      photoWarned = false;
-      if (!raw) {
-        photoState = 'empty';
-        return;
-      }
-      const src = validListingUrl(raw);
-      if (!src) {
-        photoState = 'bad';
-        photoHint.textContent = 'That doesn’t look like a link yet.';
-        return;
-      }
-      photoState = 'checking';
-      previewImg.src = src; // load/error handlers above take it from here
-    });
-  }
-
-  // dev-only: /curate?preview-demo=1 fills the form so the miniature can be
-  // eyeballed without typing. Stripped from production builds by Vite.
-  if (import.meta.env?.DEV && new URLSearchParams(location.search).get('preview-demo') === '1') {
-    form.url.value = 'https://www.ebay.com/itm/407115514561';
-    form.title.value = 'Peter Millar CC of Virginia quarter-zip';
-    form.price.value = '75';
-    form.url.dispatchEvent(new Event('input'));
-    form.title.dispatchEvent(new Event('input'));
-    // 127.0.0.1 keeps the dotted-hostname gate happy where localhost cannot
-    form.photo.value = `${location.origin.replace('localhost', '127.0.0.1')}/stock/peter-millar-club-quarter-zip-navy.jpg`;
-    form.photo.dispatchEvent(new Event('input'));
-  }
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -587,31 +572,16 @@ function wireDropForm(app, user, refresh) {
       }.`;
       return;
     }
-    const photoRaw = form.photo.value.trim();
-    let photo = photoRaw ? validListingUrl(photoRaw) : '';
-    if (photoRaw && !photo) {
-      errorEl.textContent = 'The photo link isn’t a web address — fix it or clear the field.';
-      return;
-    }
-    if (photo && photoState === 'bad') {
-      if (!photoWarned) {
-        photoWarned = true;
-        noteEl.textContent =
-          'That photo link doesn’t show a picture, so the card would arrive broken. Fix the link, or press Add again to drop the find without a photo.';
-        return;
-      }
-      photo = ''; // second press: their call — drop it photoless, never broken
-    }
     const button = form.querySelector('button[type="submit"]');
     button.disabled = true;
     try {
       const result = await addFind({
         url,
         title: form.title.value.trim(),
-        note: form.note.value.trim(),
+        note: '', // the desk stopped asking; the column stays
         price: form.price.value === '' ? null : Number(form.price.value),
         source: sourceOf(url),
-        photo: photo || '',
+        photo: '', // the robot's column now — never the finder's
         collection: form.collection.value,
         submitted_by: user.name,
       });
@@ -633,9 +603,9 @@ function wireDropForm(app, user, refresh) {
       // a bare link is in the pile but NOT yet in the deck.
       const freshNote = app.querySelector('[data-drop-note]');
       if (freshNote) {
-        freshNote.textContent = isDressed(result.find)
-          ? `Logged — “${displayTitle(result.find)}” is in the pile, ready for the meeting.`
-          : `Logged — “${displayTitle(result.find)}” is in the pile. It’s being dressed: a card needs a picture and a name before it reaches the deck. ${dresserLine()}`;
+        freshNote.textContent = isLive()
+          ? `Logged — “${displayTitle(result.find)}” is in the pile. It’s being dressed: a card needs a picture and a name before it reaches the deck. ${dresserLine()}`
+          : `Logged — “${displayTitle(result.find)}” is in the pile. ${dresserLine()}`;
         freshNote.classList.add('curate-note--logged');
       }
       app.querySelector(`[data-find-id="${result.find.id}"]`)?.classList.add('is-new');
@@ -770,7 +740,7 @@ export function curateReview() {
   </section>`;
 }
 
-function reviewCardHTML(f) {
+export function reviewCardHTML(f) {
   const src = findPhotoSrc(f);
   return `
   <div class="deck-card-body ${src ? 'deck-card-body--photo' : ''}">
@@ -779,25 +749,29 @@ function reviewCardHTML(f) {
         ? `<div class="deck-photo" data-photo-slot>
             <img class="plate-photo" src="${esc(src)}" alt="${esc(displayTitle(f))}"
               loading="lazy" referrerpolicy="no-referrer" draggable="false"
-              onerror="this.closest('[data-photo-slot]').style.display='none';this.closest('.deck-card-body').classList.remove('deck-card-body--photo')" />
+              onerror="this.closest('.deck-card-body').classList.remove('deck-card-body--photo');this.remove()" />
           </div>`
         : ''
     }
-    <div class="deck-card-top">
-      ${sourceTag(f)}
-      ${f.price || f.price === 0 ? `<span class="deck-price">${money(f.price)}</span>` : ''}
+    <div class="deck-cap">
+      <div class="deck-card-top">
+        ${sourceTag(f)}
+        ${f.price || f.price === 0 ? `<span class="deck-price">${money(f.price)}</span>` : ''}
+      </div>
+      <h3 class="deck-title">${esc(displayTitle(f))}</h3>
+      <p class="deck-note">${f.note ? `“${esc(f.note)}”` : ''}</p>
+      <p class="deck-meta">Found by ${esc(f.submitted_by || 'the team')} · ${esc(whenLabel(f.created_at))}
+        ${f.collection ? ` · for ${esc(collections().find((c) => c.id === f.collection)?.name || f.collection)}` : ''}</p>
+      <a class="deck-link" href="${safeHref(f.url)}" target="_blank" rel="noopener noreferrer"
+         draggable="false">View the listing ↗</a>
     </div>
-    <h3 class="deck-title">${esc(displayTitle(f))}</h3>
-    <p class="deck-note">${f.note ? `“${esc(f.note)}”` : ''}</p>
-    <p class="deck-meta">Found by ${esc(f.submitted_by || 'the team')} · ${esc(whenLabel(f.created_at))}
-      ${f.collection ? ` · for ${esc(collections().find((c) => c.id === f.collection)?.name || f.collection)}` : ''}</p>
-    <a class="deck-link" href="${safeHref(f.url)}" target="_blank" rel="noopener noreferrer">View the listing ↗</a>
   </div>`;
 }
 
-function verdictHTML(decided, waiting = []) {
+export function verdictHTML(decided, waiting = [], deskShortlist = 0) {
   const listed = decided.filter((d) => d.dir === 'right');
   const passed = decided.length - listed.length;
+  const onDesk = deskShortlist + listed.length;
   return `
   <div class="curate-card curate-verdict" data-verdict>
     <p class="eyebrow">The verdict</p>
@@ -806,19 +780,8 @@ function verdictHTML(decided, waiting = []) {
     }${listed.length ? ` — ${listed.length} for the shortlist` : ''}</h3>
     ${
       listed.length
-        ? `<ul class="curate-list">${listed
-            .map(
-              ({ card: f }) => `
-              <li class="curate-row" data-status="shortlist">
-                ${thumb(f)}
-                <div class="curate-row-main">
-                  <span class="curate-row-tags">${sourceTag(f)}</span>
-                  <a class="curate-row-title" href="${safeHref(f.url)}" target="_blank" rel="noopener noreferrer">${esc(displayTitle(f))}&nbsp;↗</a>
-                  <p class="curate-row-meta">${f.price || f.price === 0 ? `${money(f.price)} · ` : ''}found by ${esc(f.submitted_by || 'the team')}</p>
-                </div>
-                <button class="curate-textbtn" data-mark="bought" data-id="${esc(f.id)}">Mark bought</button>
-              </li>`
-            )
+        ? `<ul class="curate-list curate-list--shortlist">${listed
+            .map(({ card: f }) => shortlistRow(f, markBoughtBtn(f)))
             .join('')}</ul>`
         : `<p class="curate-help">Nothing shortlisted this round.</p>`
     }
@@ -832,11 +795,15 @@ function verdictHTML(decided, waiting = []) {
         : ''
     }
     <p class="curate-help" style="margin-top:.6rem">This summary lives only on this screen —
-      copy it before you leave. The shortlist itself is safe on the desk.</p>
+      copy it before you leave. ${
+        onDesk
+          ? 'The finds themselves are safe on the desk, under The shortlist.'
+          : 'Every decision is saved on the desk — nothing here is lost.'
+      }</p>
     <div class="curate-verdict-actions">
       ${listed.length ? `<button class="btn btn--solid" data-copy-verdict data-magnetic>Copy the shortlist</button>` : ''}
       ${waiting.length ? `<button class="btn" data-deal-anyway data-magnetic>Deal them anyway (${waiting.length})</button>` : ''}
-      <a class="btn" href="/curate" data-magnetic>Back to the desk</a>
+      ${deskOutButton(onDesk)}
     </div>
   </div>`;
 }
@@ -875,6 +842,7 @@ export function mountCurateReview(outlet) {
     const pile = unreviewed.filter(isDeckReady).reverse();
     const waiting = unreviewed.filter((f) => !isDeckReady(f));
     const decided = [];
+    const onDesk = tally(finds).shortlist;
 
     // (b) nothing dealable, but finds ARE waiting — the screen this gate
     // exists for. Never says "empty" over an undealt pile.
@@ -891,9 +859,15 @@ export function mountCurateReview(outlet) {
           <ul class="curate-list" style="margin-top:1.2rem">${waiting.map(pileRow).join('')}</ul>
           <p class="curate-help" style="margin-top:1rem">Show them as they are and the meeting gets a bare
             link with whatever was typed. ${esc(keepsTryingLine())}</p>
+          ${
+            onDesk
+              ? `<p class="curate-help" style="margin-top:.6rem">${shortlistCount(onDesk)} already on the
+            shortlist, waiting to be bought — on the desk, under The shortlist.</p>`
+              : ''
+          }
           <div class="curate-verdict-actions">
             <button class="btn btn--solid" data-deal-anyway data-magnetic>Deal them anyway (${waiting.length})</button>
-            <a class="btn" href="/curate" data-magnetic>Back to the desk</a>
+            ${deskOutButton(onDesk)}
           </div>
         </div>`;
       applyBaseToLinks(app);
@@ -914,7 +888,9 @@ export function mountCurateReview(outlet) {
           <h3 class="display" style="margin:.4rem 0 1rem">The pile is empty</h3>
           <p class="curate-help">Every find has been reviewed. The desk is open
             when the next one turns up.</p>
-          <a class="btn btn--solid" href="/curate" data-magnetic style="margin-top:1rem">Back to the desk</a>
+          <div class="curate-verdict-actions" style="justify-content:center">
+            ${deskOutButton(onDesk, true)}
+          </div>
         </div>`;
       applyBaseToLinks(app);
       initMagnetic(app);
@@ -926,9 +902,10 @@ export function mountCurateReview(outlet) {
     // counter. It is a state, not a promise: the deck is a snapshot.
     if (hintEl) hintEl.style.display = '';
     app.innerHTML = `
-      ${deskBar(user, `<span class="curate-counter" data-deck-count>${pile.length} to review</span>${
-        waiting.length ? `<span class="curate-waiting-note">${waiting.length} still being dressed</span>` : ''
-      }`)}
+      ${deskBar(user, `<span class="curate-counter" data-deck-count>${pile.length} to review</span>` +
+        `<span class="curate-counter" data-deck-shortlisted hidden>0 shortlisted</span>` +
+        (waiting.length ? `<span class="curate-waiting-note">${waiting.length} still being dressed</span>` : '')
+      )}
       <div class="deck-stage" data-deck-stage></div>
       <div class="deck-controls">
         <button class="deck-btn deck-btn--pass" data-deck-pass type="button" aria-label="Pass">✕<small>Pass</small></button>
@@ -941,8 +918,20 @@ export function mountCurateReview(outlet) {
 
     const stage = app.querySelector('[data-deck-stage]');
     const counter = app.querySelector('[data-deck-count]');
+    const shortCounter = app.querySelector('[data-deck-shortlisted]');
     const undoBtn = app.querySelector('[data-deck-undo]');
     const controls = app.querySelector('.deck-controls');
+
+    // DERIVED, never incremented: undo pops `decided`, and a counter that only
+    // counts up would keep claiming a shortlist the desk no longer holds.
+    const paintShortlisted = () => {
+      if (!shortCounter) return;
+      const n = decided.reduce((sum, d) => sum + (d.dir === 'right' ? 1 : 0), 0);
+      shortCounter.textContent = `${n} shortlisted`;
+      shortCounter.hidden = n === 0;
+    };
+    // ONE toast, on the first right-swipe of the session — where the card went.
+    let saidWhereItGoes = false;
 
     const deck = mountDeck(stage, {
       cards: pile,
@@ -951,6 +940,11 @@ export function mountCurateReview(outlet) {
         decided.push({ card, dir });
         undoBtn.disabled = false;
         counter.textContent = `${deck.size()} to review`;
+        paintShortlisted();
+        if (dir === 'right' && !saidWhereItGoes) {
+          saidWhereItGoes = true;
+          toast('Shortlisted — it’s on the desk under The shortlist');
+        }
         setStatus(card.id, dir === 'right' ? 'shortlist' : 'pass', user.name).catch((err) =>
           toast(`Not saved — ${err.message}`)
         );
@@ -963,7 +957,7 @@ export function mountCurateReview(outlet) {
         app.querySelector('[data-deck-yes]').style.display = 'none';
         if (hintEl) hintEl.style.display = 'none';
         counter.textContent = 'done';
-        controls.insertAdjacentHTML('afterend', verdictHTML(decided, waiting));
+        controls.insertAdjacentHTML('afterend', verdictHTML(decided, waiting, onDesk));
         applyBaseToLinks(app);
         initMagnetic(app);
         wireShowAnyway(app, user, show);
@@ -1003,9 +997,15 @@ export function mountCurateReview(outlet) {
     // A phone lands with the deck below the fold; bring it into view once.
     requestAnimationFrame(() => {
       if (!controls.isConnected) return;
-      if (controls.getBoundingClientRect().bottom > window.innerHeight) {
-        stage.scrollIntoView({ block: 'start' });
-      }
+      const bottom = controls.getBoundingClientRect().bottom;
+      if (bottom <= window.innerHeight) return;
+      // The card grew, so on a short phone the card and the buttons may not
+      // both fit. Then the BUTTONS win: a half-seen card can still be swiped,
+      // an off-screen ✓ is a dead end. (The name and price live at the card's
+      // BOTTOM edge, so the buttons-first framing keeps them visible.)
+      const rig = bottom - stage.getBoundingClientRect().top;
+      if (rig + 12 <= window.innerHeight) stage.scrollIntoView({ block: 'start' });
+      else controls.scrollIntoView({ block: 'end' });
     });
 
     app.querySelector('[data-deck-pass]').addEventListener('click', () => deck.decide('left'));
@@ -1032,6 +1032,7 @@ export function mountCurateReview(outlet) {
       decided.pop();
       undoBtn.disabled = decided.length === 0;
       counter.textContent = `${deck.size()} to review`;
+      paintShortlisted();
       setStatus(last.card.id, 'new', user.name).catch((err) => toast(`Not saved — ${err.message}`));
     });
 

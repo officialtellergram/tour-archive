@@ -97,8 +97,11 @@ the group chat.
 The definition lives once, as pure functions in `src/curate/data.js`
 (`isDressed`, `dressState`, `isDeckReady`, `deckSplit`) — the deck, the desk
 and the robot all import it; there is no second copy. Readiness is derived
-from **content**, never from robot bookkeeping, so a find dressed by hand in
-the drop form reaches the deck the instant it is dropped. Price is excluded
+from **content**, never from robot bookkeeping: a find is dealt the moment it
+has a picture and a name, whoever supplied them. Since the drop form no longer
+collects a photo (see the rejected list), the supplier is the robot in live
+mode and nobody in practice mode — which is why every waiting row carries
+**Show it anyway**. Price is excluded
 deliberately: auctions and Best Offer listings — the finds most worth arguing
 about — often have no readable price, and it is the robot's flakiest read.
 
@@ -114,6 +117,60 @@ the row always carries the human route. **No cofounder's ability to review
 ever depends on the founder's machine being on**: every waiting find is
 visible with a reason, and "Show it anyway" / "Deal them anyway" put any find
 into the deck under the same row rules every teammate already has.
+
+## The card is the photograph (4 Aug 2026)
+
+The deliberation card was a text card with a 130–190px photo band on top;
+`object-fit: cover` in that band cropped a portrait hanger shot to a strip.
+Now the photograph *is* the card, and the name and price are laid over its
+lower edge.
+
+**Fit is `contain`, not `cover`**, on a stage cut to exactly 3:4 (420×560).
+Every photograph in `public/stock/` is 1200×1600, so on the common case the
+two are the same picture — `contain` covers 99.9% of the card. They diverge on
+everything else: a square Depop photo loses a quarter of its width to `cover`,
+a wide eBay hero loses 58%. `object-position: 50% 15%` seats an off-ratio
+photo high, so the parchment it doesn't cover collects at the bottom where the
+caption's scrim absorbs it.
+
+**The scrim is owned by the caption, never by the image.** The gradient's fade
+height and the caption's top padding are the same custom property
+(`--deck-fade`), so no glyph can ever sit in weak alpha; minimum alpha under
+text is .86, which measures 10.6:1 for `--parchment` over a pure-white
+photograph. `--green` survives only on parchment — on the scrim the price is
+`--parchment`. **Ink budget invariant: the opaque band (below the
+`--deck-fade` ramp) must not exceed 33% of card height at any width** — the
+title's 2-line cap and the dropped finder line are what buy it.
+
+**One HTML string is both cards.** A `.deck-cap` wrapper is `display:contents`
+on the text-only card (the shipped grid, row for row) and becomes the scrim
+box on the photo card. The photo slot is a *sibling* of the caption, so the
+runtime `onerror` demotion cannot delete the name and the price. The photo
+sits at `z-index:-1`, which lets the source chip escape the caption and pin
+itself to the card's top-left without a duplicate node. The note and the
+finder left the deck card — they live on desk pile rows.
+
+**Testing note:** `npm run layout` measures horizontal overflow only, which
+`object-fit` cannot cause, and `public/stock/` contains nothing but 3:4. The
+cover-vs-contain call is a manual eyeball; synthesise a square or wide card in
+devtools with a canvas (`drawImage` a stock photo into a 1200×1200 or
+1600×900 canvas, set the deck img's src to `canvas.toDataURL()`). This
+matters more now that the drop form no longer accepts a photo link — there is
+no other way to hand-make an off-ratio card.
+
+## One address for the shortlist (added 4 Aug 2026)
+
+The shortlist had a name and a count but no place: it existed as rows
+scattered through the pile and as a one-time verdict screen. It now has one
+canonical address — `/curate#shortlist` — and every other surface points at
+it: the desk's Shortlisted tile is a link to it, the deck keeps a running
+count in the deskbar and says once, on the first right-swipe, where the card
+went, and every end-of-session screen exits through the same button.
+Shortlisted finds stay in the pile as well; the pile is the ledger, and
+"nothing is deleted" is a promise, not a default. The fragment is honoured
+inside mountCurate rather than by the router, because the router scrolls to
+top before the desk exists — and exactly once per visit, or every tab focus
+would yank the reader back down.
 
 ## Security notes
 
@@ -134,7 +191,25 @@ design; all real protection is RLS (`to authenticated`) and invite-only auth.
   and eBay bot-walls plain server fetches too; only a real browser gets the
   page. So the automation lives out-of-band instead: `scripts/curate-enrich.mjs`
   (built 4 Aug) reuses the ebay-peek mechanism to sweep the live pile and
-  backfill og:image + missing title/price, one listing at a time. The in-form
-  photo field remains the instant path and the practice-mode path.
+  backfill og:image + missing title/price, one listing at a time.
+- **A photo-link field in the drop form** — shipped 4 Aug, removed the same
+  week, once the robot proved itself on real data. It asked a founder standing
+  in a thrift aisle to long-press a listing photo and paste an image address,
+  to do a job that now happens on its own within hours. It was never the
+  manual repair route people assumed: a find the robot gives up on is already
+  in the pile, and re-pasting its URL is refused as a duplicate, so the field
+  could only ever dress a find at the moment of first drop. The repair route
+  is, and always was, **Show it anyway** (per row) and **Deal them anyway**
+  (in bulk). The cost, stated plainly: **a practice-mode find can never gain
+  a picture** — the robot does not run there and no other write path exists.
+  Practice is a sandbox and its seeds ship with photos, so both card variants
+  still introduce themselves. The photo column, photoRef and isDressed are
+  untouched: the desk stopped collecting; nothing stopped storing or rendering.
+- **A per-row "add a picture" affordance on still-bare rows** — the obvious
+  reconciliation, deliberately not built. It is an *edit* affordance needing a
+  setPhoto write path neither adapter has, and in live mode it would put the
+  desk into photo_url — breaking the disjoint-writer split. A bare find
+  already has a one-tap remedy. Revisit only if a permanently-bare find ever
+  actually blocks a meeting.
 - ~~Passwords — one more thing to forget~~ — reversed once the mailer limits
   surfaced; see the auth section above. Passwords won.

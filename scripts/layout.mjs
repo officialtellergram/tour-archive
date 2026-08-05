@@ -84,7 +84,7 @@ const PROBE = `(() => {
  */
 /* Bump whenever the seed shape changes — probe profiles persist across runs,
    and a stale seed silently un-measures whatever the new fields render. */
-const SEED_V = 3;
+const SEED_V = 5;
 
 const CURATE_SEED = JSON.stringify({
   name: 'Probe',
@@ -103,7 +103,7 @@ const CURATE_SEED = JSON.stringify({
       submitted_by: 'Probe Teammate With A Long Name',
       status: 'new',
       decided_by: '',
-      created_at: '2026-08-01T12:00:00',
+      created_at: '2026-07-28T12:00:00',
       decided_at: null,
       dress_tries: 0,
       looked_at: null,
@@ -128,18 +128,24 @@ const CURATE_SEED = JSON.stringify({
       show_anyway: false,
     },
     {
+      // shortlisted AND dressed — renders the desk's shortlist block, so it
+      // carries a real photo and a name long enough to stress the row at 390px
       id: 'probe-3',
       url: 'https://www.ebay.com/itm/999999999903',
-      title: 'Already shortlisted piece',
+      title: 'Already shortlisted — a sun-faded Slazenger pullover, club crest intact, with an extraordinarily long name and nowhere to wrap it',
       note: 'Keeps the pile list showing a decided row.',
       price: 55,
       source: 'eBay',
+      photo: 'stock/sun-faded-golf-pullover.jpg',
       collection: '',
       submitted_by: 'Probe',
       status: 'shortlist',
       decided_by: 'Probe',
       created_at: '2026-07-30T12:00:00',
       decided_at: '2026-08-02T12:00:00',
+      dress_tries: 0,
+      looked_at: null,
+      show_anyway: false,
     },
     {
       // given-up: the "Still bare" chip + the longest reason line the UI makes
@@ -162,10 +168,11 @@ const CURATE_SEED = JSON.stringify({
     },
     {
       // sent-anyway with no photo: keeps the TEXT-ONLY deck card measured now
-      // that the gate would otherwise keep bare cards out of the deck
+      // that the gate would otherwise keep bare cards out of the deck. Its
+      // title carries the long/unbroken stress — this is the UNCLAMPED variant
       id: 'probe-5',
       url: 'https://www.depop.com/products/probe-shown-anyway/',
-      title: 'Shown-anyway piece with a real title',
+      title: 'Shown-anyway piece with an extraordinarily long unbroken Averyverylongunbrokenstringtitle name',
       note: 'Forced through by a person; the deck deals it bare.',
       price: 32,
       source: 'Depop',
@@ -178,6 +185,27 @@ const CURATE_SEED = JSON.stringify({
       decided_at: null,
       dress_tries: 1,
       looked_at: '2026-08-02T12:00:00',
+      show_anyway: true,
+    },
+    {
+      // shortlisted with NO photo: the photo-forward row's text-only fallback,
+      // reachable in production (Show it anyway → swipe right) and otherwise
+      // never measured at any width. Also priceless — three states at once.
+      id: 'probe-6',
+      url: 'https://www.depop.com/products/probe-bare-shortlist/',
+      title: 'Shortlisted but never dressed',
+      note: '',
+      price: null,
+      source: 'Depop',
+      photo: '',
+      collection: '',
+      submitted_by: 'Probe',
+      status: 'shortlist',
+      decided_by: 'Probe',
+      created_at: '2026-07-29T12:00:00',
+      decided_at: '2026-08-02T12:00:00',
+      dress_tries: 3,
+      looked_at: '2026-07-31T12:00:00',
       show_anyway: true,
     },
   ],

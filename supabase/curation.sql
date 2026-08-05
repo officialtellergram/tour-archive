@@ -14,7 +14,7 @@ create table if not exists public.curation_finds (
   note text,
   price_seen numeric,
   source text,                           -- eBay / Depop / Etsy / … inferred from hostname
-  photo_url text,                        -- optional picture link pasted by the finder
+  photo_url text,                        -- picture the robot brings back (scripts/curate-enrich.mjs)
   suggested_collection text,             -- collection id from the site, optional
   submitted_by text,                     -- display name of the finder
   status text not null default 'new'
