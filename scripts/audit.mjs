@@ -183,6 +183,39 @@ for (const c of collections) {
   }
 }
 
+/* Hero backdrop plates — audit harvests hrefs, never img srcs, so a typo'd
+   or deleted plate would otherwise ship a blank slide green. */
+{
+  const homeSrc = readFileSync(join(SRC, 'pages', 'home.js'), 'utf8');
+  const m = homeSrc.match(/const HERO_BACKDROPS\s*=\s*\[([\s\S]*?)\]/);
+  if (!m) {
+    errors.push('home.js: HERO_BACKDROPS is not defined — home() would throw');
+  } else {
+    const plates = [...m[1].matchAll(/['"]([^'"]+)['"]/g)].map((x) => x[1]);
+    if (plates.length !== 4)
+      errors.push(`home.js: HERO_BACKDROPS lists ${plates.length} plates — the rotation is built for 4`);
+    for (const p of plates) {
+      const clean = p.split('?')[0];
+      if (!clean.startsWith('hero/')) {
+        errors.push(`HERO_BACKDROPS "${p}" must be a hero/-relative path under public/`);
+        continue;
+      }
+      if (!/\?v=\d+$/.test(p))
+        warnings.push(`HERO_BACKDROPS "${p}" carries no ?v — Pages serves public/ unhashed behind a 600s cache; a re-encode would ship stale`);
+      try {
+        const st = statSync(join(ROOT, 'public', ...clean.split('/')));
+        if (st.size > 200 * 1024)
+          warnings.push(`${clean} is ${(st.size / 1024).toFixed(0)} KB — the plate budget is 200 KB; re-encode before it ships`);
+      } catch {
+        errors.push(`HERO_BACKDROPS "${clean}" is not on disk under public/ — that ships a blank slide behind the hero`);
+      }
+    }
+    const idxSrc = readFileSync(join(ROOT, 'index.html'), 'utf8');
+    if (plates[0] && !idxSrc.includes(plates[0]))
+      errors.push(`index.html does not reference HERO_BACKDROPS[0] "${plates[0]}" — the preload and slide 1 have drifted apart`);
+  }
+}
+
 /* ------------------------------------------------------------------ */
 /* 3. Harvest every internal link                                      */
 /* ------------------------------------------------------------------ */

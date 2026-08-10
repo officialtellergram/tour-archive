@@ -364,6 +364,81 @@ export async function closeDrawer(drawer) {
   drawer.classList.remove('is-open');
 }
 
+/* ------------------------------------------------------------------ */
+/* Home hero backdrop rotation                                         */
+/* ------------------------------------------------------------------ */
+
+/* module scope — shim-safe: inert declarations only (this module loads under
+   the render smoke's DOM shim; no module-level DOM work) */
+const HERO_HOLD_MS = 8000; // cadence; the 1400ms dissolve lives in CSS
+let heroTimer = null; //      singleton interval handle — the only one, ever
+
+/**
+ * Rotate the home hero backdrop. Wired via MOUNTS [/^\/$/] in main.js.
+ *
+ * The router has no unmount hook (outlet.innerHTML wipes the page), so this
+ * mount doubles as the previous visit's cleanup: clear-before-arm kills a
+ * stale timer even on a sub-8s home→away→home bounce, and the tick's
+ * liveness re-query self-disposes the timer when home is left for good.
+ * Never hold node references across ticks — they detach on every navigation.
+ */
+export function mountHeroBackdrop(outlet) {
+  clearInterval(heroTimer);
+  heroTimer = null;
+
+  // Reduced motion: slide 1 carries .is-on from the template and CSS shows it
+  // — the static plate needs zero JS, no timer, and slides 2–4 never fetch.
+  if (reduced) return;
+
+  const root = outlet || document;
+  const slides = root.querySelectorAll('[data-hero-backdrop] .hero-slide');
+  if (slides.length < 2) return; // only home has a backdrop
+
+  // Loader: the absent src IS the deferral (in-viewport loading="lazy" would
+  // fetch immediately). decode() rejection is "not ready yet" unless the
+  // fetch itself failed — a dead plate is pruned from rotation for good.
+  const load = (img) => {
+    if (!img || img.dataset.ready === '1' || img.dataset.dead === '1') return;
+    if (!img.src) img.src = img.dataset.src || '';
+    img.decode().then(
+      () => { img.dataset.ready = '1'; },
+      () => { if (img.complete && img.naturalWidth === 0) img.dataset.dead = '1'; }
+    );
+  };
+  load(slides[1]); // warm plate 2 during slide 1's first hold
+
+  heroTimer = setInterval(() => {
+    // Liveness FIRST — before the hidden check, so an away-navigated timer
+    // self-disposes even from a hidden tab's throttled fire.
+    const bg = document.querySelector('[data-hero-backdrop]');
+    if (!bg) {
+      clearInterval(heroTimer);
+      heroTimer = null;
+      return;
+    }
+    // Hidden tab holds the current plate: no class toggle, no invisible
+    // transitions completing in the background, zero cleanup.
+    if (document.hidden) return;
+
+    // DOM is the index bookkeeping — a remount restarts at slide 1.
+    const s = [...bg.querySelectorAll('.hero-slide')];
+    const cur = s.findIndex((el) => el.classList.contains('is-on'));
+    if (cur === -1) return;
+
+    let next = (cur + 1) % s.length;
+    while (next !== cur && s[next].dataset.dead === '1') next = (next + 1) % s.length;
+    if (next === cur) return;
+    const img = s[next];
+    load(img);
+    load(s[(next + 1) % s.length]); // decode-ahead: n+1 warms during n's dwell
+    const ready = img.dataset.ready === '1' || (img.complete && img.naturalWidth > 0);
+    if (!ready) return; // hold the current plate — order is editorial, never skip ahead
+
+    s[cur].classList.remove('is-on');
+    img.classList.add('is-on'); // CSS runs the 1400ms dissolve
+  }, HERO_HOLD_MS);
+}
+
 /** Toast used by the "Reserve" / signup actions. */
 let toastTimer;
 export function toast(message) {

@@ -202,6 +202,19 @@ for (const [label, fn] of deskCases) {
     errors.push('pdpMedia drawn: photo thumbs leaked into the drawn state');
 }
 
+/* Hero backdrop pins — the rotation's markup contract. */
+{
+  const hero = home();
+  const n = (hero.match(/class="hero-slide/g) || []).length;
+  if (n !== 4) errors.push(`home: expected 4 hero slides, got ${n}`);
+  if (!hero.includes('hero-slide is-on'))
+    errors.push('home: no slide marked is-on — first paint would be bare parchment');
+  if (/hero-slide[^>]*loading="lazy"/.test(hero))
+    errors.push('home: hero slides must not use loading="lazy" — in-viewport lazy fetches immediately; deferral is data-src + the loader');
+  if ((hero.match(/data-src="/g) || []).length !== 3)
+    errors.push('home: slides 2-4 must defer via data-src (exactly 3)');
+}
+
 const C = { red: '\x1b[31m', green: '\x1b[32m', dim: '\x1b[2m', off: '\x1b[0m' };
 console.log(`\n${C.dim}── Tour Archive · render smoke ──${C.off}`);
 console.log(`${C.dim}   ${rendered}/${cases.length + deskCases.length} views rendered · ${(bytes / 1024).toFixed(0)} KB markup${C.off}`);

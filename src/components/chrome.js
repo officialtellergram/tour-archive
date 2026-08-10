@@ -12,7 +12,6 @@ const BASE_URL = (import.meta.env?.BASE_URL || '/').replace(/\/*$/, '/');
 export const NAV_PRIMARY = [
   { label: 'Collections', href: '/collections' },
   { label: 'The Archive', href: '/archive' },
-  { label: 'Journal', href: '/journal' },
 ];
 
 export const NAV_SECONDARY = [
@@ -103,7 +102,6 @@ function footerHTML() {
             <li><a href="/collections">All Collections</a></li>
             <li><a href="/archive">The Archive</a></li>
             <li><a href="/archive?filter=available">Available Now</a></li>
-            <li><a href="/journal">Journal</a></li>
           </ul>
         </div>
         <div>

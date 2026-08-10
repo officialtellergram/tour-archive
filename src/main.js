@@ -7,6 +7,7 @@ import {
   initCursor,
   initMarquee,
   mountPageMotion,
+  mountHeroBackdrop,
   veilIn,
   veilOut,
 } from './lib/motion.js';
@@ -46,6 +47,7 @@ setNotFound(notFound);
 /* --------------------- per-route mount behaviours ------------------ */
 
 const MOUNTS = [
+  [/^\/$/, mountHeroBackdrop],
   [/^\/archive$/, mountArchive],
   [/^\/item\//, mountProduct],
   [/^\/sell$/, mountSell],

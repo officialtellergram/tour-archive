@@ -14,6 +14,21 @@ import { productCard, collectionTile, marquee, sectionHead } from '../components
 
 const BASE_URL = (import.meta.env?.BASE_URL || '/').replace(/\/*$/, '/');
 
+/**
+ * The Tour Championship backdrop plates, in rotation order. Slide 1 is the
+ * only plate near-native height in the hero slot, so it sits sharpest under
+ * the display text; the format outlier ran last until it became a JPEG.
+ * Paths are public/-relative; audit pins each to a file on disk, the 4-count,
+ * the ?v stamp (Pages serves public/ unhashed behind a 600s cache), and the
+ * index.html preload's agreement with slide 1.
+ */
+const HERO_BACKDROPS = [
+  'hero/east-lake-seventh.jpg?v=1',
+  'hero/east-lake-aerial.jpg?v=1',
+  'hero/fleetwood-tour-championship.jpg?v=1',
+  'hero/tour-championship-04.jpg?v=1',
+];
+
 /** Phase-aware status line for the featured event. */
 function eventStatus(event) {
   switch (event.phase) {
@@ -47,9 +62,17 @@ export function home() {
 
   return `
   <section class="hero" data-hero>
-    <div class="hero-bg"></div>
+    <div class="hero-bg" data-hero-backdrop>
+      ${HERO_BACKDROPS.map((p, i) =>
+        i === 0
+          ? `<img class="hero-slide is-on" src="${BASE_URL}${p}" alt="" aria-hidden="true"
+              fetchpriority="high" decoding="async" />`
+          : `<img class="hero-slide" data-src="${BASE_URL}${p}" alt="" aria-hidden="true"
+              decoding="async" />`
+      ).join('')}
+    </div>
     <div class="wrap hero-inner">
-      <img class="hero-logo" src="${BASE_URL}brand/logo.png" alt="Tour Archive" data-hero-cta />
+      <img class="hero-logo" src="${BASE_URL}brand/logo.png?v=2" alt="Tour Archive" data-hero-cta />
       ${
         ev && coll
           ? `

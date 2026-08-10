@@ -8,6 +8,25 @@
       name="description"
       content="Vintage and thrifted golf apparel catalogued by the championship it belongs to. One of one, every piece."
     />
+    <!-- Home route only: start hero plate 1 alongside the module/font fetches
+         (the SPA renders the hero after boot, so the preload scanner never sees
+         it). Path must equal HERO_BACKDROPS[0] in src/pages/home.js — audit
+         pins the two together. setAttribute keeps audit's href harvest quiet.
+         Sits before the fonts link so it runs at parse time. -->
+    <script>
+      (function () {
+        var base = '%BASE_URL%';
+        var p = location.pathname;
+        if (p.indexOf(base) === 0) p = '/' + p.slice(base.length);
+        if (p.replace(/\/+$/, '') !== '' && p !== '/') return;
+        var l = document.createElement('link');
+        l.setAttribute('rel', 'preload');
+        l.setAttribute('as', 'image');
+        l.setAttribute('fetchpriority', 'low');
+        l.setAttribute('href', base + 'hero/east-lake-seventh.jpg?v=1');
+        document.head.appendChild(l);
+      })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -15,15 +34,15 @@
       rel="stylesheet"
     />
     <!-- The TA signature mark. Vite prefixes %BASE_URL% at build time. -->
-    <link rel="icon" type="image/png" href="%BASE_URL%brand/favicon.png" />
-    <link rel="apple-touch-icon" href="%BASE_URL%brand/lockup.png" />
+    <link rel="icon" type="image/png" href="%BASE_URL%brand/favicon.png?v=2" />
+    <link rel="apple-touch-icon" href="%BASE_URL%brand/lockup.png?v=2" />
     <meta property="og:title" content="Tour Archive — Vintage golf, sourced by tournament" />
     <meta
       property="og:description"
       content="Vintage and thrifted golf apparel catalogued by the championship it belongs to. First drop opens with the 2026 TOUR Championship."
     />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="%BASE_URL%brand/lockup.png" />
+    <meta property="og:image" content="%BASE_URL%brand/lockup.png?v=2" />
     <meta name="twitter:card" content="summary" />
   </head>
   <body>
