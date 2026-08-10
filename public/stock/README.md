@@ -43,5 +43,28 @@ push — the site strikes the price and marks it "Sold — archive reference".
 This is the one recurring manual duty of running without the APIs; miss it and
 buyers click through to a dead listing.
 
+## Archiving a listing's full photo set (no API needed)
+
+One photograph sells the card; the listing carries the rest. When a piece is
+live on eBay, pull its whole carousel into the repo:
+
+1. Make sure the entry has its `"channel": "ebay"` and `listingUrl` (above).
+2. Run `npm run photos`. It visits each eBay-listed entry that has no `photos`
+   yet — the way a browser would — and saves every carousel frame, full size,
+   to `public/stock/carousel/<slug>/`.
+3. Commit + push. The product page now shows every view; the card keeps its
+   hero photo.
+
+The pull writes exactly one field, `photos` (plus a `_photosPulled` date), and
+never overwrites a `photos` array you have edited — prune a duplicate frame or
+reorder views right here in the manifest; the paths are relative to this
+folder, forward slashes, eight frames at most. Re-pull one piece after a
+relist with `npm run photos -- --refresh <id>`.
+
+The frames are our own copies — never paste an `i.ebayimg.com` URL; eBay image
+links die when a listing ends or relists, and the audit refuses them. Listing
+photos die with the listing: pull before the relist, not after. Run it on its
+own — the pull and the ingest both rewrite the manifest, one at a time.
+
 Keep files under ~1.5 MB each (they ship with the site). The ingest warns on
 oversized files.

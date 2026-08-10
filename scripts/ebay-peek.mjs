@@ -8,6 +8,7 @@
  */
 import { spawn } from 'node:child_process';
 import { existsSync } from 'node:fs';
+import { PEEK_UA } from './lib/stock-constants.mjs';
 
 const BROWSER = [
   'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
@@ -51,7 +52,7 @@ const child = spawn(BROWSER, [
   '--headless=new', '--disable-gpu', '--no-sandbox', '--no-first-run',
   // headless mode advertises itself in the UA and eBay error-pages it;
   // present the equivalent headed UA instead
-  '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  `--user-agent=${PEEK_UA}`,
   `--remote-debugging-port=${PORT}`,
   `--user-data-dir=${process.env.TEMP}\\ebay-peek`,
   '--window-size=1400,1000',
@@ -59,6 +60,17 @@ const child = spawn(BROWSER, [
 ], { stdio: 'ignore' });
 
 try {
+  // A dead CDP socket would otherwise hang this probe forever, and a caller's
+  // spawnSync timeout kills the probe but NOT its Edge grandchild — which then
+  // squats port 9720 with the listing still open and poisons the next spawn.
+  // Bound our own life; kill our own browser.
+  const watchdog = setTimeout(() => {
+    child.kill();
+    console.log('{"error": "probe watchdog fired — page never settled"}');
+    process.exit(1);
+  }, 60_000);
+  watchdog.unref?.();
+
   let ws;
   for (let i = 0; i < 80 && !ws; i++) {
     try {
@@ -86,14 +98,23 @@ try {
     });
 
   const IMAGES_PROBE = `(() => {
-    const urls = new Set();
-    const og = document.querySelector('meta[property="og:image"]')?.content;
-    if (og) urls.add(og);
-    document.querySelectorAll('.ux-image-carousel img, .ux-image-carousel-item img').forEach((img) => {
-      const src = img.src || img.dataset?.src || '';
-      if (/ebayimg\\.com/.test(src)) urls.add(src.replace(/s-l\\d+/, 's-l1600'));
-    });
-    return JSON.stringify({ count: urls.size, images: [...urls].slice(0, 8) });
+    // Dedupe by eBay image id, not URL: og:image repeats frame 1 at a different
+    // size/extension (s-l400.jpg vs s-l1600.webp), which both wastes a slot and
+    // would archive the hero at 400px. Map preserves listing order.
+    const byId = new Map();
+    const add = (u) => {
+      const m = (u || '').match(/ebayimg\\.com\\/images\\/g\\/([^/]+)\\//);
+      if (m && !byId.has(m[1])) byId.set(m[1], u.replace(/s-l\\d+/, 's-l1600'));
+    };
+    // carousel frames first — listing order; unloaded frames carry data-src
+    document.querySelectorAll('.ux-image-carousel img, .ux-image-carousel-item img')
+      .forEach((img) => add(img.src || img.dataset?.src || ''));
+    // thumbnail-grid backstop: same ids at s-l140/s-l500, normalised up
+    document.querySelectorAll('.ux-image-grid img')
+      .forEach((img) => add(img.src || img.dataset?.src || ''));
+    // og:image last — only rescues frame 1 on a partial render
+    add(document.querySelector('meta[property="og:image"]')?.content);
+    return JSON.stringify({ count: byId.size, images: [...byId.values()].slice(0, 8) });
   })()`;
 
   const DIAG_PROBE = `JSON.stringify({ title: document.title,
@@ -114,11 +135,13 @@ try {
     const data = raw ? JSON.parse(raw) : null;
     if (data && (data.title || data.count)) {
       console.log(JSON.stringify(data, null, 2));
-      process.exit(0);
+      child.kill(); // process.exit() skips finally — kill here or the browser
+      process.exit(0); // outlives us and poisons the next spawn on port 9720
     }
   }
   console.log('{"error": "page never yielded listing data — bot wall or layout change"}');
+  child.kill();
   process.exit(1);
 } finally {
-  child.kill();
+  child.kill(); // backstop for the thrown-error paths (no page target, socket error)
 }

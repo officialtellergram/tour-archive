@@ -366,6 +366,80 @@ check('manual syndication survives the merge', () => {
 });
 
 /* ------------------------------------------------------------------ */
+/* Carousel photos — manifest → item → merge                           */
+/* ------------------------------------------------------------------ */
+
+const manifestWithPhotos = {
+  ...manifestPlain,
+  photos: ['carousel/test-crew/01.jpg', 'carousel/test-crew/02.jpg', 'carousel/test-crew/03.jpg'],
+  _photosPulled: '2026-08-10',
+};
+
+check('manifest photos map to stock/-prefixed paths, in listing order', () => {
+  const item = mapManifestItem(manifestWithPhotos);
+  equal(JSON.stringify(item.photos), JSON.stringify([
+    'stock/carousel/test-crew/01.jpg',
+    'stock/carousel/test-crew/02.jpg',
+    'stock/carousel/test-crew/03.jpg',
+  ]), 'ordered stock/-prefixed list');
+  equal(item.photo, 'stock/test-crew.jpg', 'the hero photo is untouched');
+});
+
+check('an entry without photos maps to an empty array, never undefined', () => {
+  const item = mapManifestItem(manifestPlain);
+  assert(Array.isArray(item.photos), 'photos is always an array');
+  equal(item.photos.length, 0, 'empty when the manifest has none');
+});
+
+check('provenance stamps never reach the mapped item', () => {
+  const item = mapManifestItem(manifestWithPhotos);
+  for (const k of ['_photosPulled', '_ingested', '_source', '_missing'])
+    assert(!(k in item), `${k} leaked onto the item`);
+});
+
+check('hostile photo paths are filtered, honest ones survive', () => {
+  const item = mapManifestItem({
+    ...manifestPlain,
+    photos: [
+      'https://i.ebayimg.com/images/g/x/s-l1600.jpg', // hotlink — dies on relist
+      '//i.ebayimg.com/images/g/x/s-l1600.jpg',       // protocol-relative
+      '../../../server/config.mjs',                   // traversal
+      'carousel\\test-crew\\01.jpg',                  // exists on a Windows disk, dead as a URL
+      '/etc/passwd',                                  // absolute
+      'javascript:alert(1)',                          // scheme
+      42, null,                                       // not strings
+      'carousel/test-crew/01.jpg',                    // the one honest path
+    ],
+  });
+  equal(JSON.stringify(item.photos), JSON.stringify(['stock/carousel/test-crew/01.jpg']),
+    'only the honest relative path survives');
+});
+
+check('photos survive the merge as unclaimed seed', () => {
+  const merged = mergeInventory({ seed: [mapManifestItem(manifestWithPhotos)], channels: [] });
+  equal(merged.length, 1, 'one item');
+  equal(merged[0].photos.length, 3, 'carousel intact after merge');
+});
+
+check('a superseding channel listing leaves the archived carousel alone', () => {
+  // seed keyed to the catalogue the eBay fixture carries, so the merge claims it
+  const seed = mapManifestItem({ ...manifestWithPhotos, id: 'ds-01' });
+  // simulate a future API mapper growing its own photos — pickLive must not carry them
+  const listing = { ...mapEbayItem(ebayCatalogued), photos: ['https://i.ebayimg.com/live-frame.jpg'] };
+  const merged = mergeInventory({ seed: [seed], channels: [listing] });
+  equal(merged.length, 1, 'superseded, not duplicated');
+  equal(merged[0].syndicated, true, 'now syndicated');
+  equal(JSON.stringify(merged[0].photos), JSON.stringify(seed.photos),
+    'archived carousel survives — photos stays OUT of pickLive');
+});
+
+check('a catalogued manifest entry keeps its carousel through enrichment', () => {
+  const item = mapManifestItem({ ...manifestWithPhotos, catalogue: 'ds-01' });
+  equal(item.enriched, true, 'joined to the archive record');
+  equal(item.photos.length, 3, 'enrichment did not clobber the carousel');
+});
+
+/* ------------------------------------------------------------------ */
 /* eBay error handling                                                 */
 /* ------------------------------------------------------------------ */
 

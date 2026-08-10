@@ -212,6 +212,18 @@ const CURATE_SEED = JSON.stringify({
 });
 
 function probeExpr(route) {
+  if (route.startsWith('/item/stock-')) {
+    // The only check that ever measures the composed PDP with a carousel
+    // (smoke's store is never init()ed, so its /item/ cases render the 404).
+    // The missing-item empty-state must never green-light this route: wait
+    // for the thumb rail, and let probe exhaustion land it in `broken`.
+    return `(() => {
+      if (!document.querySelector('[data-pdp-thumbs] [data-idx]')) {
+        return JSON.stringify({ ready: 'waiting-for-carousel', mounted: false });
+      }
+      return ${PROBE};
+    })()`;
+  }
   if (!route.startsWith('/curate')) return PROBE;
   const readySel = route === '/curate' ? '[data-drop-form]' : '[data-deck-stage] .deck-card';
   return `(() => {
@@ -414,6 +426,30 @@ try {
   console.log(`\n${C.red}✖ cannot reach the site at ${BASE} — ${err.message}${C.off}`);
   console.log(`${C.dim}   the layout check needs the dev server: run \`npm run dev\` first${C.off}\n`);
   process.exit(1);
+}
+
+/*
+ * The stock-PDP carousel route needs the inventory API (in dev the store reads
+ * http://localhost:5181/api/inventory; without it the shop boots EMPTY and
+ * /item/stock-* renders the 404). Derive the fixture from live inventory — the
+ * first stock piece carrying a carousel — so no single piece is load-bearing.
+ * Default dev origin only: a BASE-overridden run serves the built snapshot.
+ * This preflight doubles as a tripwire that mapManifestItem still emits photos.
+ */
+if (BASE === 'http://localhost:5180') {
+  try {
+    const res = await fetch('http://localhost:5181/api/inventory', { signal: AbortSignal.timeout(5000) });
+    const inv = await res.json();
+    const hit = (inv.items || []).find(
+      (i) => String(i.id).startsWith('stock-') && Array.isArray(i.photos) && i.photos.length >= 2
+    );
+    if (!hit) throw new Error('no stock item carries a carousel — the thumb rail cannot be measured');
+    ROUTES.push(`/item/${hit.id}`);
+  } catch (err) {
+    console.log(`\n${C.red}✖ the stock PDP route needs the inventory API — ${err.message}${C.off}`);
+    console.log(`${C.dim}   run \`npm run server\` alongside \`npm run dev\` (note its 900s cache: restart or POST /api/sync after manifest edits)${C.off}\n`);
+    process.exit(1);
+  }
 }
 
 const failures = [];   // real overflow

@@ -1,6 +1,6 @@
 import { getItem, getCollection, itemsIn, itemStatus, isAvailable, featuredEvent, dateRange } from '../data/store.js';
 import { garmentSVG } from '../components/garment.js';
-import { productCard, breadcrumb, money, plateTag, plateMedia, sectionHead } from '../components/ui.js';
+import { productCard, breadcrumb, money, plateTag, plateMedia, sectionHead, mediaURL } from '../components/ui.js';
 import { toast } from '../lib/motion.js';
 
 export const channelName = (item) =>
@@ -56,26 +56,41 @@ function secondaryAction(item) {
   </a>`;
 }
 
-export function product({ id }) {
-  const item = getItem(id);
-  if (!item) return missingItem(id);
+/**
+ * PDP media block — the stage and its thumb rail. Exported pure so the render
+ * smoke can hold each state to the leak checks directly:
+ *   photos.length > 1  → photo stage + swappable thumb rail (our own eBay carousel, archived)
+ *   photos.length <= 1 → the single hero photograph, exactly as before
+ *   no photo at all    → the drawn views, exactly as before
+ */
+export function pdpMedia(item) {
+  const photos = Array.isArray(item.photos) ? item.photos : [];
 
-  const coll = getCollection(item.collection);
-  const related = itemsIn(item.collection).filter((i) => i.id !== item.id).slice(0, 4);
+  if (photos.length > 1) {
+    const alt = String(item.name).replace(/"/g, '&quot;');
+    return `
+        <div class="pdp-media" data-reveal>
+          <div class="plate plate--lg plate--photo" data-pdp-stage>
+            ${plateTag(item)}
+            <img class="plate-photo" src="${mediaURL(photos[0])}"
+              alt="${alt} — view 1 of ${photos.length}" />
+          </div>
+          <div class="pdp-thumbs pdp-thumbs--photos" data-pdp-thumbs>
+            ${photos
+              .map(
+                (p, i) => `
+              <button class="plate plate--photo" data-idx="${i}" aria-pressed="${i === 0}">
+                <img class="plate-photo" src="${mediaURL(p)}"
+                  alt="${alt} — view ${i + 1} of ${photos.length}" loading="lazy" />
+              </button>`
+              )
+              .join('')}
+          </div>
+        </div>`;
+  }
+
   const views = ['front', 'detail', 'flat'];
-
   return `
-  <article class="pdp">
-    <div class="wrap">
-      ${breadcrumb([
-        { label: 'Home', href: '/' },
-        { label: 'Collections', href: '/collections' },
-        ...(coll ? [{ label: coll.name, href: `/collections/${coll.id}` }] : []),
-        { label: item.name },
-      ])}
-
-      <div class="pdp-grid">
-        <!-- media: photography when we have it, drawn views otherwise -->
         <div class="pdp-media" data-reveal>
           <div class="plate plate--lg ${item.photo ? 'plate--photo' : ''}" data-pdp-stage>
             ${plateTag(item)}
@@ -94,7 +109,29 @@ export function product({ id }) {
                     .join('')}
                 </div>`
           }
-        </div>
+        </div>`;
+}
+
+export function product({ id }) {
+  const item = getItem(id);
+  if (!item) return missingItem(id);
+
+  const coll = getCollection(item.collection);
+  const related = itemsIn(item.collection).filter((i) => i.id !== item.id).slice(0, 4);
+
+  return `
+  <article class="pdp">
+    <div class="wrap">
+      ${breadcrumb([
+        { label: 'Home', href: '/' },
+        { label: 'Collections', href: '/collections' },
+        ...(coll ? [{ label: coll.name, href: `/collections/${coll.id}` }] : []),
+        { label: item.name },
+      ])}
+
+      <div class="pdp-grid">
+        <!-- media: photography when we have it, drawn views otherwise -->
+        ${pdpMedia(item)}
 
         <!-- info -->
         <div class="pdp-info" data-reveal data-reveal-delay="0.08">
@@ -214,14 +251,24 @@ export function mountProduct(outlet) {
   const thumbs = outlet.querySelector('[data-pdp-thumbs]');
   if (stage && thumbs && item) {
     thumbs.addEventListener('click', (e) => {
-      const btn = e.target.closest('[data-view]');
+      const btn = e.target.closest('[data-view], [data-idx]');
       if (!btn) return;
       thumbs
-        .querySelectorAll('[data-view]')
+        .querySelectorAll('[data-view], [data-idx]')
         .forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
-      const svg = stage.querySelector('svg');
-      if (svg) svg.remove();
-      stage.insertAdjacentHTML('beforeend', garmentSVG(item, { view: btn.dataset.view }));
+      if (btn.dataset.view) {
+        const svg = stage.querySelector('svg');
+        if (svg) svg.remove();
+        stage.insertAdjacentHTML('beforeend', garmentSVG(item, { view: btn.dataset.view }));
+        return;
+      }
+      // Photo branch: swap src on the existing stage img — never insert a
+      // second one. No svg exists in photo states.
+      const frame = (item.photos || [])[Number(btn.dataset.idx)];
+      const img = stage.querySelector('.plate-photo');
+      if (!frame || !img) return;
+      img.src = mediaURL(frame);
+      img.alt = `${item.name} — view ${Number(btn.dataset.idx) + 1} of ${item.photos.length}`;
     });
   }
 

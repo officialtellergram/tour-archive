@@ -22,7 +22,7 @@
   --rule-strong: #a89e85;
 
   /* type */
-  --display: 'Cormorant Garamond', 'EB Garamond', Georgia, 'Times New Roman', serif;
+ --display: 'Cormorant Garamond', 'EB Garamond', Georgia, 'Times New Roman', serif;
   --sans: 'Jost', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 
   /* metrics */
@@ -1186,6 +1186,13 @@ h3.display {
 }
 .pdp-thumbs .plate[aria-pressed='true'] {
   border-color: var(--green);
+}
+/* Photo carousels wrap like a contact sheet — a horizontal rail would protrude
+   past the 390px viewport and fail the layout gate, so the grid wraps instead.
+   Source order is the override: equal specificity with .pdp-thumbs above. */
+.pdp-thumbs--photos {
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+  gap: 0.6rem;
 }
 .pdp-info {
   position: sticky;

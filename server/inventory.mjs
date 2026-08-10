@@ -29,6 +29,21 @@ const MANIFEST_PATH = fileURLToPath(new URL('../public/stock/manifest.json', imp
 const CHANNEL_LABELS = { depop: 'View on Depop', ebay: 'View on eBay' };
 
 /**
+ * One definition of what may follow `stock/`: a plain relative path.
+ * Shared with the audit gate so the mapper and the deploy check can't drift.
+ * Rejects schemes (https:, javascript:, C:), protocol-relative //host,
+ * absolute /paths, backslashes (valid on a Windows disk, dead as a URL),
+ * and traversal.
+ */
+export const isSafeStockPath = (p) =>
+  typeof p === 'string' &&
+  p.length > 0 &&
+  !p.includes('..') &&
+  !p.includes('\\') &&
+  !p.startsWith('/') &&
+  !/^[a-z][a-z0-9+.-]*:/i.test(p);
+
+/**
  * One manifest entry → one archive item. Exported pure so the integration
  * check can hold it to the same standard as the API mappers.
  *
@@ -40,7 +55,7 @@ const CHANNEL_LABELS = { depop: 'View on Depop', ebay: 'View on eBay' };
  * through the exact same fields.
  */
 export function mapManifestItem(entry) {
-  const { _ingested, _source, _missing, file, listingUrl, listings: rawListings, ...item } = entry;
+  const { _ingested, _source, _missing, _photosPulled, file, listingUrl, listings: rawListings, photos: rawPhotos, ...item } = entry;
 
   /*
    * Every listed piece will eventually live on BOTH marketplaces, and the item
@@ -83,6 +98,11 @@ export function mapManifestItem(entry) {
     // Relative to the deploy base; the frontend prefixes BASE_URL. Entries
     // without a photo yet (listing-only stock) render the drawn plate instead.
     photo: file ? `stock/${file}` : '',
+    // Complete ordered PDP view list, archived off our own listings by
+    // scripts/carousel-pull.mjs. Same base-relative convention as `photo`;
+    // always an array so the PDP never branches on undefined. The filter is
+    // silent runtime defense for un-audited manifests; audit is the loud gate.
+    photos: (Array.isArray(rawPhotos) ? rawPhotos : []).filter(isSafeStockPath).map((p) => `stock/${p}`),
     channel,
     syndicated,
   });

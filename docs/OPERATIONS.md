@@ -13,7 +13,7 @@ path when it does.
 | --- | --- | --- | --- |
 | Site hosting | GitHub Pages | $0 | ~1 GB site or ~100 GB/mo bandwidth (years away) |
 | CI (builds, daily refresh) | GitHub Actions | $0 (public repo: unlimited standard minutes) | n/a at this scale |
-| Code + photo storage | GitHub repo | $0 | ~1 GB Pages artifact ≈ 3–4,000 photos |
+| Code + photo storage | GitHub repo | $0 | ~1 GB Pages artifact ≈ 3–4,000 photos; a full carousel pull adds ~25–40 MB per dozen listings (≤8 frames × ~0.4 MB), and `--refresh` churn accumulates in git history |
 | Database + auth + curation | Supabase Free | $0 | Pro $25/mo — only if the pause or 500 MB bites |
 | Remote dev environment | GitHub Codespaces | $0 (120 core-hrs/mo per user) | Heavy use beyond free hours |
 | Domain | Porkbun → Cloudflare | **~$11/yr** | — |

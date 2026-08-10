@@ -12,6 +12,8 @@
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { isSafeStockPath } from '../server/inventory.mjs';
+import { MAX_BYTES as MAX_PHOTO_BYTES } from './lib/stock-constants.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const SRC = join(ROOT, 'src');
@@ -124,6 +126,9 @@ for (const c of collections) {
 /* The photo manifest is displayed stock — hold it to the item standard. */
 {
   const manifestPath = join(ROOT, 'public', 'stock', 'manifest.json');
+  // Mirrors IMAGES_PROBE's slice(0, 8) in scripts/ebay-peek.mjs — the probe is
+  // where the cap originates; it can't be imported out of a browser-injected string.
+  const MAX_PHOTOS = 8;
   try {
     const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
     for (const s of manifest.items || []) {
@@ -137,6 +142,41 @@ for (const c of collections) {
         errors.push(`${where}: price must be a positive number`);
       if (!KNOWN_GARMENTS.has(s.garment))
         errors.push(`${where}: garment "${s.garment}" has no silhouette in garment.js`);
+
+      // The archived carousel: local files only, present on disk, capped like
+      // the pull. ingest's oversize warner scans public/stock/ non-recursively
+      // and cannot see carousel/ — so the warner for carousel frames lives here.
+      if (s.photos !== undefined) {
+        if (!Array.isArray(s.photos) || s.photos.some((p) => typeof p !== 'string')) {
+          errors.push(`${where}: photos must be an array of stock-relative path strings`);
+        } else {
+          if (s.photos.length > MAX_PHOTOS)
+            errors.push(`${where}: ${s.photos.length} carousel frames — the cap is ${MAX_PHOTOS}, same as the pull`);
+          const seen = new Set();
+          s.photos.forEach((p, i) => {
+            if (!isSafeStockPath(p)) {
+              errors.push(`${where}: photos[${i}] "${p}" must be a plain relative path under public/stock/ — hotlinked or absolute URLs die on relist`);
+              return; // do not statSync a hostile path
+            }
+            if (seen.has(p)) warnings.push(`${where}: photos repeats "${p}" — prune the duplicate frame`);
+            seen.add(p);
+            try {
+              // join() output is for the disk probe ONLY — every message uses
+              // the manifest's own forward-slash string.
+              const st = statSync(join(ROOT, 'public', 'stock', p));
+              if (st.size > MAX_PHOTO_BYTES)
+                warnings.push(`${where}: ${p} is ${(st.size / 1048576).toFixed(1)} MB — compress it; carousel frames ship with the site`);
+            } catch {
+              errors.push(`${where}: photos[${i}] "${p}" is not on disk under public/stock/ — that ships a broken image on a live product page`);
+            }
+          });
+        }
+      }
+      const hasEbayListing =
+        (s.channel === 'ebay' && s.listingUrl) ||
+        (Array.isArray(s.listings) && s.listings.some((l) => l?.channel === 'ebay' && l.url));
+      if (hasEbayListing && !(Array.isArray(s.photos) && s.photos.length))
+        warnings.push(`${where}: eBay listing but no carousel yet — npm run photos archives its frames`);
     }
   } catch {
     warnings.push('public/stock/manifest.json missing or unreadable');

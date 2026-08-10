@@ -7,9 +7,12 @@ export const money = (n) => `$${n.toLocaleString('en-US')}`;
 
 const BASE_URL = (import.meta.env?.BASE_URL || '/').replace(/\/*$/, '/');
 
-/** Resolve an item's photo: absolute URLs pass through, repo paths get the base. */
-export const photoURL = (item) =>
-  !item.photo ? '' : /^https?:\/\//i.test(item.photo) ? item.photo : `${BASE_URL}${item.photo}`;
+/** Resolve a deploy-base-relative media path: absolute URLs pass through, repo paths get the base. */
+export const mediaURL = (path) =>
+  !path ? '' : /^https?:\/\//i.test(path) ? path : `${BASE_URL}${path}`;
+
+/** Resolve an item's photo — the item-level wrapper over mediaURL. */
+export const photoURL = (item) => mediaURL(item.photo);
 
 /** Real photography when we have it; the drawn plate otherwise. */
 export function plateMedia(item, opts = {}) {

@@ -18,6 +18,7 @@ import { join, parse } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { homedir } from 'node:os';
 import { inferGarment, inferColourway, inferYear, catalogueNumber } from '../server/normalize.mjs';
+import { MAX_BYTES } from './lib/stock-constants.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const STOCK = join(ROOT, 'public', 'stock');
@@ -32,7 +33,6 @@ const INTAKE = process.env.STOCK_INTAKE || join(homedir(), 'Desktop', 'Tour Arch
 
 const IMAGE_RX = /\.(jpe?g|png|webp)$/i;
 const HERO_RX = /^hero-/i;
-const MAX_BYTES = 1.5 * 1024 * 1024;
 
 const C = { red: '\x1b[31m', yellow: '\x1b[33m', green: '\x1b[32m', dim: '\x1b[2m', off: '\x1b[0m' };
 

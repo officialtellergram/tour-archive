@@ -30,7 +30,15 @@
       "_ingested": "2026-08-02",
       "_source": "IMG_0371.JPEG",
       "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407115489714"
+      "listingUrl": "https://www.ebay.com/itm/407115489714",
+      "photos": [
+        "carousel/slazenger-golden-horseshoe-wind-shirt/01.webp",
+        "carousel/slazenger-golden-horseshoe-wind-shirt/02.webp",
+        "carousel/slazenger-golden-horseshoe-wind-shirt/03.webp",
+        "carousel/slazenger-golden-horseshoe-wind-shirt/04.webp",
+        "carousel/slazenger-golden-horseshoe-wind-shirt/05.webp"
+      ],
+      "_photosPulled": "2026-08-10"
     },
     {
       "id": "stock-masters-peter-millar-quarter-zip-blue",
@@ -61,7 +69,15 @@
       "_ingested": "2026-08-02",
       "_source": "IMG_0378.JPEG",
       "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407131456833"
+      "listingUrl": "https://www.ebay.com/itm/407131456833",
+      "photos": [
+        "carousel/masters-peter-millar-quarter-zip-blue/01.webp",
+        "carousel/masters-peter-millar-quarter-zip-blue/02.webp",
+        "carousel/masters-peter-millar-quarter-zip-blue/03.webp",
+        "carousel/masters-peter-millar-quarter-zip-blue/04.webp",
+        "carousel/masters-peter-millar-quarter-zip-blue/05.webp"
+      ],
+      "_photosPulled": "2026-08-10"
     },
     {
       "id": "stock-peter-millar-club-quarter-zip-navy",
@@ -92,7 +108,13 @@
       "_ingested": "2026-08-02",
       "_source": "IMG_0383.JPEG",
       "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407115514561"
+      "listingUrl": "https://www.ebay.com/itm/407115514561",
+      "photos": [
+        "carousel/peter-millar-club-quarter-zip-navy/01.webp",
+        "carousel/peter-millar-club-quarter-zip-navy/02.webp",
+        "carousel/peter-millar-club-quarter-zip-navy/03.webp"
+      ],
+      "_photosPulled": "2026-08-10"
     },
     {
       "id": "stock-ryder-cup-print-polo",
@@ -120,7 +142,15 @@
       "listingUrl": "https://www.ebay.com/itm/407115434329",
       "_ingested": "2026-08-02",
       "file": "ryder-cup-print-polo.jpg",
-      "_source": "own listing photo, i.ebayimg.com"
+      "_source": "own listing photo, i.ebayimg.com",
+      "photos": [
+        "carousel/ryder-cup-print-polo/01.webp",
+        "carousel/ryder-cup-print-polo/02.webp",
+        "carousel/ryder-cup-print-polo/03.webp",
+        "carousel/ryder-cup-print-polo/04.webp",
+        "carousel/ryder-cup-print-polo/05.webp"
+      ],
+      "_photosPulled": "2026-08-10"
     },
     {
       "id": "stock-sun-faded-golf-pullover",
@@ -148,7 +178,14 @@
       "listingUrl": "https://www.ebay.com/itm/407131442352",
       "_ingested": "2026-08-02",
       "file": "sun-faded-golf-pullover.jpg",
-      "_source": "own listing photo, i.ebayimg.com"
+      "_source": "own listing photo, i.ebayimg.com",
+      "photos": [
+        "carousel/sun-faded-golf-pullover/01.webp",
+        "carousel/sun-faded-golf-pullover/02.webp",
+        "carousel/sun-faded-golf-pullover/03.webp",
+        "carousel/sun-faded-golf-pullover/04.webp"
+      ],
+      "_photosPulled": "2026-08-10"
     },
     {
       "id": "stock-university-of-kentucky-polo",
@@ -176,7 +213,13 @@
       "listingUrl": "https://www.ebay.com/itm/407115420034",
       "_ingested": "2026-08-02",
       "file": "university-of-kentucky-polo.jpg",
-      "_source": "own listing photo, i.ebayimg.com"
+      "_source": "own listing photo, i.ebayimg.com",
+      "photos": [
+        "carousel/university-of-kentucky-polo/01.webp",
+        "carousel/university-of-kentucky-polo/02.webp",
+        "carousel/university-of-kentucky-polo/03.webp"
+      ],
+      "_photosPulled": "2026-08-10"
     },
     {
       "id": "stock-bugle-boy-polo",
@@ -204,7 +247,14 @@
       "listingUrl": "https://www.ebay.com/itm/407115464142",
       "_ingested": "2026-08-02",
       "file": "bugle-boy-polo.jpg",
-      "_source": "own listing photo, i.ebayimg.com"
+      "_source": "own listing photo, i.ebayimg.com",
+      "photos": [
+        "carousel/bugle-boy-polo/01.webp",
+        "carousel/bugle-boy-polo/02.webp",
+        "carousel/bugle-boy-polo/03.webp",
+        "carousel/bugle-boy-polo/04.webp"
+      ],
+      "_photosPulled": "2026-08-10"
     },
     {
       "id": "stock-masters-tech-striped-polo",
@@ -232,7 +282,15 @@
       "listingUrl": "https://www.ebay.com/itm/407131429837",
       "_ingested": "2026-08-10",
       "file": "masters-tech-striped-polo.jpg",
-      "_source": "own listing photo, i.ebayimg.com"
+      "_source": "own listing photo, i.ebayimg.com",
+      "photos": [
+        "carousel/masters-tech-striped-polo/01.webp",
+        "carousel/masters-tech-striped-polo/02.webp",
+        "carousel/masters-tech-striped-polo/03.webp",
+        "carousel/masters-tech-striped-polo/04.webp",
+        "carousel/masters-tech-striped-polo/05.webp"
+      ],
+      "_photosPulled": "2026-08-10"
     },
     {
       "id": "stock-peter-millar-pine-valley-polo",
@@ -260,7 +318,15 @@
       "listingUrl": "https://www.ebay.com/itm/407131400410",
       "_ingested": "2026-08-10",
       "file": "peter-millar-pine-valley-polo.jpg",
-      "_source": "own listing photo, i.ebayimg.com"
+      "_source": "own listing photo, i.ebayimg.com",
+      "photos": [
+        "carousel/peter-millar-pine-valley-polo/01.webp",
+        "carousel/peter-millar-pine-valley-polo/02.webp",
+        "carousel/peter-millar-pine-valley-polo/03.webp",
+        "carousel/peter-millar-pine-valley-polo/04.webp",
+        "carousel/peter-millar-pine-valley-polo/05.webp"
+      ],
+      "_photosPulled": "2026-08-10"
     },
     {
       "id": "stock-nike-ryder-cup-polo-valhalla",
@@ -288,7 +354,15 @@
       "listingUrl": "https://www.ebay.com/itm/407131336432",
       "_ingested": "2026-08-10",
       "file": "nike-ryder-cup-polo-valhalla.jpg",
-      "_source": "own listing photo, i.ebayimg.com"
+      "_source": "own listing photo, i.ebayimg.com",
+      "photos": [
+        "carousel/nike-ryder-cup-polo-valhalla/01.webp",
+        "carousel/nike-ryder-cup-polo-valhalla/02.webp",
+        "carousel/nike-ryder-cup-polo-valhalla/03.webp",
+        "carousel/nike-ryder-cup-polo-valhalla/04.webp",
+        "carousel/nike-ryder-cup-polo-valhalla/05.webp"
+      ],
+      "_photosPulled": "2026-08-10"
     },
     {
       "id": "stock-nike-tiger-woods-tshirt",
@@ -316,7 +390,15 @@
       "listingUrl": "https://www.ebay.com/itm/407131472633",
       "_ingested": "2026-08-10",
       "file": "nike-tiger-woods-tshirt.jpg",
-      "_source": "own listing photo, i.ebayimg.com"
+      "_source": "own listing photo, i.ebayimg.com",
+      "photos": [
+        "carousel/nike-tiger-woods-tshirt/01.webp",
+        "carousel/nike-tiger-woods-tshirt/02.webp",
+        "carousel/nike-tiger-woods-tshirt/03.webp",
+        "carousel/nike-tiger-woods-tshirt/04.webp",
+        "carousel/nike-tiger-woods-tshirt/05.webp"
+      ],
+      "_photosPulled": "2026-08-10"
     },
     {
       "id": "stock-peter-millar-taylormade-quarter-zip",
@@ -344,7 +426,14 @@
       "listingUrl": "https://www.ebay.com/itm/407131493486",
       "_ingested": "2026-08-10",
       "file": "peter-millar-taylormade-quarter-zip.jpg",
-      "_source": "own listing photo, i.ebayimg.com"
+      "_source": "own listing photo, i.ebayimg.com",
+      "photos": [
+        "carousel/peter-millar-taylormade-quarter-zip/01.webp",
+        "carousel/peter-millar-taylormade-quarter-zip/02.webp",
+        "carousel/peter-millar-taylormade-quarter-zip/03.webp",
+        "carousel/peter-millar-taylormade-quarter-zip/04.webp"
+      ],
+      "_photosPulled": "2026-08-10"
     }
   ]
 }

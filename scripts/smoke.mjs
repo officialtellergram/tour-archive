@@ -60,7 +60,7 @@ const { collections, items, journal } = await import('../src/data/collections.js
 const { home } = await import('../src/pages/home.js');
 const { collectionsIndex, collectionDetail } = await import('../src/pages/collections.js');
 const { archive } = await import('../src/pages/archive.js');
-const { product } = await import('../src/pages/product.js');
+const { product, pdpMedia } = await import('../src/pages/product.js');
 const { journalIndex, journalEntry } = await import('../src/pages/journal.js');
 const { method, sell, sizing, notFound } = await import('../src/pages/house.js');
 const { curate, curateReview, deskHTML, verdictHTML, reviewCardHTML } = await import(
@@ -133,6 +133,19 @@ const dressed = {
 const bare = { ...dressed, id: 'sm-2', url: 'https://www.depop.com/products/x/', title: '', photo: '', price: null };
 const listed = { ...dressed, id: 'sm-3', status: 'shortlist', decided_by: 'Smoke' };
 
+/* PDP media fragment — smoke's store is never init()ed, so composed /item/
+   routes only ever render missingItem; the fragment is the render coverage. */
+const pdpCarousel = {
+  id: 'stock-sm-carousel', name: 'Fixture Wind Shirt', brand: 'Slazenger', year: '1990s',
+  garment: 'windshirt', colorway: ['#2E6E63', '#1C4640', '#22252A'],
+  photo: 'stock/x.jpg',
+  photos: Array.from({ length: 8 }, (_, i) => `stock/carousel/x/0${i + 1}.jpg`),
+  sold: false, upcoming: false, syndicated: true, channel: 'ebay',
+  listings: [{ channel: 'ebay', url: 'https://www.ebay.com/itm/1', label: 'View on eBay' }],
+};
+const pdpSingle = { ...pdpCarousel, id: 'stock-sm-single', photos: [] };
+const pdpDrawn = { ...pdpCarousel, id: 'stock-sm-drawn', photo: '', photos: [] };
+
 const deskCases = [
   ['deskHTML (with shortlist)', () => deskHTML(smokeUser, [dressed, bare, listed])],
   ['deskHTML (no shortlist)', () => deskHTML(smokeUser, [dressed, bare])],
@@ -140,6 +153,9 @@ const deskCases = [
   ['verdictHTML (nothing listed)', () => verdictHTML([{ card: bare, dir: 'left' }], [], 0)],
   ['reviewCardHTML (photo)', () => reviewCardHTML(dressed)],
   ['reviewCardHTML (text-only)', () => reviewCardHTML(bare)],
+  ['pdpMedia (carousel)', () => pdpMedia(pdpCarousel)],
+  ['pdpMedia (single photo)', () => pdpMedia(pdpSingle)],
+  ['pdpMedia (drawn views)', () => pdpMedia(pdpDrawn)],
 ];
 
 for (const [label, fn] of deskCases) {
@@ -160,6 +176,30 @@ for (const [label, fn] of deskCases) {
   if (html.includes('[object Object]')) errors.push(`${label}: "[object Object]" leaked into the markup`);
   if (html.includes('NaN')) errors.push(`${label}: "NaN" leaked into the markup`);
   rendered += 1;
+}
+
+/* Shape pins for the PDP media states. Byte-equality is safe ONLY on the photo
+   path — garmentSVG mints unique DOM ids per call, so never on the drawn path. */
+{
+  const rail = pdpMedia(pdpCarousel);
+  const idx = (rail.match(/data-idx="/g) || []).length;
+  if (idx !== 8) errors.push(`pdpMedia carousel: expected 8 thumb buttons, got ${idx}`);
+  if ((rail.match(/loading="lazy"/g) || []).length !== 8)
+    errors.push('pdpMedia carousel: every thumb must lazy-load');
+  if (!rail.includes('data-pdp-stage') || !rail.includes('view 1 of 8'))
+    errors.push('pdpMedia carousel: stage or its frame-count alt is missing');
+
+  const single = pdpMedia(pdpSingle);
+  if (single.includes('data-pdp-thumbs'))
+    errors.push('pdpMedia single photo: thumb rail leaked into the hero state');
+  if (pdpMedia({ ...pdpSingle, photos: ['stock/x.jpg'] }) !== single)
+    errors.push('pdpMedia: a one-frame carousel must collapse to the hero state byte-for-byte');
+
+  const drawn = pdpMedia(pdpDrawn);
+  if ((drawn.match(/data-view="/g) || []).length !== 3)
+    errors.push('pdpMedia drawn: expected the 3 drawn views');
+  if (drawn.includes('data-idx'))
+    errors.push('pdpMedia drawn: photo thumbs leaked into the drawn state');
 }
 
 const C = { red: '\x1b[31m', green: '\x1b[32m', dim: '\x1b[2m', off: '\x1b[0m' };
