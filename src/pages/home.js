@@ -187,7 +187,7 @@ export function home() {
   </section>
 
   <!-- ============ METHOD ============ -->
-  <section class="section" style="background:var(--green);color:var(--parchment)">
+  <section class="section" style="background:var(--navy);color:var(--parchment)">
     <div class="wrap">
       <div class="split">
         <div data-reveal>

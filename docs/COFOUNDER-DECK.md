@@ -24,7 +24,7 @@ These values are lifted from `src/styles/app.css` — use them exactly.
 | --- | --- | --- |
 | Parchment | `#f4f0e6` | Slide background (deep variant `#ebe5d6` for panels) |
 | Ink | `#16150f` | Body text (soft `#4a4739`, faint `#7c7867`) |
-| Racing green | `#14301f` | Chapter/title slides inverted, emphasis blocks (mid `#2f4a34`) |
+| Archive navy | `#101e38` | Chapter/title slides inverted, emphasis blocks (mid `#394457`) — the lockup's ground; the site's accent |
 | Claret | `#6b2233` | Accents, rules, the occasional stamp |
 | Brass | `#a8874f` | Hairlines, numbering, small ornaments (soft `#c9b283`) |
 

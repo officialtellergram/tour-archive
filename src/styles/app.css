@@ -12,8 +12,8 @@
   --parchment: #f4f0e6;
   --parchment-deep: #ebe5d6;
   --card: #faf7ef;
-  --green: #14301f;
-  --green-mid: #2f4a34;
+  --navy: #101e38;
+  --navy-mid: #394457;
   --racing-green: #0d2718;
   --claret: #6b2233;
   --brass: #a8874f;
@@ -82,7 +82,7 @@ button {
 }
 
 ::selection {
-  background: var(--green);
+  background: var(--navy);
   color: var(--parchment);
 }
 
@@ -122,7 +122,7 @@ button {
   position: fixed;
   inset: 0;
   z-index: 9990;
-  background: var(--green);
+  background: var(--navy);
   pointer-events: none;
   opacity: 0;
   transform: scaleY(0);
@@ -134,7 +134,7 @@ button {
   left: -9999px;
   top: 0;
   z-index: 10000;
-  background: var(--green);
+  background: var(--navy);
   color: var(--parchment);
   padding: 0.75rem 1.25rem;
 }
@@ -155,7 +155,7 @@ button {
   height: 76px;
   margin: -38px 0 0 -38px;
   border-radius: 50%;
-  background: var(--green);
+  background: var(--navy);
   color: var(--parchment);
   display: grid;
   place-items: center;
@@ -227,7 +227,7 @@ h3.display {
   float: left;
   line-height: 0.78;
   padding: 0.06em 0.14em 0 0;
-  color: var(--green);
+  color: var(--navy);
   font-weight: 400;
 }
 
@@ -380,14 +380,14 @@ h3.display {
   bottom: 0;
   height: 1px;
   width: 100%;
-  background: var(--green);
+  background: var(--navy);
   transform: scaleX(0);
   transform-origin: 100% 50%;
   transition: transform 0.45s var(--ease);
 }
 .nav a:hover,
 .nav a[aria-current='page'] {
-  color: var(--green);
+  color: var(--navy);
 }
 .nav a:hover::after,
 .nav a[aria-current='page']::after {
@@ -411,7 +411,7 @@ h3.display {
   position: fixed;
   inset: 0;
   z-index: 950;
-  background: var(--green);
+  background: var(--navy);
   color: var(--parchment);
   display: grid;
   grid-template-rows: var(--header-h) 1fr;
@@ -492,8 +492,8 @@ h3.display {
   letter-spacing: 0.2em;
   text-transform: uppercase;
   padding: 1.05rem 2rem;
-  border: 1px solid var(--green);
-  color: var(--green);
+  border: 1px solid var(--navy);
+  color: var(--navy);
   position: relative;
   overflow: hidden;
   isolation: isolate;
@@ -503,7 +503,7 @@ h3.display {
   content: '';
   position: absolute;
   inset: 0;
-  background: var(--green);
+  background: var(--navy);
   transform: scaleY(0);
   transform-origin: 50% 100%;
   transition: transform 0.5s var(--ease);
@@ -516,7 +516,7 @@ h3.display {
   color: var(--parchment);
 }
 .btn--solid {
-  background: var(--green);
+  background: var(--navy);
   color: var(--parchment);
 }
 .btn--solid::before {
@@ -540,7 +540,7 @@ h3.display {
   font-size: 11px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--green);
+  color: var(--navy);
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
@@ -549,7 +549,7 @@ h3.display {
   transition: border-color 0.35s var(--ease), gap 0.35s var(--ease);
 }
 .text-link:hover {
-  border-color: var(--green);
+  border-color: var(--navy);
   gap: 1rem;
 }
 
@@ -628,7 +628,7 @@ h3.display {
   font-family: var(--display);
   font-size: 15px;
   letter-spacing: 0.06em;
-  color: var(--green);
+  color: var(--navy);
   font-weight: 500;
 }
 
@@ -683,7 +683,7 @@ h3.display {
 
 .marquee {
   border-block: 1px solid var(--rule);
-  background: var(--green);
+  background: var(--navy);
   color: var(--parchment);
   overflow: hidden;
   padding-block: 0.95rem;
@@ -788,8 +788,8 @@ h3.display {
   color: #fff;
 }
 .plate-tag--channel {
-  background: var(--green);
-  border-color: var(--green);
+  background: var(--navy);
+  border-color: var(--navy);
   color: var(--parchment);
 }
 
@@ -886,7 +886,7 @@ h3.display {
   overflow: hidden;
   background: radial-gradient(
       82% 74% at 50% 40%,
-      color-mix(in srgb, var(--accent, var(--green)) 11%, var(--card)) 0%,
+      color-mix(in srgb, var(--accent, var(--navy)) 11%, var(--card)) 0%,
       var(--card) 78%
     );
 }
@@ -989,7 +989,7 @@ h3.display {
   z-index: -1;
   background: radial-gradient(
       90% 120% at 82% 0%,
-      color-mix(in srgb, var(--accent, var(--green)) 22%, transparent) 0%,
+      color-mix(in srgb, var(--accent, var(--navy)) 22%, transparent) 0%,
       transparent 62%
     ),
     linear-gradient(180deg, transparent 55%, var(--parchment-deep) 100%);
@@ -1070,7 +1070,7 @@ h3.display {
 }
 .facts--links a:hover {
   padding-inline: 0.55rem;
-  color: var(--green);
+  color: var(--navy);
 }
 .facts--links a:hover b {
   color: var(--claret);
@@ -1131,8 +1131,8 @@ h3.display {
   color: var(--ink);
 }
 .chip[aria-pressed='true'] {
-  background: var(--green);
-  border-color: var(--green);
+  background: var(--navy);
+  border-color: var(--navy);
   color: var(--parchment);
 }
 .filters .count {
@@ -1185,7 +1185,7 @@ h3.display {
   cursor: pointer;
 }
 .pdp-thumbs .plate[aria-pressed='true'] {
-  border-color: var(--green);
+  border-color: var(--navy);
 }
 /* Photo carousels wrap like a contact sheet — a horizontal rail would protrude
    past the 390px viewport and fail the layout gate, so the grid wraps instead.
@@ -1309,7 +1309,7 @@ h3.display {
   margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
 }
 .breadcrumb a:hover {
-  color: var(--green);
+  color: var(--navy);
 }
 .breadcrumb span {
   color: var(--rule-strong);
@@ -1324,7 +1324,7 @@ h3.display {
   /* GLOBAL: a role="status" bar with no interactive children must never
      swallow a tap — on short viewports it can sit over the deck's ✓/✕ */
   pointer-events: none;
-  background: var(--green);
+  background: var(--navy);
   color: var(--parchment);
   padding: 0.95rem 1.6rem;
   font-family: var(--sans);
@@ -1424,7 +1424,7 @@ h3.display {
   font-size: clamp(2.2rem, 4vw, 3.6rem);
   font-weight: 300;
   line-height: 1;
-  color: var(--green);
+  color: var(--navy);
 }
 .stat span {
   font-family: var(--sans);
@@ -1475,7 +1475,7 @@ h3.display {
    ================================================================== */
 
 .site-footer {
-  background: var(--green);
+  background: var(--navy);
   color: var(--parchment);
   padding-block: clamp(3.5rem, 7vw, 6rem) 2rem;
   margin-top: clamp(3rem, 6vw, 6rem);
@@ -1722,7 +1722,7 @@ h3.display {
 .curate-form input:focus,
 .curate-form textarea:focus,
 .curate-form select:focus {
-  border-color: var(--green);
+  border-color: var(--navy);
 }
 .curate-form button[type='submit'] {
   justify-self: start;
@@ -1737,7 +1737,7 @@ h3.display {
   font-family: var(--sans);
   font-size: 12px;
   letter-spacing: 0.03em;
-  color: var(--green);
+  color: var(--navy);
   min-height: 1em;
   line-height: 1.5;
 }
@@ -1758,8 +1758,8 @@ h3.display {
 }
 /* the "your entry got logged" confirmation — persists until the next paste */
 .curate-note--logged {
-  color: var(--green);
-  border-left: 2px solid var(--green);
+  color: var(--navy);
+  border-left: 2px solid var(--navy);
   padding-left: 0.7rem;
 }
 .curate-error:empty,
@@ -1795,7 +1795,7 @@ h3.display {
   line-height: 1.7;
 }
 .curate-help a {
-  color: var(--green);
+  color: var(--navy);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -1818,7 +1818,7 @@ h3.display {
   font-weight: 500;
 }
 .curate-counter {
-  color: var(--green);
+  color: var(--navy);
 }
 .curate-deskbar .curate-textbtn {
   margin-left: auto;
@@ -1831,7 +1831,7 @@ h3.display {
   text-transform: uppercase;
   background: none;
   border: 0;
-  color: var(--green);
+  color: var(--navy);
   cursor: pointer;
   white-space: nowrap;
   align-self: start;
@@ -1898,7 +1898,7 @@ h3.display {
   0%,
   35% {
     background: color-mix(in srgb, var(--brass) 16%, transparent);
-    box-shadow: inset 3px 0 0 var(--green);
+    box-shadow: inset 3px 0 0 var(--navy);
   }
   100% {
     background: transparent;
@@ -1908,7 +1908,7 @@ h3.display {
 @media (prefers-reduced-motion: reduce) {
   .curate-row.is-new {
     animation: none;
-    box-shadow: inset 3px 0 0 var(--green);
+    box-shadow: inset 3px 0 0 var(--navy);
   }
 }
 
@@ -1935,7 +1935,7 @@ h3.display {
   font-size: 1.15rem;
   font-weight: 300;
   line-height: 1.2;
-  color: var(--green); /* on parchment green survives — off the scrim */
+  color: var(--navy); /* on parchment green survives — off the scrim */
 }
 
 /* both doors into the shortlist — the stat tile and /curate#shortlist — land
@@ -1974,12 +1974,12 @@ h3.display {
   color: var(--ink-faint);
 }
 .curate-status--shortlist {
-  border-color: var(--green);
-  color: var(--green);
+  border-color: var(--navy);
+  color: var(--navy);
 }
 .curate-status--bought {
-  background: var(--green);
-  border-color: var(--green);
+  background: var(--navy);
+  border-color: var(--navy);
   color: var(--parchment);
 }
 .curate-status--pass {
@@ -2188,7 +2188,7 @@ h3.display {
 .deck-card-body--photo .deck-price {
   font-size: 1.25rem;
   line-height: 1.1;
-  color: var(--parchment); /* NOT --green: green on ink is unreadable */
+  color: var(--parchment); /* NOT --navy: navy on ink is unreadable */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2228,7 +2228,7 @@ h3.display {
 .deck-card-body--photo .deck-link:hover {
   background: color-mix(in srgb, var(--parchment) 92%, transparent);
   border-color: var(--parchment);
-  color: var(--green);
+  color: var(--navy);
 }
 .deck-card-top {
   display: flex;
@@ -2242,7 +2242,7 @@ h3.display {
   font-family: var(--display);
   font-size: 1.6rem;
   font-weight: 300;
-  color: var(--green);
+  color: var(--navy);
 }
 .deck-title {
   font-family: var(--display);
@@ -2274,7 +2274,7 @@ h3.display {
   font-size: 11px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--green);
+  color: var(--navy);
   border-top: 1px solid var(--rule);
   padding-top: 0.9rem;
 }
@@ -2302,7 +2302,7 @@ h3.display {
 }
 .deck-stamp--yes {
   left: 1.75rem;
-  color: var(--green);
+  color: var(--navy);
   transform: rotate(-12deg);
 }
 .deck-stamp--no {
@@ -2344,11 +2344,11 @@ h3.display {
 }
 /* the verdict buttons wear their verdict — shortlist green, pass claret */
 .deck-btn--yes {
-  border-color: var(--green);
-  color: var(--green);
+  border-color: var(--navy);
+  color: var(--navy);
 }
 .deck-btn--yes:hover {
-  background: var(--green);
+  background: var(--navy);
   color: var(--parchment);
 }
 .deck-btn--pass {
