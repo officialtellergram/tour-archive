@@ -32,7 +32,7 @@
       "channel": "ebay",
       "listingUrl": "https://www.ebay.com/itm/407115489714",
       "photos": [
-        "carousel/slazenger-golden-horseshoe-wind-shirt/01.webp",
+        "carousel/slazenger-golden-horseshoe-wind-shirt/01.jpg",
         "carousel/slazenger-golden-horseshoe-wind-shirt/02.webp",
         "carousel/slazenger-golden-horseshoe-wind-shirt/03.webp",
         "carousel/slazenger-golden-horseshoe-wind-shirt/04.webp",
@@ -71,7 +71,7 @@
       "channel": "ebay",
       "listingUrl": "https://www.ebay.com/itm/407131456833",
       "photos": [
-        "carousel/masters-peter-millar-quarter-zip-blue/01.webp",
+        "carousel/masters-peter-millar-quarter-zip-blue/01.jpg",
         "carousel/masters-peter-millar-quarter-zip-blue/02.webp",
         "carousel/masters-peter-millar-quarter-zip-blue/03.webp",
         "carousel/masters-peter-millar-quarter-zip-blue/04.webp",
@@ -110,7 +110,7 @@
       "channel": "ebay",
       "listingUrl": "https://www.ebay.com/itm/407115514561",
       "photos": [
-        "carousel/peter-millar-club-quarter-zip-navy/01.webp",
+        "carousel/peter-millar-club-quarter-zip-navy/01.jpg",
         "carousel/peter-millar-club-quarter-zip-navy/02.webp",
         "carousel/peter-millar-club-quarter-zip-navy/03.webp"
       ],
@@ -144,7 +144,7 @@
       "file": "ryder-cup-print-polo.jpg",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
-        "carousel/ryder-cup-print-polo/01.webp",
+        "carousel/ryder-cup-print-polo/01.jpg",
         "carousel/ryder-cup-print-polo/02.webp",
         "carousel/ryder-cup-print-polo/03.webp",
         "carousel/ryder-cup-print-polo/04.webp",
@@ -180,7 +180,7 @@
       "file": "sun-faded-golf-pullover.jpg",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
-        "carousel/sun-faded-golf-pullover/01.webp",
+        "carousel/sun-faded-golf-pullover/01.jpg",
         "carousel/sun-faded-golf-pullover/02.webp",
         "carousel/sun-faded-golf-pullover/03.webp",
         "carousel/sun-faded-golf-pullover/04.webp"
@@ -215,7 +215,7 @@
       "file": "university-of-kentucky-polo.jpg",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
-        "carousel/university-of-kentucky-polo/01.webp",
+        "carousel/university-of-kentucky-polo/01.jpg",
         "carousel/university-of-kentucky-polo/02.webp",
         "carousel/university-of-kentucky-polo/03.webp"
       ],
@@ -249,7 +249,7 @@
       "file": "bugle-boy-polo.jpg",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
-        "carousel/bugle-boy-polo/01.webp",
+        "carousel/bugle-boy-polo/01.jpg",
         "carousel/bugle-boy-polo/02.webp",
         "carousel/bugle-boy-polo/03.webp",
         "carousel/bugle-boy-polo/04.webp"
@@ -284,7 +284,7 @@
       "file": "masters-tech-striped-polo.jpg",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
-        "carousel/masters-tech-striped-polo/01.webp",
+        "carousel/masters-tech-striped-polo/01.jpg",
         "carousel/masters-tech-striped-polo/02.webp",
         "carousel/masters-tech-striped-polo/03.webp",
         "carousel/masters-tech-striped-polo/04.webp",
@@ -320,7 +320,7 @@
       "file": "peter-millar-pine-valley-polo.jpg",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
-        "carousel/peter-millar-pine-valley-polo/01.webp",
+        "carousel/peter-millar-pine-valley-polo/01.jpg",
         "carousel/peter-millar-pine-valley-polo/02.webp",
         "carousel/peter-millar-pine-valley-polo/03.webp",
         "carousel/peter-millar-pine-valley-polo/04.webp",
@@ -356,7 +356,7 @@
       "file": "nike-ryder-cup-polo-valhalla.jpg",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
-        "carousel/nike-ryder-cup-polo-valhalla/01.webp",
+        "carousel/nike-ryder-cup-polo-valhalla/01.jpg",
         "carousel/nike-ryder-cup-polo-valhalla/02.webp",
         "carousel/nike-ryder-cup-polo-valhalla/03.webp",
         "carousel/nike-ryder-cup-polo-valhalla/04.webp",
@@ -392,7 +392,7 @@
       "file": "nike-tiger-woods-tshirt.jpg",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
-        "carousel/nike-tiger-woods-tshirt/01.webp",
+        "carousel/nike-tiger-woods-tshirt/01.jpg",
         "carousel/nike-tiger-woods-tshirt/02.webp",
         "carousel/nike-tiger-woods-tshirt/03.webp",
         "carousel/nike-tiger-woods-tshirt/04.webp",
@@ -428,7 +428,7 @@
       "file": "peter-millar-taylormade-quarter-zip.jpg",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
-        "carousel/peter-millar-taylormade-quarter-zip/01.webp",
+        "carousel/peter-millar-taylormade-quarter-zip/01.jpg",
         "carousel/peter-millar-taylormade-quarter-zip/02.webp",
         "carousel/peter-millar-taylormade-quarter-zip/03.webp",
         "carousel/peter-millar-taylormade-quarter-zip/04.webp"

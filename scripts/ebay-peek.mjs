@@ -106,14 +106,18 @@ try {
       const m = (u || '').match(/ebayimg\\.com\\/images\\/g\\/([^/]+)\\//);
       if (m && !byId.has(m[1])) byId.set(m[1], u.replace(/s-l\\d+/, 's-l1600'));
     };
-    // carousel frames first — listing order; unloaded frames carry data-src
+    // og:image FIRST — it is the listing's chosen primary photo, so it claims
+    // frame 01. (add() normalises it up to s-l1600, so the old archive-the-
+    // hero-at-400px bug cannot recur; the id-dedupe keeps its carousel copy
+    // out.) The DOM carousel's order is NOT reliably the listing's order —
+    // trusting it once shipped a wrinkled second angle as a card face.
+    add(document.querySelector('meta[property="og:image"]')?.content);
+    // carousel frames next; unloaded frames carry data-src
     document.querySelectorAll('.ux-image-carousel img, .ux-image-carousel-item img')
       .forEach((img) => add(img.src || img.dataset?.src || ''));
     // thumbnail-grid backstop: same ids at s-l140/s-l500, normalised up
     document.querySelectorAll('.ux-image-grid img')
       .forEach((img) => add(img.src || img.dataset?.src || ''));
-    // og:image last — only rescues frame 1 on a partial render
-    add(document.querySelector('meta[property="og:image"]')?.content);
     return JSON.stringify({ count: byId.size, images: [...byId.values()].slice(0, 8) });
   })()`;
 
