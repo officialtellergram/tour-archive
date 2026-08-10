@@ -7,6 +7,8 @@
     "dev": "vite --port 5180 --host",
     "server": "node server/index.mjs",
     "sync": "node scripts/sync.mjs",
+    "ingest": "node scripts/ingest.mjs",
+    "photos": "node scripts/carousel-pull.mjs",
     "curate:enrich": "node scripts/curate-enrich.mjs",
     "build": "vite build",
     "build:pages": "vite build && node scripts/snapshot.mjs",
