@@ -59,7 +59,10 @@ The pull writes exactly one field, `photos` (plus a `_photosPulled` date), and
 never overwrites a `photos` array you have edited — prune a duplicate frame or
 reorder views right here in the manifest; the paths are relative to this
 folder, forward slashes, eight frames at most. Re-pull one piece after a
-relist with `npm run photos -- --refresh <id>`.
+relist with `npm run photos -- --refresh <id>`; add `--hero` when the piece
+was re-shot, to also re-face its card from the listing's first frame (the
+card keeps its URL, so the CDN and your browser hold the old picture for
+~10 minutes — hard-refresh to see it sooner).
 
 The frames are our own copies — never paste an `i.ebayimg.com` URL; eBay image
 links die when a listing ends or relists, and the audit refuses them. Listing

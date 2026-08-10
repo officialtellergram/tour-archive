@@ -43,6 +43,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 /* ---------------- CLI ---------------- */
 
 let refreshId = null;
+let refaceHero = false;
 {
   const args = process.argv.slice(2);
   while (args.length) {
@@ -53,10 +54,16 @@ let refreshId = null;
         console.log(`${C.red}✖ --refresh needs an entry id (with or without the stock- prefix)${C.off}`);
         process.exit(1);
       }
+    } else if (a === '--hero') {
+      refaceHero = true;
     } else {
-      console.log(`${C.red}✖ unknown argument "${a}" — usage: npm run photos [-- --refresh <id>]${C.off}`);
+      console.log(`${C.red}✖ unknown argument "${a}" — usage: npm run photos [-- --refresh <id> [--hero]]${C.off}`);
       process.exit(1);
     }
+  }
+  if (refaceHero && !refreshId) {
+    console.log(`${C.red}✖ --hero re-faces one piece's card from its listing — it only works with --refresh <id>${C.off}`);
+    process.exit(1);
   }
 }
 
@@ -194,6 +201,28 @@ for (const entry of targets) {
   console.log(`   ${C.green}✔${C.off} ${entry.id} ${C.dim}— ${frames.length} frames${C.off}`);
   pulled++;
   imageCount += frames.length;
+
+  // --hero: re-face the card from the listing's first frame. Overwrites the
+  // hero FILE's bytes only — the manifest `file` field is ingest's, and this
+  // script never touches it. Explicit, per-piece, human-vouched (--refresh).
+  if (refaceHero) {
+    if (!entry.file || !/\.jpe?g$/i.test(entry.file)) {
+      console.log(`${C.yellow}   ⚠ hero not re-faced — entry has no .jpg hero file to overwrite${C.off}`);
+    } else {
+      try {
+        // The hero file is a .jpg; frame 01 may have arrived as webp. eBay's
+        // CDN serves the same image id at either extension, so force .jpg.
+        const heroBytes =
+          frames[0].ext === 'jpg'
+            ? frames[0].buf
+            : (await download(res.images[0].replace(/\.\w+$/, '.jpg'))).buf;
+        writeFileSync(join(STOCK, entry.file), heroBytes);
+        console.log(`   ${C.green}✔${C.off} ${entry.id} ${C.dim}— card hero re-faced from frame 01 (CDN + browser caches take ~10 min to let go)${C.off}`);
+      } catch (err) {
+        console.log(`${C.yellow}   ⚠ hero not re-faced — ${err.message}${C.off}`);
+      }
+    }
+  }
 }
 
 console.log(
