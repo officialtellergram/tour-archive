@@ -575,7 +575,7 @@ h3.display {
   z-index: 0;
   background: radial-gradient(
       120% 80% at 50% 8%,
-      rgba(20, 48, 31, 0.1) 0%,
+      rgba(16, 30, 56, 0.1) 0%,
       transparent 62%
     ),
     linear-gradient(180deg, var(--parchment) 0%, var(--parchment-deep) 100%);
@@ -1365,7 +1365,7 @@ h3.display {
 }
 .journal-row:hover {
   padding-left: 1.2rem;
-  background: linear-gradient(90deg, rgba(20, 48, 31, 0.045), transparent 60%);
+  background: linear-gradient(90deg, rgba(16, 30, 56, 0.045), transparent 60%);
 }
 @media (max-width: 820px) {
   .journal-row {
