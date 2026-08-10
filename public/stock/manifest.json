@@ -43,7 +43,7 @@
       "garment": "sweater",
       "size": "L",
       "condition": "Excellent",
-      "price": 148,
+      "price": 200,
       "colorway": [
         "#7FA8D9",
         "#5b86b8",
@@ -59,7 +59,9 @@
       ],
       "measurements": {},
       "_ingested": "2026-08-02",
-      "_source": "IMG_0378.JPEG"
+      "_source": "IMG_0378.JPEG",
+      "channel": "ebay",
+      "listingUrl": "https://www.ebay.com/itm/407131456833"
     },
     {
       "id": "stock-peter-millar-club-quarter-zip-navy",
@@ -143,7 +145,7 @@
       ],
       "measurements": {},
       "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407115266576",
+      "listingUrl": "https://www.ebay.com/itm/407131442352",
       "_ingested": "2026-08-02",
       "file": "sun-faded-golf-pullover.jpg",
       "_source": "own listing photo, i.ebayimg.com"
@@ -202,6 +204,146 @@
       "listingUrl": "https://www.ebay.com/itm/407115464142",
       "_ingested": "2026-08-02",
       "file": "bugle-boy-polo.jpg",
+      "_source": "own listing photo, i.ebayimg.com"
+    },
+    {
+      "id": "stock-masters-tech-striped-polo",
+      "name": "Masters Tech Stripe Polo",
+      "brand": "Masters Collection",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "See listing",
+      "condition": "See listing",
+      "price": 25,
+      "colorway": [
+        "#3E63B0",
+        "#E9E7DF",
+        "#22437F"
+      ],
+      "colorName": "Royal Stripe",
+      "story": "Royal-and-white feeder stripe from Augusta’s own performance line, the map-and-flag stitched at the chest. The souvenir that plays.",
+      "details": [
+        "Checkout completes on eBay",
+        "Full photographs and condition notes on the listing"
+      ],
+      "measurements": {},
+      "channel": "ebay",
+      "listingUrl": "https://www.ebay.com/itm/407131429837",
+      "_ingested": "2026-08-10",
+      "file": "masters-tech-striped-polo.jpg",
+      "_source": "own listing photo, i.ebayimg.com"
+    },
+    {
+      "id": "stock-peter-millar-pine-valley-polo",
+      "name": "Pine Valley Stripe Polo, Peter Millar",
+      "brand": "Peter Millar",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "See listing",
+      "condition": "See listing",
+      "price": 45,
+      "colorway": [
+        "#5FA8D8",
+        "#BBD4EA",
+        "#3E82B8"
+      ],
+      "colorName": "Sky Stripe",
+      "story": "Two-blue feeder stripe carrying the pine shield of Pine Valley — perennial No. 1 among courses almost nobody gets to play. Peter Millar cotton.",
+      "details": [
+        "Checkout completes on eBay",
+        "Full photographs and condition notes on the listing"
+      ],
+      "measurements": {},
+      "channel": "ebay",
+      "listingUrl": "https://www.ebay.com/itm/407131400410",
+      "_ingested": "2026-08-10",
+      "file": "peter-millar-pine-valley-polo.jpg",
+      "_source": "own listing photo, i.ebayimg.com"
+    },
+    {
+      "id": "stock-nike-ryder-cup-polo-valhalla",
+      "name": "Ryder Cup Polo, Valhalla 2008",
+      "brand": "Nike Golf",
+      "year": "2008",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "See listing",
+      "condition": "See listing",
+      "price": 20,
+      "colorway": [
+        "#A5283C",
+        "#E5DFD5",
+        "#4A4A48"
+      ],
+      "colorName": "Valhalla Red",
+      "story": "Ryder Cup red from Valhalla 2008 — the Azinger year, when the cup came back. Trophy and flags embroidered over an engineered stripe.",
+      "details": [
+        "Checkout completes on eBay",
+        "Full photographs and condition notes on the listing"
+      ],
+      "measurements": {},
+      "channel": "ebay",
+      "listingUrl": "https://www.ebay.com/itm/407131336432",
+      "_ingested": "2026-08-10",
+      "file": "nike-ryder-cup-polo-valhalla.jpg",
+      "_source": "own listing photo, i.ebayimg.com"
+    },
+    {
+      "id": "stock-nike-tiger-woods-tshirt",
+      "name": "Tiger Woods Tee, Nike",
+      "brand": "Nike",
+      "year": "2000s",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "See listing",
+      "condition": "See listing",
+      "price": 35,
+      "colorway": [
+        "#A64B7E",
+        "#8A3A66",
+        "#1E1B1C"
+      ],
+      "colorName": "Berry",
+      "story": "Nike Tiger Woods–line tee in a sun-struck berry, the oval badge at the chest and TIGER printed low at the hem.",
+      "details": [
+        "Checkout completes on eBay",
+        "Full photographs and condition notes on the listing"
+      ],
+      "measurements": {},
+      "channel": "ebay",
+      "listingUrl": "https://www.ebay.com/itm/407131472633",
+      "_ingested": "2026-08-10",
+      "file": "nike-tiger-woods-tshirt.jpg",
+      "_source": "own listing photo, i.ebayimg.com"
+    },
+    {
+      "id": "stock-peter-millar-taylormade-quarter-zip",
+      "name": "TaylorMade Quarter-Zip, Peter Millar",
+      "brand": "Peter Millar",
+      "year": "—",
+      "category": "Knitwear",
+      "garment": "sweater",
+      "size": "See listing",
+      "condition": "See listing",
+      "price": 150,
+      "colorway": [
+        "#4A2733",
+        "#33161F",
+        "#D9D2D6"
+      ],
+      "colorName": "Aubergine",
+      "story": "Peter Millar merino in deep aubergine with the TaylorMade crest at the chest — tour-van issue, done in club-room cloth.",
+      "details": [
+        "Checkout completes on eBay",
+        "Full photographs and condition notes on the listing"
+      ],
+      "measurements": {},
+      "channel": "ebay",
+      "listingUrl": "https://www.ebay.com/itm/407131493486",
+      "_ingested": "2026-08-10",
+      "file": "peter-millar-taylormade-quarter-zip.jpg",
       "_source": "own listing photo, i.ebayimg.com"
     }
   ]
