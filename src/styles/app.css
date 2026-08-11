@@ -58,8 +58,15 @@ body {
   overflow-x: hidden;
 }
 
+/* position:fixed is the lock iOS actually honours (overflow:hidden on body
+   is ignored there and the page scrolls behind the open drawer). openDrawer
+   pins body.top to the stored scroll so the page doesn't jump to the top;
+   closeDrawer restores it. */
 body.is-locked {
   overflow: hidden;
+  position: fixed;
+  inset-inline: 0;
+  width: 100%;
 }
 
 img,
@@ -433,6 +440,9 @@ h3.display {
 }
 .drawer-body {
   overflow-y: auto;
+  /* a scroll that ends inside the menu ends there — never chains to the page */
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   padding: clamp(1.5rem, 5vw, 4rem) var(--gutter) 4rem;
   display: grid;
   gap: 3rem;

@@ -336,8 +336,14 @@ export function initAccordions(root = document) {
 }
 
 /** Drawer open/close (nav). */
+/* iOS ignores overflow:hidden on body, so the lock is position:fixed — which
+   resets scroll, so the position is carried across the lock and restored. */
+let drawerScrollY = 0;
+
 export function openDrawer(drawer) {
   drawer.classList.add('is-open');
+  drawerScrollY = window.scrollY;
+  document.body.style.top = `-${drawerScrollY}px`;
   document.body.classList.add('is-locked');
   const items = drawer.querySelectorAll('.drawer-list li, .drawer h4');
   if (reduced) {
@@ -355,6 +361,8 @@ export function openDrawer(drawer) {
 
 export async function closeDrawer(drawer) {
   document.body.classList.remove('is-locked');
+  document.body.style.top = '';
+  window.scrollTo({ top: drawerScrollY, behavior: 'instant' });
   if (reduced) {
     drawer.style.clipPath = 'inset(0 0 100% 0)';
     drawer.classList.remove('is-open');
