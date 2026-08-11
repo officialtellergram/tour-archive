@@ -35,6 +35,12 @@ npm run check        # audit + smoke + integration   (no browser needed)
 npm run check:all    # all four
 ```
 
+**Before shipping anything visual, stage it.** `npm run stage` runs the gate,
+builds the exact artefact Pages serves (static inventory snapshot included),
+and opens it at `http://localhost:4173` — byte-for-byte what production will
+show, with none of the CDN's ten-minute cache to argue with. Eyeball the hero
+there, then ship.
+
 **`audit`** reads the route table straight out of `src/main.js`, harvests every
 `href` written anywhere in `src/`, resolves template-literal hrefs by shape, and
 proves each one lands on a declared route. Dynamic segments are checked against

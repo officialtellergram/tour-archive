@@ -12,6 +12,7 @@
     "curate:enrich": "node scripts/curate-enrich.mjs",
     "build": "vite build",
     "build:pages": "vite build && node scripts/snapshot.mjs",
+    "stage": "node scripts/stage.mjs",
     "preview": "vite preview --port 5180",
     "audit": "node scripts/audit.mjs",
     "smoke": "node scripts/smoke.mjs",
