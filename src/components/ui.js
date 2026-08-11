@@ -41,9 +41,11 @@ export function plateTag(item) {
 export function productCard(item) {
   const coll = getCollection(item.collection);
   return `
-  <a class="card ${item.sold ? 'is-sold' : ''}" href="/item/${item.id}"
-     data-cursor-text="${item.sold ? 'Archived' : 'View'}">
-    <div class="plate ${item.photo ? 'plate--photo' : ''}">
+  <a class="card ${item.sold ? 'is-sold' : ''}" href="/item/${item.id}">
+    <!-- cursor bubble procs on closest [data-cursor-text]: it lives on the
+         plate so VIEW appears over the photograph, never over the title -->
+    <div class="plate ${item.photo ? 'plate--photo' : ''}"
+      data-cursor-text="${item.sold ? 'Archived' : 'View'}">
       ${plateTag(item)}
       ${plateMedia(item)}
     </div>
@@ -81,9 +83,9 @@ export function collectionTile(collection) {
   const lead = stock[0];
   const mosaic = collection.id === BASIC_STOCK ? mosaicMedia(stock) : '';
   return `
-  <a class="tile" href="/collections/${collection.id}" data-cursor-text="Open"
+  <a class="tile" href="/collections/${collection.id}"
      style="--accent:${collection.accent}">
-    <div class="tile-canvas">
+    <div class="tile-canvas" data-cursor-text="Open">
       ${mosaic || (lead ? collectionMark(collection, lead.garment) : '')}
       <div class="swatches" aria-hidden="true">
         ${collection.palette.map((c) => `<i style="background:${c}"></i>`).join('')}
