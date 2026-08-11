@@ -632,8 +632,11 @@ h3.display {
       rgba(235, 229, 214, 0.88) 100%
     );
 }
-/* Narrow viewports: the text column is nearly full-bleed, so the pool
-   widens with it — same soft edge, no glyph outside the parchment. */
+/* Narrow viewports: portrait's breathing room is VERTICAL — a wide pool
+   reads as the retired uniform wash. The pool shrinks to hug the text
+   stack (full-bleed horizontally only where the type is), leaving the top
+   fifth and the band beneath the buttons near-clear so the photograph
+   still leads on a phone. */
 @media (max-width: 700px) {
   .hero-bg::after {
     background: radial-gradient(
@@ -642,17 +645,17 @@ h3.display {
         transparent 62%
       ),
       radial-gradient(
-        ellipse 130% 72% at 50% 48%,
-        rgba(244, 240, 230, 0.92) 0%,
-        rgba(244, 240, 230, 0.84) 52%,
-        rgba(244, 240, 230, 0) 78%
+        ellipse 110% 54% at 50% 46%,
+        rgba(244, 240, 230, 0.9) 0%,
+        rgba(244, 240, 230, 0.82) 50%,
+        rgba(244, 240, 230, 0) 76%
       ),
       linear-gradient(
         180deg,
-        rgba(244, 240, 230, 0.28) 0%,
-        rgba(244, 240, 230, 0.22) 55%,
-        rgba(235, 229, 214, 0.62) 86%,
-        rgba(235, 229, 214, 0.9) 100%
+        rgba(244, 240, 230, 0.18) 0%,
+        rgba(244, 240, 230, 0.14) 48%,
+        rgba(235, 229, 214, 0.45) 86%,
+        rgba(235, 229, 214, 0.85) 100%
       );
   }
 }
