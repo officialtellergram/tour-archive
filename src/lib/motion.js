@@ -370,7 +370,9 @@ export async function closeDrawer(drawer) {
 
 /* module scope — shim-safe: inert declarations only (this module loads under
    the render smoke's DOM shim; no module-level DOM work) */
-const HERO_HOLD_MS = 8000; // cadence; the 1400ms dissolve lives in CSS
+const HERO_HOLD_MS = 5000; // cadence; the 1400ms dissolve lives in CSS. First
+//                            fire is one full period — still clear of the
+//                            ~2.6s hero entrance choreography.
 let heroTimer = null; //      singleton interval handle — the only one, ever
 
 /**
