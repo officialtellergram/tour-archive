@@ -441,6 +441,50 @@ export function mountHeroBackdrop(outlet) {
   }, HERO_HOLD_MS);
 }
 
+/* ------------------------------------------------------------------ */
+/* Listing hover-cycle                                                 */
+/* ------------------------------------------------------------------ */
+
+/* One timer — only one plate is hovered at a time. Bound ONCE at boot via a
+   document-level delegate, so route changes cannot stack listeners; a tick
+   against a detached plate self-disposes. */
+let cycleTimer = null;
+
+/** Hovering a listing's plate deals its archived carousel frames. */
+export function initCardCycle() {
+  // Touch has no hover, and reduced motion means no auto-advancing imagery.
+  if (reduced || !window.matchMedia('(hover: hover)').matches) return;
+  document.addEventListener('pointerover', (e) => {
+    const plate = e.target.closest?.('[data-cycle]');
+    if (!plate || plate.dataset.cycling === '1') return;
+    const img = plate.querySelector('.plate-photo');
+    if (!img) return;
+    const home = img.getAttribute('src');
+    const frames = plate.dataset.cycle.split('|').filter((f) => f && f !== home);
+    if (!frames.length) return;
+
+    const reel = [...frames, home]; // ends back on the hero, then loops
+    let i = 0;
+    plate.dataset.cycling = '1';
+    clearInterval(cycleTimer);
+    cycleTimer = setInterval(() => {
+      if (!plate.isConnected) {
+        clearInterval(cycleTimer);
+        return;
+      }
+      img.src = reel[i];
+      i = (i + 1) % reel.length;
+    }, 650);
+
+    const stop = () => {
+      clearInterval(cycleTimer);
+      delete plate.dataset.cycling;
+      img.src = home;
+    };
+    plate.addEventListener('pointerleave', stop, { once: true });
+  });
+}
+
 /** Toast used by the "Reserve" / signup actions. */
 let toastTimer;
 export function toast(message) {

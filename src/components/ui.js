@@ -40,12 +40,18 @@ export function plateTag(item) {
 
 export function productCard(item) {
   const coll = getCollection(item.collection);
+  // Hover deals the archived carousel (initCardCycle in motion.js); resolved
+  // URLs are baked here so the swapper only ever assigns src.
+  const cycle =
+    Array.isArray(item.photos) && item.photos.length > 1
+      ? ` data-cycle="${item.photos.map((p) => mediaURL(p)).join('|')}"`
+      : '';
   return `
   <a class="card ${item.sold ? 'is-sold' : ''}" href="/item/${item.id}">
     <!-- cursor bubble procs on closest [data-cursor-text]: it lives on the
          plate so VIEW appears over the photograph, never over the title -->
     <div class="plate ${item.photo ? 'plate--photo' : ''}"
-      data-cursor-text="${item.sold ? 'Archived' : 'View'}">
+      data-cursor-text="${item.sold ? 'Archived' : 'View'}"${cycle}>
       ${plateTag(item)}
       ${plateMedia(item)}
     </div>

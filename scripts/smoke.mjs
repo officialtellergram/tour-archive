@@ -63,7 +63,7 @@ const { archive } = await import('../src/pages/archive.js');
 const { product, pdpMedia } = await import('../src/pages/product.js');
 const { journalIndex, journalEntry } = await import('../src/pages/journal.js');
 const { mission, sell, sizing, notFound } = await import('../src/pages/house.js');
-const { mosaicMedia, collectionTile } = await import('../src/components/ui.js');
+const { mosaicMedia, collectionTile, productCard } = await import('../src/components/ui.js');
 const { curate, curateReview, deskHTML, verdictHTML, reviewCardHTML } = await import(
   '../src/pages/curate.js'
 );
@@ -242,6 +242,27 @@ for (const [label, fn] of deskCases) {
     errors.push('collectionTile basic-stock: mosaic leaked into the empty-store fallback');
   if (!tile.includes('class="swatches"'))
     errors.push('collectionTile basic-stock: swatch strip missing from the fallback canvas');
+}
+
+/* Hover-cycle pins — cards with an archived carousel carry the reel. */
+{
+  const withReel = productCard({
+    id: 'stock-sm-cycle', name: 'Cycle Fixture', brand: 'B', year: '—', category: 'Shirting',
+    collection: 'basic-stock', garment: 'polo', size: 'L', condition: 'VG', price: 10,
+    colorway: ['#111', '#222', '#333'], colorName: 'X', photo: 'stock/c.jpg',
+    photos: ['stock/carousel/c/01.jpg', 'stock/carousel/c/02.jpg'],
+    sold: false, upcoming: false, market: { label: 'x', url: 'https://x.example' },
+  });
+  if (!withReel.includes('data-cycle="'))
+    errors.push('productCard: a carousel-bearing item must carry data-cycle');
+  const without = productCard({
+    id: 'stock-sm-plain', name: 'Plain Fixture', brand: 'B', year: '—', category: 'Shirting',
+    collection: 'basic-stock', garment: 'polo', size: 'L', condition: 'VG', price: 10,
+    colorway: ['#111', '#222', '#333'], colorName: 'X', photo: 'stock/p.jpg', photos: [],
+    sold: false, upcoming: false, market: { label: 'x', url: 'https://x.example' },
+  });
+  if (without.includes('data-cycle'))
+    errors.push('productCard: data-cycle leaked onto an item with no carousel');
 }
 
 /* Hero backdrop pins — the rotation's markup contract. */

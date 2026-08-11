@@ -6,6 +6,7 @@ import {
   initHeaderBehaviour,
   initCursor,
   initMarquee,
+  initCardCycle,
   mountPageMotion,
   mountHeroBackdrop,
   veilIn,
@@ -96,6 +97,7 @@ async function boot() {
   initHeaderBehaviour();
   initCursor();
   initMarquee();
+  initCardCycle();
 
   await start();
 
