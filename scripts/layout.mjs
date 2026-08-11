@@ -53,6 +53,16 @@ if (!BROWSER) {
  * their own viewBox).
  */
 const PROBE = `(() => {
+  // Freeze animations before measuring: the gate's subject is LAYOUT, and a
+  // mid-drift hero plate at scale 1.06 "protrudes" past the viewport without
+  // ever being visible outside its clipped container. Animations reset to
+  // their base state; genuine overflow still measures as overflow.
+  if (!document.querySelector('style[data-probe-freeze]')) {
+    const s = document.createElement('style');
+    s.setAttribute('data-probe-freeze', '');
+    s.textContent = '* { animation: none !important; transition: none !important; }';
+    document.head.appendChild(s);
+  }
   const vw = document.documentElement.clientWidth;
   const skip = /^(svg|g|rect|path|span|defs|clippath|pattern|lineargradient|stop|use)$/;
   const out = [];

@@ -602,6 +602,37 @@ h3.display {
 .hero-slide:nth-of-type(3) {
   object-position: 50% 0%;
 }
+/* Montage drift — each plate breathes on its own clock and bearing, so a
+   deal always lands mid-movement, the way cut footage does. Scale never
+   drops below 1.03 (1.5% margin per side) and translate stays under 0.9%,
+   so the drift can never expose a plate edge inside the clipped stage.
+   Animations run on the imgs; the crossfade transition owns opacity and the
+   parallax owns the parent's transform — three mechanisms, no shared target. */
+@keyframes hero-drift-a {
+  from { transform: scale(1.03); }
+  to { transform: scale(1.09) translate3d(-0.8%, 0.5%, 0); }
+}
+@keyframes hero-drift-b {
+  from { transform: scale(1.09) translate3d(0.7%, -0.4%, 0); }
+  to { transform: scale(1.03); }
+}
+@keyframes hero-drift-c {
+  from { transform: scale(1.04) translate3d(0.5%, 0.6%, 0); }
+  to { transform: scale(1.08) translate3d(-0.5%, -0.4%, 0); }
+}
+@keyframes hero-drift-d {
+  from { transform: scale(1.08); }
+  to { transform: scale(1.03) translate3d(0.6%, 0.6%, 0); }
+}
+.hero-slide:nth-of-type(1) { animation: hero-drift-a 26s ease-in-out infinite alternate; }
+.hero-slide:nth-of-type(2) { animation: hero-drift-b 32s ease-in-out infinite alternate; }
+.hero-slide:nth-of-type(3) { animation: hero-drift-c 24s ease-in-out infinite alternate; }
+.hero-slide:nth-of-type(4) { animation: hero-drift-d 29s ease-in-out infinite alternate; }
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide {
+    animation: none;
+  }
+}
 /* The veil owns ALL muting: photographs are a muted plate under parchment,
    never a full-strength backdrop. Strongest where the text mass sits (display
    centre, meta rail + buttons low), clearest above the logo. Ink display text

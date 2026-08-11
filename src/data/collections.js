@@ -61,7 +61,7 @@ export const collections = [
     status: 'upcoming',
     statusLabel: 'First drop',
     releaseNote: 'Opens tournament week',
-    heroLine: 'Thirty players, Bobby Jones’s home club, and the first drop in the archive.',
+    heroLine: 'A collection of iconic attire from the Tour Championship.',
     summary:
       'Our opening collection, released around the 2026 TOUR Championship at East Lake — Atlanta golf tradition, Jones-era knitwear, and the sun-struck colour of Georgia in late August.',
     // Derived from the course itself: sun-struck zoysia fairway, August haze,
