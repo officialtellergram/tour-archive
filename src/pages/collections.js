@@ -1,11 +1,10 @@
 import {
-  collections,
+  launchCollections,
   itemsIn,
   isAvailable,
   getCollection,
   featuredEvent,
   dateRange,
-  BASIC_STOCK,
 } from '../data/store.js';
 import { collectionTile, productCard, breadcrumb, sectionHead, marquee } from '../components/ui.js';
 
@@ -14,8 +13,9 @@ import { collectionTile, productCard, breadcrumb, sectionHead, marquee } from '.
 /* ------------------------------------------------------------------ */
 
 export function collectionsIndex() {
-  const order = { live: 0, upcoming: 1, archived: 2 };
-  const sorted = [...collections()].sort((a, b) => order[a.status] - order[b.status]);
+  const launch = launchCollections();
+  const ev = featuredEvent();
+  const reel = launch.map((c) => `${c.drop} — ${c.name} · ${c.place}`);
 
   return `
   <section class="section" style="padding-top:calc(var(--header-h) + 4rem)">
@@ -23,29 +23,20 @@ export function collectionsIndex() {
       ${breadcrumb([{ label: 'Home', href: '/' }, { label: 'Collections' }])}
       <div class="coll-hero-grid" data-hero>
         <div>
-          ${(() => {
-            const real = collections().filter((c) => c.id !== BASIC_STOCK);
-            const drops = real.filter((c) => c.status !== 'archived');
-            const files = real.filter((c) => c.status === 'archived');
-            const ev = featuredEvent();
-            return `
-          <p class="eyebrow" data-hero-meta><span>${drops.length} drop${
-              drops.length === 1 ? '' : 's'
-            } · ${files.length} research files</span></p>
+          <p class="eyebrow" data-hero-meta><span>One drop · one open shelf</span></p>
           <h1 class="display" style="margin:.6rem 0 1.4rem;font-size:clamp(3rem,8vw,7.5rem)">
             <span class="line-mask"><span>The Collections</span></span>
           </h1>
           <p class="lede" data-hero-cta>
-            Every piece we buy is placed into the championship era it came from. One drop —
-            opening ${ev ? dateRange(ev) : 'soon'} — and ${files.length} research files feeding
-            the sourcing list behind it.
-          </p>`;
-          })()}
+            Every piece we buy is placed into the championship era it came from. Drop No. 01
+            opens ${ev ? dateRange(ev) : 'tournament week'} at East Lake, and Basic Stock —
+            the open shelf — is listed continuously as pieces are photographed.
+          </p>
         </div>
         <div data-hero-cta>
           <p class="eyebrow" style="margin-bottom:.9rem">Drop register</p>
           <ul class="facts facts--links">
-            ${sorted
+            ${launch
               .map(
                 (c) => `<li><a href="/collections/${c.id}">
                   <span class="status-dot" data-status="${c.status}">${c.drop}</span>
@@ -59,12 +50,12 @@ export function collectionsIndex() {
     </div>
   </section>
 
-  ${marquee(collections().map((c) => `${c.drop} — ${c.name} · ${c.place}`))}
+  ${marquee([...reel, ...reel])}
 
   <section class="section">
     <div class="wrap">
       <div class="grid-collections" data-stagger>
-        ${sorted.map(collectionTile).join('')}
+        ${launch.map(collectionTile).join('')}
       </div>
     </div>
   </section>`;
@@ -92,6 +83,10 @@ function statusRows(c, stock, live) {
     return `<li><span>Drop opens</span><b>Tournament week</b></li>
     <li><span>Status</span><b>Wardrobe in assembly</b></li>`;
   }
+  if (c.status === 'live') {
+    return `<li><span>Type</span><b>Open stock</b></li>
+    <li><span>Status</span><b>Listed continuously</b></li>`;
+  }
   return `<li><span>Type</span><b>Research file</b></li>
   <li><span>Status</span><b>Feeding the sourcing list</b></li>`;
 }
@@ -102,9 +97,10 @@ export function collectionDetail({ id }) {
 
   const stock = itemsIn(c.id);
   const live = stock.filter(isAvailable).length;
-  const idx = collections().findIndex((x) => x.id === c.id);
-  const next = collections()[(idx + 1) % collections().length];
-  const prev = collections()[(idx - 1 + collections().length) % collections().length];
+  // With two launch collections visible, prev === next — one cross-link, not
+  // two arrows to the same page. Deep-linked research files cross-link to the drop.
+  const launch = launchCollections();
+  const coll = launch.find((x) => x.id !== c.id) || launch[0] || null;
 
   return `
   <article>
@@ -187,11 +183,19 @@ export function collectionDetail({ id }) {
         : `<section class="section" id="pieces">
             <div class="wrap">
               <div class="empty-state" style="border-bottom:0">
-                <p class="eyebrow">${c.status === 'upcoming' ? 'Wardrobe in assembly' : 'Research file'}</p>
+                <p class="eyebrow">${
+                  c.status === 'upcoming'
+                    ? 'Wardrobe in assembly'
+                    : c.status === 'live'
+                    ? 'Open stock'
+                    : 'Research file'
+                }</p>
                 <h3 class="display" style="font-size:clamp(1.8rem,3vw,2.8rem)">
                   ${
                     c.status === 'upcoming'
                       ? 'The pieces arrive with the drop'
+                      : c.status === 'live'
+                      ? 'New stock is listed as it is photographed'
                       : 'This file feeds the sourcing list'
                   }
                 </h3>
@@ -199,6 +203,8 @@ export function collectionDetail({ id }) {
                   ${
                     c.status === 'upcoming'
                       ? 'Pieces are photographed and catalogued as they are acquired — check the shop for what is already available.'
+                      : c.status === 'live'
+                      ? 'Pieces are photographed in house and syndicated to eBay and Depop as they are listed — the shop shows what is live right now.'
                       : 'When pieces surface that belong under this file, they are photographed, catalogued and listed in the shop.'
                   }
                 </p>
@@ -213,9 +219,8 @@ export function collectionDetail({ id }) {
 
     <section class="section--tight section" style="border-top:1px solid var(--rule)">
       <div class="wrap" style="display:flex;justify-content:space-between;gap:2rem;flex-wrap:wrap">
-        <a class="text-link" href="/collections/${prev.id}"><span>←</span> ${prev.name}</a>
         <a class="text-link" href="/collections">All collections</a>
-        <a class="text-link" href="/collections/${next.id}">${next.name} <span>→</span></a>
+        ${coll ? `<a class="text-link" href="/collections/${coll.id}">${coll.name} <span>→</span></a>` : ''}
       </div>
     </section>
   </article>`;

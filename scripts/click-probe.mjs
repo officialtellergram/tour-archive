@@ -92,9 +92,8 @@ try {
     ['a[href$="/archive"]', '/archive', 'The Archive'],
     ['.wordmark', '/', 'landing'],
     ['a[href$="/collections"]', '/collections', 'Collections'],
-    ['a[href$="/journal"]', '/journal', 'Journal'],
     ['.wordmark', '/', 'landing again'],
-    ['a[href$="/method"]', '/method', 'Our Method'],
+    ['a[href$="/mission"]', '/mission', 'Our Mission'],
     ['a[href$="/curate"]', '/curate', 'Procurement Desk'],
   ];
 

@@ -3,7 +3,7 @@
  * Rendered once at boot; `syncNav` re-runs on every route change.
  */
 
-import { BRAND, collections, items, isAvailable } from '../data/store.js';
+import { BRAND, launchCollections, items, isAvailable } from '../data/store.js';
 import { openDrawer, closeDrawer, toast } from '../lib/motion.js';
 import { currentPath, applyBaseToLinks, stripBase } from '../lib/router.js';
 
@@ -11,11 +11,11 @@ const BASE_URL = (import.meta.env?.BASE_URL || '/').replace(/\/*$/, '/');
 
 export const NAV_PRIMARY = [
   { label: 'Collections', href: '/collections' },
-  { label: 'The Archive', href: '/archive' },
+  { label: 'Shop the Archive', href: '/archive' },
 ];
 
 export const NAV_SECONDARY = [
-  { label: 'Our Method', href: '/method' },
+  { label: 'Our Mission', href: '/mission' },
   { label: 'Sell to Us', href: '/sell' },
 ];
 
@@ -37,7 +37,6 @@ function headerHTML() {
         ${NAV_SECONDARY.map(
           (n) => `<a href="${n.href}" class="nav-hide-sm">${n.label}</a>`
         ).join('')}
-        <a href="/archive?filter=available" data-cursor-text="Browse">Shop</a>
       </nav>
     </div>
   </div>
@@ -50,7 +49,7 @@ function headerHTML() {
       <div>
         <h4>Collections</h4>
         <ul class="drawer-list">
-          ${collections()
+          ${launchCollections()
             .map(
               (c) => `<li><a href="/collections/${c.id}">
                 <span>${c.name}</span>
@@ -91,7 +90,7 @@ function footerHTML() {
         <div>
           <h4>Collections</h4>
           <ul>
-            ${collections()
+            ${launchCollections()
               .map((c) => `<li><a href="/collections/${c.id}">${c.name}</a></li>`)
               .join('')}
           </ul>
@@ -107,7 +106,7 @@ function footerHTML() {
         <div>
           <h4>House</h4>
           <ul>
-            <li><a href="/method">Our Method</a></li>
+            <li><a href="/mission">Our Mission</a></li>
             <li><a href="/sell">Sell to Us</a></li>
             <li><a href="/sizing">Sizing &amp; Condition</a></li>
             <li><a href="/curate">Procurement Desk</a></li>

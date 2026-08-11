@@ -199,8 +199,8 @@ export function product({ id }) {
                 <p style="color:var(--ink-soft);font-weight:300;margin:0 0 1rem">
                   Catalogued under ${coll ? coll.name : 'the archive'}${
     coll ? ` — ${coll.place}, ${coll.years}` : ''
-  }. Dated from label construction and fibre content; see our
-                  <a href="/method" style="border-bottom:1px solid var(--rule-strong)">method</a>.
+  }. Dated from label construction and fibre content; read our
+                  <a href="/mission" style="border-bottom:1px solid var(--rule-strong)">mission</a>.
                 </p>
                 <p style="margin:0">
                   <a class="text-link" href="${item.market.url}" target="_blank" rel="noopener">

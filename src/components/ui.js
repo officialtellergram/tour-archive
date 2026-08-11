@@ -1,7 +1,7 @@
 /** Shared view fragments. */
 
 import { garmentSVG, collectionMark } from './garment.js';
-import { getCollection, itemsIn, isAvailable } from '../data/store.js';
+import { getCollection, itemsIn, isAvailable, BASIC_STOCK } from '../data/store.js';
 
 export const money = (n) => `$${n.toLocaleString('en-US')}`;
 
@@ -61,15 +61,30 @@ export function productCard(item) {
   </a>`;
 }
 
+/** Basic Stock tile canvas — a 2x2 mosaic of real stock heroes.
+ *  Deterministic by construction: Array.filter is order-preserving, so
+ *  available pieces come first in manifest order, then the rest — the layout
+ *  probe reproduces the exact grid every run. Returns '' when nothing is
+ *  photographed; collectionTile then falls back to the drawn canvas. */
+export function mosaicMedia(items) {
+  const shot = items.filter((i) => i.photo);
+  if (!shot.length) return '';
+  const cells = [...shot.filter(isAvailable), ...shot.filter((i) => !isAvailable(i))].slice(0, 4);
+  return `<div class="tile-mosaic" aria-hidden="true">${cells
+    .map((i) => `<img src="${mediaURL(i.photo)}" alt="" loading="lazy" decoding="async" />`)
+    .join('')}</div>`;
+}
+
 export function collectionTile(collection) {
   const stock = itemsIn(collection.id);
   const live = stock.filter(isAvailable).length;
   const lead = stock[0];
+  const mosaic = collection.id === BASIC_STOCK ? mosaicMedia(stock) : '';
   return `
   <a class="tile" href="/collections/${collection.id}" data-cursor-text="Open"
      style="--accent:${collection.accent}">
     <div class="tile-canvas">
-      ${lead ? collectionMark(collection, lead.garment) : ''}
+      ${mosaic || (lead ? collectionMark(collection, lead.garment) : '')}
       <div class="swatches" aria-hidden="true">
         ${collection.palette.map((c) => `<i style="background:${c}"></i>`).join('')}
       </div>
@@ -92,6 +107,8 @@ export function collectionTile(collection) {
                <span>${live ? `${live} available` : 'Fully archived'}</span>`
             : collection.status === 'upcoming'
             ? `<span>First drop</span><span>Wardrobe in assembly</span>`
+            : collection.status === 'live'
+            ? `<span>Open stock</span><span>Listed continuously</span>`
             : `<span>Research file</span><span>Wardrobe in sourcing</span>`
         }
       </div>

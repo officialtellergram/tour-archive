@@ -1,94 +1,51 @@
-/** House pages: /method, /sell, /sizing, and the 404. */
+/** House pages: /mission, /sell, /sizing, and the 404. */
 
-import { BRAND, collections, items, isAvailable, BASIC_STOCK } from '../data/store.js';
-import { breadcrumb, marquee, sectionHead } from '../components/ui.js';
+import { BRAND } from '../data/store.js';
+import { breadcrumb } from '../components/ui.js';
 import { toast } from '../lib/motion.js';
 
-/* ------------------------------ /method ------------------------------ */
+/* ------------------------------ /mission ------------------------------ */
 
-export function method() {
+/* Spare by design: the generalized method copy is retired and the founders'
+   hand-written mission lands here when it arrives. */
+export function mission() {
   return `
   <section class="section" style="padding-top:calc(var(--header-h) + 4rem)">
     <div class="wrap">
-      ${breadcrumb([{ label: 'Home', href: '/' }, { label: 'Our Method' }])}
-      <div class="coll-hero-grid" data-hero>
-        <div>
-          <p class="eyebrow" data-hero-meta><span>How we buy, date and grade</span></p>
-          <h1 class="display" style="margin:.6rem 0 1.2rem;font-size:clamp(2.8rem,7vw,6.5rem)">
-            <span class="line-mask"><span>Our Method</span></span>
-          </h1>
-          <p class="lede" data-hero-cta>
-            Three agreements, or we don’t buy it: label, construction, and the way a garment has
-            aged. Two out of three is not a purchase.
-          </p>
-        </div>
-        <div data-hero-cta>
-          <p class="eyebrow" style="margin-bottom:.9rem">What we turn down</p>
-          <ul class="facts">
-            <li><span>Reissues &amp; reproductions</span><b>Never listed</b></li>
-            <li><span>Re-applied crests</span><b>Tested on every piece</b></li>
-            <li><span>Undated garments</span><b>Held back</b></li>
-            <li><span>Unrecorded faults</span><b>Always written in</b></li>
-          </ul>
-        </div>
+      ${breadcrumb([{ label: 'Home', href: '/' }, { label: 'Our Mission' }])}
+      <div data-hero>
+        <p class="eyebrow" data-hero-meta><span>${BRAND.tagline}</span></p>
+        <h1 class="display" style="margin:.6rem 0 1.2rem;font-size:clamp(2.8rem,7vw,6.5rem)">
+          <span class="line-mask"><span>Our Mission</span></span>
+        </h1>
+        <p class="lede" data-hero-cta>
+          We thrift, authenticate and catalogue vintage golf apparel by the championship
+          it belongs to. Every piece is one of one — when it is gone, it is gone.
+        </p>
       </div>
     </div>
   </section>
 
-  <div class="wrap">
-    <div class="stat-row" data-reveal>
-      <div class="stat"><b data-count="${items().length}">0</b><span>Pieces catalogued</span></div>
-      <div class="stat"><b data-count="${collections().filter((c) => c.id !== BASIC_STOCK).length}">0</b><span>Files &amp; drops</span></div>
-      <div class="stat"><b data-count="${items().filter(isAvailable).length}">0</b><span>Available today</span></div>
-      <div class="stat"><b>1 of 1</b><span>Every listing</span></div>
-    </div>
-  </div>
-
-  <section class="section">
-    <div class="wrap">
-      ${sectionHead({ eyebrow: 'The standard', title: 'Four steps, every piece' })}
-      <ol class="process-list">
-        <li data-reveal><div>
-          <h4>Source</h4>
-          <p>Virginia on foot, worked as a route rather than a search — thrift stores, church
-          sales, house clearances and estate lots from the Tidewater up through the Shenandoah,
-          in a state that has been playing this game since the 1890s. Beyond that we buy by
-          submission: photographs from anywhere in the world, appraised and paid outright.</p>
-        </div></li>
-        <li data-reveal><div>
-          <h4>Authenticate</h4>
-          <p>Neck label typography, fibre-content placement, union marks and RN numbers date a
-          garment to within about five years. Construction confirms it: full-fashioned shaping,
-          hand-linked necks, single-needle side seams.</p>
-        </div></li>
-        <li data-reveal><div>
-          <h4>Grade</h4>
-          <p>Excellent, Very Good, Good, or As-Is. Every fault is written into the listing —
-          reweaves, relaxed ribs, crazed coatings. We would rather lose the sale than the customer.</p>
-        </div></li>
-        <li data-reveal><div>
-          <h4>Attribute</h4>
-          <p>Each piece is placed in the championship era it belongs to, with the history written
-          alongside it and public sources cited on the collection page.</p>
-        </div></li>
-      </ol>
-    </div>
-  </section>
-
-  ${marquee(['Label', 'Construction', 'Patina', 'Two out of three is not a purchase'])}
-
-  <section class="section">
-    <div class="wrap split">
-      <div data-reveal>
-        <p class="eyebrow">What we won’t do</p>
-        <h2 class="display" style="margin:.6rem 0 1.2rem">No reproductions.<br />No restocks.</h2>
+  <section class="section" style="padding-top:0">
+    <div class="wrap split" style="align-items:start">
+      <div class="prose" data-reveal>
+        <p>Golf keeps its history in trophies and scorecards. We keep it in the clothing —
+        the lambswool, the crests and the colours that belong to a particular week on a
+        particular course. Each piece is sourced, dated and graded honestly, then filed
+        under the championship era it came from, with the history written alongside it.</p>
+        <p>The first drop opens with the 2026 TOUR Championship at East Lake — thirty
+        players, Bobby Jones’s home club, and one of the last seasons to end there.
+        Everything else we find lives in Basic Stock, listed continuously as it is
+        photographed.</p>
       </div>
-      <div class="prose" data-reveal data-reveal-delay="0.08">
-        <p>Everything on this site is a real archival garment. We do not reissue, we do not
-        reproduce, and we do not re-apply crests to blank knitwear — a practice common enough in
-        the tournament-apparel market that we test for it on every crested piece.</p>
-        <p>Sizes are as found. Nothing here was cut to a modern block, so buy on the flat
-        measurements rather than the label.</p>
+      <div data-reveal data-reveal-delay="0.08">
+        <p class="eyebrow" style="margin-bottom:.9rem">Where to start</p>
+        <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+          <a class="btn btn--solid" href="/collections/tour-championship-2026" data-magnetic>
+            Preview Drop No. 01
+          </a>
+          <a class="btn" href="/sell" data-magnetic>Sell to the archive</a>
+        </div>
       </div>
     </div>
   </section>`;

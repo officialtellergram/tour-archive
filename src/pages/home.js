@@ -1,14 +1,12 @@
 import {
   BRAND,
-  collections,
   items,
-  journal,
   isAvailable,
   itemsIn,
   featuredCollection,
+  getCollection,
   daysUntil,
   dateRange,
-  BASIC_STOCK,
 } from '../data/store.js';
 import { productCard, collectionTile, marquee, sectionHead } from '../components/ui.js';
 
@@ -51,9 +49,7 @@ function eventStatus(event) {
 export function home() {
   const featured = featuredCollection();
   const stock = items().filter(isAvailable);
-  const files = collections().filter(
-    (c) => c.status === 'archived' && c.id !== BASIC_STOCK
-  );
+  const tc = getCollection('tour-championship-2026');
 
   const ev = featured?.event;
   const coll = featured?.collection;
@@ -195,73 +191,50 @@ export function home() {
   <section class="section">
     <div class="wrap">
       ${sectionHead({
-        eyebrow: 'The research behind the drops',
+        eyebrow: 'The research behind the drop',
         title: 'The Files',
         link: { href: '/collections', label: 'All collections' },
       })}
       <p class="lede" data-reveal style="margin-bottom:clamp(2rem,4vw,3rem)">
         Every drop begins as a file — the championship, the course, the wardrobe that
-        belongs to it. Six are open now, feeding the sourcing list for future drops.
+        belongs to it. The first file is open: East Lake, tournament week, one of one.
       </p>
       <div class="grid-collections" data-stagger>
-        ${files.map(collectionTile).join('')}
+        ${tc ? collectionTile(tc) : ''}
       </div>
     </div>
   </section>
 
-  <!-- ============ METHOD ============ -->
+  <!-- ============ MISSION ============ -->
   <section class="section" style="background:var(--navy);color:var(--parchment)">
     <div class="wrap">
       <div class="split">
         <div data-reveal>
-          <p class="eyebrow eyebrow--brass">Our method</p>
-          <h2 class="display" style="margin:.6rem 0 1.4rem">Three agreements,<br />or we don't buy it.</h2>
+          <p class="eyebrow eyebrow--brass">Our mission</p>
+          <h2 class="display" style="margin:.6rem 0 1.4rem">Golf history,<br />kept in clothing.</h2>
           <p style="color:rgba(244,240,230,.74);font-weight:300;max-width:48ch">
-            Label, construction, and the way a garment has aged. Two out of three is not a
-            purchase. Everything we list is dated, graded honestly, and photographed as found.
+            Golf keeps its history in trophies and scorecards. We keep it in the clothing —
+            thrifted, authenticated and catalogued by the championship it belongs to, one
+            piece of one, never restocked.
           </p>
-          <a class="btn" href="/method" style="border-color:rgba(244,240,230,.4);color:var(--parchment);margin-top:1.6rem" data-magnetic>
-            Read the standard
+          <a class="btn" href="/mission" style="border-color:rgba(244,240,230,.4);color:var(--parchment);margin-top:1.6rem" data-magnetic>
+            Read the mission
           </a>
         </div>
         <ol class="process-list" style="border-color:rgba(244,240,230,.2)" data-reveal data-reveal-delay="0.1">
           <li style="border-color:rgba(244,240,230,.2)">
-            <div><h4 style="color:var(--parchment)">Source</h4>
-            <p style="color:rgba(244,240,230,.62)">Virginia thrift and estate sourcing, worked on foot — then global submissions, appraised and bought outright from anywhere in the world.</p></div>
+            <div><h4 style="color:var(--parchment)">Sourced by tournament</h4>
+            <p style="color:rgba(244,240,230,.62)">Every piece is filed under the championship era it came from — the course, the week, the wardrobe that belongs to it.</p></div>
           </li>
           <li style="border-color:rgba(244,240,230,.2)">
-            <div><h4 style="color:var(--parchment)">Authenticate</h4>
-            <p style="color:rgba(244,240,230,.62)">Neck label, fibre content, union marks and construction are cross-checked before anything is catalogued.</p></div>
+            <div><h4 style="color:var(--parchment)">One of one, always</h4>
+            <p style="color:rgba(244,240,230,.62)">Real archival garments, dated and graded honestly, photographed as found. No reproductions, no restocks — when it is gone, it is gone.</p></div>
           </li>
           <li style="border-color:rgba(244,240,230,.2)">
-            <div><h4 style="color:var(--parchment)">Attribute</h4>
-            <p style="color:rgba(244,240,230,.62)">Each piece is placed into the championship era it belongs to, with the history written alongside it.</p></div>
+            <div><h4 style="color:var(--parchment)">First drop: East Lake</h4>
+            <p style="color:rgba(244,240,230,.62)">Drop No. 01 opens with the 2026 TOUR Championship — thirty players, Bobby Jones’s home club, 27 – 30 August.</p></div>
           </li>
         </ol>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ JOURNAL ============ -->
-  <section class="section">
-    <div class="wrap">
-      ${sectionHead({
-        eyebrow: 'Journal',
-        title: 'Field notes',
-        link: { href: '/journal', label: 'All entries' },
-      })}
-      <div class="journal-list">
-        ${journal
-          .map(
-            (j) => `
-          <a class="journal-row" href="/journal/${j.id}" data-reveal data-cursor-text="Read">
-            <span class="eyebrow">${j.kicker}</span>
-            <h3>${j.title}</h3>
-            <p>${j.excerpt}</p>
-            <span class="eyebrow">${j.date}</span>
-          </a>`
-          )
-          .join('')}
       </div>
     </div>
   </section>`;

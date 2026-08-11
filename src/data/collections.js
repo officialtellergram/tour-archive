@@ -22,6 +22,35 @@ export const BRAND = {
 /* Collections                                                         */
 /* ------------------------------------------------------------------ */
 
+export const BASIC_STOCK = 'basic-stock';
+
+/** The catch-all collection for marketplace stock with no catalogue number. */
+export const basicStockCollection = {
+  id: BASIC_STOCK,
+  drop: 'Open stock',
+  name: 'Basic Stock',
+  place: 'Photographed in house',
+  years: 'Mixed',
+  status: 'live',
+  statusLabel: 'Now open',
+  releaseNote: 'Listed continuously',
+  heroLine: 'Everything that isn’t tied to a championship — sold as we find it.',
+  summary:
+    'Open stock, photographed in house and syndicated to eBay and Depop as it is listed. Good pieces that don’t belong to a drop, catalogued as they come in.',
+  palette: ['#B9AE93', '#8C8570', '#3F3B31'],
+  accent: '#8C8570',
+  essay: [
+    'Not everything we buy belongs to a championship. A clean lambswool crew with no story attached is still a clean lambswool crew, and it goes up here rather than being forced into a collection it has no claim to.',
+    'Pieces are photographed in house and listed here first; as each goes up on eBay or Depop, the listing takes over price and availability and checkout completes on the marketplace.',
+  ],
+  facts: [
+    { k: 'Photographed', v: 'In house, as found' },
+    { k: 'Grouping', v: 'None — open stock' },
+    { k: 'Syndication', v: 'eBay & Depop as listed' },
+  ],
+  sources: [],
+};
+
 export const collections = [
   {
     id: 'tour-championship-2026',
@@ -37,6 +66,8 @@ export const collections = [
       'Our opening collection, released around the 2026 TOUR Championship at East Lake — Atlanta golf tradition, Jones-era knitwear, and the sun-struck colour of Georgia in late August.',
     // Derived from the course itself: sun-struck zoysia fairway, August haze,
     // Piedmont clay. See the research file in the repo for the reasoning.
+    //add rotating carousel of photos of the course and the clubhouse, with a few of the pieces in the collection in the foreground.
+
     palette: ['#7D8B5A', '#B8C3C0', '#3B342D'],
     accent: '#A65C3C',
     essay: [
@@ -44,6 +75,8 @@ export const collections = [
       'The modern game’s richest week is settled with a copy of an amateur’s putter from a hundred years ago. That is the whole thesis of this archive in a single object, and it is why the first drop opens here: Jones-era knitwear silhouettes, Atlanta club clothing, and lighter Southern lambswool in the register of zoysia fairways and Piedmont clay rather than Highland tweed.',
       'It is also a finite moment. From 2028 the finale begins rotating venues, making 2026 one of the last two years the season ends at East Lake as an annual fixture. Pieces are being photographed and catalogued now — the drop opens tournament week, 27 to 30 August.',
     ],
+
+    // edit and wait for copy from chalmers (CHUDWARD)
     facts: [
       { k: 'Championship', v: '2026 TOUR Championship' },
       { k: 'Rounds', v: '27 – 30 August 2026' },
@@ -235,6 +268,7 @@ export const collections = [
       { label: 'Erthe Golf — the return of retro style', url: 'https://erthegolf.com/blogs/news/vintage-golf-clothing-the-return-of-retro-style-in-modern-golf-fashion' },
     ],
   },
+  basicStockCollection,
 ];
 
 /* ------------------------------------------------------------------ */
@@ -621,7 +655,7 @@ export const items = [
 /* ------------------------------------------------------------------ */
 /* Journal — editorial                                                 */
 /* ------------------------------------------------------------------ */
-
+//REMOVE
 export const journal = [
   {
     id: 'reading-a-neck-label',

@@ -996,6 +996,37 @@ h3.display {
 .tile:hover .tile-canvas svg {
   transform: translateY(-3%) scale(1.05);
 }
+/* Basic Stock — the one tile filled with photography instead of a plate.
+   inset mirrors the drawn SVG's 0 0 10px so the palette strip stays visible.
+   minmax(0,1fr) + width:100% are MANDATORY: the layout probe measures every
+   IMG rect and ignores clipping — an intrinsic-width photo in an auto-min
+   track fails the probe even though .tile-canvas overflow:hidden hides it. */
+.tile-mosaic {
+  position: absolute;
+  inset: 0 0 10px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  gap: 1px;
+  background: var(--rule);
+  transition: transform 0.9s var(--ease);
+}
+.tile-mosaic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* Odd counts (1 or 3 photographed pieces): the last cell spans the row —
+   never an empty cell. No-op at 2 and 4. */
+.tile-mosaic img:last-child:nth-child(odd) {
+  grid-column: span 2;
+}
+/* Hover mirrors the drawn plate's lift. Scale the CONTAINER, not the imgs:
+   grid cells don't clip; the container is clipped by .tile-canvas. */
+.tile:hover .tile-mosaic {
+  transform: scale(1.03);
+}
 .tile-body {
   padding: 1.4rem 1.5rem 1.6rem;
   display: grid;

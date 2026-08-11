@@ -62,7 +62,8 @@ const { collectionsIndex, collectionDetail } = await import('../src/pages/collec
 const { archive } = await import('../src/pages/archive.js');
 const { product, pdpMedia } = await import('../src/pages/product.js');
 const { journalIndex, journalEntry } = await import('../src/pages/journal.js');
-const { method, sell, sizing, notFound } = await import('../src/pages/house.js');
+const { mission, sell, sizing, notFound } = await import('../src/pages/house.js');
+const { mosaicMedia, collectionTile } = await import('../src/components/ui.js');
 const { curate, curateReview, deskHTML, verdictHTML, reviewCardHTML } = await import(
   '../src/pages/curate.js'
 );
@@ -72,7 +73,7 @@ const cases = [
   ['/collections', () => collectionsIndex()],
   ['/archive', () => archive()],
   ['/journal', () => journalIndex()],
-  ['/method', () => method()],
+  ['/mission', () => mission()],
   ['/sell', () => sell()],
   ['/sizing', () => sizing()],
   ['/curate', () => curate()],
@@ -146,6 +147,20 @@ const pdpCarousel = {
 const pdpSingle = { ...pdpCarousel, id: 'stock-sm-single', photos: [] };
 const pdpDrawn = { ...pdpCarousel, id: 'stock-sm-drawn', photo: '', photos: [] };
 
+/* Mosaic fixtures — the route cases only ever exercise the EMPTY store path
+   (collectionsIndex under the never-init()ed shim), so the filled grid is
+   mount-template blind without these. One sold (must be displaced by the four
+   available), one listing-only photo:'' (must be filtered), four available. */
+const mosaicItems = [
+  { id: 'sm-m-sold', photo: 'stock/m-sold.jpg', sold: true, upcoming: false },
+  { id: 'sm-m-a', photo: 'stock/m-a.jpg', sold: false, upcoming: false },
+  { id: 'sm-m-b', photo: 'stock/m-b.jpg', sold: false, upcoming: false },
+  { id: 'sm-m-c', photo: 'stock/m-c.jpg', sold: false, upcoming: false },
+  { id: 'sm-m-d', photo: 'stock/m-d.jpg', sold: false, upcoming: false },
+  { id: 'sm-m-bare', photo: '', sold: false, upcoming: false },
+];
+const basicStock = collections.find((c) => c.id === 'basic-stock');
+
 const deskCases = [
   ['deskHTML (with shortlist)', () => deskHTML(smokeUser, [dressed, bare, listed])],
   ['deskHTML (no shortlist)', () => deskHTML(smokeUser, [dressed, bare])],
@@ -156,6 +171,8 @@ const deskCases = [
   ['pdpMedia (carousel)', () => pdpMedia(pdpCarousel)],
   ['pdpMedia (single photo)', () => pdpMedia(pdpSingle)],
   ['pdpMedia (drawn views)', () => pdpMedia(pdpDrawn)],
+  ['mosaicMedia (photo grid)', () => mosaicMedia(mosaicItems)],
+  ['collectionTile (basic-stock, empty store)', () => collectionTile(basicStock)],
 ];
 
 for (const [label, fn] of deskCases) {
@@ -200,6 +217,31 @@ for (const [label, fn] of deskCases) {
     errors.push('pdpMedia drawn: expected the 3 drawn views');
   if (drawn.includes('data-idx'))
     errors.push('pdpMedia drawn: photo thumbs leaked into the drawn state');
+}
+
+/* Mosaic shape pins — filled grid vs empty-store fallback. Never byte-pin the
+   fallback tile: its lead-item path goes through collectionMark's nextId(). */
+{
+  if (!basicStock) errors.push('collections.js: basic-stock missing from the seed — the mosaic tile has no collection record');
+  const grid = mosaicMedia(mosaicItems);
+  const imgs = (grid.match(/<img /g) || []).length;
+  if (imgs !== 4) errors.push(`mosaicMedia: expected 4 cells, got ${imgs}`);
+  if ((grid.match(/loading="lazy"/g) || []).length !== 4)
+    errors.push('mosaicMedia: every cell must lazy-load');
+  if (grid.includes('data-src'))
+    errors.push('mosaicMedia: data-src leaked — deferral is the hero rotation\'s contract, not the mosaic\'s');
+  if (grid.includes('m-sold.jpg'))
+    errors.push('mosaicMedia: a sold piece displaced an available one — availability-first ordering broke');
+  if (grid.indexOf('m-a.jpg') > grid.indexOf('m-b.jpg'))
+    errors.push('mosaicMedia: manifest order not preserved — the layout probe cannot reproduce the grid');
+  if (mosaicMedia([]) !== '')
+    errors.push('mosaicMedia: empty stock must yield the empty string so the drawn canvas shows');
+
+  const tile = basicStock ? collectionTile(basicStock) : '';
+  if (tile.includes('tile-mosaic') || tile.includes('<img'))
+    errors.push('collectionTile basic-stock: mosaic leaked into the empty-store fallback');
+  if (!tile.includes('class="swatches"'))
+    errors.push('collectionTile basic-stock: swatch strip missing from the fallback canvas');
 }
 
 /* Hero backdrop pins — the rotation's markup contract. */

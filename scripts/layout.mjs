@@ -30,7 +30,8 @@ const BASE = process.env.BASE_URL || 'http://localhost:5180';
 const ROUTES = [
   '/', '/collections', '/collections/duel-in-the-sun', '/collections/the-amateur-line',
   '/archive', '/archive?filter=available', '/item/ds-01', '/item/ws-04',
-  '/journal', '/journal/reading-a-neck-label', '/method', '/sell', '/sizing', '/nope',
+  '/collections/basic-stock',
+  '/journal', '/journal/reading-a-neck-label', '/mission', '/sell', '/sizing', '/nope',
   '/curate', '/curate/review',
 ];
 const WIDTHS = [1600, 1180, 520, 390];

@@ -17,6 +17,8 @@
 import {
   BRAND,
   collections as seedCollections,
+  basicStockCollection,
+  BASIC_STOCK,
   journal,
   getJournal,
   eras,
@@ -45,34 +47,8 @@ const LIVE_API = import.meta.env?.VITE_API_BASE || (import.meta.env?.DEV ? 'http
 const INVENTORY_URL = LIVE_API
   ? `${LIVE_API.replace(/\/+$/, '')}/api/inventory`
   : `${BASE_URL}api/inventory.json`;
-const BASIC_STOCK = 'basic-stock';
-
-/** The catch-all collection for marketplace stock with no catalogue number. */
-const basicStockCollection = {
-  id: BASIC_STOCK,
-  drop: 'Open stock',
-  name: 'Basic Stock',
-  place: 'Photographed in house',
-  years: 'Mixed',
-  status: 'live',
-  statusLabel: 'Now open',
-  releaseNote: 'Listed continuously',
-  heroLine: 'Everything that isn’t tied to a championship — sold as we find it.',
-  summary:
-    'Open stock, photographed in house and syndicated to eBay and Depop as it is listed. Good pieces that don’t belong to a drop, catalogued as they come in.',
-  palette: ['#B9AE93', '#8C8570', '#3F3B31'],
-  accent: '#8C8570',
-  essay: [
-    'Not everything we buy belongs to a championship. A clean lambswool crew with no story attached is still a clean lambswool crew, and it goes up here rather than being forced into a collection it has no claim to.',
-    'Pieces are photographed in house and listed here first; as each goes up on eBay or Depop, the listing takes over price and availability and checkout completes on the marketplace.',
-  ],
-  facts: [
-    { k: 'Photographed', v: 'In house, as found' },
-    { k: 'Grouping', v: 'None — open stock' },
-    { k: 'Syndication', v: 'eBay & Depop as listed' },
-  ],
-  sources: [],
-};
+/* basicStockCollection moved into src/data/collections.js (launch strip):
+   as seed data it is a legal audited link target and smoke renders its page. */
 
 let state = {
   // No stock until the snapshot/API answers — the curated records in
@@ -106,8 +82,10 @@ export async function init({ timeout = 4000 } = {}) {
     const items = payload.items;
     const collections = [...(payload.collections || seedCollections)];
 
-    // Only surface Basic Stock once something is actually in it.
-    if (items.some((i) => i.collection === BASIC_STOCK)) {
+    // The seed ships Basic Stock since the launch strip. This only fires
+    // against an older inventory payload (a pre-promotion snapshot) — without
+    // it, live mode would render Basic Stock twice.
+    if (!collections.some((c) => c.id === BASIC_STOCK)) {
       collections.push(basicStockCollection);
     }
 
@@ -148,6 +126,11 @@ export const status = () => ({
 export const items = () => state.items;
 export const collections = () => state.collections;
 
+/** The collections the launch chrome and index surface. Order is editorial: the drop leads. */
+const LAUNCH_IDS = ['tour-championship-2026', BASIC_STOCK];
+export const launchCollections = () =>
+  LAUNCH_IDS.map((id) => state.collections.find((c) => c.id === id)).filter(Boolean);
+
 export const getCollection = (id) => state.collections.find((c) => c.id === id) || null;
 export const getItem = (id) => state.items.find((i) => i.id === id) || null;
 export const itemsIn = (collectionId) =>
@@ -167,7 +150,7 @@ export const itemStatus = (item) =>
 
 export const categories = () => [...new Set(state.items.map((i) => i.category))].sort();
 
-export { BRAND, journal, getJournal, eras, eraOf, BASIC_STOCK };
+export { BRAND, journal, getJournal, eras, eraOf, BASIC_STOCK, basicStockCollection };
 export { featuredEvent, eventPhase, daysUntil, dateRange };
 
 /** The collection record backing the currently featured event. */
