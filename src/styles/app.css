@@ -595,9 +595,13 @@ h3.display {
 .hero-slide.is-on {
   opacity: 1;
 }
-/* Player plates are cropped in-file so the subject sits at 50% — with wide
-   plates cover only ever crops horizontally, so in-file centring holds at
-   every viewport and no per-slide object-position is needed. */
+/* Player plates are cropped in-file so the subject sits at 50% horizontally.
+   Ultrawide monitors flip the Fleetwood plate to width-binding (slot aspect
+   exceeds the image's 1.45), and the vertical crop plus overscan took his
+   face — anchor its crop to the top so the loss comes off his trousers. */
+.hero-slide:nth-of-type(3) {
+  object-position: 50% 0%;
+}
 /* The veil owns ALL muting: photographs are a muted plate under parchment,
    never a full-strength backdrop. Strongest where the text mass sits (display
    centre, meta rail + buttons low), clearest above the logo. Ink display text
@@ -619,7 +623,7 @@ h3.display {
       transparent 62%
     ),
     radial-gradient(
-      ellipse 64% 74% at 50% 46%,
+      ellipse 50% 54% at 50% 46%,
       rgba(244, 240, 230, 0.78) 0%,
       rgba(244, 240, 230, 0.68) 48%,
       rgba(244, 240, 230, 0) 74%
@@ -645,7 +649,7 @@ h3.display {
         transparent 62%
       ),
       radial-gradient(
-        ellipse 110% 54% at 50% 46%,
+        ellipse 110% 48% at 50% 46%,
         rgba(244, 240, 230, 0.78) 0%,
         rgba(244, 240, 230, 0.68) 50%,
         rgba(244, 240, 230, 0) 76%
