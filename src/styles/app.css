@@ -596,15 +596,12 @@ h3.display {
   opacity: 1;
 }
 /* Player plates are cropped in-file so the subject sits at 50% horizontally.
-   The Fleetwood photograph has zero headroom (his face starts at 4%), so the
-   parallax overscan was eating it. This slide owns its top edge instead:
-   top 9.68% of the container = flush with the hero's top at rest, skipping
-   the overscan band entirely. Safe through the whole scroll — the parallax
-   lags at most 90px behind a scroll that moves the hero ~13x faster, so the
-   seam above this plate can never enter the viewport. Crop stays
-   top-anchored: any vertical loss comes off his trousers, never his face. */
+   The Fleetwood photograph shipped with zero headroom (face at 4%), so every
+   top overlay — overscan, drift scale, a wrapped header — found his face
+   first. The file now carries 190px of seamless feathered bokeh headroom
+   (face at 25%), which clears them all at once; the crop stays top-anchored
+   so any vertical loss comes off his trousers, never his face. */
 .hero-slide:nth-of-type(3) {
-  top: 9.68%;
   object-position: 50% 0%;
 }
 /* Montage drift — each plate breathes on its own clock and bearing, so a
