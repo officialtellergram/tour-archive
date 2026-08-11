@@ -595,9 +595,9 @@ h3.display {
 .hero-slide.is-on {
   opacity: 1;
 }
-.hero-slide:nth-of-type(3) {
-  object-position: 50% 30%; /* fleetwood — keep the figure in a portrait crop */
-}
+/* Player plates are cropped in-file so the subject sits at 50% — with wide
+   plates cover only ever crops horizontally, so in-file centring holds at
+   every viewport and no per-slide object-position is needed. */
 /* The veil owns ALL muting: photographs are a muted plate under parchment,
    never a full-strength backdrop. Strongest where the text mass sits (display
    centre, meta rail + buttons low), clearest above the logo. Ink display text

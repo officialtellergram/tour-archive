@@ -23,8 +23,8 @@ const BASE_URL = (import.meta.env?.BASE_URL || '/').replace(/\/*$/, '/');
 const HERO_BACKDROPS = [
   'hero/east-lake-seventh.jpg?v=1',
   'hero/east-lake-aerial.jpg?v=1',
-  'hero/fleetwood-tour-championship.jpg?v=1',
-  'hero/tour-championship-04.jpg?v=1',
+  'hero/fleetwood-tour-championship.jpg?v=2',
+  'hero/tour-championship-04.jpg?v=2',
 ];
 
 /** Phase-aware status line for the featured event. */
