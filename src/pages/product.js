@@ -1,6 +1,6 @@
 import { getItem, getCollection, itemsIn, itemStatus, isAvailable, featuredEvent, dateRange } from '../data/store.js';
 import { garmentSVG } from '../components/garment.js';
-import { productCard, breadcrumb, money, plateTag, plateMedia, sectionHead, mediaURL } from '../components/ui.js';
+import { productCard, breadcrumb, money, plateTag, plateMedia, sectionHead, mediaURL, escapeHtml } from '../components/ui.js';
 import { toast } from '../lib/motion.js';
 
 export const channelName = (item) =>
@@ -112,6 +112,31 @@ export function pdpMedia(item) {
         </div>`;
 }
 
+/**
+ * The cofounder's eBay listing copy, verbatim from the archived pull —
+ * plain-text paragraphs in item.description, escaped again at render (the
+ * text originated on a remote page; the manifest contract is belt, this is
+ * braces). Exported pure so the render smoke holds it to the escaping pins
+ * directly. Sold pieces render it unchanged: it is archive record, like the
+ * carousel. Returns '' when empty — never an empty wrapper, or every
+ * undescribed PDP would grow a phantom grid-gap row.
+ */
+export function pdpDescription(item) {
+  const paras = Array.isArray(item.description) ? item.description : [];
+  if (!paras.length) return '';
+  const label =
+    item.channel === 'ebay' || item.channel === 'depop'
+      ? `From the ${channelName(item)} listing`
+      : 'From the original listing';
+  return `
+          <div class="pdp-listing-desc" style="display:grid;gap:.6rem">
+            <p class="eyebrow">${label}</p>
+            ${paras
+              .map((d) => `<p style="color:var(--ink-soft);font-weight:300;margin:0">${escapeHtml(d)}</p>`)
+              .join('')}
+          </div>`;
+}
+
 export function product({ id }) {
   const item = getItem(id);
   if (!item) return missingItem(id);
@@ -146,6 +171,7 @@ export function product({ id }) {
           </div>
 
           <p style="color:var(--ink-soft);font-weight:300;margin:0">${item.story}</p>
+          ${pdpDescription(item)}
 
           <div style="display:flex;align-items:baseline;gap:1rem;padding-top:.6rem;border-top:1px solid var(--rule)">
             <span class="pdp-price">${money(item.price)}</span>

@@ -131,6 +131,8 @@ for (const c of collections) {
   const MAX_PHOTOS = 8;
   try {
     const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
+    const skuSeen = new Map(); // canonical form -> first entry id
+    const anySku = (manifest.items || []).some((e) => typeof e.sku === 'string' && e.sku.trim());
     for (const s of manifest.items || []) {
       const where = `stock ${s.id}`;
       if (s._missing) { warnings.push(`${where}: photo file is missing`); continue; }
@@ -177,6 +179,38 @@ for (const c of collections) {
         (Array.isArray(s.listings) && s.listings.some((l) => l?.channel === 'ebay' && l.url));
       if (hasEbayListing && !(Array.isArray(s.photos) && s.photos.length))
         warnings.push(`${where}: eBay listing but no carousel yet — npm run photos archives its frames`);
+
+      // Listing description: robot-owned plain text. '<' is the loud tripwire
+      // for the plain-text-only contract — reduction happens at pull, escaping
+      // at render.
+      if (s.description !== undefined) {
+        if (!Array.isArray(s.description) || s.description.some((d) => typeof d !== 'string' || !d.trim())) {
+          errors.push(`${where}: description must be an array of non-empty strings — plain-text paragraphs only`);
+        } else {
+          s.description.forEach((d, i) => {
+            if (d.includes('<'))
+              errors.push(`${where}: description[${i}] contains '<' — the manifest holds plain text only; HTML dies at pull time, entities are escaped at render`);
+          });
+        }
+      }
+      if (hasEbayListing && !(Array.isArray(s.description) && s.description.length))
+        warnings.push(`${where}: eBay listing but no description yet — npm run descriptions archives the cofounder's copy`);
+
+      // sku: cofounder-owned, recorded VERBATIM from Seller Hub. Never normalized.
+      if (s.sku !== undefined) {
+        if (typeof s.sku !== 'string' || !s.sku.trim()) {
+          errors.push(`${where}: sku must be a non-empty string — recorded verbatim from Seller Hub`);
+        } else {
+          if (!/^TA[\s._-]?GS[\s._-]?\d{2}$/i.test(s.sku))
+            warnings.push(`${where}: sku "${s.sku}" is off the TA-GS-NN pattern — kept verbatim by design; fix the label on eBay first, then hand-edit here`);
+          const key = s.sku.toUpperCase().replace(/[\s._-]/g, '');
+          if (skuSeen.has(key))
+            errors.push(`${where}: sku "${s.sku}" duplicates ${skuSeen.get(key)} — two pieces cannot share a Seller Hub label`);
+          else skuSeen.set(key, s.id);
+        }
+      }
+      if (anySku && hasEbayListing && !s.sku)
+        warnings.push(`${where}: eBay listing but no sku — the Seller Hub mapping is seeded; record this one`);
     }
   } catch {
     warnings.push('public/stock/manifest.json missing or unreadable');

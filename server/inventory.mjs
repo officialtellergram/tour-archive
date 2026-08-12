@@ -55,7 +55,7 @@ export const isSafeStockPath = (p) =>
  * through the exact same fields.
  */
 export function mapManifestItem(entry) {
-  const { _ingested, _source, _missing, _photosPulled, file, listingUrl, listings: rawListings, photos: rawPhotos, ...item } = entry;
+  const { _ingested, _source, _missing, _photosPulled, _descPulled, file, listingUrl, listings: rawListings, photos: rawPhotos, ...item } = entry;
 
   /*
    * Every listed piece will eventually live on BOTH marketplaces, and the item
@@ -84,6 +84,9 @@ export function mapManifestItem(entry) {
     upcoming: false,
     story: '',
     details: [],
+    // the cofounder's listing copy, archived by scripts/listing-pull.mjs —
+    // always an array so the PDP never branches on undefined
+    description: [],
     measurements: {},
     ...item,
     market: syndicated

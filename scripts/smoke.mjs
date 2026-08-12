@@ -60,7 +60,7 @@ const { collections, items, journal } = await import('../src/data/collections.js
 const { home } = await import('../src/pages/home.js');
 const { collectionsIndex, collectionDetail } = await import('../src/pages/collections.js');
 const { archive } = await import('../src/pages/archive.js');
-const { product, pdpMedia } = await import('../src/pages/product.js');
+const { product, pdpMedia, pdpDescription } = await import('../src/pages/product.js');
 const { journalIndex, journalEntry } = await import('../src/pages/journal.js');
 const { mission, sell, sizing, notFound } = await import('../src/pages/house.js');
 const { mosaicMedia, collectionTile, productCard } = await import('../src/components/ui.js');
@@ -146,6 +146,12 @@ const pdpCarousel = {
 };
 const pdpSingle = { ...pdpCarousel, id: 'stock-sm-single', photos: [] };
 const pdpDrawn = { ...pdpCarousel, id: 'stock-sm-drawn', photo: '', photos: [] };
+const pdpDescribed = {
+  ...pdpCarousel,
+  id: 'stock-sm-desc',
+  description: ['Nice piece', 'x < y & "quotes" <script>alert(1)</script>'],
+};
+const pdpDescribedSold = { ...pdpDescribed, sold: true };
 
 /* Mosaic fixtures — the route cases only ever exercise the EMPTY store path
    (collectionsIndex under the never-init()ed shim), so the filled grid is
@@ -173,6 +179,8 @@ const deskCases = [
   ['pdpMedia (drawn views)', () => pdpMedia(pdpDrawn)],
   ['mosaicMedia (photo grid)', () => mosaicMedia(mosaicItems)],
   ['collectionTile (basic-stock, empty store)', () => collectionTile(basicStock)],
+  ['pdpDescription (hostile text)', () => pdpDescription(pdpDescribed)],
+  ['pdpDescription (sold, archive record)', () => pdpDescription(pdpDescribedSold)],
 ];
 
 for (const [label, fn] of deskCases) {
@@ -242,6 +250,27 @@ for (const [label, fn] of deskCases) {
     errors.push('collectionTile basic-stock: mosaic leaked into the empty-store fallback');
   if (!tile.includes('class="swatches"'))
     errors.push('collectionTile basic-stock: swatch strip missing from the fallback canvas');
+}
+
+/* Listing-description pins — the escaping contract and the sold contract. */
+{
+  const block = pdpDescription(pdpDescribed);
+  if (block.includes('<script>'))
+    errors.push('pdpDescription: raw <script> reached the markup — scraped text must pipe through escapeHtml');
+  if (!block.includes('&lt;script&gt;alert(1)&lt;/script&gt;'))
+    errors.push('pdpDescription: hostile markup was not escaped to entities');
+  if (!block.includes('x &lt; y &amp; &quot;quotes&quot;'))
+    errors.push('pdpDescription: the & < " escaping contract broke');
+  if (!block.includes('From the eBay listing'))
+    errors.push('pdpDescription: channel-aware eyebrow label missing');
+  if ((block.match(/<p /g) || []).length !== 3)
+    errors.push('pdpDescription: expected the label plus one <p> per paragraph (3 total)');
+  if (pdpDescription(pdpDescribedSold) !== block)
+    errors.push('pdpDescription: sold changed the output — the description is archive record and must not be gated');
+  if (pdpDescription({ ...pdpCarousel, description: [] }) !== '')
+    errors.push('pdpDescription: empty description must yield the empty string — no label, no phantom grid row');
+  if (pdpDescription(pdpCarousel) !== '')
+    errors.push('pdpDescription: missing description field must yield the empty string');
 }
 
 /* Hover-cycle pins — cards with an archived carousel carry the reel. */

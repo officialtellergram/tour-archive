@@ -392,8 +392,8 @@ check('an entry without photos maps to an empty array, never undefined', () => {
 });
 
 check('provenance stamps never reach the mapped item', () => {
-  const item = mapManifestItem(manifestWithPhotos);
-  for (const k of ['_photosPulled', '_ingested', '_source', '_missing'])
+  const item = mapManifestItem({ ...manifestWithPhotos, _descPulled: '2026-08-12' });
+  for (const k of ['_photosPulled', '_descPulled', '_ingested', '_source', '_missing'])
     assert(!(k in item), `${k} leaked onto the item`);
 });
 
@@ -437,6 +437,64 @@ check('a catalogued manifest entry keeps its carousel through enrichment', () =>
   const item = mapManifestItem({ ...manifestWithPhotos, catalogue: 'ds-01' });
   equal(item.enriched, true, 'joined to the archive record');
   equal(item.photos.length, 3, 'enrichment did not clobber the carousel');
+});
+
+/* ------------------------------------------------------------------ */
+/* Listing description + sku — manifest → item → merge                 */
+/* ------------------------------------------------------------------ */
+
+const manifestWithDesc = {
+  ...manifestPlain,
+  description: ['First paragraph of the listing.', 'Second paragraph, with measurements prose.'],
+  sku: 'TA-GS-03',
+  _descPulled: '2026-08-12',
+};
+
+check('listing description and sku pass through the mapper untouched and in order', () => {
+  const item = mapManifestItem(manifestWithDesc);
+  equal(JSON.stringify(item.description), JSON.stringify(manifestWithDesc.description), 'paragraphs verbatim, in order');
+  equal(item.sku, 'TA-GS-03', 'sku verbatim');
+});
+
+check('an entry without description maps to an empty array, never undefined', () => {
+  const item = mapManifestItem(manifestPlain);
+  assert(Array.isArray(item.description), 'description is always an array');
+  equal(item.description.length, 0, 'empty when the manifest has none');
+});
+
+check('description survives the merge as unclaimed seed', () => {
+  const merged = mergeInventory({ seed: [mapManifestItem(manifestWithDesc)], channels: [] });
+  equal(JSON.stringify(merged[0].description), JSON.stringify(manifestWithDesc.description), 'intact after merge');
+});
+
+check('a superseding channel listing leaves the archived description alone', () => {
+  // a future API listing must never clobber archived text — pins description
+  // OUT of pickLive, the photos precedent
+  const seed = mapManifestItem({ ...manifestWithDesc, id: 'ds-01' });
+  const listing = { ...mapEbayItem(ebayCatalogued), description: ['live marketplace junk'] };
+  const merged = mergeInventory({ seed: [seed], channels: [listing] });
+  equal(merged.length, 1, 'superseded, not duplicated');
+  equal(JSON.stringify(merged[0].description), JSON.stringify(seed.description),
+    'archived description survives — description stays OUT of pickLive');
+});
+
+check('a catalogued manifest entry keeps its description through enrichment', () => {
+  const item = mapManifestItem({ ...manifestWithDesc, catalogue: 'ds-01' });
+  equal(item.enriched, true, 'joined to the archive record');
+  equal(JSON.stringify(item.description), JSON.stringify(manifestWithDesc.description), 'enrichment did not clobber the description');
+  equal(item.sku, 'TA-GS-03', 'sku survives enrichment');
+});
+
+check('enrichment records never define description or sku', () => {
+  // the overlay file is free-form ({...item, ...record}) — gate the contract
+  // where the file lives. If enrichment ever legitimately needs description,
+  // applyEnrichment must grow an explicit carry-over pin first.
+  const overlay = JSON.parse(readFileSync(new URL('../server/enrichment.json', import.meta.url), 'utf8'));
+  for (const [key, record] of Object.entries(overlay)) {
+    if (key.startsWith('_')) continue;
+    assert(!('description' in record), `${key}: enrichment must not define description — the spread would clobber archived listing text`);
+    assert(!('sku' in record), `${key}: enrichment must not define sku — it is recorded verbatim in the manifest only`);
+  }
 });
 
 /* ------------------------------------------------------------------ */

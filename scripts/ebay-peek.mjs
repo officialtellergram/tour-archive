@@ -4,9 +4,9 @@
  * the stock manifest. Deliberately not a pipeline: the recurring sync stays
  * with the official API once credentials land.
  *
- * Usage: node scripts/ebay-peek.mjs <url> [item|seller]
+ * Usage: node scripts/ebay-peek.mjs <url> [item|seller|images|desc|diag]
  */
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { PEEK_UA } from './lib/stock-constants.mjs';
 
@@ -54,10 +54,23 @@ const child = spawn(BROWSER, [
   // present the equivalent headed UA instead
   `--user-agent=${PEEK_UA}`,
   `--remote-debugging-port=${PORT}`,
-  `--user-data-dir=${process.env.TEMP}\\ebay-peek`,
+  // unique per run: a shared profile lets a second spawn HAND OFF to a live
+  // instance (the launcher exits, our pid is nobody, the tree-kill hits air)
+  `--user-data-dir=${process.env.TEMP}\\ebay-peek\\${process.pid}-${Date.now()}`,
   '--window-size=1400,1000',
   URL_,
 ], { stdio: 'ignore' });
+
+/* child.kill() on Windows terminates the LAUNCHER, not the browser tree —
+   a zombie Edge then squats port 9720 and every later spawn joins it as a
+   tab, poisoning multi-target reads (the desc OOPIF hunt especially). Kill
+   the whole tree, the curate-enrich way. */
+function die(code) {
+  try {
+    spawnSync('taskkill', ['/PID', String(child.pid), '/T', '/F'], { stdio: 'ignore' });
+  } catch { /* already gone */ }
+  process.exit(code);
+}
 
 try {
   // A dead CDP socket would otherwise hang this probe forever, and a caller's
@@ -65,9 +78,8 @@ try {
   // squats port 9720 with the listing still open and poisons the next spawn.
   // Bound our own life; kill our own browser.
   const watchdog = setTimeout(() => {
-    child.kill();
     console.log('{"error": "probe watchdog fired — page never settled"}');
-    process.exit(1);
+    die(1);
   }, 60_000);
   watchdog.unref?.();
 
@@ -96,6 +108,120 @@ try {
       pending.set(i, (m) => res(m?.result?.result?.value));
       sock.send(JSON.stringify({ id: i, method: 'Runtime.evaluate', params: { expression, returnByValue: true } }));
     });
+
+  if (MODE === 'desc') {
+    /*
+     * The description lives in an out-of-process iframe (host itm.ebaydesc.com)
+     * — the top document cannot read it, this machine's family filter blocks
+     * top-level navigation to the host (subframes are exempt), and the OOPIF
+     * appears on /json/list as its OWN target. So: settle the listing page,
+     * scroll the lazy iframe into existence, then attach to the frame's own
+     * debugger socket and read the rendered text from inside.
+     */
+    const itemId = (URL_.match(/\/itm\/(\d+)/) || [])[1] || '';
+
+    const LISTING_DESC_PROBE = `(() => {
+      const ifr = document.querySelector('#desc_ifr');
+      if (ifr) ifr.scrollIntoView({ block: 'center' }); // loading="lazy" — force the OOPIF to exist
+      const t = (sel) => document.querySelector(sel)?.textContent?.trim() || '';
+      return JSON.stringify({
+        ok: !!ifr,
+        title: t('h1.x-item-title__mainTitle') || t('h1'),
+        price: t('.x-price-primary'),
+        ended: /ended|sold|no longer available/i.test(document.body.textContent.slice(0, 3000)),
+      });
+    })()`;
+
+    let listing = null;
+    for (let i = 0; i < 20; i++) {
+      await sleep(1000);
+      const raw = await evaluate(LISTING_DESC_PROBE);
+      const data = raw ? JSON.parse(raw) : null;
+      if (data?.ok) { listing = data; break; }
+      // a settled page with no iframe is an answer ("no description"), not a retry
+      if (i >= 12 && data?.title) { listing = data; break; }
+    }
+    if (!listing) {
+      console.log('{"error": "listing page never settled — bot wall or layout change"}');
+      die(1);
+    }
+    if (!listing.ok) {
+      console.log(JSON.stringify({ itemId, listing, desc: { hostOk: false, blocked: false, textLength: 0, paras: [] } }, null, 2));
+      die(0);
+    }
+
+    let descWs = null;
+    for (let i = 0; i < 40 && !descWs; i++) {
+      try {
+        const targets = await (await fetch(`http://127.0.0.1:${PORT}/json/list`)).json();
+        const fr = targets.find(
+          (t) => t.type === 'iframe' && t.url.includes('ebaydesc') && (!itemId || t.url.includes(itemId))
+        );
+        if (fr) descWs = fr.webSocketDebuggerUrl;
+      } catch { /* frame still forming */ }
+      await sleep(300);
+    }
+    if (!descWs) {
+      console.log('{"error": "description frame target never appeared"}');
+      die(1);
+    }
+
+    const dsock = new WebSocket(descWs);
+    await new Promise((res, rej) => { dsock.onopen = res; dsock.onerror = rej; });
+    let did = 0;
+    const dpending = new Map();
+    dsock.onmessage = (ev) => {
+      const m = JSON.parse(ev.data);
+      if (m.id && dpending.has(m.id)) { dpending.get(m.id)(m); dpending.delete(m.id); }
+    };
+    const devaluate = (expression) =>
+      new Promise((res) => {
+        const i = ++did;
+        dpending.set(i, (m) => res(m?.result?.result?.value));
+        dsock.send(JSON.stringify({ id: i, method: 'Runtime.evaluate', params: { expression, returnByValue: true } }));
+      });
+
+    // Serialized real function — no template-escaping bugs. hostname, NOT href:
+    // a family-filter redirect carries the ebaydesc URL encoded in its own href.
+    function descProbeFn() {
+      const hostOk = /(^|\.)ebaydesc\.com$/i.test(location.hostname);
+      const blocked =
+        /sdx\.microsoft\.com$/i.test(location.hostname) || /family safety/i.test(document.title || '');
+      const body = document.body;
+      const text = body ? (body.innerText !== undefined ? body.innerText : body.textContent) : '';
+      const paras = String(text)
+        .split(/\n\s*\n+/)
+        .map((p) => p.replace(/[​-‍﻿￼]/g, '').replace(/\s+/g, ' ').trim())
+        .filter(Boolean);
+      return JSON.stringify({
+        ok: true,
+        hostOk,
+        blocked,
+        url: location.href.slice(0, 300),
+        readyState: document.readyState,
+        textLength: String(text).length,
+        paraCount: paras.length,
+        paras,
+      });
+    }
+    const DESC_PROBE = `(${descProbeFn})()`;
+
+    for (let i = 0; i < 15; i++) {
+      await sleep(800);
+      const raw = await devaluate(DESC_PROBE);
+      const d = raw ? JSON.parse(raw) : null;
+      // explicit acceptance: textLength 0 on a complete document is an ANSWER
+      if (d && d.ok && d.readyState === 'complete') {
+        console.log(JSON.stringify(
+          { itemId, listing: { title: listing.title, price: listing.price, ended: listing.ended }, desc: d },
+          null, 2
+        ));
+        die(0);
+      }
+    }
+    console.log('{"error": "description frame never completed"}');
+    die(1);
+  }
 
   const IMAGES_PROBE = `(() => {
     // Dedupe by eBay image id, not URL: og:image repeats frame 1 at a different
@@ -139,13 +265,12 @@ try {
     const data = raw ? JSON.parse(raw) : null;
     if (data && (data.title || data.count)) {
       console.log(JSON.stringify(data, null, 2));
-      child.kill(); // process.exit() skips finally — kill here or the browser
-      process.exit(0); // outlives us and poisons the next spawn on port 9720
+      die(0);
     }
   }
   console.log('{"error": "page never yielded listing data — bot wall or layout change"}');
-  child.kill();
-  process.exit(1);
+  die(1);
 } finally {
-  child.kill(); // backstop for the thrown-error paths (no page target, socket error)
+  // backstop for the thrown-error paths (no page target, socket error)
+  try { spawnSync('taskkill', ['/PID', String(child.pid), '/T', '/F'], { stdio: 'ignore' }); } catch {}
 }

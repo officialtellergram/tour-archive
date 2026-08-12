@@ -7,6 +7,18 @@ export const money = (n) => `$${n.toLocaleString('en-US')}`;
 
 const BASE_URL = (import.meta.env?.BASE_URL || '/').replace(/\/*$/, '/');
 
+/** HTML-escape untrusted text for interpolation into markup. Scraped listing
+ *  text arrives plain (the manifest never stores HTML) — this is the
+ *  render-side belt to that braces. */
+export function escapeHtml(s = '') {
+  return String(s)
+    .replace(/&/g, '&amp;') // & first, or it re-escapes the entities below
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 /** Resolve a deploy-base-relative media path: absolute URLs pass through, repo paths get the base. */
 export const mediaURL = (path) =>
   !path ? '' : /^https?:\/\//i.test(path) ? path : `${BASE_URL}${path}`;
