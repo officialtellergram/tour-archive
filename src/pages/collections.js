@@ -161,6 +161,13 @@ export function collectionDetail({ id }) {
           </div>
           <div class="prose" data-reveal data-reveal-delay="0.08">
             ${c.essay.map((p) => `<p>${p}</p>`).join('')}
+            ${
+              c.essayBy
+                ? `<p class="eyebrow" style="margin-top:2rem;padding-top:1rem;border-top:1px solid var(--rule)">
+                     — ${c.essayBy}${c.essayDate ? ` · ${c.essayDate}` : ''}
+                   </p>`
+                : ''
+            }
           </div>
         </div>
       </div>
