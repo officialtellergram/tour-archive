@@ -45,6 +45,13 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  /* clip, not hidden: removes the horizontal pan mechanism entirely. Safari
+     lets transformed children (the hero drift, the marquee track) expand the
+     pannable area even inside clipped ancestors when only body carries the
+     clip — the root clip is what iOS actually honours. */
+  overflow-x: hidden;
+  overflow-x: clip;
+  overscroll-behavior-x: none;
 }
 
 body {
@@ -56,6 +63,7 @@ body {
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* position:fixed is the lock iOS actually honours (overflow:hidden on body
@@ -807,6 +815,9 @@ h3.display {
    ================================================================== */
 
 .marquee {
+  /* the track runs thousands of px wide by design — the wrapper owns its
+     clip rather than leaning on the body's (which iOS ignores) */
+  overflow: hidden;
   border-block: 1px solid var(--rule);
   background: var(--navy);
   color: var(--parchment);
