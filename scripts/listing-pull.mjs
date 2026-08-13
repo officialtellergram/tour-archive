@@ -8,13 +8,13 @@
  * plain-text paragraphs.
  *
  * Disjoint-writer contract: this script owns `description` + `_descPulled`
- * and NOTHING else. ingest owns entry-minting; carousel-pull owns photos;
- * sku and story are human-owned. A default run fills only entries with no
- * description. `--refresh <id>` re-pulls one piece; `--refresh-all` re-pulls
- * every eBay entry (descriptions are robot-owned wholesale — unlike photos
- * there are no hand edits to protect — and the cofounder edits listings
- * often; each listing is still cowardly individually and a failed harvest
- * never blanks what exists).
+ * AND `specifics` + `_specsPulled` — nothing else. ingest owns entry-minting;
+ * carousel-pull owns photos; sku and story are human-owned. Writes are
+ * cowardly PER FIELD: a visit can record the description and refuse the
+ * specifics, or vice versa. A default run fills entries missing either
+ * field. `--refresh <id>` re-pulls one piece; `--refresh-all` re-pulls every
+ * eBay entry (both fields are robot-owned wholesale — the cofounder edits
+ * listings often; a failed harvest never blanks what exists).
  *
  * Never run alongside ingest or carousel-pull — all three rewrite the
  * manifest, one at a time.
@@ -27,6 +27,7 @@ import { spawnSync } from 'node:child_process';
 import { writeFileSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { BUYBOX_KEY_RX, CONTAMINATION_RX, SPEC_KEY_MAX, SPEC_VALUE_MAX } from './lib/stock-constants.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const MANIFEST = join(ROOT, 'public', 'stock', 'manifest.json');
@@ -42,6 +43,28 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
    description host itself. */
 const WALL_RX =
   /pardon our interruption|error page|access denied|verify you are a human|robot check|just a moment|family safety|ask to use this site|request to an adult/i;
+
+/* Specifics acceptance — same cowardly principle as descriptions: junk is
+   worse than absent. Returns a human reason to refuse, or null to accept. */
+function specificsProblem(specs) {
+  if (!specs || typeof specs !== 'object' || Array.isArray(specs)) return 'not a plain object';
+  const rows = Object.entries(specs);
+  if (rows.length < 3) return `only ${rows.length} row(s) — About this item never renders that thin`;
+  for (const [k, v] of rows) {
+    if (!k.trim() || typeof v !== 'string' || !v.trim()) return 'empty key or value';
+    if (k.includes('<') || v.includes('<')) return `'<' in "${k}" — plain text only`;
+    if (BUYBOX_KEY_RX.test(k.trim())) return `buybox leak — "${k}" is not an item specific`;
+    if (CONTAMINATION_RX.test(v)) return `"${k}" carries eBay chrome the junk-strip missed`;
+    if (k.length > SPEC_KEY_MAX || v.length > SPEC_VALUE_MAX) return `"${k.slice(0, 40)}" is implausibly long`;
+    if (WALL_RX.test(v)) return `wall phrase in "${k}"`;
+  }
+  return null;
+}
+
+const hasDesc = (e) => Array.isArray(e.description) && e.description.length > 0;
+const hasSpecs = (e) =>
+  e.specifics && typeof e.specifics === 'object' && !Array.isArray(e.specifics) &&
+  Object.keys(e.specifics).length > 0;
 
 /* ---------------- CLI ---------------- */
 
@@ -153,7 +176,7 @@ if (refreshId) {
 } else {
   targets = items.filter((e) => {
     if (!ebayListingUrl(e)) return false;
-    if (Array.isArray(e.description) && e.description.length) {
+    if (hasDesc(e) && hasSpecs(e)) {
       skipped++;
       return false;
     }
@@ -165,43 +188,74 @@ let pulled = 0;
 let failed = 0;
 
 for (const entry of targets) {
-  if (pulled + failed > 0) {
-    await sleep(DELAY_MS);
-    await waitPortFree();
-  }
+  if (pulled + failed > 0) await sleep(DELAY_MS);
+  await waitPortFree(); // ALWAYS — a stale 9720 Edge poisons the FIRST probe of a sweep too
 
   const url = ebayListingUrl(entry);
-  const res = probe(url);
+  const refreshing = Boolean(refreshId || refreshAll);
+  const needDesc = refreshing || !hasDesc(entry);
+  const needSpecs = refreshing || !hasSpecs(entry);
 
+  const res = probe(url);
   if (res.error) {
     console.log(`${C.red}   ✖ ${entry.id}: ${res.error}${C.off}`);
     failed++;
     continue;
   }
 
-  const d = res.desc || {};
-  const paras = Array.isArray(d.paras) ? d.paras : [];
-  const joined = paras.join(' ');
-  // Cowardly acceptance: a wall, a block, a thin harvest, or an ended listing
-  // that failed to yield writes NOTHING — existing descriptions are archive
-  // record and are never blanked by a failure.
-  if (!d.hostOk || d.blocked) {
-    console.log(`${C.red}   ✖ ${entry.id}: description frame was not the description host (blocked or redirected)${C.off}`);
-    failed++;
-    continue;
-  }
-  if (!paras.length || joined.length < 40 || WALL_RX.test(joined)) {
-    console.log(`${C.red}   ✖ ${entry.id}: harvest too thin or wall-shaped — nothing written${C.off}`);
+  // Page identity — the probe must echo the /itm/<id> of the page it actually
+  // read. A mismatch means a poisoned read (stale browser serving another
+  // listing): refuse the WHOLE harvest, both fields, nothing written.
+  const reqId = (url.match(/\/itm\/(\d+)/) || [])[1] || '';
+  if (!reqId || !res.pageItemId || res.pageItemId !== reqId) {
+    console.log(`${C.red}   ✖ ${entry.id}: probe answered for item ${res.pageItemId || 'unknown'}, asked for ${reqId || url} — poisoned read, nothing written${C.off}`);
     failed++;
     continue;
   }
 
-  entry.description = paras;
-  entry._descPulled = new Date().toISOString().slice(0, 10);
-  writeFileSync(MANIFEST, JSON.stringify(manifest, null, 2) + '\n', 'utf8');
+  const today = new Date().toISOString().slice(0, 10);
+  const wrote = [];
+  let entryFailed = false;
 
-  console.log(`   ${C.green}✔${C.off} ${entry.id} ${C.dim}— ${paras.length} paragraph(s)${C.off}`);
-  pulled++;
+  if (needDesc) {
+    const d = res.desc || {};
+    const paras = Array.isArray(d.paras) ? d.paras : [];
+    const joined = paras.join(' ');
+    // Cowardly: a wall, a block, or a thin harvest writes NOTHING — existing
+    // descriptions are archive record and are never blanked by a failure.
+    if (!d.hostOk || d.blocked) {
+      console.log(`${C.red}   ✖ ${entry.id}: description frame was not the description host (blocked or redirected)${C.off}`);
+      entryFailed = true;
+    } else if (!paras.length || joined.length < 40 || WALL_RX.test(joined)) {
+      console.log(`${C.red}   ✖ ${entry.id}: description harvest too thin or wall-shaped — not written${C.off}`);
+      entryFailed = true;
+    } else {
+      entry.description = paras;
+      entry._descPulled = today;
+      wrote.push(`${paras.length} paragraph(s)`);
+    }
+  }
+
+  if (needSpecs) {
+    const problem = specificsProblem(res.specifics);
+    if (problem) {
+      console.log(`${C.red}   ✖ ${entry.id}: specifics refused — ${problem}${C.off}`);
+      entryFailed = true;
+    } else {
+      entry.specifics = res.specifics;
+      entry._specsPulled = today;
+      wrote.push(`${Object.keys(res.specifics).length} specific(s)`);
+    }
+  }
+
+  // a good targeted field persists even when its sibling refused
+  if (wrote.length) writeFileSync(MANIFEST, JSON.stringify(manifest, null, 2) + '\n', 'utf8');
+
+  if (entryFailed) failed++;
+  else {
+    console.log(`   ${C.green}✔${C.off} ${entry.id} ${C.dim}— ${wrote.join(' · ')}${C.off}`);
+    pulled++;
+  }
 }
 
 console.log(`\n   ${pulled} listing(s) pulled · ${skipped} already recorded · ${failed} failure(s)\n`);

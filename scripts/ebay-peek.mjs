@@ -20,6 +20,11 @@ const MODE = process.argv[3] || 'item';
 const PORT = 9720;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+// Piped stdout is ASYNC on Windows, and process.exit races the flush — an
+// entire listing's JSON silently vanished from a sweep this way. Blocking
+// writes make console.log synchronous; the caller always gets the payload.
+try { process.stdout._handle?.setBlocking?.(true); } catch { /* best effort */ }
+
 const ITEM_PROBE = `(() => {
   const t = (sel) => document.querySelector(sel)?.textContent?.trim() || '';
   const specifics = {};
@@ -64,11 +69,27 @@ const child = spawn(BROWSER, [
 /* child.kill() on Windows terminates the LAUNCHER, not the browser tree —
    a zombie Edge then squats port 9720 and every later spawn joins it as a
    tab, poisoning multi-target reads (the desc OOPIF hunt especially). Kill
-   the whole tree, the curate-enrich way. */
+   the whole tree — and because Edge can re-exec PAST the launcher, sweep
+   whatever is still LISTENING on the port, twice (observed live: a re-exec'd
+   pid survived the first sweep). The port is the identity that cannot lie. */
+function sweepPort() {
+  try {
+    const net = spawnSync('netstat', ['-ano'], { encoding: 'utf8' });
+    const line = (net.stdout || '').split('\n').find((l) => l.includes(`:${PORT}`) && /LISTENING/i.test(l));
+    const pid = line?.trim().split(/\s+/).pop();
+    if (pid && Number(pid) > 4) spawnSync('taskkill', ['/PID', pid, '/T', '/F'], { stdio: 'ignore' });
+  } catch { /* best effort */ }
+}
+const sleepSync = (ms) => {
+  try { Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms); } catch { /* noop */ }
+};
 function die(code) {
   try {
     spawnSync('taskkill', ['/PID', String(child.pid), '/T', '/F'], { stdio: 'ignore' });
   } catch { /* already gone */ }
+  sweepPort();
+  sleepSync(800);
+  sweepPort();
   process.exit(code);
 }
 
@@ -120,33 +141,113 @@ try {
      */
     const itemId = (URL_.match(/\/itm\/(\d+)/) || [])[1] || '';
 
-    const LISTING_DESC_PROBE = `(() => {
+    // Serialized real function — the About-this-item module renders in the TOP
+    // document, not the ebaydesc OOPIF, so Phase 1 harvests it in the same
+    // visit. Current layout: the .ux-labels-values classes sit on the dt/dd
+    // elements inside the container's dls — the old row-wrapper selector (see
+    // ITEM_PROBE) now matches only the buybox, which must stay excluded.
+    function listingProbeFn() {
       const ifr = document.querySelector('#desc_ifr');
       if (ifr) ifr.scrollIntoView({ block: 'center' }); // loading="lazy" — force the OOPIF to exist
       const t = (sel) => document.querySelector(sel)?.textContent?.trim() || '';
+      const clean = (s) =>
+        String(s == null ? '' : s).replace(/[​-‍⁠﻿￼]/g, ' ').replace(/\s+/g, ' ').trim();
+
+      const about = document.querySelector('.x-about-this-item, [data-testid="x-about-this-item"]');
+      const specifics = {};
+      if (about) {
+        const conditionLabel = (vEl) => {
+          // dd anatomy (12/12 identical): visible truncated span + 'Read more'
+          // button + HIDDEN full-text duplicate (.hide) + 'See all condition
+          // definitions' link. Prefer the hidden FULL copy; strip chrome by
+          // phrase; keep the pre-colon label only.
+          const full = vEl.querySelector('.ux-expandable-textual-display-block-inline.hide');
+          const trunc = vEl.querySelector('[data-testid="text"]');
+          let raw = clean((full || trunc || vEl).textContent)
+            .replace(/read more\s*about the condition.*$/i, '')
+            .replace(/see all condition definitions.*$/i, '');
+          const colon = raw.indexOf(':');
+          if (colon > 0) raw = raw.slice(0, colon);
+          return raw.replace(/[\s.…]+$/, '').trim();
+        };
+        const seen = new Set();
+        const take = (kEl, vEl) => {
+          const key = clean(kEl.textContent).replace(/:\s*$/, '');
+          if (!key || seen.has(key.toLowerCase())) return;
+          const val = /^condition$/i.test(key)
+            ? conditionLabel(vEl)
+            : clean(vEl.textContent)
+                .replace(/see all condition definitions.*$/i, '')
+                .replace(/read more(?: about the condition)?.*$/i, '')
+                .trim();
+          if (!val) return;
+          seen.add(key.toLowerCase());
+          specifics[key] = val; // eBay DOM order preserved
+        };
+        // Shape A (all 12 today): classes on dt/dd — walk every dl, dt → next DD sibling
+        about.querySelectorAll('dl dt.ux-labels-values__labels').forEach((dt) => {
+          let dd = dt.nextElementSibling;
+          while (dd && dd.tagName !== 'DD') dd = dd.nextElementSibling;
+          if (dd) take(dt, dd);
+        });
+        // Shape B (legacy backstop, container-scoped ONLY — at document level
+        // this selector is the buybox, the old ITEM_PROBE bug)
+        about.querySelectorAll('.ux-labels-values').forEach((row) => {
+          const k = row.querySelector('.ux-labels-values__labels');
+          const v = row.querySelector('.ux-labels-values__values');
+          if (k && v) take(k, v);
+        });
+      }
+
       return JSON.stringify({
         ok: !!ifr,
+        // page identity from location.href — the only echo a poisoned 9720
+        // read cannot fake; the caller compares it against the URL it asked for
+        pageItemId: (location.href.match(/\/itm\/(\d+)/) || [])[1] || '',
         title: t('h1.x-item-title__mainTitle') || t('h1'),
         price: t('.x-price-primary'),
         ended: /ended|sold|no longer available/i.test(document.body.textContent.slice(0, 3000)),
+        specifics,
       });
-    })()`;
+    }
+    const LISTING_DESC_PROBE = `(${listingProbeFn})()`;
+    const SUMMON = `document.querySelector('#desc_ifr')?.scrollIntoView({block:'center'}); scrollBy(0,-600);`;
 
     let listing = null;
     for (let i = 0; i < 20; i++) {
       await sleep(1000);
       const raw = await evaluate(LISTING_DESC_PROBE);
       const data = raw ? JSON.parse(raw) : null;
-      if (data?.ok) { listing = data; break; }
+      // fast-accept only when the specifics harvest looks real; past 12s take
+      // what the page gives (thin-specifics listings must still resolve)
+      if (data?.ok && (Object.keys(data.specifics || {}).length >= 3 || i >= 12)) { listing = data; break; }
       // a settled page with no iframe is an answer ("no description"), not a retry
       if (i >= 12 && data?.title) { listing = data; break; }
+      // scroll-summon fallback: proven recipe for the rare no-render flake
+      if ((i === 6 || i === 12) && data?.title && !Object.keys(data.specifics || {}).length) {
+        await evaluate(SUMMON);
+      }
     }
     if (!listing) {
       console.log('{"error": "listing page never settled — bot wall or layout change"}');
       die(1);
     }
+    // Identity: the page must be the listing we asked for. A stale browser
+    // once served a DIFFERENT listing's data with zero error signal.
+    if (itemId && listing.pageItemId && listing.pageItemId !== itemId) {
+      console.log(JSON.stringify({ error: `page identity mismatch — wanted ${itemId}, got ${listing.pageItemId}` }));
+      die(1);
+    }
     if (!listing.ok) {
-      console.log(JSON.stringify({ itemId, listing, desc: { hostOk: false, blocked: false, textLength: 0, paras: [] } }, null, 2));
+      // load-bearing for per-field cowardice: a listing with no description
+      // module can still yield good specifics
+      console.log(JSON.stringify(
+        { itemId, pageItemId: listing.pageItemId,
+          listing: { title: listing.title, price: listing.price, ended: listing.ended },
+          specifics: listing.specifics || {},
+          desc: { hostOk: false, blocked: false, textLength: 0, paras: [] } },
+        null, 2
+      ));
       die(0);
     }
 
@@ -213,7 +314,10 @@ try {
       // explicit acceptance: textLength 0 on a complete document is an ANSWER
       if (d && d.ok && d.readyState === 'complete') {
         console.log(JSON.stringify(
-          { itemId, listing: { title: listing.title, price: listing.price, ended: listing.ended }, desc: d },
+          { itemId, pageItemId: listing.pageItemId,
+            listing: { title: listing.title, price: listing.price, ended: listing.ended },
+            specifics: listing.specifics || {},
+            desc: d },
           null, 2
         ));
         die(0);

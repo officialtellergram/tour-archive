@@ -47,7 +47,20 @@
         "Measurements:",
         "30” Length / 26” Pit to Pit / 30” Shoulder to Cuff"
       ],
-      "_descPulled": "2026-08-12"
+      "_descPulled": "2026-08-12",
+      "specifics": {
+        "Condition": "Pre-owned - Excellent",
+        "Brand": "Slazenger",
+        "Size Type": "Regular",
+        "Outer Shell Material": "Polyester",
+        "Department": "Men",
+        "Type": "Jacket",
+        "Size": "2XL",
+        "Color": "Green",
+        "Style": "Anorak",
+        "Vintage": "Yes"
+      },
+      "_specsPulled": "2026-08-12"
     },
     {
       "id": "stock-masters-peter-millar-quarter-zip-blue",
@@ -95,7 +108,21 @@
         "Measurements",
         "29” Length 22” Pit to Pit 28” Sleeve length"
       ],
-      "_descPulled": "2026-08-12"
+      "_descPulled": "2026-08-12",
+      "specifics": {
+        "Condition": "Pre-owned",
+        "Brand": "Peter Millar",
+        "Department": "Men",
+        "Type": "Casual",
+        "Sleeve Length": "27 in",
+        "Closure": "Zip",
+        "Chest Size": "26 in",
+        "Size": "XL",
+        "Color": "Light Blue",
+        "Shirt Length": "30 in",
+        "Performance/Activity": "Golf"
+      },
+      "_specsPulled": "2026-08-12"
     },
     {
       "id": "stock-peter-millar-club-quarter-zip-navy",
@@ -141,7 +168,20 @@
         "Measurements",
         "26” Length / 23” Pit to Pit / 27” Sleeve length"
       ],
-      "_descPulled": "2026-08-12"
+      "_descPulled": "2026-08-12",
+      "specifics": {
+        "Condition": "Pre-owned - Excellent",
+        "Brand": "Peter Millar",
+        "Size Type": "Regular",
+        "Department": "Men",
+        "Type": "Sweater",
+        "Sleeve Length": "Long Sleeve",
+        "Size": "L",
+        "Color": "Black",
+        "Style": "Quarter Zip",
+        "Material": "Cotton"
+      },
+      "_specsPulled": "2026-08-12"
     },
     {
       "id": "stock-ryder-cup-print-polo",
@@ -187,7 +227,19 @@
         "Condition is Pre-owned - Excellent.",
         "Shipped with USPS Ground Advantage."
       ],
-      "_descPulled": "2026-08-12"
+      "_descPulled": "2026-08-12",
+      "specifics": {
+        "Condition": "Pre-owned - Excellent",
+        "Brand": "Polo Golf",
+        "Size Type": "Regular",
+        "Department": "Men",
+        "Type": "Polo",
+        "Chest Size": "24 in",
+        "Size": "L",
+        "Color": "Blue",
+        "Shirt Length": "28 in"
+      },
+      "_specsPulled": "2026-08-12"
     },
     {
       "id": "stock-sun-faded-golf-pullover",
@@ -231,7 +283,22 @@
         "Measurements",
         "26” Length 20” chest length 29” Sleeve length"
       ],
-      "_descPulled": "2026-08-12"
+      "_descPulled": "2026-08-12",
+      "specifics": {
+        "Condition": "Pre-owned - Good",
+        "Brand": "Vintage",
+        "Size Type": "Regular",
+        "Department": "Men",
+        "Type": "Casual",
+        "Sleeve Length": "29 in",
+        "Occasion": "Activewear",
+        "Chest Size": "20 in",
+        "Size": "XL",
+        "Color": "Blue",
+        "Shirt Length": "26 in",
+        "Performance/Activity": "Golf"
+      },
+      "_specsPulled": "2026-08-12"
     },
     {
       "id": "stock-university-of-kentucky-polo",
@@ -274,7 +341,15 @@
         "Measurements Listed!",
         "28” Length 22” Pit to Pit"
       ],
-      "_descPulled": "2026-08-12"
+      "_descPulled": "2026-08-12",
+      "specifics": {
+        "Condition": "Used",
+        "Sport": "Basketball",
+        "Size": "XL",
+        "Product": "Shirt",
+        "Team": "Kentucky Wildcats"
+      },
+      "_specsPulled": "2026-08-12"
     },
     {
       "id": "stock-bugle-boy-polo",
@@ -318,7 +393,19 @@
         "27” Length / 22” Pit to Pit",
         "Condition is Pre-owned - Good. Shipped with USPS Ground Advantage."
       ],
-      "_descPulled": "2026-08-12"
+      "_descPulled": "2026-08-12",
+      "specifics": {
+        "Condition": "Pre-owned - Good",
+        "Brand": "Bugle Boy",
+        "Size Type": "Regular",
+        "Department": "Men",
+        "Type": "Polo",
+        "Chest Size": "22 in",
+        "Size": "M",
+        "Color": "Multicolor",
+        "Shirt Length": "27 in"
+      },
+      "_specsPulled": "2026-08-12"
     },
     {
       "id": "stock-masters-tech-striped-polo",
@@ -361,7 +448,20 @@
         "For all my big men golfers out there, great for a hot day on the course",
         "30” Length 25” Pit to Pit"
       ],
-      "_descPulled": "2026-08-12"
+      "_descPulled": "2026-08-12",
+      "specifics": {
+        "Condition": "Pre-owned - Excellent",
+        "Brand": "Masters Tech",
+        "Pattern": "Striped",
+        "Size Type": "Big & Tall",
+        "Department": "Men",
+        "Type": "Polo",
+        "Chest Size": "26 in",
+        "Size": "XXL",
+        "Color": "Blue",
+        "Shirt Length": "30 in"
+      },
+      "_specsPulled": "2026-08-12"
     },
     {
       "id": "stock-peter-millar-pine-valley-polo",
@@ -406,7 +506,20 @@
         "Measurements:",
         "29” Length 21” Pit to Pit"
       ],
-      "_descPulled": "2026-08-12"
+      "_descPulled": "2026-08-12",
+      "specifics": {
+        "Condition": "Pre-owned - Excellent",
+        "Brand": "Peter Millar",
+        "Size Type": "Regular",
+        "Department": "Men",
+        "Type": "Polo",
+        "Chest Size": "21 in",
+        "Size": "Large",
+        "Color": "Blue",
+        "Model": "Peter Millar Pine Valley",
+        "Shirt Length": "29 in"
+      },
+      "_specsPulled": "2026-08-12"
     },
     {
       "id": "stock-nike-ryder-cup-polo-valhalla",
@@ -451,7 +564,19 @@
         "Measurements:",
         "29” Length. 17” Pit to Pit"
       ],
-      "_descPulled": "2026-08-12"
+      "_descPulled": "2026-08-12",
+      "specifics": {
+        "Condition": "Pre-owned",
+        "Brand": "Nike",
+        "Type": "Polo",
+        "Department": "Men",
+        "Chest Size": "17 in",
+        "Size": "XL",
+        "Color": "Red",
+        "Shirt Length": "29 in",
+        "Performance/Activity": "Golf"
+      },
+      "_specsPulled": "2026-08-12"
     },
     {
       "id": "stock-nike-tiger-woods-tshirt",
@@ -496,7 +621,18 @@
         "Measurements",
         "26” Length 20” Pit to Pit"
       ],
-      "_descPulled": "2026-08-12"
+      "_descPulled": "2026-08-12",
+      "specifics": {
+        "Condition": "Pre-owned - Good",
+        "Brand": "Nike",
+        "Size Type": "Regular",
+        "Department": "Men",
+        "Type": "T-Shirt",
+        "Size": "Large",
+        "Color": "Red",
+        "Vintage": "Yes"
+      },
+      "_specsPulled": "2026-08-12"
     },
     {
       "id": "stock-peter-millar-taylormade-quarter-zip",
@@ -540,7 +676,19 @@
         "Measurements",
         "29” Length 22” Pit to Pit 28” Sleeve"
       ],
-      "_descPulled": "2026-08-12"
+      "_descPulled": "2026-08-12",
+      "specifics": {
+        "Condition": "Pre-owned - Excellent",
+        "Brand": "Peter Millar",
+        "Size Type": "Regular",
+        "Department": "Men",
+        "Type": "Sweater",
+        "Sleeve Length": "28 in",
+        "Size": "XL",
+        "Color": "Burgundy",
+        "Style": "Quarter zip"
+      },
+      "_specsPulled": "2026-08-12"
     }
   ]
 }

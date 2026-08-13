@@ -54,8 +54,23 @@ export const isSafeStockPath = (p) =>
  * rather than harvest it. The official APIs replace the paste when they land,
  * through the exact same fields.
  */
+/* Ingest placeholders the specifics may substitute for at map time. Exact,
+   case-insensitive, trimmed. Hand-recorded real values always win. */
+const PLACEHOLDER_VALUES = new Set(['see listing', 'see photos', '—', '']);
+const isPlaceholder = (v) =>
+  v == null || (typeof v === 'string' && PLACEHOLDER_VALUES.has(v.trim().toLowerCase()));
+const preferFact = (editorial, fact) =>
+  isPlaceholder(editorial) && typeof fact === 'string' && fact.trim() ? fact : editorial;
+
 export function mapManifestItem(entry) {
-  const { _ingested, _source, _missing, _photosPulled, _descPulled, file, listingUrl, listings: rawListings, photos: rawPhotos, ...item } = entry;
+  const { _ingested, _source, _missing, _photosPulled, _descPulled, _specsPulled, file, listingUrl, listings: rawListings, photos: rawPhotos, specifics: rawSpecifics, ...item } = entry;
+
+  // The robot-archived eBay item specifics — verbatim keys in listing order;
+  // always an object so the PDP never branches on undefined.
+  const specifics =
+    rawSpecifics && typeof rawSpecifics === 'object' && !Array.isArray(rawSpecifics)
+      ? rawSpecifics
+      : {};
 
   /*
    * Every listed piece will eventually live on BOTH marketplaces, and the item
@@ -89,6 +104,12 @@ export function mapManifestItem(entry) {
     description: [],
     measurements: {},
     ...item,
+    // Substitution lives HERE, not in the manifest, so productCard heals too
+    // and the hand-owned fields stay hand-owned on disk. Exact keys only —
+    // displayed verbatim, never routed through condition normalisation.
+    size: preferFact(item.size, specifics.Size),
+    condition: preferFact(item.condition, specifics.Condition),
+    specifics,
     market: syndicated
       ? { label: listings[0].label, url: listings[0].url }
       : {

@@ -451,9 +451,12 @@ if (BASE === 'http://localhost:5180') {
   try {
     const res = await fetch('http://localhost:5181/api/inventory', { signal: AbortSignal.timeout(5000) });
     const inv = await res.json();
-    const hit = (inv.items || []).find(
+    const withCarousel = (inv.items || []).filter(
       (i) => String(i.id).startsWith('stock-') && Array.isArray(i.photos) && i.photos.length >= 2
     );
+    // prefer a specifics-bearing piece so the About-this-piece facts list is
+    // measured once data exists; fall back so pre-sweep runs still pass
+    const hit = withCarousel.find((i) => i.specifics && Object.keys(i.specifics).length) || withCarousel[0];
     if (!hit) throw new Error('no stock item carries a carousel — the thumb rail cannot be measured');
     ROUTES.push(`/item/${hit.id}`);
   } catch (err) {

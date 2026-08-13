@@ -13,7 +13,13 @@ import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { isSafeStockPath } from '../server/inventory.mjs';
-import { MAX_BYTES as MAX_PHOTO_BYTES } from './lib/stock-constants.mjs';
+import {
+  MAX_BYTES as MAX_PHOTO_BYTES,
+  BUYBOX_KEY_RX,
+  CONTAMINATION_RX,
+  SPEC_KEY_MAX,
+  SPEC_VALUE_MAX,
+} from './lib/stock-constants.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const SRC = join(ROOT, 'src');
@@ -195,6 +201,46 @@ for (const c of collections) {
       }
       if (hasEbayListing && !(Array.isArray(s.description) && s.description.length))
         warnings.push(`${where}: eBay listing but no description yet — npm run descriptions archives the cofounder's copy`);
+
+      // Item specifics: robot-owned mirror of eBay's About this item. Same
+      // plain-text contract as description; buybox keys mean the pull scoped
+      // the wrong module.
+      if (s.specifics !== undefined) {
+        if (!s.specifics || typeof s.specifics !== 'object' || Array.isArray(s.specifics)) {
+          errors.push(`${where}: specifics must be a plain object of label → value strings`);
+        } else {
+          const rows = Object.entries(s.specifics);
+          if (rows.length > 30)
+            warnings.push(`${where}: ${rows.length} specifics rows — that reads like a page-wide harvest, not About this item`);
+          rows.forEach(([k, v]) => {
+            if (!k.trim() || typeof v !== 'string' || !v.trim()) {
+              errors.push(`${where}: specifics["${k}"] must be a non-empty string — plain-text rows only`);
+              return;
+            }
+            if (k.includes('<') || v.includes('<'))
+              errors.push(`${where}: specifics["${k}"] contains '<' — the manifest holds plain text only`);
+            if (BUYBOX_KEY_RX.test(k.trim()))
+              errors.push(`${where}: specifics["${k}"] is buybox data (Shipping/Returns/Payments), not an item specific — the pull scoped the wrong module`);
+            if (CONTAMINATION_RX.test(v))
+              errors.push(`${where}: specifics["${k}"] carries eBay chrome ('Read more' / condition definitions) — the pull's junk-strip failed`);
+            if (k.length > SPEC_KEY_MAX)
+              errors.push(`${where}: specifics key "${k.slice(0, SPEC_KEY_MAX)}…" is over ${SPEC_KEY_MAX} chars — labels are short; that is harvested prose`);
+            if (v.length > SPEC_VALUE_MAX)
+              errors.push(`${where}: specifics["${k}"] is over ${SPEC_VALUE_MAX} chars — values are facts; that is harvested prose`);
+          });
+          // Hand-recorded editorial vs the listing's own facts: hand wins by
+          // contract, but a disagreement is worth a human look.
+          const specSize = s.specifics.Size;
+          if (
+            typeof s.size === 'string' && s.size.trim() && typeof specSize === 'string' &&
+            !['see listing', 'see photos', '—', ''].includes(s.size.trim().toLowerCase()) &&
+            s.size.trim().toLowerCase() !== specSize.trim().toLowerCase()
+          )
+            warnings.push(`${where}: hand size "${s.size}" disagrees with the eBay listing's "${specSize}" — reconcile by hand`);
+        }
+      }
+      if (hasEbayListing && !(s.specifics && typeof s.specifics === 'object' && Object.keys(s.specifics).length))
+        warnings.push(`${where}: eBay listing but no item specifics yet — npm run descriptions pulls them with the copy`);
 
       // sku: cofounder-owned, recorded VERBATIM from Seller Hub. Never normalized.
       if (s.sku !== undefined) {

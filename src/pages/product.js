@@ -1,6 +1,6 @@
 import { getItem, getCollection, itemsIn, itemStatus, isAvailable, featuredEvent, dateRange } from '../data/store.js';
 import { garmentSVG } from '../components/garment.js';
-import { productCard, breadcrumb, money, plateTag, plateMedia, sectionHead, mediaURL, escapeHtml } from '../components/ui.js';
+import { productCard, breadcrumb, money, plateTag, plateMedia, sectionHead, mediaURL, escapeHtml, isPlaceholder } from '../components/ui.js';
 import { toast } from '../lib/motion.js';
 
 export const channelName = (item) =>
@@ -137,6 +137,91 @@ export function pdpDescription(item) {
           </div>`;
 }
 
+/**
+ * PDP header — eyebrow, title, meta line. Placeholder-shaped segments
+ * ('See listing', 'See photos', '—') are dropped, never shown; an all-
+ * placeholder meta line omits its element entirely. Exported pure for the
+ * render smoke. Keep the param named `coll` — the collection href template
+ * must stay ${coll.id} for the audit's link classifier.
+ */
+export function pdpHeader(item, coll = null) {
+  const eyebrow = [
+    item.brand,
+    ...(isPlaceholder(item.year) ? [] : [item.year]),
+    ...(coll ? [`<a href="/collections/${coll.id}" style="color:var(--brass)">${coll.name}</a>`] : []),
+  ].join(' · ');
+  const meta = [
+    ...(isPlaceholder(item.colorName) ? [] : [escapeHtml(item.colorName)]),
+    ...(isPlaceholder(item.condition) ? [] : [escapeHtml(item.condition)]),
+    ...(isPlaceholder(item.size) ? [] : [`Size ${escapeHtml(item.size)}`]),
+  ].join(' · ');
+  return `
+          <div>
+            <p class="eyebrow">${eyebrow}</p>
+            <h1 class="display" style="font-size:clamp(2rem,3.6vw,3.4rem);margin:.6rem 0">
+              ${item.name}
+            </h1>
+            ${meta ? `<p class="eyebrow eyebrow--brass">${meta}</p>` : ''}
+          </div>`;
+}
+
+/** eBay's About-this-item, mirrored verbatim in listing order — parity beats
+ *  dedupe (Condition/Size repeat here and in the meta line, as eBay repeats
+ *  them). Keys AND values are remote text: both pipe through escapeHtml.
+ *  Sold pieces render it unchanged — archive record, like the description.
+ *  Returns '' when empty — never an empty wrapper (phantom grid-gap row).
+ *  TEXT-ONLY: no hrefs ever (the audit link classifier never sees output). */
+export function pdpSpecifics(item) {
+  const specs = item.specifics;
+  const rows = specs && typeof specs === 'object' && !Array.isArray(specs) ? Object.entries(specs) : [];
+  if (!rows.length) return '';
+  return `
+          <div class="pdp-specs" style="display:grid;gap:.6rem">
+            <p class="eyebrow">About this piece</p>
+            <table class="spec-table">
+              ${rows.map(([k, v]) => `<tr><th>${escapeHtml(k)}</th><td>${escapeHtml(v ?? '')}</td></tr>`).join('')}
+            </table>
+          </div>`;
+}
+
+/**
+ * The sizing accordion. Three states: measurements exist → the flat table
+ * (minus the Labelled size/Condition rows once specifics render them);
+ * no measurements + specifics → '' (the placeholder rows WERE the leak, and
+ * measurements prose lives in the pulled eBay description); no specifics →
+ * byte-faithful to the original markup, ask-us note included.
+ */
+export function pdpSizing(item) {
+  const meas = Object.entries(item.measurements || {});
+  const hasSpecs =
+    !!item.specifics && typeof item.specifics === 'object' && !Array.isArray(item.specifics) &&
+    Object.keys(item.specifics).length > 0;
+  if (!meas.length && hasSpecs) return '';
+  const fixedRows = hasSpecs
+    ? ''
+    : `
+                  <tr><th>Labelled size</th><td>${item.size}</td></tr>
+                  <tr><th>Condition</th><td>${item.condition}</td></tr>`;
+  return `
+            <div class="accordion-item is-open">
+              <button class="accordion-trigger">${
+                meas.length ? 'Measurements, flat' : 'Sizing &amp; condition'
+              } <i>+</i></button>
+              <div class="accordion-panel"><div>
+                <table class="spec-table">
+                  ${meas.map(([k, v]) => `<tr><th>${k}</th><td>${v}</td></tr>`).join('')}${fixedRows}
+                </table>
+                ${
+                  meas.length
+                    ? ''
+                    : `<p style="margin:.9rem 0 0;color:var(--ink-faint);font-size:.9rem">
+                        Flat measurements are taken before shipping — ask and we'll send them same day.
+                      </p>`
+                }
+              </div></div>
+            </div>`;
+}
+
 export function product({ id }) {
   const item = getItem(id);
   if (!item) return missingItem(id);
@@ -160,18 +245,11 @@ export function product({ id }) {
 
         <!-- info -->
         <div class="pdp-info" data-reveal data-reveal-delay="0.08">
-          <div>
-            <p class="eyebrow">${item.brand} · ${item.year}${
-    coll ? ` · <a href="/collections/${coll.id}" style="color:var(--brass)">${coll.name}</a>` : ''
-  }</p>
-            <h1 class="display" style="font-size:clamp(2rem,3.6vw,3.4rem);margin:.6rem 0">
-              ${item.name}
-            </h1>
-            <p class="eyebrow eyebrow--brass">${item.colorName} · ${item.condition} · Size ${item.size}</p>
-          </div>
+          ${pdpHeader(item, coll)}
 
           <p style="color:var(--ink-soft);font-weight:300;margin:0">${item.story}</p>
           ${pdpDescription(item)}
+          ${pdpSpecifics(item)}
 
           <div style="display:flex;align-items:baseline;gap:1rem;padding-top:.6rem;border-top:1px solid var(--rule)">
             <span class="pdp-price">${money(item.price)}</span>
@@ -198,27 +276,7 @@ export function product({ id }) {
           </ul>
 
           <div class="accordion">
-            <div class="accordion-item is-open">
-              <button class="accordion-trigger">${
-                Object.keys(item.measurements).length ? 'Measurements, flat' : 'Sizing &amp; condition'
-              } <i>+</i></button>
-              <div class="accordion-panel"><div>
-                <table class="spec-table">
-                  ${Object.entries(item.measurements)
-                    .map(([k, v]) => `<tr><th>${k}</th><td>${v}</td></tr>`)
-                    .join('')}
-                  <tr><th>Labelled size</th><td>${item.size}</td></tr>
-                  <tr><th>Condition</th><td>${item.condition}</td></tr>
-                </table>
-                ${
-                  Object.keys(item.measurements).length
-                    ? ''
-                    : `<p style="margin:.9rem 0 0;color:var(--ink-faint);font-size:.9rem">
-                        Flat measurements are taken before shipping — ask and we'll send them same day.
-                      </p>`
-                }
-              </div></div>
-            </div>
+            ${pdpSizing(item)}
             <div class="accordion-item">
               <button class="accordion-trigger">Provenance <i>+</i></button>
               <div class="accordion-panel"><div>

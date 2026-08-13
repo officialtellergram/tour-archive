@@ -19,6 +19,12 @@ export function escapeHtml(s = '') {
     .replace(/'/g, '&#39;');
 }
 
+/** Placeholder-shaped editorial values — mirror of the mapper's substitution
+ *  set (server-side copy in server/inventory.mjs; src/ cannot import server
+ *  code into the bundle). Exact, case-insensitive, trimmed. */
+const PLACEHOLDER = new Set(['see listing', 'see photos', '—', '']);
+export const isPlaceholder = (v) => PLACEHOLDER.has(String(v ?? '').trim().toLowerCase());
+
 /** Resolve a deploy-base-relative media path: absolute URLs pass through, repo paths get the base. */
 export const mediaURL = (path) =>
   !path ? '' : /^https?:\/\//i.test(path) ? path : `${BASE_URL}${path}`;
@@ -74,7 +80,7 @@ export function productCard(item) {
       </div>
       <h3 class="card-name">${item.name}</h3>
       <div class="card-foot">
-        <span>${coll ? coll.name : item.category} · ${item.size}</span>
+        <span>${coll ? coll.name : item.category}${isPlaceholder(item.size) ? '' : ` · ${escapeHtml(item.size)}`}</span>
         <span class="card-price">${money(item.price)}</span>
       </div>
     </div>

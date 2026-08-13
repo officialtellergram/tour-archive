@@ -60,7 +60,8 @@ const { collections, items, journal } = await import('../src/data/collections.js
 const { home } = await import('../src/pages/home.js');
 const { collectionsIndex, collectionDetail } = await import('../src/pages/collections.js');
 const { archive } = await import('../src/pages/archive.js');
-const { product, pdpMedia, pdpDescription } = await import('../src/pages/product.js');
+const { product, pdpMedia, pdpDescription, pdpHeader, pdpSpecifics, pdpSizing } = await import('../src/pages/product.js');
+const { mapManifestItem } = await import('../server/inventory.mjs');
 const { journalIndex, journalEntry } = await import('../src/pages/journal.js');
 const { mission, sell, sizing, notFound } = await import('../src/pages/house.js');
 const { mosaicMedia, collectionTile, productCard } = await import('../src/components/ui.js');
@@ -152,6 +153,22 @@ const pdpDescribed = {
   description: ['Nice piece', 'x < y & "quotes" <script>alert(1)</script>'],
 };
 const pdpDescribedSold = { ...pdpDescribed, sold: true };
+const pdpSpecced = {
+  ...pdpCarousel,
+  id: 'stock-sm-specs',
+  specifics: {
+    Condition: 'Pre-owned - Excellent',
+    Size: '2XL',
+    '<script>Department</script>': 'Men & "Boys" <script>alert(1)</script>',
+    'Outer Shell Material': "x < y & 'ticks'",
+    Vintage: 'Yes',
+  },
+};
+const pdpSpeccedSold = { ...pdpSpecced, sold: true };
+const pdpPlaceholder = { ...pdpCarousel, id: 'stock-sm-ph', year: '—', colorName: 'Team Print', condition: 'See listing', size: 'See listing' };
+const pdpAllPlaceholder = { ...pdpPlaceholder, colorName: 'See photos' };
+const pdpHealed = { ...pdpCarousel, id: 'stock-sm-healed', year: '1990s', colorName: 'Teal Glen Check', condition: 'Pre-owned - Excellent', size: '2XL' };
+const pdpMeasured = { ...pdpCarousel, id: 'stock-sm-meas', size: 'XL', condition: 'Very Good', measurements: { 'Chest, flat': '22 in', Length: '27 in' } };
 
 /* Mosaic fixtures — the route cases only ever exercise the EMPTY store path
    (collectionsIndex under the never-init()ed shim), so the filled grid is
@@ -181,6 +198,12 @@ const deskCases = [
   ['collectionTile (basic-stock, empty store)', () => collectionTile(basicStock)],
   ['pdpDescription (hostile text)', () => pdpDescription(pdpDescribed)],
   ['pdpDescription (sold, archive record)', () => pdpDescription(pdpDescribedSold)],
+  ['pdpSpecifics (hostile keys and values)', () => pdpSpecifics(pdpSpecced)],
+  ['pdpSpecifics (sold, archive record)', () => pdpSpecifics(pdpSpeccedSold)],
+  ['pdpHeader (placeholders dropped)', () => pdpHeader(pdpPlaceholder)],
+  ['pdpHeader (real values + collection link)', () => pdpHeader(pdpHealed, { id: 'basic-stock', name: 'Basic Stock' })],
+  ['pdpSizing (measurements, no specifics)', () => pdpSizing(pdpMeasured)],
+  ['pdpSizing (measurements + specifics)', () => pdpSizing({ ...pdpMeasured, specifics: { Size: 'XL' } })],
 ];
 
 for (const [label, fn] of deskCases) {
@@ -271,6 +294,98 @@ for (const [label, fn] of deskCases) {
     errors.push('pdpDescription: empty description must yield the empty string — no label, no phantom grid row');
   if (pdpDescription(pdpCarousel) !== '')
     errors.push('pdpDescription: missing description field must yield the empty string');
+}
+
+/* Specifics facts-list pins — escaping (keys AND values), order, sold, empty. */
+{
+  const facts = pdpSpecifics(pdpSpecced);
+  if (facts.includes('<script>'))
+    errors.push('pdpSpecifics: raw <script> reached the markup');
+  if (!facts.includes('&lt;script&gt;Department&lt;/script&gt;'))
+    errors.push('pdpSpecifics: hostile KEY not escaped — keys are remote text too');
+  if (!facts.includes('Men &amp; &quot;Boys&quot; &lt;script&gt;alert(1)&lt;/script&gt;'))
+    errors.push('pdpSpecifics: hostile value not escaped');
+  if (!facts.includes('x &lt; y &amp; &#39;ticks&#39;'))
+    errors.push('pdpSpecifics: the & < \' contract broke');
+  if ((facts.match(/<tr>/g) || []).length !== 5)
+    errors.push('pdpSpecifics: one row per key — expected 5');
+  const iCond = facts.indexOf('<th>Condition</th>');
+  const iSize = facts.indexOf('<th>Size</th>');
+  const iShell = facts.indexOf('Outer Shell Material');
+  const iVint = facts.indexOf('<th>Vintage</th>');
+  if (!(iCond < iSize && iSize < iShell && iShell < iVint))
+    errors.push('pdpSpecifics: listing order not preserved');
+  if (!facts.includes('About this piece'))
+    errors.push('pdpSpecifics: facts-list eyebrow missing');
+  if (facts.includes('href='))
+    errors.push('pdpSpecifics: facts list must be text-only');
+  if (pdpSpecifics(pdpSpeccedSold) !== facts)
+    errors.push('pdpSpecifics: sold changed the output — archive record');
+  if (pdpSpecifics({ ...pdpCarousel, specifics: {} }) !== '')
+    errors.push('pdpSpecifics: empty specifics must yield the empty string');
+  if (pdpSpecifics(pdpCarousel) !== '')
+    errors.push('pdpSpecifics: missing specifics field must yield the empty string');
+}
+
+/* Header pins — placeholders never render, dangling separators never form. */
+{
+  const head = pdpHeader(pdpPlaceholder);
+  if (head.includes('See listing') || head.includes('See photos'))
+    errors.push('pdpHeader: placeholder segment leaked into the PDP header');
+  if (head.includes('· —') || head.includes('— ·'))
+    errors.push('pdpHeader: em-dash year leaked into the eyebrow');
+  if (!head.includes('>Team Print</p>'))
+    errors.push('pdpHeader: lone real segment must render clean with no dangling separators');
+  if (pdpHeader(pdpAllPlaceholder).includes('eyebrow--brass'))
+    errors.push('pdpHeader: all-placeholder meta must omit the element entirely');
+  const healed = pdpHeader(pdpHealed, { id: 'basic-stock', name: 'Basic Stock' });
+  for (const frag of ['Size 2XL', '1990s', 'Teal Glen Check · Pre-owned - Excellent · Size 2XL', '/collections/basic-stock']) {
+    if (!healed.includes(frag)) errors.push(`pdpHeader: healed header missing "${frag}"`);
+  }
+}
+
+/* Sizing-accordion pins — the placeholder rows shed exactly when specifics render. */
+{
+  if (pdpSizing({ ...pdpCarousel, measurements: {}, specifics: { Size: 'L' }, size: 'See listing', condition: 'See listing' }) !== '')
+    errors.push('pdpSizing: stock piece with specifics must shed the accordion entirely');
+  const bare = pdpSizing({ ...pdpCarousel, measurements: {}, size: 'See listing', condition: 'See listing' });
+  if (!bare.includes('Sizing &amp; condition') || !bare.includes('Labelled size') || !bare.includes('measurements are taken before shipping'))
+    errors.push('pdpSizing: no-specifics state must stay faithful to the original markup');
+  const both = pdpSizing({ ...pdpMeasured, specifics: { Size: 'XL' } });
+  if (both.includes('<th>Labelled size</th>') || both.includes('<th>Condition</th>'))
+    errors.push('pdpSizing: redundant rows must shed once specifics render');
+  if (!both.includes('Measurements, flat') || !both.includes('Chest, flat'))
+    errors.push('pdpSizing: measurements table must survive');
+  const noSpecs = pdpSizing(pdpMeasured);
+  if (!noSpecs.includes('<th>Labelled size</th>') || !noSpecs.includes('<th>Condition</th>'))
+    errors.push('pdpSizing: pre-sweep drop pieces keep the original rows');
+}
+
+/* Cross-seam chain pin — the mapper's substitution must reach the header. */
+{
+  const mapped = mapManifestItem({
+    id: 'stock-sm-chain', file: 'x.jpg', name: 'Chain', brand: 'B', year: '—', category: 'Shirting',
+    garment: 'polo', size: 'See listing', condition: '—', price: 10,
+    colorway: ['#111', '#222', '#333'], colorName: 'X',
+    specifics: { Size: '2XL', Condition: 'Pre-owned - Excellent' },
+  });
+  const head = pdpHeader(mapped);
+  if (!head.includes('Size 2XL') || !head.includes('Pre-owned - Excellent'))
+    errors.push('chain: substituted specifics did not reach the PDP header');
+  if (head.includes('See listing'))
+    errors.push('chain: placeholder leaked through the mapper→render seam');
+}
+
+/* productCard placeholder pin — the card foot never prints "See listing". */
+{
+  const card = productCard({
+    id: 'stock-sm-card-ph', name: 'Card PH', brand: 'B', year: '—', category: 'Shirting',
+    collection: 'basic-stock', garment: 'polo', size: 'See listing', condition: 'VG', price: 10,
+    colorway: ['#111', '#222', '#333'], colorName: 'X', photo: 'stock/p.jpg', photos: [],
+    sold: false, upcoming: false, market: { label: 'x', url: 'https://x.example' },
+  });
+  if (card.includes('See listing'))
+    errors.push('productCard: placeholder size leaked into the card foot');
 }
 
 /* Hover-cycle pins — cards with an archived carousel carry the reel. */

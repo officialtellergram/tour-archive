@@ -243,6 +243,8 @@ check('site-only drops survive a sync with no marketplace stock', () => {
 
 check('merged items keep every field the product page renders', () => {
   const merged = mergeInventory({ seed: seedItems, channels: [mapEbayItem(ebayCatalogued)] });
+  // 'specifics' is deliberately NOT here: catalogue seed records (ds-01 et al)
+  // never pass a mapper and legitimately lack it; pdpSpecifics tolerates that.
   const required = ['id', 'name', 'brand', 'year', 'garment', 'colorway', 'colorName',
                     'price', 'size', 'condition', 'category', 'collection', 'market'];
   for (const item of merged) {
@@ -392,8 +394,8 @@ check('an entry without photos maps to an empty array, never undefined', () => {
 });
 
 check('provenance stamps never reach the mapped item', () => {
-  const item = mapManifestItem({ ...manifestWithPhotos, _descPulled: '2026-08-12' });
-  for (const k of ['_photosPulled', '_descPulled', '_ingested', '_source', '_missing'])
+  const item = mapManifestItem({ ...manifestWithPhotos, _descPulled: '2026-08-12', _specsPulled: '2026-08-12' });
+  for (const k of ['_photosPulled', '_descPulled', '_specsPulled', '_ingested', '_source', '_missing'])
     assert(!(k in item), `${k} leaked onto the item`);
 });
 
@@ -494,7 +496,72 @@ check('enrichment records never define description or sku', () => {
     if (key.startsWith('_')) continue;
     assert(!('description' in record), `${key}: enrichment must not define description — the spread would clobber archived listing text`);
     assert(!('sku' in record), `${key}: enrichment must not define sku — it is recorded verbatim in the manifest only`);
+    assert(!('specifics' in record), `${key}: enrichment must not define specifics — the spread would clobber the archived listing facts`);
   }
+});
+
+/* ------------------------------------------------------------------ */
+/* Item specifics — manifest → item → merge → substitution             */
+/* ------------------------------------------------------------------ */
+
+const manifestWithSpecs = {
+  ...manifestPlain,
+  specifics: {
+    Condition: 'Pre-owned - Excellent',
+    Brand: 'Testbrand',
+    Size: 'XL',
+    Type: 'Polo',
+    Color: 'Navy',
+  },
+  _specsPulled: '2026-08-12',
+};
+
+check('item specifics pass through the mapper verbatim and in listing order', () => {
+  const item = mapManifestItem(manifestWithSpecs);
+  equal(JSON.stringify(item.specifics), JSON.stringify(manifestWithSpecs.specifics), 'keys and order verbatim');
+});
+
+check('an entry without specifics maps to an empty object, never undefined', () => {
+  const item = mapManifestItem(manifestPlain);
+  assert(item.specifics && typeof item.specifics === 'object' && !Array.isArray(item.specifics), 'always a plain object');
+  equal(Object.keys(item.specifics).length, 0, 'empty when the manifest has none');
+});
+
+check('specifics survive the merge as unclaimed seed', () => {
+  const merged = mergeInventory({ seed: [mapManifestItem(manifestWithSpecs)], channels: [] });
+  equal(JSON.stringify(merged[0].specifics), JSON.stringify(manifestWithSpecs.specifics), 'intact after merge');
+});
+
+check('a superseding channel listing leaves archived specifics alone', () => {
+  const seed = mapManifestItem({ ...manifestWithSpecs, id: 'ds-01' });
+  const listing = { ...mapEbayItem(ebayCatalogued), specifics: { Size: 'live junk' } };
+  const merged = mergeInventory({ seed: [seed], channels: [listing] });
+  equal(merged.length, 1, 'superseded, not duplicated');
+  equal(JSON.stringify(merged[0].specifics), JSON.stringify(seed.specifics),
+    'archived specifics survive — specifics stays OUT of pickLive');
+});
+
+check('a catalogued manifest entry keeps its specifics through enrichment', () => {
+  const item = mapManifestItem({ ...manifestWithSpecs, catalogue: 'ds-01' });
+  equal(item.enriched, true, 'joined to the archive record');
+  equal(JSON.stringify(item.specifics), JSON.stringify(manifestWithSpecs.specifics), 'enrichment did not clobber the specifics');
+});
+
+check('placeholder editorial size/condition substitutes from specifics; hand values win', () => {
+  for (const ph of ['See listing', 'See photos', '—', '', 'SEE LISTING']) {
+    const item = mapManifestItem({ ...manifestWithSpecs, size: ph, condition: ph });
+    equal(item.size, 'XL', `size "${ph}" substitutes from specifics.Size`);
+    equal(item.condition, 'Pre-owned - Excellent', `condition "${ph}" substitutes from specifics.Condition`);
+  }
+  const hand = mapManifestItem({ ...manifestWithSpecs, size: 'M', condition: 'Good' });
+  equal(hand.size, 'M', 'a real hand size always wins');
+  equal(hand.condition, 'Good', 'a real hand condition always wins');
+});
+
+check('absent specifics leave placeholder editorial untouched', () => {
+  const item = mapManifestItem({ ...manifestPlain, size: 'See listing', condition: 'See listing' });
+  equal(item.size, 'See listing', 'no facts, no substitution');
+  equal(item.condition, 'See listing', 'no facts, no substitution');
 });
 
 /* ------------------------------------------------------------------ */

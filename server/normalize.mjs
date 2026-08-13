@@ -258,6 +258,9 @@ function baseItem({
     story: '',
     details: [],
     measurements: {},
+    // channel items share the always-an-object shape; pickLive excludes it,
+    // so a seed's archived specifics still win on merge
+    specifics: {},
     photo: image || '',
     sold: !available,
     upcoming: false,

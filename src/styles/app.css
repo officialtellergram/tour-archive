@@ -1364,6 +1364,13 @@ h3.display {
 .pdp-thumbs .plate[aria-pressed='true'] {
   border-color: var(--navy);
 }
+/* The About-this-piece facts list reuses the accordion's spec-table look;
+   overflow-wrap kills the unbroken-string risk (model numbers) at 390px. */
+.pdp-specs .spec-table th,
+.pdp-specs .spec-table td {
+  overflow-wrap: anywhere;
+  vertical-align: top;
+}
 /* Photo carousels wrap like a contact sheet — a horizontal rail would protrude
    past the 390px viewport and fail the layout gate, so the grid wraps instead.
    Source order is the override: equal specificity with .pdp-thumbs above. */
