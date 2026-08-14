@@ -101,7 +101,8 @@ export function sell() {
             Send for appraisal
           </button>
           <p style="font-size:.85rem;color:var(--ink-faint);margin:0">
-            Prototype form — nothing is transmitted.
+            Submitting opens your own mail app with the details filled in —
+            attach your photographs there before sending.
           </p>
         </form>
       </div>
@@ -112,8 +113,23 @@ export function sell() {
 export function mountSell(outlet) {
   outlet.querySelector('[data-sell-form]')?.addEventListener('submit', (e) => {
     e.preventDefault();
-    toast('Appraisal request received — we reply within two days');
-    e.currentTarget.reset();
+    const f = e.currentTarget;
+    // No submissions backend — appraisals travel by the visitor's own mail
+    // app, which also carries the photographs a static form can't accept.
+    const body = [
+      `Name: ${f.name.value.trim()}`,
+      `Email: ${f.email.value.trim()}`,
+      `Sending from: ${f.location.value.trim()}`,
+      '',
+      f.detail.value.trim(),
+      '',
+      '(Photographs attached.)',
+    ].join('\r\n');
+    window.location.href = `mailto:tourarchive.help@gmail.com?subject=${encodeURIComponent(
+      'Sell to the Archive — appraisal'
+    )}&body=${encodeURIComponent(body)}`;
+    toast('Opening your mail app — attach your photographs and send');
+    f.reset();
   });
 }
 

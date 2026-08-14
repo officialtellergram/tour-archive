@@ -160,7 +160,12 @@ export function mountChrome() {
   document.querySelector('[data-signup]')?.addEventListener('submit', (e) => {
     e.preventDefault();
     const input = e.currentTarget.querySelector('input');
-    toast(`Added ${input.value} to the drop list`);
+    // No list backend yet — the drop list lives in the help inbox, so the only
+    // honest signup a static site can offer is a prefilled mail the visitor
+    // sends themselves. Never claim storage that isn't happening.
+    const body = encodeURIComponent(`Please add ${input.value.trim()} to the drop list.`);
+    window.location.href = `mailto:tourarchive.help@gmail.com?subject=${encodeURIComponent('Drop notices')}&body=${body}`;
+    toast('Opening your mail app — send it and you are on the list');
     input.value = '';
   });
 }
