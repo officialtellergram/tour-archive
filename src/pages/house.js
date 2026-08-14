@@ -133,6 +133,50 @@ const SIZES = [
   ['XL', '24"+', '28"+', 'Rare before 1985; measure before you buy'],
 ];
 
+/* ------------------------------ /privacy ------------------------------ */
+
+export function privacy() {
+  return `
+  <section class="section" style="padding-top:calc(var(--header-h) + 4rem)">
+    <div class="wrap">
+      ${breadcrumb([{ label: 'Home', href: '/' }, { label: 'Privacy' }])}
+      <div data-hero>
+        <p class="eyebrow" data-hero-meta><span>Effective 13 August 2026</span></p>
+        <h1 class="display" style="margin:.6rem 0 1.2rem;font-size:clamp(2.6rem,6vw,5.5rem)">
+          <span class="line-mask"><span>Privacy</span></span>
+        </h1>
+        <p class="lede" data-hero-cta>
+          The short version: this site collects almost nothing, and we like it that way.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="wrap prose" data-reveal style="max-width:68ch">
+      <p><strong>What we collect.</strong> Browsing the archive requires no account and sets
+      no cookies. We run no analytics and no trackers. If you give us your email address —
+      for drop notices or by writing to us — we use it only to reply or to tell you about
+      drops. We never sell it, share it, or add you to anything you didn't ask for.</p>
+
+      <p><strong>Buying a piece.</strong> Checkout for marketplace-listed pieces completes on
+      eBay or Depop, under their privacy policies — we never see your payment details. If we
+      ever take payment on this site directly, it will be processed by a dedicated payment
+      provider; card numbers would go to them, never to us, and a shipping address would be
+      used solely to ship your piece.</p>
+
+      <p><strong>What the plumbing sees.</strong> Like nearly every website: our host
+      (GitHub Pages) keeps standard server logs, and our typefaces load from Google Fonts,
+      which means Google's servers see those requests. Neither is under our control, and we
+      add nothing on top.</p>
+
+      <p><strong>Questions, or want something removed?</strong> Write to
+      <a href="mailto:officialtellergram@gmail.com" style="border-bottom:1px solid var(--rule-strong)">officialtellergram@gmail.com</a>
+      and a person will answer.</p>
+    </div>
+  </section>`;
+}
+
 export function sizing() {
   return `
   <section class="section" style="padding-top:calc(var(--header-h) + 4rem)">

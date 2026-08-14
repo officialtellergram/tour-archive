@@ -19,7 +19,7 @@ import { collectionsIndex, collectionDetail } from './pages/collections.js';
 import { archive, mountArchive } from './pages/archive.js';
 import { product, mountProduct } from './pages/product.js';
 import { journalIndex, journalEntry } from './pages/journal.js';
-import { mission, sell, mountSell, sizing, notFound } from './pages/house.js';
+import { mission, sell, mountSell, sizing, privacy, notFound } from './pages/house.js';
 import { curate, mountCurate, curateReview, mountCurateReview } from './pages/curate.js';
 
 import { getCollection, getItem, getJournal, init as initStore, status as storeStatus } from './data/store.js';
@@ -40,6 +40,7 @@ route('/journal/:id', journalEntry, {
 route('/mission', mission, { title: 'Our Mission' });
 route('/sell', sell, { title: 'Sell to Us' });
 route('/sizing', sizing, { title: 'Sizing & Condition' });
+route('/privacy', privacy, { title: 'Privacy' });
 route('/curate', curate, { title: 'Procurement Desk' });
 route('/curate/review', curateReview, { title: 'Review Session' });
 

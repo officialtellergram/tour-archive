@@ -63,7 +63,7 @@ const { archive } = await import('../src/pages/archive.js');
 const { product, pdpMedia, pdpDescription, pdpHeader, pdpSpecifics, pdpSizing } = await import('../src/pages/product.js');
 const { mapManifestItem } = await import('../server/inventory.mjs');
 const { journalIndex, journalEntry } = await import('../src/pages/journal.js');
-const { mission, sell, sizing, notFound } = await import('../src/pages/house.js');
+const { mission, sell, sizing, privacy, notFound } = await import('../src/pages/house.js');
 const { mosaicMedia, collectionTile, productCard } = await import('../src/components/ui.js');
 const { curate, curateReview, deskHTML, verdictHTML, reviewCardHTML } = await import(
   '../src/pages/curate.js'
@@ -75,6 +75,7 @@ const cases = [
   ['/archive', () => archive()],
   ['/journal', () => journalIndex()],
   ['/mission', () => mission()],
+  ['/privacy', () => privacy()],
   ['/sell', () => sell()],
   ['/sizing', () => sizing()],
   ['/curate', () => curate()],

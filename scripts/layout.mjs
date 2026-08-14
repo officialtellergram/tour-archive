@@ -31,7 +31,7 @@ const ROUTES = [
   '/', '/collections', '/collections/duel-in-the-sun', '/collections/the-amateur-line',
   '/archive', '/archive?filter=available', '/item/ds-01', '/item/ws-04',
   '/collections/basic-stock',
-  '/journal', '/journal/reading-a-neck-label', '/mission', '/sell', '/sizing', '/nope',
+  '/journal', '/journal/reading-a-neck-label', '/mission', '/sell', '/sizing', '/privacy', '/nope',
   '/curate', '/curate/review',
 ];
 const WIDTHS = [1600, 1180, 520, 390];
