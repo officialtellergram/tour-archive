@@ -171,7 +171,7 @@ export function privacy() {
       add nothing on top.</p>
 
       <p><strong>Questions, or want something removed?</strong> Write to
-      <a href="mailto:officialtellergram@gmail.com" style="border-bottom:1px solid var(--rule-strong)">officialtellergram@gmail.com</a>
+      <a href="mailto:tourarchive.help@gmail.com" style="border-bottom:1px solid var(--rule-strong)">tourarchive.help@gmail.com</a>
       and a person will answer.</p>
     </div>
   </section>`;

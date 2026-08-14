@@ -111,7 +111,7 @@ function footerHTML() {
             <li><a href="/sizing">Sizing &amp; Condition</a></li>
             <li><a href="/privacy">Privacy</a></li>
             <li><a href="/curate">Procurement Desk</a></li>
-            <li><a href="mailto:officialtellergram@gmail.com">Contact</a></li>
+            <li><a href="mailto:tourarchive.help@gmail.com">Contact</a></li>
           </ul>
         </div>
       </div>

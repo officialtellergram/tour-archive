@@ -47,7 +47,7 @@ function secondaryAction(item) {
   // For syndicated stock the primary button already is the listing, so the
   // secondary slot is better spent on a way to ask us about the piece.
   if (isAvailable(item) && item.syndicated) {
-    return `<a class="btn btn--ghost" href="mailto:officialtellergram@gmail.com?subject=${encodeURIComponent(
+    return `<a class="btn btn--ghost" href="mailto:tourarchive.help@gmail.com?subject=${encodeURIComponent(
       `${item.name} (${item.id})`
     )}">Ask about this piece</a>`;
   }
