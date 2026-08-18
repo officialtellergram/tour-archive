@@ -689,6 +689,113 @@
         "Style": "Quarter zip"
       },
       "_specsPulled": "2026-08-12"
+    },
+    {
+      "id": "stock-tasmanian-devil-golf-polo",
+      "name": "Tasmanian Devil Golf Polo",
+      "brand": "Looney Tunes",
+      "year": "1990s",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "See listing",
+      "condition": "See listing",
+      "price": 25,
+      "colorway": [
+        "#3F6B52",
+        "#2E5140",
+        "#A33437"
+      ],
+      "colorName": "Pine Green",
+      "story": "Deep pine piqué with Taz mid-swing at the chest, flat cap and all. Warner Bros sent the Looney Tunes out on the course in the 1990s — three decades of washing later, the cotton is as soft as it gets.",
+      "details": [
+        "Checkout completes on eBay",
+        "Full photographs and condition notes on the listing"
+      ],
+      "measurements": {},
+      "channel": "ebay",
+      "listingUrl": "https://www.ebay.com/itm/407152116404",
+      "_ingested": "2026-08-18",
+      "_source": "own listing photo, i.ebayimg.com",
+      "photos": [
+        "carousel/tasmanian-devil-golf-polo/01.jpg",
+        "carousel/tasmanian-devil-golf-polo/02.webp",
+        "carousel/tasmanian-devil-golf-polo/03.webp",
+        "carousel/tasmanian-devil-golf-polo/04.webp",
+        "carousel/tasmanian-devil-golf-polo/05.webp"
+      ],
+      "_photosPulled": "2026-08-18",
+      "description": [
+        "1990s Taz Golf Polo",
+        "On some of the softest cotton you’ve ever felt",
+        "Good piece for a Looney Toons collection",
+        "Everything is prewashed and inspected before sale"
+      ],
+      "_descPulled": "2026-08-18",
+      "specifics": {
+        "Condition": "Pre-owned - Excellent",
+        "Department": "Men",
+        "Type": "Polo",
+        "Performance/Activity": "Golf",
+        "Brand": "Looney Toons",
+        "Size Type": "Regular",
+        "Size": "L",
+        "Color": "Green"
+      },
+      "_specsPulled": "2026-08-18",
+      "file": "tasmanian-devil-golf-polo.jpg"
+    },
+    {
+      "id": "stock-wild-dunes-multicolor-polo",
+      "name": "Wild Dunes Space-Dye Polo",
+      "brand": "Wild Dunes",
+      "year": "1990s",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "See listing",
+      "condition": "See listing",
+      "price": 30,
+      "colorway": [
+        "#A3B29F",
+        "#6F8BA0",
+        "#DCD9C4"
+      ],
+      "colorName": "Seafoam Space-Dye",
+      "story": "Space-dyed jersey in seafoam and faded blue, made exclusively for Wild Dunes — the oceanfront resort course on South Carolina’s Isle of Palms. Boxy nineties cut in Pima cotton; the pattern does the talking.",
+      "details": [
+        "Checkout completes on eBay",
+        "Full photographs and condition notes on the listing"
+      ],
+      "measurements": {},
+      "channel": "ebay",
+      "listingUrl": "https://www.ebay.com/itm/407152092797",
+      "_ingested": "2026-08-18",
+      "_source": "own listing photo, i.ebayimg.com",
+      "photos": [
+        "carousel/wild-dunes-multicolor-polo/01.jpg",
+        "carousel/wild-dunes-multicolor-polo/02.webp",
+        "carousel/wild-dunes-multicolor-polo/03.webp",
+        "carousel/wild-dunes-multicolor-polo/04.webp"
+      ],
+      "_photosPulled": "2026-08-18",
+      "description": [
+        "Vintage Wild Dunes Golf Polo with crazy abstract pattern",
+        "One of South Carolinas finest public courses",
+        "Boxy fit - 100% Pima Cotton",
+        "Everything is prewashed and inspected before sale"
+      ],
+      "_descPulled": "2026-08-18",
+      "specifics": {
+        "Condition": "Pre-owned - Good",
+        "Color": "Multicolor",
+        "Department": "Men",
+        "Type": "Polo",
+        "Performance/Activity": "Golf",
+        "Brand": "Vintage Golf",
+        "Size Type": "Regular",
+        "Size": "L"
+      },
+      "_specsPulled": "2026-08-18",
+      "file": "wild-dunes-multicolor-polo.jpg"
     }
   ]
 }

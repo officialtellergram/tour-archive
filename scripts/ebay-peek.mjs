@@ -53,6 +53,14 @@ const SELLER_PROBE = `(() => {
   return JSON.stringify({ count: items.length, items: items.slice(0, 20) });
 })()`;
 
+/* eBay error-pages COLD hits on /itm/ pages (since ~mid-Aug 2026; headed vs
+   headless and UA make no difference — verified live), but the classic
+   m.html seller page still serves AND mints the session cookies that let a
+   same-tab follow-up navigation through. So itm probes spawn on m.html and
+   bounce to the real target once the warm page has listing rows. */
+const WARM_URL = 'https://www.ebay.com/sch/tourarchive/m.html';
+const NEEDS_WARM = /\/itm\//.test(URL_ || '');
+
 const child = spawn(BROWSER, [
   '--headless=new', '--disable-gpu', '--no-sandbox', '--no-first-run',
   // headless mode advertises itself in the UA and eBay error-pages it;
@@ -63,7 +71,7 @@ const child = spawn(BROWSER, [
   // instance (the launcher exits, our pid is nobody, the tree-kill hits air)
   `--user-data-dir=${process.env.TEMP}\\ebay-peek\\${process.pid}-${Date.now()}`,
   '--window-size=1400,1000',
-  URL_,
+  NEEDS_WARM ? WARM_URL : URL_,
 ], { stdio: 'ignore' });
 
 /* child.kill() on Windows terminates the LAUNCHER, not the browser tree —
@@ -98,10 +106,13 @@ try {
   // spawnSync timeout kills the probe but NOT its Edge grandchild — which then
   // squats port 9720 with the listing still open and poisons the next spawn.
   // Bound our own life; kill our own browser.
+  // 90s: the warm-up bounce (see NEEDS_WARM) can spend ~20s before the real
+  // target even starts loading. Callers' outer backstops are 120s — keep this
+  // comfortably inside them so the peek always dies by its own hand first.
   const watchdog = setTimeout(() => {
     console.log('{"error": "probe watchdog fired — page never settled"}');
     die(1);
-  }, 60_000);
+  }, 90_000);
   watchdog.unref?.();
 
   let ws;
@@ -129,6 +140,25 @@ try {
       pending.set(i, (m) => res(m?.result?.result?.value));
       sock.send(JSON.stringify({ id: i, method: 'Runtime.evaluate', params: { expression, returnByValue: true } }));
     });
+
+  if (NEEDS_WARM) {
+    // Wait for the warm page to actually SERVE (rows present = cookies
+    // minted), then ride the same tab to the real target. The CDP socket
+    // survives same-tab navigation; every mode's own settle loop takes over
+    // from there, and the identity echo still catches any mismatch.
+    let warmed = false;
+    for (let i = 0; i < 40 && !warmed; i++) {
+      const n = await evaluate(`document.querySelectorAll('li.s-item, li.s-card').length`);
+      if (Number(n) > 0) warmed = true;
+      else await sleep(500);
+    }
+    if (!warmed) {
+      console.log('{"error": "warm-up page never served — bot wall reaches m.html too"}');
+      die(1);
+    }
+    await evaluate(`location.href = ${JSON.stringify(URL_)}`);
+    await sleep(1500);
+  }
 
   if (MODE === 'desc') {
     /*
