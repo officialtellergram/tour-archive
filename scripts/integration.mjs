@@ -320,7 +320,24 @@ check('site-only drops keep a comparables link, not a checkout link', () => {
 /* Manual syndication via the photo manifest                           */
 /* ------------------------------------------------------------------ */
 
-const { mapManifestItem } = await import('../server/inventory.mjs');
+const { mapManifestItem, manifestStock } = await import('../server/inventory.mjs');
+
+check('manifest stock surfaces the newest sweep first', () => {
+  // Over the REAL manifest: sweeps append at the end of the file, so if this
+  // ordering ever regresses, new pieces silently sink to the archive's floor.
+  const raw = JSON.parse(
+    readFileSync(new URL('../public/stock/manifest.json', import.meta.url), 'utf8')
+  );
+  const dateOf = new Map(raw.items.map((e) => [e.id, e._ingested || '']));
+  const dates = manifestStock().map((i) => dateOf.get(i.id) ?? '');
+  assert(dates.length >= 2, 'needs two entries to prove an order');
+  for (let k = 1; k < dates.length; k++) {
+    assert(
+      dates[k - 1] >= dates[k],
+      `newest-first breaks at position ${k}: ${dates[k - 1] || '(undated)'} then ${dates[k] || '(undated)'}`
+    );
+  }
+});
 
 const manifestPlain = {
   id: 'stock-test-crew', file: 'test-crew.jpg', name: 'Test Crew', brand: 'Testbrand',
