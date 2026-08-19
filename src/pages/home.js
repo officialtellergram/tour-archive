@@ -72,21 +72,19 @@ export function home() {
       ${
         ev && coll
           ? `
-      <p class="eyebrow eyebrow--brass" data-hero-meta>
-        <span>${coll.drop} · ${ev.venue} · ${dateRange(ev)}</span>
+      <p class="eyebrow" data-hero-meta style="color:var(--claret)">
+        <span>${coll.drop}</span>
       </p>
       <h1 class="display">
-        <span class="line-mask"><span>The Tour</span></span>
+        <span class="line-mask"><span style="color:var(--navy)">The Tour</span></span>
         <span class="line-mask"><span><em>Championship</em>.</span></span>
       </h1>
-      <p class="lede" data-hero-cta style="text-align:center">
+      <p class="lede" data-hero-cta style="text-align:center;font-weight:500;color:var(--ink)">
         ${coll.heroLine}
       </p>
       <div class="hero-meta" data-hero-meta>
         <span>Status <b>${status.chip}</b></span>
         <span>Venue <b>East Lake, Atlanta</b></span>
-        <span>Field <b>Final 30</b></span>
-        <span>Every piece <b>1 of 1</b></span>
       </div>
       <div style="display:flex;gap:.85rem;flex-wrap:wrap;justify-content:center" data-hero-cta>
         <a class="btn btn--solid" href="/collections/${coll.id}" data-magnetic>
