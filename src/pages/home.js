@@ -77,7 +77,7 @@ export function home() {
       </p>
       <h1 class="display">
         <span class="line-mask"><span style="color:var(--navy)">The Tour</span></span>
-        <span class="line-mask"><span><em>Championship</em>.</span></span>
+        <span class="line-mask"><span><em>Championship</em><span style="color:var(--navy)">.</span></span></span>
       </h1>
       <p class="lede" data-hero-cta style="text-align:center;font-weight:500;color:var(--ink)">
         ${coll.heroLine}
