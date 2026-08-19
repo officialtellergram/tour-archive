@@ -207,17 +207,20 @@ export function heroSequence(root = document) {
   if (!hero) return;
 
   const masks = hero.querySelectorAll('.line-mask > span');
+  // The lead (the landing's "Drop No. 01") enters FIRST, before any other
+  // text; pages without one sequence exactly as before.
+  const lead = hero.querySelectorAll('[data-hero-lead] > *');
   const meta = hero.querySelectorAll('[data-hero-meta] > *');
   const crest = hero.querySelector('.hero-crest');
   const cta = hero.querySelectorAll('[data-hero-cta]');
 
   if (reduced) {
-    utils.set([...masks, ...meta, ...cta], { opacity: 1, y: 0 });
+    utils.set([...masks, ...lead, ...meta, ...cta], { opacity: 1, y: 0 });
     return;
   }
 
   utils.set(masks, { y: '110%', opacity: 0 });
-  utils.set([...meta, ...cta], { opacity: 0, y: 18 });
+  utils.set([...lead, ...meta, ...cta], { opacity: 0, y: 18 });
 
   const tl = createTimeline({ defaults: { ease: 'outExpo' } });
 
@@ -243,9 +246,13 @@ export function heroSequence(root = document) {
     );
   }
 
-  tl.add(masks, { y: ['110%', '0%'], opacity: [0, 1], duration: 1250, delay: aStagger(110) }, 260)
-    .add(meta, { opacity: [0, 1], y: [18, 0], duration: 900, delay: aStagger(70) }, 900)
-    .add(cta, { opacity: [0, 1], y: [18, 0], duration: 800, delay: aStagger(80) }, 1050);
+  if (lead.length) tl.add(lead, { opacity: [0, 1], y: [18, 0], duration: 700 }, 0);
+  // With a lead present everything else waits a beat so the drop line owns
+  // the opening; without one the offsets are the originals, untouched.
+  const later = lead.length ? 260 : 0;
+  tl.add(masks, { y: ['110%', '0%'], opacity: [0, 1], duration: 1250, delay: aStagger(110) }, 260 + later)
+    .add(meta, { opacity: [0, 1], y: [18, 0], duration: 900, delay: aStagger(70) }, 900 + later)
+    .add(cta, { opacity: [0, 1], y: [18, 0], duration: 800, delay: aStagger(80) }, 1050 + later);
 
   // slow drift on the hero backdrop
   const bg = hero.querySelector('.hero-bg');

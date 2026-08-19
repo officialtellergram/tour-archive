@@ -72,7 +72,7 @@ export function home() {
       ${
         ev && coll
           ? `
-      <p class="eyebrow" data-hero-meta style="color:var(--claret)">
+      <p class="eyebrow" data-hero-lead style="color:var(--claret)">
         <span>${coll.drop}</span>
       </p>
       <h1 class="display">
