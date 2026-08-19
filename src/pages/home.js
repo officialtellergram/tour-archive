@@ -152,7 +152,7 @@ export function home() {
       })}
       <div class="split" style="align-items:start">
         <div data-reveal>
-          <p class="lede">${coll.summary}</p>
+          <!-- Chal's copy leads here, verbatim (essay[0]); no house-written lede above it -->
           <p style="color:var(--ink-soft);font-weight:300;max-width:52ch">${coll.essay[0]}</p>
           <ul class="facts" style="margin-top:2rem">
             ${coll.facts.map((f) => `<li><span>${f.k}</span><b>${f.v}</b></li>`).join('')}

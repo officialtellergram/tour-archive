@@ -62,8 +62,9 @@ export const collections = [
     statusLabel: 'First drop',
     releaseNote: 'Opens tournament week',
     heroLine: 'A collection of iconic attire from the Tour Championship.',
+    // Verbatim from Chal's write-up — the house wrote none of this line.
     summary:
-      'Our opening collection, released around the 2026 TOUR Championship at East Lake — Atlanta golf tradition, Jones-era knitwear, and the sun-struck colour of Georgia in late August.',
+      'Although the four major championships have the most glory and prestige attached to them, East Lake is where the money is made.',
     // Derived from the course itself: sun-struck zoysia fairway, August haze,
     // Piedmont clay. See the research file in the repo for the reasoning.
     //add rotating carousel of photos of the course and the clubhouse, with a few of the pieces in the collection in the foreground.

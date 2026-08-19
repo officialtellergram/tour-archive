@@ -22,6 +22,8 @@ export const events = [
     // tourchampionship.com ticket window (gates open Wed 26). Verified 2026-08-02.
     starts: '2026-08-27',
     ends: '2026-08-30',
+    /** The drop opens the Sunday BEFORE round 1 — the countdown targets this. */
+    dropOpens: '2026-08-23',
     /** The drop stays open this many days after the trophy is handed over. */
     dropCloses: '2026-09-13',
   },
@@ -30,12 +32,14 @@ export const events = [
 const day = 86400000;
 const parse = (d) => new Date(`${d}T12:00:00Z`).getTime();
 
-/** live | upcoming | closing | past — relative to `now`. */
+/** live | upcoming | closing | past — relative to `now`. The drop can open
+ *  ahead of round 1 (`dropOpens`); "live" means the DROP is open, not that
+ *  play is underway. */
 export function eventPhase(event, now = Date.now()) {
-  const starts = parse(event.starts);
+  const opens = parse(event.dropOpens || event.starts);
   const ends = parse(event.ends);
   const closes = parse(event.dropCloses || event.ends);
-  if (now < starts) return 'upcoming';
+  if (now < opens) return 'upcoming';
   if (now <= ends + day) return 'live';
   if (now <= closes) return 'closing';
   return 'past';
@@ -59,9 +63,9 @@ export function featuredEvent(now = Date.now()) {
   );
 }
 
-/** Whole days until the event starts (0 when underway or past). */
+/** Whole days until the DROP opens (0 when open or past). */
 export function daysUntil(event, now = Date.now()) {
-  return Math.max(0, Math.ceil((parse(event.starts) - now) / day));
+  return Math.max(0, Math.ceil((parse(event.dropOpens || event.starts) - now) / day));
 }
 
 /** Human date range: "27 – 30 August 2026". */
