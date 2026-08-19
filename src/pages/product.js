@@ -120,6 +120,10 @@ export function pdpMedia(item) {
  * directly. Sold pieces render it unchanged: it is archive record, like the
  * carousel. Returns '' when empty — never an empty wrapper, or every
  * undescribed PDP would grow a phantom grid-gap row.
+ *
+ * DISPLAY-STRIPPED from the PDP (19 Aug 2026): the house story carries the
+ * page and the listing copy read as clutter beside it. Data and component
+ * stay intact — restoring is one line in product().
  */
 export function pdpDescription(item) {
   const paras = Array.isArray(item.description) ? item.description : [];
@@ -165,15 +169,34 @@ export function pdpHeader(item, coll = null) {
           </div>`;
 }
 
-/** eBay's About-this-item, mirrored verbatim in listing order — parity beats
- *  dedupe (Condition/Size repeat here and in the meta line, as eBay repeats
- *  them). Keys AND values are remote text: both pipe through escapeHtml.
- *  Sold pieces render it unchanged — archive record, like the description.
- *  Returns '' when empty — never an empty wrapper (phantom grid-gap row).
+/** eBay's About-this-item, COMPACTED for display: Size, then Brand, then
+ *  measurements — any row whose VALUE is unit-shaped ("26 in", "76 cm"),
+ *  whatever eBay titles the key. The value rule, not a key list, is the
+ *  gate on purpose: a measurement-titled key holding a style descriptor
+ *  ("Sleeve Length: Long Sleeve") is details noise and stays out. The full
+ *  sheet stays archived in the manifest; this is a display filter, not a
+ *  data cut. Measurement rows keep their listing order; Condition already
+ *  lives in the header meta line. Keys AND values are remote text: both
+ *  pipe through escapeHtml. Sold pieces render it unchanged — archive
+ *  record, like the description. Returns '' when nothing survives — never
+ *  an empty wrapper (phantom grid-gap row).
  *  TEXT-ONLY: no hrefs ever (the audit link classifier never sees output). */
+const SPEC_UNIT_VALUE_RX = /^\d+(?:\.\d+)?\s*(?:in|cm|")\.?$/i;
+
 export function pdpSpecifics(item) {
   const specs = item.specifics;
-  const rows = specs && typeof specs === 'object' && !Array.isArray(specs) ? Object.entries(specs) : [];
+  const all =
+    specs && typeof specs === 'object' && !Array.isArray(specs) ? Object.entries(specs) : [];
+  const exact = (name) => all.filter(([k]) => String(k).trim().toLowerCase() === name);
+  const rows = [
+    ...exact('size'),
+    ...exact('brand'),
+    ...all.filter(
+      ([k, v]) =>
+        !['size', 'brand'].includes(String(k).trim().toLowerCase()) &&
+        SPEC_UNIT_VALUE_RX.test(String(v ?? '').trim())
+    ),
+  ];
   if (!rows.length) return '';
   return `
           <div class="pdp-specs" style="display:grid;gap:.6rem">
@@ -248,7 +271,6 @@ export function product({ id }) {
           ${pdpHeader(item, coll)}
 
           <p style="color:var(--ink-soft);font-weight:300;margin:0">${item.story}</p>
-          ${pdpDescription(item)}
           ${pdpSpecifics(item)}
 
           <div style="display:flex;align-items:baseline;gap:1rem;padding-top:.6rem;border-top:1px solid var(--rule)">

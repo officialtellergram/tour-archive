@@ -157,11 +157,18 @@ const pdpDescribedSold = { ...pdpDescribed, sold: true };
 const pdpSpecced = {
   ...pdpCarousel,
   id: 'stock-sm-specs',
+  // Survivors of the compact filter: Size, Brand, and rows with unit-shaped
+  // VALUES (measurements). Hostile text rides IN the survivors so the
+  // escaping pins exercise the rendered path; Condition / Size Type /
+  // Vintage / style-valued Sleeve Length exist to pin the compaction itself.
   specifics: {
     Condition: 'Pre-owned - Excellent',
+    'Size Type': 'Big & Tall',
+    Brand: 'Men & "Boys" <script>alert(1)</script>',
     Size: '2XL',
-    '<script>Department</script>': 'Men & "Boys" <script>alert(1)</script>',
-    'Outer Shell Material': "x < y & 'ticks'",
+    '<script>Chest</script> Size': '26 in',
+    "x < y & 'ticks'": '30 in',
+    'Sleeve Length': 'Long Sleeve',
     Vintage: 'Yes',
   },
 };
@@ -297,25 +304,30 @@ for (const [label, fn] of deskCases) {
     errors.push('pdpDescription: missing description field must yield the empty string');
 }
 
-/* Specifics facts-list pins — escaping (keys AND values), order, sold, empty. */
+/* Specifics facts-list pins — compaction (Size, Brand, measurements only),
+   escaping (keys AND values), order, sold, empty. */
 {
   const facts = pdpSpecifics(pdpSpecced);
   if (facts.includes('<script>'))
     errors.push('pdpSpecifics: raw <script> reached the markup');
-  if (!facts.includes('&lt;script&gt;Department&lt;/script&gt;'))
+  if (!facts.includes('&lt;script&gt;Chest&lt;/script&gt; Size'))
     errors.push('pdpSpecifics: hostile KEY not escaped — keys are remote text too');
   if (!facts.includes('Men &amp; &quot;Boys&quot; &lt;script&gt;alert(1)&lt;/script&gt;'))
     errors.push('pdpSpecifics: hostile value not escaped');
   if (!facts.includes('x &lt; y &amp; &#39;ticks&#39;'))
     errors.push('pdpSpecifics: the & < \' contract broke');
-  if ((facts.match(/<tr>/g) || []).length !== 5)
-    errors.push('pdpSpecifics: one row per key — expected 5');
-  const iCond = facts.indexOf('<th>Condition</th>');
+  if ((facts.match(/<tr>/g) || []).length !== 4)
+    errors.push('pdpSpecifics: expected exactly the 4 surviving rows (Size, Brand, 2 measurements)');
+  if (facts.includes('<th>Condition</th>') || facts.includes('Size Type') || facts.includes('<th>Vintage</th>'))
+    errors.push('pdpSpecifics: compaction leaked — Condition / Size Type / Vintage must be filtered');
+  if (facts.includes('Sleeve Length'))
+    errors.push('pdpSpecifics: a measurement-titled key with a style value must be filtered — the VALUE is the gate');
   const iSize = facts.indexOf('<th>Size</th>');
-  const iShell = facts.indexOf('Outer Shell Material');
-  const iVint = facts.indexOf('<th>Vintage</th>');
-  if (!(iCond < iSize && iSize < iShell && iShell < iVint))
-    errors.push('pdpSpecifics: listing order not preserved');
+  const iBrand = facts.indexOf('<th>Brand</th>');
+  const iChest = facts.indexOf('Chest&lt;/script&gt; Size');
+  const iTicks = facts.indexOf('ticks');
+  if (!(iSize !== -1 && iSize < iBrand && iBrand < iChest && iChest < iTicks))
+    errors.push('pdpSpecifics: order must be Size, Brand, then measurements in listing order');
   if (!facts.includes('About this piece'))
     errors.push('pdpSpecifics: facts-list eyebrow missing');
   if (facts.includes('href='))
@@ -326,6 +338,8 @@ for (const [label, fn] of deskCases) {
     errors.push('pdpSpecifics: empty specifics must yield the empty string');
   if (pdpSpecifics(pdpCarousel) !== '')
     errors.push('pdpSpecifics: missing specifics field must yield the empty string');
+  if (pdpSpecifics({ ...pdpCarousel, specifics: { Vintage: 'Yes', Department: 'Men' } }) !== '')
+    errors.push('pdpSpecifics: specifics with no survivors must yield the empty string — no empty card');
 }
 
 /* Header pins — placeholders never render, dangling separators never form. */
