@@ -322,19 +322,22 @@ check('site-only drops keep a comparables link, not a checkout link', () => {
 
 const { mapManifestItem, manifestStock } = await import('../server/inventory.mjs');
 
-check('manifest stock surfaces the newest sweep first', () => {
-  // Over the REAL manifest: sweeps append at the end of the file, so if this
-  // ordering ever regresses, new pieces silently sink to the archive's floor.
+check('manifest stock leads with the highest price, newest sweep breaking ties', () => {
+  // Over the REAL manifest: the file appends new mints at the end, so if this
+  // ordering ever regresses, display priority silently becomes file order.
   const raw = JSON.parse(
     readFileSync(new URL('../public/stock/manifest.json', import.meta.url), 'utf8')
   );
-  const dateOf = new Map(raw.items.map((e) => [e.id, e._ingested || '']));
-  const dates = manifestStock().map((i) => dateOf.get(i.id) ?? '');
-  assert(dates.length >= 2, 'needs two entries to prove an order');
-  for (let k = 1; k < dates.length; k++) {
+  const stampOf = new Map(
+    raw.items.map((e) => [e.id, { price: Number(e.price) || 0, date: e._ingested || '' }])
+  );
+  const order = manifestStock().map((i) => stampOf.get(i.id));
+  assert(order.length >= 2, 'needs two entries to prove an order');
+  for (let k = 1; k < order.length; k++) {
+    const [prev, cur] = [order[k - 1], order[k]];
     assert(
-      dates[k - 1] >= dates[k],
-      `newest-first breaks at position ${k}: ${dates[k - 1] || '(undated)'} then ${dates[k] || '(undated)'}`
+      prev.price > cur.price || (prev.price === cur.price && prev.date >= cur.date),
+      `priority breaks at position ${k}: $${prev.price}/${prev.date || '(undated)'} then $${cur.price}/${cur.date || '(undated)'}`
     );
   }
 });

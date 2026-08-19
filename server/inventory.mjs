@@ -138,12 +138,16 @@ export function manifestStock() {
     const manifest = JSON.parse(readFileSync(MANIFEST_PATH, 'utf8'));
     return (manifest.items || [])
       .filter((i) => !i._missing)
-      // Sweeps append at the END of the manifest, but a fresh piece belongs at
-      // the TOP of the archive — so display order is `_ingested` (YYYY-MM-DD,
-      // ISO-sortable as a plain string) newest first. Sorted HERE because the
-      // mapper strips the stamp; the sort is stable, so same-day mints keep
-      // their manifest order and undated entries sink to the end.
-      .sort((a, b) => String(b._ingested || '').localeCompare(String(a._ingested || '')))
+      // Display priority: price, highest first — the strongest pieces lead
+      // the archive. Ties break to the newer sweep via the `_ingested` stamp
+      // (YYYY-MM-DD, ISO-sortable as a plain string). Sorted HERE because the
+      // mapper strips the stamp; the sort is stable, so same-price same-day
+      // mints keep their manifest order.
+      .sort(
+        (a, b) =>
+          (Number(b.price) || 0) - (Number(a.price) || 0) ||
+          String(b._ingested || '').localeCompare(String(a._ingested || ''))
+      )
       .map(mapManifestItem);
   } catch (err) {
     console.warn(`[inventory] stock manifest unreadable: ${err.message}`);
