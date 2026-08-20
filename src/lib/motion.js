@@ -184,7 +184,11 @@ export function initGridStagger(root = document) {
           { duration: 0.8, delay: stagger(0.055), ease: EASE }
         );
       },
-      { amount: 0.06, margin: '0px 0px -8% 0px' }
+      // 'some' (any pixel), NEVER a fraction: a 27-card single-column grid is
+      // ~18,000px tall on a phone, so even amount: 0.06 demands more grid than
+      // the viewport can hold — the trigger never fires and every card holds
+      // at opacity 0. Proven live at 390x844; scripts/ probe: reveal-probe.
+      { amount: 'some', margin: '0px 0px -8% 0px' }
     );
   });
 }
