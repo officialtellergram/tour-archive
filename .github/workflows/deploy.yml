@@ -58,6 +58,14 @@ jobs:
       - name: Check the deploy is sane
         run: node scripts/deploy.mjs
 
+      # Live-motion reveal gate: drives headless Chrome at 390x844 against the
+      # BUILT site and fails if any scroll-revealed content never reveals. The
+      # layout gate freezes animations so it cannot see this class; the bug is
+      # growth-triggered (fine at 14 pieces, broken at 27 — 20 Aug 2026), so
+      # the daily rebuild re-proves it as stock grows, not just on code change.
+      - name: Reveal gate (390x844, animations live)
+        run: npm run reveal
+
       # Supabase free projects pause after ~7 idle days of DATABASE activity —
       # so the ping must run a real query (PostgREST as anon; RLS returns []
       # but Postgres still executes it). /auth/v1/health would answer from
