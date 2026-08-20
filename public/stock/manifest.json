@@ -796,6 +796,740 @@
       },
       "_specsPulled": "2026-08-18",
       "file": "wild-dunes-multicolor-polo.jpg"
+    },
+    {
+      "id": "stock-callaway-retro-logo-polo",
+      "name": "Callaway Retro Logo Polo",
+      "brand": "Callaway Golf",
+      "year": "1990s",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "See listing",
+      "condition": "See listing",
+      "price": 35,
+      "colorway": [
+        "#F2F1EA",
+        "#1F2A4A",
+        "#A34040"
+      ],
+      "colorName": "White Windowpane",
+      "story": "White piqué crossed with a fine dotted windowpane in blue and red, the navy tipped collar carrying the script-era Callaway Golf mark. From the decade Big Bertha changed the company.",
+      "details": [
+        "Checkout completes on eBay",
+        "Full photographs and condition notes on the listing"
+      ],
+      "measurements": {},
+      "channel": "ebay",
+      "listingUrl": "https://www.ebay.com/itm/407157486865",
+      "_ingested": "2026-08-20",
+      "_source": "own listing photo, i.ebayimg.com",
+      "photos": [
+        "carousel/callaway-retro-logo-polo/01.jpg",
+        "carousel/callaway-retro-logo-polo/02.webp",
+        "carousel/callaway-retro-logo-polo/03.webp",
+        "carousel/callaway-retro-logo-polo/04.webp",
+        "carousel/callaway-retro-logo-polo/05.webp"
+      ],
+      "_photosPulled": "2026-08-20",
+      "description": [
+        "Beautiful thick cotton Callaway with Navy accents",
+        "Hole in chest repaired with white embroidery thread",
+        "1990s era - California USA Collection",
+        "Length 28” Pit to Pit 22”",
+        "All items are washed and inspected before sale",
+        "Every order comes with a mystery assortment of vintage PGA trading cards ⛳️🏌🏻♂️"
+      ],
+      "_descPulled": "2026-08-20",
+      "specifics": {
+        "Condition": "Pre-owned - Excellent",
+        "Brand": "Callaway",
+        "Department": "Men",
+        "Type": "Polo",
+        "Performance/Activity": "Golf",
+        "Theme": "Retro",
+        "Accents": "Logo",
+        "Size Type": "Regular",
+        "Chest Size": "22 in",
+        "Size": "L",
+        "Color": "White",
+        "Shirt Length": "28 in"
+      },
+      "_specsPulled": "2026-08-20",
+      "file": "callaway-retro-logo-polo.jpg"
+    },
+    {
+      "id": "stock-taylormade-navy-sweater",
+      "name": "TaylorMade Sweater, Navy",
+      "brand": "TaylorMade",
+      "year": "1990s",
+      "category": "Knitwear",
+      "garment": "sweater",
+      "size": "See listing",
+      "condition": "See listing",
+      "price": 150,
+      "colorway": [
+        "#5A6584",
+        "#3D4663",
+        "#C6354B"
+      ],
+      "colorName": "Slate Blue",
+      "story": "Chunky ribbed cotton crewneck in washed slate blue, the burner-era TaylorMade mark stitched in white and red. Drop shoulders and a longline body — a range sweater from before performance fabric.",
+      "details": [
+        "Checkout completes on eBay",
+        "Full photographs and condition notes on the listing"
+      ],
+      "measurements": {},
+      "channel": "ebay",
+      "listingUrl": "https://www.ebay.com/itm/407157573688",
+      "_ingested": "2026-08-20",
+      "_source": "own listing photo, i.ebayimg.com",
+      "photos": [
+        "carousel/taylormade-navy-sweater/01.jpg",
+        "carousel/taylormade-navy-sweater/02.webp",
+        "carousel/taylormade-navy-sweater/03.webp"
+      ],
+      "_photosPulled": "2026-08-20",
+      "description": [
+        "1990s Taylormade Heavy Cotton sweater",
+        "Beautiful oversized piece with retro logo",
+        "31” Length 22” Pit to Pit 27” Sleeve",
+        "All garments are washed and inspected before sale",
+        "Every order comes with a mystery assortment of vintage PGA trading cards ⛳️🏌🏻♂️"
+      ],
+      "_descPulled": "2026-08-20",
+      "specifics": {
+        "Condition": "Pre-owned - Excellent",
+        "Brand": "TaylorMade",
+        "Color": "Blue",
+        "Department": "Men",
+        "Size Type": "Regular",
+        "Size": "XL",
+        "Type": "Sweater",
+        "Sleeve Length": "27 in",
+        "Style": "Pullover"
+      },
+      "_specsPulled": "2026-08-20",
+      "file": "taylormade-navy-sweater.jpg"
+    },
+    {
+      "id": "stock-tpc-sawgrass-polo",
+      "name": "TPC Sawgrass Polo",
+      "brand": "Oxford Golf",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "See listing",
+      "condition": "See listing",
+      "price": 25,
+      "colorway": [
+        "#A62B35",
+        "#7E1F28",
+        "#D8CFC8"
+      ],
+      "colorName": "Crimson Check",
+      "story": "Crimson jersey under a fine white grid, the Sawgrass swinging-golfer crest embroidered tonal at the chest. Home of the Players Championship and the island 17th.",
+      "details": [
+        "Checkout completes on eBay",
+        "Full photographs and condition notes on the listing"
+      ],
+      "measurements": {},
+      "channel": "ebay",
+      "listingUrl": "https://www.ebay.com/itm/407157494692",
+      "_ingested": "2026-08-20",
+      "_source": "own listing photo, i.ebayimg.com",
+      "photos": [
+        "carousel/tpc-sawgrass-polo/01.jpg",
+        "carousel/tpc-sawgrass-polo/02.webp",
+        "carousel/tpc-sawgrass-polo/03.webp",
+        "carousel/tpc-sawgrass-polo/04.webp"
+      ],
+      "_photosPulled": "2026-08-20",
+      "description": [
+        "1990s TPC Sawgrass polo",
+        "Checkerboard design",
+        "Length 29” Pit to Pit 23”",
+        "All items are washed and inspected before sale",
+        "Every order comes with a mystery assortment of vintage PGA trading cards ⛳️🏌🏻♂️"
+      ],
+      "_descPulled": "2026-08-20",
+      "specifics": {
+        "Condition": "Pre-owned - Excellent",
+        "Department": "Men",
+        "Type": "Polo",
+        "Brand": "Oxford Golf",
+        "Size Type": "Regular",
+        "Chest Size": "23 in",
+        "Size": "L",
+        "Color": "Red",
+        "Shirt Length": "29 in"
+      },
+      "_specsPulled": "2026-08-20",
+      "file": "tpc-sawgrass-polo.jpg"
+    },
+    {
+      "id": "stock-houndstooth-cotton-golf-polo",
+      "name": "Houndstooth Cotton Golf Polo",
+      "brand": "Vintage Cotton",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "See listing",
+      "condition": "See listing",
+      "price": 25,
+      "colorway": [
+        "#4A4463",
+        "#8C5A72",
+        "#C9C4B4"
+      ],
+      "colorName": "Plum Houndstooth",
+      "story": "Micro-houndstooth in plum and navy under a cream grid, tipped navy at the collar and cuffs. Cut boxy in soft cotton — the pattern reads as texture until you get close.",
+      "details": [
+        "Checkout completes on eBay",
+        "Full photographs and condition notes on the listing"
+      ],
+      "measurements": {},
+      "channel": "ebay",
+      "listingUrl": "https://www.ebay.com/itm/407157532548",
+      "_ingested": "2026-08-20",
+      "_source": "own listing photo, i.ebayimg.com",
+      "photos": [
+        "carousel/houndstooth-cotton-golf-polo/01.jpg",
+        "carousel/houndstooth-cotton-golf-polo/02.webp",
+        "carousel/houndstooth-cotton-golf-polo/03.webp",
+        "carousel/houndstooth-cotton-golf-polo/04.webp"
+      ],
+      "_photosPulled": "2026-08-20",
+      "description": [
+        "Soft and thick cotton on this navy and burgundy design",
+        "Golf Classics by Munsingwear",
+        "Length 26” Pit to Pit 23”",
+        "All items are washed and inspected before sale",
+        "Every order comes with a mystery assortment of vintage PGA trading cards ⛳️🏌🏻♂️"
+      ],
+      "_descPulled": "2026-08-20",
+      "specifics": {
+        "Condition": "Pre-owned - Excellent",
+        "Brand": "Vintage Cotton",
+        "Pattern": "Houndstooth",
+        "Size Type": "Regular",
+        "Department": "Men",
+        "Type": "Polo",
+        "Chest Size": "23 in",
+        "Size": "L",
+        "Color": "Multicolor",
+        "Material": "Cotton",
+        "Shirt Length": "26 in",
+        "Performance/Activity": "Golf"
+      },
+      "_specsPulled": "2026-08-20",
+      "file": "houndstooth-cotton-golf-polo.jpg"
+    },
+    {
+      "id": "stock-peter-millar-quarter-zip-navy",
+      "name": "Peter Millar Quarter-Zip, Navy",
+      "brand": "Peter Millar",
+      "year": "—",
+      "category": "Knitwear",
+      "garment": "sweater",
+      "size": "See listing",
+      "condition": "See listing",
+      "price": 50,
+      "colorway": [
+        "#4A5490",
+        "#353D6B",
+        "#9AA0AA"
+      ],
+      "colorName": "Washed Indigo",
+      "story": "Peter Millar’s interlock quarter-zip in washed indigo, heather grey at the collar’s inside face. The clubhouse layer that outlives every logo trend.",
+      "details": [
+        "Checkout completes on eBay",
+        "Full photographs and condition notes on the listing"
+      ],
+      "measurements": {},
+      "channel": "ebay",
+      "listingUrl": "https://www.ebay.com/itm/407157507222",
+      "_ingested": "2026-08-20",
+      "_source": "own listing photo, i.ebayimg.com",
+      "photos": [
+        "carousel/peter-millar-quarter-zip-navy/01.jpg",
+        "carousel/peter-millar-quarter-zip-navy/02.webp",
+        "carousel/peter-millar-quarter-zip-navy/03.webp"
+      ],
+      "_photosPulled": "2026-08-20",
+      "description": [
+        "Peter Millar q zip",
+        "Nicely worn but recently refurbished",
+        "Faded blue color",
+        "Length 26” Pit to Pit 24” Sleeve 25”",
+        "All items are washed and inspected before sale",
+        "Every order comes with a mystery assortment of vintage PGA trading cards ⛳️🏌🏻♂️"
+      ],
+      "_descPulled": "2026-08-20",
+      "specifics": {
+        "Condition": "Pre-owned - Excellent",
+        "Brand": "Peter Millar",
+        "Color": "Blue",
+        "Department": "Men",
+        "Size Type": "Regular",
+        "Type": "Sweater",
+        "Sleeve Length": "Long Sleeve",
+        "Size": "L",
+        "Style": "Quarter Zip"
+      },
+      "_specsPulled": "2026-08-20",
+      "file": "peter-millar-quarter-zip-navy.jpg"
+    },
+    {
+      "id": "stock-shinnecock-hills-polo",
+      "name": "Shinnecock Hills Polo by Donald Ross",
+      "brand": "Donald Ross",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "See listing",
+      "condition": "See listing",
+      "price": 50,
+      "colorway": [
+        "#BFD4EA",
+        "#EFF3F6",
+        "#2A3550"
+      ],
+      "colorName": "Sky Stripe",
+      "story": "Feathered sky-blue stripe with a button-down collar and chest pocket, made by the Donald Ross label for Shinnecock Hills — the 1891 links of Southampton and a five-time U.S. Open host.",
+      "details": [
+        "Checkout completes on eBay",
+        "Full photographs and condition notes on the listing"
+      ],
+      "measurements": {},
+      "channel": "ebay",
+      "listingUrl": "https://www.ebay.com/itm/407157470232",
+      "_ingested": "2026-08-20",
+      "_source": "own listing photo, i.ebayimg.com",
+      "photos": [
+        "carousel/shinnecock-hills-polo/01.jpg",
+        "carousel/shinnecock-hills-polo/02.webp",
+        "carousel/shinnecock-hills-polo/03.webp",
+        "carousel/shinnecock-hills-polo/04.webp",
+        "carousel/shinnecock-hills-polo/05.webp"
+      ],
+      "_photosPulled": "2026-08-20",
+      "description": [
+        "Minimal and Retro Shinnecock Hills polo",
+        "Buttons down half the shirt and buttons on the collar for a tailored retro look.",
+        "Shoutout to Wyndham Clark for taking it home",
+        "Length 30” Pit to Pit 22”",
+        "All items are washed and inspected before sale",
+        "Every order comes with a mystery assortment of vintage PGA trading cards ⛳️🏌🏻♂️"
+      ],
+      "_descPulled": "2026-08-20",
+      "specifics": {
+        "Condition": "Pre-owned - Excellent",
+        "Brand": "Donald Ross",
+        "Department": "Men",
+        "Type": "Polo",
+        "Performance/Activity": "Golf",
+        "Size Type": "Regular",
+        "Chest Size": "22 in",
+        "Size": "L",
+        "Color": "White",
+        "Shirt Length": "30 in"
+      },
+      "_specsPulled": "2026-08-20",
+      "file": "shinnecock-hills-polo.jpg"
+    },
+    {
+      "id": "stock-izod-abstract-golf-polo",
+      "name": "Izod Abstract Golf Polo",
+      "brand": "Izod",
+      "year": "1990s",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "See listing",
+      "condition": "See listing",
+      "price": 50,
+      "colorway": [
+        "#4E6284",
+        "#7FBFB5",
+        "#C46A66"
+      ],
+      "colorName": "Colour-Block Panels",
+      "story": "Vertical panels of slate, rose, white and seafoam with a navy placket and a banded sleeve — Izod at full nineties volume. The collar stripe alone is a time stamp.",
+      "details": [
+        "Checkout completes on eBay",
+        "Full photographs and condition notes on the listing"
+      ],
+      "measurements": {},
+      "channel": "ebay",
+      "listingUrl": "https://www.ebay.com/itm/407154584789",
+      "_ingested": "2026-08-20",
+      "_source": "own listing photo, i.ebayimg.com",
+      "photos": [
+        "carousel/izod-abstract-golf-polo/01.jpg",
+        "carousel/izod-abstract-golf-polo/02.webp",
+        "carousel/izod-abstract-golf-polo/03.webp",
+        "carousel/izod-abstract-golf-polo/04.webp"
+      ],
+      "_photosPulled": "2026-08-20",
+      "description": [
+        "Banger Izod polo",
+        "Soft cotton, baggy fit, Golfing icons sewn into sweater",
+        "One of our favorite polo finds",
+        "Shirt Length 28” Pit to Pit 24”",
+        "All garments are washed and inspected before purchase",
+        "Each purchase comes with a mystery assortment of vintage golf trading cards ⛳️🏌🏻♂️"
+      ],
+      "_descPulled": "2026-08-20",
+      "specifics": {
+        "Condition": "Pre-owned - Excellent",
+        "Brand": "IZOD",
+        "Size Type": "Regular",
+        "Department": "Men",
+        "Type": "Polo",
+        "Chest Size": "24 in",
+        "Size": "XL",
+        "Color": "Multicolor",
+        "Shirt Length": "28 in",
+        "Performance/Activity": "Golf"
+      },
+      "_specsPulled": "2026-08-20",
+      "file": "izod-abstract-golf-polo.jpg"
+    },
+    {
+      "id": "stock-cross-creek-polo",
+      "name": "Cross Creek Polo, 1970s Style",
+      "brand": "Cross Creek",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "See listing",
+      "condition": "See listing",
+      "price": 25,
+      "colorway": [
+        "#8FB0DC",
+        "#6E8FC0",
+        "#E8ECF2"
+      ],
+      "colorName": "Cornflower Blue",
+      "story": "Cornflower jersey with a spread collar and a button-flap chest pocket, the seventies silhouette done in soft combed cotton. Plain until you notice the details.",
+      "details": [
+        "Checkout completes on eBay",
+        "Full photographs and condition notes on the listing"
+      ],
+      "measurements": {},
+      "channel": "ebay",
+      "listingUrl": "https://www.ebay.com/itm/407157525971",
+      "_ingested": "2026-08-20",
+      "_source": "own listing photo, i.ebayimg.com",
+      "photos": [
+        "carousel/cross-creek-polo/01.jpg",
+        "carousel/cross-creek-polo/02.webp",
+        "carousel/cross-creek-polo/03.webp"
+      ],
+      "_photosPulled": "2026-08-20",
+      "description": [
+        "Single stitch - Made in USA",
+        "Great for a formal look while still standing out",
+        "Or to look classic on the course",
+        "Length 28” Pit to Pit 19”",
+        "All items are washed and inspected before sale",
+        "Every order comes with a mystery assortment of vintage PGA trading cards ⛳️🏌🏻♂️"
+      ],
+      "_descPulled": "2026-08-20",
+      "specifics": {
+        "Condition": "Pre-owned - Excellent",
+        "Brand": "Cross Creek",
+        "Size Type": "Regular",
+        "Department": "Men",
+        "Type": "Polo",
+        "Chest Size": "19 in",
+        "Size": "L",
+        "Color": "Baby Blue",
+        "Shirt Length": "28 in"
+      },
+      "_specsPulled": "2026-08-20",
+      "file": "cross-creek-polo.jpg"
+    },
+    {
+      "id": "stock-boones-trace-national-polo",
+      "name": "Boone’s Trace National Polo",
+      "brand": "Cutter & Buck",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "See listing",
+      "condition": "See listing",
+      "price": 30,
+      "colorway": [
+        "#EFEDE6",
+        "#263056",
+        "#9E2B33"
+      ],
+      "colorName": "Regimental Stripe",
+      "story": "Regimental navy-and-red stripes on white with tipped collar and cuffs, The Bull of Boone’s Trace National embroidered at the chest. Kentucky club stripes with Ryder-week energy.",
+      "details": [
+        "Checkout completes on eBay",
+        "Full photographs and condition notes on the listing"
+      ],
+      "measurements": {},
+      "channel": "ebay",
+      "listingUrl": "https://www.ebay.com/itm/407157461976",
+      "_ingested": "2026-08-20",
+      "_source": "own listing photo, i.ebayimg.com",
+      "photos": [
+        "carousel/boones-trace-national-polo/01.jpg",
+        "carousel/boones-trace-national-polo/02.webp",
+        "carousel/boones-trace-national-polo/03.webp",
+        "carousel/boones-trace-national-polo/04.webp",
+        "carousel/boones-trace-national-polo/05.webp",
+        "carousel/boones-trace-national-polo/06.webp"
+      ],
+      "_photosPulled": "2026-08-20",
+      "description": [
+        "Boone’s Trace GC Polo by Cutter and Buck",
+        "Great vintage pattern for a great Kentucky golf course",
+        "Former host of the Barbasol Championship",
+        "Length 30” Pit to Pit 24”",
+        "All items are washed and inspected before sale",
+        "Every order comes with a mystery assortment of vintage PGA trading cards ⛳️🏌🏻♂️"
+      ],
+      "_descPulled": "2026-08-20",
+      "specifics": {
+        "Condition": "Pre-owned - Good",
+        "Department": "Men",
+        "Type": "Polo",
+        "Brand": "Cutter & Buck",
+        "Size Type": "Regular",
+        "Chest Size": "24 in",
+        "Size": "XL",
+        "Color": "Multicolor",
+        "Theme": "Golf",
+        "Shirt Length": "30 in"
+      },
+      "_specsPulled": "2026-08-20",
+      "file": "boones-trace-national-polo.jpg"
+    },
+    {
+      "id": "stock-peter-millar-hermitage-polo-teal",
+      "name": "Peter Millar Hermitage Polo, Teal",
+      "brand": "Peter Millar",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "See listing",
+      "condition": "See listing",
+      "price": 50,
+      "colorway": [
+        "#52AFA8",
+        "#A7D8D2",
+        "#2F7D78"
+      ],
+      "colorName": "Teal Stripe",
+      "story": "Peter Millar Summer Comfort in a teal double-stripe, the Hermitage Country Club monogram at the chest — from the club’s own shop in Richmond, Virginia.",
+      "details": [
+        "Checkout completes on eBay",
+        "Full photographs and condition notes on the listing"
+      ],
+      "measurements": {},
+      "channel": "ebay",
+      "listingUrl": "https://www.ebay.com/itm/407154712484",
+      "_ingested": "2026-08-20",
+      "_source": "own listing photo, i.ebayimg.com",
+      "photos": [
+        "carousel/peter-millar-hermitage-polo-teal/01.jpg",
+        "carousel/peter-millar-hermitage-polo-teal/02.webp",
+        "carousel/peter-millar-hermitage-polo-teal/03.webp",
+        "carousel/peter-millar-hermitage-polo-teal/04.webp"
+      ],
+      "_photosPulled": "2026-08-20",
+      "description": [
+        "Peter Millar Hermitage Country Club polo",
+        "Summer Comfort",
+        "Insane golf course outside of Richmond VA",
+        "Length 31” Pit to Pit 24”",
+        "Every garment is inspected and washed before sale",
+        "Each order comes with a mystery assortment of vintage PGA trading cards ⛳️🏌🏻♂️"
+      ],
+      "_descPulled": "2026-08-20",
+      "specifics": {
+        "Condition": "Pre-owned - Excellent",
+        "Brand": "Peter Millar",
+        "Color": "Blue",
+        "Department": "Men",
+        "Type": "Polo",
+        "Theme": "Countries",
+        "Size Type": "Regular",
+        "Size": "XL"
+      },
+      "_specsPulled": "2026-08-20",
+      "file": "peter-millar-hermitage-polo-teal.jpg"
+    },
+    {
+      "id": "stock-pga-national-honda-classic-polo",
+      "name": "PGA National Honda Classic Polo",
+      "brand": "Ashworth",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "See listing",
+      "condition": "See listing",
+      "price": 30,
+      "colorway": [
+        "#C4C3DC",
+        "#A9A8C8",
+        "#2A3150"
+      ],
+      "colorName": "Pale Lavender",
+      "story": "Pale lavender Ashworth jersey carrying the PGA National crest, The Honda Classic stitched on the sleeve — Bear Trap week in Palm Beach Gardens.",
+      "details": [
+        "Checkout completes on eBay",
+        "Full photographs and condition notes on the listing"
+      ],
+      "measurements": {},
+      "channel": "ebay",
+      "listingUrl": "https://www.ebay.com/itm/407154740942",
+      "_ingested": "2026-08-20",
+      "_source": "own listing photo, i.ebayimg.com",
+      "photos": [
+        "carousel/pga-national-honda-classic-polo/01.jpg",
+        "carousel/pga-national-honda-classic-polo/02.webp",
+        "carousel/pga-national-honda-classic-polo/03.webp",
+        "carousel/pga-national-honda-classic-polo/04.webp",
+        "carousel/pga-national-honda-classic-polo/05.webp"
+      ],
+      "_photosPulled": "2026-08-20",
+      "description": [
+        "Orchid purple vintage Ashworth piece",
+        "PGA National - Honda Classic embroidery",
+        "Ashworth branding on back",
+        "Length 30” Pit to Pit 21”",
+        "Every garment is inspected and washed before sale",
+        "Each order comes with a mystery assortment of vintage PGA trading cards ⛳️🏌🏻♂️"
+      ],
+      "_descPulled": "2026-08-20",
+      "specifics": {
+        "Condition": "Pre-owned - Excellent",
+        "Color": "Purple",
+        "Department": "Men",
+        "Type": "Polo",
+        "Fabric Wash": "Light",
+        "Brand": "Ashworth",
+        "Size Type": "Regular",
+        "Size": "XL"
+      },
+      "_specsPulled": "2026-08-20",
+      "file": "pga-national-honda-classic-polo.jpg"
+    },
+    {
+      "id": "stock-peter-millar-hermitage-polo-navy",
+      "name": "Peter Millar Hermitage Polo, Navy",
+      "brand": "Peter Millar",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "See listing",
+      "condition": "See listing",
+      "price": 50,
+      "colorway": [
+        "#4A62B4",
+        "#93A8D8",
+        "#32447E"
+      ],
+      "colorName": "Periwinkle Stripe",
+      "story": "The navy sibling: Summer Comfort jersey in a periwinkle pinstripe with the Hermitage monogram stitched tonal. Buy the pair and settle the Sunday-foursome argument.",
+      "details": [
+        "Checkout completes on eBay",
+        "Full photographs and condition notes on the listing"
+      ],
+      "measurements": {},
+      "channel": "ebay",
+      "listingUrl": "https://www.ebay.com/itm/407154728451",
+      "_ingested": "2026-08-20",
+      "_source": "own listing photo, i.ebayimg.com",
+      "photos": [
+        "carousel/peter-millar-hermitage-polo-navy/01.jpg",
+        "carousel/peter-millar-hermitage-polo-navy/02.webp",
+        "carousel/peter-millar-hermitage-polo-navy/03.webp",
+        "carousel/peter-millar-hermitage-polo-navy/04.webp"
+      ],
+      "_photosPulled": "2026-08-20",
+      "description": [
+        "Peter Millar Hermitage Country Club polo",
+        "Summer Comfort - Navy Blue XL",
+        "GEM of the RVA area",
+        "Length 31” Pit to Pit 24”",
+        "Every garment is inspected and washed before sale",
+        "Each order comes with a mystery assortment of vintage PGA trading cards ⛳️🏌🏻♂️"
+      ],
+      "_descPulled": "2026-08-20",
+      "specifics": {
+        "Condition": "Pre-owned - Excellent",
+        "Brand": "Peter Millar",
+        "Department": "Men",
+        "Type": "Polo",
+        "Theme": "Countries",
+        "Size Type": "Regular",
+        "Size": "XL",
+        "Color": "Navy Blue"
+      },
+      "_specsPulled": "2026-08-20",
+      "file": "peter-millar-hermitage-polo-navy.jpg"
+    },
+    {
+      "id": "stock-all-over-print-golf-sweater",
+      "name": "All-Over Print Golf Sweater",
+      "brand": "Carmel",
+      "year": "1990s",
+      "category": "Knitwear",
+      "garment": "sweater",
+      "size": "See listing",
+      "condition": "See listing",
+      "price": 75,
+      "colorway": [
+        "#2F7568",
+        "#6E2F44",
+        "#2E3468"
+      ],
+      "colorName": "Golf Scene Intarsia",
+      "story": "A whole hole knitted in: teal fairway, burgundy treeline, navy water and three golfers working the green, one intarsia scene edge to edge. The category killer of nineties golf knits.",
+      "details": [
+        "Checkout completes on eBay",
+        "Full photographs and condition notes on the listing"
+      ],
+      "measurements": {},
+      "channel": "ebay",
+      "listingUrl": "https://www.ebay.com/itm/407154689365",
+      "_ingested": "2026-08-20",
+      "_source": "own listing photo, i.ebayimg.com",
+      "photos": [
+        "carousel/all-over-print-golf-sweater/01.jpg",
+        "carousel/all-over-print-golf-sweater/02.webp",
+        "carousel/all-over-print-golf-sweater/03.webp",
+        "carousel/all-over-print-golf-sweater/04.webp",
+        "carousel/all-over-print-golf-sweater/05.webp"
+      ],
+      "_photosPulled": "2026-08-20",
+      "description": [
+        "Beatiful Woven Golf Sweater with landscape design",
+        "Incredibly soft with a baggy fit",
+        "Made in USA - 1980s 1990s",
+        "Shirt Length 25” Pit to Pit 25”",
+        "All garments are washed and inspected before purchase",
+        "Each purchase comes with a mystery assortment of vintage golf trading cards ⛳️🏌🏻♂️"
+      ],
+      "_descPulled": "2026-08-20",
+      "specifics": {
+        "Condition": "Pre-owned - Good",
+        "Brand": "Carmel",
+        "Size Type": "Regular",
+        "Department": "Men",
+        "Type": "Sweater",
+        "Size": "XL",
+        "Color": "Multicolor",
+        "Style": "Pullover",
+        "Performance/Activity": "Golf"
+      },
+      "_specsPulled": "2026-08-20",
+      "file": "all-over-print-golf-sweater.jpg"
     }
   ]
 }

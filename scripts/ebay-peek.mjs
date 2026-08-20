@@ -50,7 +50,7 @@ const SELLER_PROBE = `(() => {
     const link = li.querySelector('a[href*="/itm/"]')?.href?.split('?')[0];
     if (title && link && !/Shop on eBay/i.test(title)) items.push({ title, price, link });
   });
-  return JSON.stringify({ count: items.length, items: items.slice(0, 20) });
+  return JSON.stringify({ count: items.length, items: items.slice(0, 60) });
 })()`;
 
 /* eBay error-pages COLD hits on /itm/ pages (since ~mid-Aug 2026; headed vs
