@@ -6,21 +6,20 @@ import { toast } from '../lib/motion.js';
 
 /* ------------------------------ /mission ------------------------------ */
 
-/* Spare by design: the generalized method copy is retired and the founders'
-   hand-written mission lands here when it arrives. */
+/* Chal Sergent's mission statement, verbatim (20 Aug 2026) — the house wrote
+   none of the prose on this page; only the typography is ours. */
 export function mission() {
   return `
   <section class="section" style="padding-top:calc(var(--header-h) + 4rem)">
     <div class="wrap">
       ${breadcrumb([{ label: 'Home', href: '/' }, { label: 'Our Mission' }])}
       <div data-hero>
-        <p class="eyebrow" data-hero-meta><span>${BRAND.tagline}</span></p>
+        <p class="eyebrow" data-hero-meta><span>Chal Sergent · 20 August 2026</span></p>
         <h1 class="display" style="margin:.6rem 0 1.2rem;font-size:clamp(2.8rem,7vw,6.5rem)">
           <span class="line-mask"><span>Our Mission</span></span>
         </h1>
         <p class="lede" data-hero-cta>
-          We thrift, authenticate and catalogue vintage golf apparel by the championship
-          it belongs to. Every piece is one of one — when it is gone, it is gone.
+          We strive to provide iconic attire for golfers and fashion enthusiasts alike.
         </p>
       </div>
     </div>
@@ -29,14 +28,21 @@ export function mission() {
   <section class="section" style="padding-top:0">
     <div class="wrap split" style="align-items:start">
       <div class="prose" data-reveal>
-        <p>Golf keeps its history in trophies and scorecards. We keep it in the clothing —
-        the lambswool, the crests and the colours that belong to a particular week on a
-        particular course. Each piece is sourced, dated and graded honestly, then filed
-        under the championship era it came from, with the history written alongside it.</p>
-        <p>The first drop opens with the 2026 TOUR Championship at East Lake — thirty
-        players, Bobby Jones’s home club, and one of the last seasons to end there.
-        Everything else we find lives in Basic Stock, listed continuously as it is
-        photographed.</p>
+        <p>In today’s landscape and over the past decade in the golf industry, we have
+        seen a massive influx of low-quality and aesthetically offensive garments
+        polluting the market, most of which are on a death march to the landfill.
+        Whether it’s neon polyester polos or the tightest golf pants you’ve ever seen,
+        all of the slop combines to give golfwear a bad name. We are here to change
+        that. We want to save what is worth saving. We aim to offer a haven for those
+        who have grown just as tired as we have of this ultra-saturated and exhausting
+        industry.</p>
+        <p>Golf is far more than a game. It is a complex story fueled by beautiful
+        euphoria and grounded in utter dejection, and in the never-ending pursuit to
+        perform on the most stunning stages imaginable. Here at Tour Archive, we’re
+        obsessed with the history of triumphs, downfalls, and legacies this game has
+        left us, and we curate clothing that allows you to feel part of it. Everything
+        is second-hand, meticulously cleaned and refurbished, and sold with true golf
+        lovers in mind.</p>
       </div>
       <div data-reveal data-reveal-delay="0.08">
         <p class="eyebrow" style="margin-bottom:.9rem">Where to start</p>
