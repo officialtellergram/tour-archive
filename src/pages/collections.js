@@ -136,43 +136,6 @@ export function collectionDetail({ id }) {
       </div>
     </section>
 
-    <section class="section--tight section">
-      <div class="wrap">
-        <div class="essay-grid">
-          <div class="sticky" data-reveal>
-            <p class="eyebrow">The history</p>
-            <h2 class="display" style="font-size:clamp(1.8rem,3vw,3rem);margin:.5rem 0 1.2rem">
-              ${c.place}
-            </h2>
-            <p style="color:var(--ink-faint);font-size:.95rem;font-weight:300">${c.years}</p>
-            ${
-              c.sources?.length
-                ? `<div style="margin-top:2rem;border-top:1px solid var(--rule);padding-top:1rem">
-                     <p class="eyebrow" style="margin-bottom:.8rem">Sources</p>
-                     ${c.sources
-                       .map(
-                         (s) =>
-                           `<p style="margin:0 0 .6rem"><a class="text-link" href="${s.url}" target="_blank" rel="noopener">${s.label} <span>↗</span></a></p>`
-                       )
-                       .join('')}
-                   </div>`
-                : ''
-            }
-          </div>
-          <div class="prose" data-reveal data-reveal-delay="0.08">
-            ${c.essay.map((p) => `<p>${p}</p>`).join('')}
-            ${
-              c.essayBy
-                ? `<p class="eyebrow" style="margin-top:2rem;padding-top:1rem;border-top:1px solid var(--rule)">
-                     — ${c.essayBy}${c.essayDate ? ` · ${c.essayDate}` : ''}
-                   </p>`
-                : ''
-            }
-          </div>
-        </div>
-      </div>
-    </section>
-
     ${
       stock.length
         ? `<section class="section" id="pieces">
@@ -223,6 +186,44 @@ export function collectionDetail({ id }) {
             </div>
           </section>`
     }
+
+    <!-- The pieces lead; the history reads below them. -->
+    <section class="section--tight section">
+      <div class="wrap">
+        <div class="essay-grid">
+          <div class="sticky" data-reveal>
+            <p class="eyebrow">The history</p>
+            <h2 class="display" style="font-size:clamp(1.8rem,3vw,3rem);margin:.5rem 0 1.2rem">
+              ${c.place}
+            </h2>
+            <p style="color:var(--ink-faint);font-size:.95rem;font-weight:300">${c.years}</p>
+            ${
+              c.sources?.length
+                ? `<div style="margin-top:2rem;border-top:1px solid var(--rule);padding-top:1rem">
+                     <p class="eyebrow" style="margin-bottom:.8rem">Sources</p>
+                     ${c.sources
+                       .map(
+                         (s) =>
+                           `<p style="margin:0 0 .6rem"><a class="text-link" href="${s.url}" target="_blank" rel="noopener">${s.label} <span>↗</span></a></p>`
+                       )
+                       .join('')}
+                   </div>`
+                : ''
+            }
+          </div>
+          <div class="prose" data-reveal data-reveal-delay="0.08">
+            ${c.essay.map((p) => `<p>${p}</p>`).join('')}
+            ${
+              c.essayBy
+                ? `<p class="eyebrow" style="margin-top:2rem;padding-top:1rem;border-top:1px solid var(--rule)">
+                     — ${c.essayBy}${c.essayDate ? ` · ${c.essayDate}` : ''}
+                   </p>`
+                : ''
+            }
+          </div>
+        </div>
+      </div>
+    </section>
 
     <section class="section--tight section" style="border-top:1px solid var(--rule)">
       <div class="wrap" style="display:flex;justify-content:space-between;gap:2rem;flex-wrap:wrap">

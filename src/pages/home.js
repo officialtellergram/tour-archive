@@ -56,6 +56,79 @@ export function home() {
   const status = ev ? eventStatus(ev) : null;
   const drop = coll ? itemsIn(coll.id).filter(isAvailable) : [];
 
+  /* The drop pane LEADS the page while its window is open (live/closing);
+     outside the window the shop leads and the drop trails as a preview. */
+  const dropFirst = !!ev && (ev.phase === 'live' || ev.phase === 'closing');
+
+  const shopSection = `
+  <!-- ============ IN THE SHOP NOW ============ -->
+  <section class="section">
+    <div class="wrap">
+      ${sectionHead({
+        eyebrow: stock.length ? `${stock.length} piece${stock.length === 1 ? '' : 's'} available` : 'The shop',
+        title: 'In the shop now',
+        link: { href: '/archive', label: 'The full archive' },
+      })}
+      ${
+        stock.length
+          ? `<div class="grid-products" data-stagger>${stock.map(productCard).join('')}</div>`
+          : `<div class="empty-state" style="border-bottom:0">
+               <p class="eyebrow">Between listings</p>
+               <h3 class="display">The next pieces are being photographed</h3>
+               <p class="lede" style="text-align:center">
+                 Stock is photographed in house and listed one of one. Register for the drop
+                 notice and you'll see them first.
+               </p>
+             </div>`
+      }
+    </div>
+  </section>`;
+
+  /* Landing pane is stats + pieces only — Chal's essay stays on the
+     collection page, where the byline is. */
+  const featuredSection =
+    ev && coll
+      ? `
+  <!-- ============ FEATURED DROP ============ -->
+  <section class="section" style="background:var(--parchment-deep)">
+    <div class="wrap">
+      ${sectionHead({
+        eyebrow: `${coll.drop} · ${status.chip}`,
+        title: coll.name,
+        link: { href: `/collections/${coll.id}`, label: 'Open the collection' },
+      })}
+      <div class="split" style="align-items:start">
+        <div data-reveal>
+          <ul class="facts">
+            ${coll.facts.map((f) => `<li><span>${f.k}</span><b>${f.v}</b></li>`).join('')}
+            <li><span>Dates</span><b>${dateRange(ev)}</b></li>
+          </ul>
+        </div>
+        <div data-reveal data-reveal-delay="0.08">
+          ${
+            drop.length
+              ? `<div class="grid-products" data-stagger style="grid-template-columns:repeat(2,minmax(0,1fr))">
+                   ${drop.slice(0, 4).map(productCard).join('')}
+                 </div>`
+              : `<div class="empty-state" style="border-bottom:0;padding-top:1rem">
+                   <p class="eyebrow">${status.chip}</p>
+                   <h3 class="display" style="font-size:clamp(1.6rem,2.6vw,2.4rem)">
+                     The wardrobe is being assembled
+                   </h3>
+                   <p style="color:var(--ink-soft);font-weight:300;max-width:44ch;text-align:center">
+                     ${status.line}
+                   </p>
+                   <a class="btn btn--solid" href="/collections/${coll.id}" data-magnetic>
+                     Read the ${coll.name} file
+                   </a>
+                 </div>`
+          }
+        </div>
+      </div>
+    </div>
+  </section>`
+      : '';
+
   return `
   <section class="hero" data-hero>
     <div class="hero-bg" data-hero-backdrop>
@@ -116,74 +189,7 @@ export function home() {
     'Global submissions welcome',
   ])}
 
-  <!-- ============ IN THE SHOP NOW ============ -->
-  <section class="section">
-    <div class="wrap">
-      ${sectionHead({
-        eyebrow: stock.length ? `${stock.length} piece${stock.length === 1 ? '' : 's'} available` : 'The shop',
-        title: 'In the shop now',
-        link: { href: '/archive', label: 'The full archive' },
-      })}
-      ${
-        stock.length
-          ? `<div class="grid-products" data-stagger>${stock.map(productCard).join('')}</div>`
-          : `<div class="empty-state" style="border-bottom:0">
-               <p class="eyebrow">Between listings</p>
-               <h3 class="display">The next pieces are being photographed</h3>
-               <p class="lede" style="text-align:center">
-                 Stock is photographed in house and listed one of one. Register for the drop
-                 notice and you'll see them first.
-               </p>
-             </div>`
-      }
-    </div>
-  </section>
-
-  <!-- ============ FEATURED DROP ============ -->
-  ${
-    ev && coll
-      ? `
-  <section class="section" style="background:var(--parchment-deep)">
-    <div class="wrap">
-      ${sectionHead({
-        eyebrow: `${coll.drop} · ${status.chip}`,
-        title: coll.name,
-        link: { href: `/collections/${coll.id}`, label: 'Open the collection' },
-      })}
-      <div class="split" style="align-items:start">
-        <div data-reveal>
-          <!-- Chal's copy leads here, verbatim (essay[0]); no house-written lede above it -->
-          <p style="color:var(--ink-soft);font-weight:300;max-width:52ch">${coll.essay[0]}</p>
-          <ul class="facts" style="margin-top:2rem">
-            ${coll.facts.map((f) => `<li><span>${f.k}</span><b>${f.v}</b></li>`).join('')}
-            <li><span>Dates</span><b>${dateRange(ev)}</b></li>
-          </ul>
-        </div>
-        <div data-reveal data-reveal-delay="0.08">
-          ${
-            drop.length
-              ? `<div class="grid-products" data-stagger style="grid-template-columns:repeat(2,minmax(0,1fr))">
-                   ${drop.slice(0, 4).map(productCard).join('')}
-                 </div>`
-              : `<div class="empty-state" style="border-bottom:0;padding-top:1rem">
-                   <p class="eyebrow">${status.chip}</p>
-                   <h3 class="display" style="font-size:clamp(1.6rem,2.6vw,2.4rem)">
-                     The wardrobe is being assembled
-                   </h3>
-                   <p style="color:var(--ink-soft);font-weight:300;max-width:44ch;text-align:center">
-                     ${status.line}
-                   </p>
-                   <a class="btn btn--solid" href="/collections/${coll.id}" data-magnetic>
-                     Read the ${coll.name} file
-                   </a>
-                 </div>`
-          }
-        </div>
-      </div>
-    </div>
-  </section>`
-      : ''
-  }
+  ${dropFirst ? featuredSection + shopSection : shopSection + featuredSection}
 
   <!-- ============ THE FILES ============ -->
   <section class="section">
