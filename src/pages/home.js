@@ -73,7 +73,7 @@ export function home() {
         ev && coll
           ? `
       <p class="eyebrow" data-hero-lead style="color:var(--claret)">
-        <span>${coll.drop}</span>
+        <span>${ev.phase === 'live' ? `${coll.drop} · Out Now` : coll.drop}</span>
       </p>
       <h1 class="display">
         <span class="line-mask"><span style="color:var(--navy)">The Tour</span></span>
