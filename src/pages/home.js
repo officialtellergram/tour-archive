@@ -88,9 +88,9 @@ export function home() {
       </div>
       <div style="display:flex;gap:.85rem;flex-wrap:wrap;justify-content:center" data-hero-cta>
         <a class="btn btn--solid" href="/collections/${coll.id}" data-magnetic>
-          Preview ${coll.drop}
+          ${ev.phase === 'live' ? `Shop ${coll.drop}` : `Preview ${coll.drop}`}
         </a>
-        <a class="btn" href="/archive?filter=available" data-magnetic>In the shop now</a>
+        ${ev.phase === 'live' ? '' : `<a class="btn" href="/archive?filter=available" data-magnetic>In the shop now</a>`}
       </div>
       <p class="eyebrow" data-hero-cta style="max-width:52ch;text-align:center;line-height:1.8">
         ${status.line}

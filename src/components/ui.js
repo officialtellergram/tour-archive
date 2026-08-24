@@ -105,7 +105,9 @@ export function collectionTile(collection) {
   const stock = itemsIn(collection.id);
   const live = stock.filter(isAvailable).length;
   const lead = stock[0];
-  const mosaic = collection.id === BASIC_STOCK ? mosaicMedia(stock) : '';
+  // Any collection with photographed stock earns the mosaic (mosaicMedia
+  // returns '' when nothing is shot, so research files keep the drawn canvas).
+  const mosaic = mosaicMedia(stock);
   return `
   <a class="tile" href="/collections/${collection.id}"
      style="--accent:${collection.accent}">
