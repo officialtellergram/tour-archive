@@ -6,7 +6,6 @@ import {
   featuredCollection,
   getCollection,
   daysUntil,
-  dateRange,
 } from '../data/store.js';
 import { productCard, collectionTile, marquee, sectionHead } from '../components/ui.js';
 
@@ -84,8 +83,9 @@ export function home() {
     </div>
   </section>`;
 
-  /* Landing pane is stats + pieces only — Chal's essay stays on the
-     collection page, where the byline is. */
+  /* Landing pane is a SHOWCASE — the full drop in the same full-width grid
+     as the shop pane. Tournament details and Chal's essay both live on the
+     collection page; here the pieces carry it. */
   const featuredSection =
     ev && coll
       ? `
@@ -97,34 +97,22 @@ export function home() {
         title: coll.name,
         link: { href: `/collections/${coll.id}`, label: 'Open the collection' },
       })}
-      <div class="split" style="align-items:start">
-        <div data-reveal>
-          <ul class="facts">
-            ${coll.facts.map((f) => `<li><span>${f.k}</span><b>${f.v}</b></li>`).join('')}
-            <li><span>Dates</span><b>${dateRange(ev)}</b></li>
-          </ul>
-        </div>
-        <div data-reveal data-reveal-delay="0.08">
-          ${
-            drop.length
-              ? `<div class="grid-products" data-stagger style="grid-template-columns:repeat(2,minmax(0,1fr))">
-                   ${drop.slice(0, 4).map(productCard).join('')}
-                 </div>`
-              : `<div class="empty-state" style="border-bottom:0;padding-top:1rem">
-                   <p class="eyebrow">${status.chip}</p>
-                   <h3 class="display" style="font-size:clamp(1.6rem,2.6vw,2.4rem)">
-                     The wardrobe is being assembled
-                   </h3>
-                   <p style="color:var(--ink-soft);font-weight:300;max-width:44ch;text-align:center">
-                     ${status.line}
-                   </p>
-                   <a class="btn btn--solid" href="/collections/${coll.id}" data-magnetic>
-                     Read the ${coll.name} file
-                   </a>
-                 </div>`
-          }
-        </div>
-      </div>
+      ${
+        drop.length
+          ? `<div class="grid-products" data-stagger>${drop.map(productCard).join('')}</div>`
+          : `<div class="empty-state" style="border-bottom:0;padding-top:1rem">
+               <p class="eyebrow">${status.chip}</p>
+               <h3 class="display" style="font-size:clamp(1.6rem,2.6vw,2.4rem)">
+                 The wardrobe is being assembled
+               </h3>
+               <p style="color:var(--ink-soft);font-weight:300;max-width:44ch;text-align:center">
+                 ${status.line}
+               </p>
+               <a class="btn btn--solid" href="/collections/${coll.id}" data-magnetic>
+                 Read the ${coll.name} file
+               </a>
+             </div>`
+      }
     </div>
   </section>`
       : '';
