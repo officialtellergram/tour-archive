@@ -244,10 +244,16 @@ for (const [label, fn] of deskCases) {
     errors.push('pdpMedia carousel: every thumb must lazy-load');
   if (!rail.includes('data-pdp-stage') || !rail.includes('view 1 of 8'))
     errors.push('pdpMedia carousel: stage or its frame-count alt is missing');
+  if ((rail.match(/data-step="/g) || []).length !== 2)
+    errors.push('pdpMedia carousel: expected exactly the prev/next stage arrows');
+  if (!rail.includes('aria-label="Previous photo"') || !rail.includes('aria-label="Next photo"'))
+    errors.push('pdpMedia carousel: stage arrows must carry their labels');
 
   const single = pdpMedia(pdpSingle);
   if (single.includes('data-pdp-thumbs'))
     errors.push('pdpMedia single photo: thumb rail leaked into the hero state');
+  if (single.includes('data-step'))
+    errors.push('pdpMedia single photo: stage arrows leaked — one frame has nowhere to step');
   if (pdpMedia({ ...pdpSingle, photos: ['stock/x.jpg'] }) !== single)
     errors.push('pdpMedia: a one-frame carousel must collapse to the hero state byte-for-byte');
 
@@ -256,6 +262,8 @@ for (const [label, fn] of deskCases) {
     errors.push('pdpMedia drawn: expected the 3 drawn views');
   if (drawn.includes('data-idx'))
     errors.push('pdpMedia drawn: photo thumbs leaked into the drawn state');
+  if (drawn.includes('data-step'))
+    errors.push('pdpMedia drawn: stage arrows leaked into the drawn state');
 }
 
 /* Mosaic shape pins — filled grid vs empty-store fallback. Never byte-pin the

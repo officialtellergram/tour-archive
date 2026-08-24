@@ -1378,6 +1378,37 @@ h3.display {
   grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
   gap: 0.6rem;
 }
+/* Stage arrows — the carousel's walk-through affordance beside the rail.
+   Inside .plate (position:relative, overflow:hidden), above the photo. */
+.pdp-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid var(--rule-strong);
+  background: rgba(244, 240, 230, 0.88);
+  color: var(--ink);
+  font: 300 1.5rem/1 var(--display);
+  padding-bottom: 4px; /* optical centre for the ‹ › glyphs */
+  cursor: pointer;
+  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+.pdp-arrow:hover {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: var(--parchment);
+}
+.pdp-arrow--prev {
+  left: 0.7rem;
+}
+.pdp-arrow--next {
+  right: 0.7rem;
+}
 .pdp-info {
   position: sticky;
   top: calc(var(--header-h) + 2rem);

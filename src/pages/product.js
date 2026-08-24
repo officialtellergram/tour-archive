@@ -74,6 +74,8 @@ export function pdpMedia(item) {
             ${plateTag(item)}
             <img class="plate-photo" src="${mediaURL(photos[0])}"
               alt="${alt} — view 1 of ${photos.length}" />
+            <button class="pdp-arrow pdp-arrow--prev" data-step="-1" aria-label="Previous photo">&lsaquo;</button>
+            <button class="pdp-arrow pdp-arrow--next" data-step="1" aria-label="Next photo">&rsaquo;</button>
           </div>
           <div class="pdp-thumbs pdp-thumbs--photos" data-pdp-thumbs>
             ${photos
@@ -355,26 +357,41 @@ export function mountProduct(outlet) {
 
   const stage = outlet.querySelector('[data-pdp-stage]');
   const thumbs = outlet.querySelector('[data-pdp-thumbs]');
-  if (stage && thumbs && item) {
-    thumbs.addEventListener('click', (e) => {
+  if (stage && item) {
+    // One frame-setter shared by the thumb rail and the stage arrows: swap
+    // src on the existing stage img — never insert a second one — and keep
+    // the pressed thumb in step. Index wraps in both directions.
+    const photos = Array.isArray(item.photos) ? item.photos : [];
+    let cur = 0;
+    const showFrame = (i) => {
+      const img = stage.querySelector('.plate-photo');
+      if (!photos.length || !img) return;
+      cur = ((i % photos.length) + photos.length) % photos.length;
+      img.src = mediaURL(photos[cur]);
+      img.alt = `${item.name} — view ${cur + 1} of ${photos.length}`;
+      thumbs
+        ?.querySelectorAll('[data-idx]')
+        .forEach((b) => b.setAttribute('aria-pressed', String(Number(b.dataset.idx) === cur)));
+    };
+
+    stage.addEventListener('click', (e) => {
+      const arrow = e.target.closest('[data-step]');
+      if (arrow) showFrame(cur + Number(arrow.dataset.step));
+    });
+
+    thumbs?.addEventListener('click', (e) => {
       const btn = e.target.closest('[data-view], [data-idx]');
       if (!btn) return;
-      thumbs
-        .querySelectorAll('[data-view], [data-idx]')
-        .forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
       if (btn.dataset.view) {
+        thumbs
+          .querySelectorAll('[data-view]')
+          .forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
         const svg = stage.querySelector('svg');
         if (svg) svg.remove();
         stage.insertAdjacentHTML('beforeend', garmentSVG(item, { view: btn.dataset.view }));
         return;
       }
-      // Photo branch: swap src on the existing stage img — never insert a
-      // second one. No svg exists in photo states.
-      const frame = (item.photos || [])[Number(btn.dataset.idx)];
-      const img = stage.querySelector('.plate-photo');
-      if (!frame || !img) return;
-      img.src = mediaURL(frame);
-      img.alt = `${item.name} — view ${Number(btn.dataset.idx) + 1} of ${item.photos.length}`;
+      showFrame(Number(btn.dataset.idx));
     });
   }
 
