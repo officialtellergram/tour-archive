@@ -93,6 +93,7 @@ const journalIds = new Set(journal.map((j) => j.id));
 
 const KNOWN_GARMENTS = new Set([
   'sweater', 'cardigan', 'vest', 'polo', 'rugby', 'windshirt', 'jacket', 'trousers', 'cap',
+  'memorabilia', // non-garment stock (framed pieces, programmes) — TC26 drop
 ]);
 
 /* data integrity */
@@ -247,8 +248,11 @@ for (const c of collections) {
         if (typeof s.sku !== 'string' || !s.sku.trim()) {
           errors.push(`${where}: sku must be a non-empty string — recorded verbatim from Seller Hub`);
         } else {
-          if (!/^TA[\s._-]?GS[\s._-]?\d{2}$/i.test(s.sku))
-            warnings.push(`${where}: sku "${s.sku}" is off the TA-GS-NN pattern — kept verbatim by design; fix the label on eBay first, then hand-edit here`);
+          // TA_<SERIES>_NN — series is letters plus optional digits (GS general
+          // stock, TC26 the Tour Championship drop). Anything else (TS_GA_08
+          // typo class) still warns.
+          if (!/^TA[\s._-]?[A-Z]{2}\d{0,2}[\s._-]?\d{2}$/i.test(s.sku))
+            warnings.push(`${where}: sku "${s.sku}" is off the TA-<SERIES>-NN pattern — kept verbatim by design; fix the label on eBay first, then hand-edit here`);
           const key = s.sku.toUpperCase().replace(/[\s._-]/g, '');
           if (skuSeen.has(key))
             errors.push(`${where}: sku "${s.sku}" duplicates ${skuSeen.get(key)} — two pieces cannot share a Seller Hub label`);

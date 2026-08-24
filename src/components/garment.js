@@ -75,6 +75,10 @@ const SILHOUETTES = {
     'M92,254 C92,172 134,134 200,134 C266,134 308,172 308,254 ' +
     'C322,258 328,270 322,280 C300,300 250,310 200,310 ' +
     'C150,310 100,300 78,280 C72,270 78,258 92,254 Z',
+
+  // Non-garment stock (framed pieces, programmes, tickets): a frame. The
+  // TC26 drop introduced memorabilia; a shirt outline would be a lie.
+  memorabilia: () => 'M96,104 L304,104 L304,336 L96,336 Z',
 };
 
 /* Neckline / construction detail. Everything here is clipped to the
@@ -119,6 +123,9 @@ function detailPaths(type) {
         'M112,180 C150,208 250,208 288,180',
         'M92,254 C140,272 260,272 308,254',
       ];
+    case 'memorabilia':
+      // The mat inside the frame.
+      return ['M124,132 L276,132 L276,308 L124,308 Z'];
     default:
       return [];
   }
