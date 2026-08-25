@@ -42,6 +42,34 @@ const ITEM_PROBE = `(() => {
   });
 })()`;
 
+/* Sold-state forensics: every marker that might separate a SOLD 1-of-1
+   page from a live one and from an ended-unsold one. The naive body-text
+   'ended' test reads false on sold pages (verified 24 Aug 2026), so this
+   collects the structured signals instead. */
+const SOLD_PROBE = `(() => {
+  const t = (sel) => document.querySelector(sel)?.textContent?.trim() || '';
+  const body = document.body.innerText || '';
+  const ld = [...document.querySelectorAll('script[type="application/ld+json"]')]
+    .map((s) => { try { return JSON.parse(s.textContent); } catch { return null; } })
+    .filter(Boolean);
+  const avail = JSON.stringify(ld).match(/schema\\.org\\/(InStock|SoldOut|OutOfStock|Discontinued|LimitedAvailability)/g) || [];
+  const has = (sel) => !!document.querySelector(sel);
+  return JSON.stringify({
+    title: t('h1.x-item-title__mainTitle') || t('h1'),
+    price: t('.x-price-primary'),
+    ldAvailability: [...new Set(avail)],
+    binButton: has('#binBtn_btn, [data-testid="x-bin-action"] a, .x-bin-action a, a[href*="/bin/"]'),
+    cartButton: has('#atcBtn_btn_1, [data-testid="x-atc-action"], .x-atc-action'),
+    offerButton: has('#boBtn_btn, [data-testid="x-offer-action"]'),
+    endedBanner: has('.x-item-ended, [data-testid="x-item-ended"], .d-statusmessage'),
+    statusText: t('.x-item-ended, [data-testid="x-item-ended"], .d-statusmessage, .ux-message').slice(0, 160),
+    soldText: /this item is out of stock|item sold|listing (?:has )?ended|sold on|no longer available|This listing was ended/i.test(body),
+    soldSnippet: (body.match(/.{0,50}(?:out of stock|item sold|listing (?:has )?ended|sold on [A-Z][a-z]{2}|no longer available|listing was ended).{0,50}/i) || [''])[0].replace(/\\s+/g, ' '),
+    qty: t('.d-quantity__availability, [data-testid="d-quantity"]').slice(0, 80),
+    pageItemId: (location.href.match(/\\/itm\\/(\\d+)/) || [])[1] || '',
+  });
+})()`;
+
 const SELLER_PROBE = `(() => {
   const items = [];
   document.querySelectorAll('li.s-item, li.s-card').forEach((li) => {
@@ -394,6 +422,7 @@ try {
       MODE === 'seller' ? SELLER_PROBE
       : MODE === 'diag' ? DIAG_PROBE
       : MODE === 'images' ? IMAGES_PROBE
+      : MODE === 'sold' ? SOLD_PROBE
       : ITEM_PROBE
     );
     const data = raw ? JSON.parse(raw) : null;

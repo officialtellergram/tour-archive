@@ -58,6 +58,20 @@ jobs:
       - name: Check the deploy is sane
         run: node scripts/deploy.mjs
 
+      # DIAGNOSTIC (temporary): can a runner read the eBay seller index? If
+      # yes, sold-sync can run at build time daily with no local task and no
+      # auto-commits. Result ships as dist/api/ebay-probe.json; never fatal.
+      - name: eBay index reachability probe
+        if: ${{ always() }}
+        run: |
+          code=$(curl -s -o /tmp/mhtml.html -w '%{http_code}' --max-time 25 \
+            -A 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0' \
+            'https://www.ebay.com/sch/tourarchive/m.html' || echo 000)
+          rows=$(grep -o 's-item__title\|s-card__title' /tmp/mhtml.html | wc -l)
+          title=$(grep -o '<title>[^<]*' /tmp/mhtml.html | head -1 | sed 's/<title>//')
+          echo "{\"http\":$code,\"rows\":$rows,\"title\":\"${title//\"/}\",\"at\":\"$(date -u +%FT%TZ)\"}" > dist/api/ebay-probe.json
+          cat dist/api/ebay-probe.json
+
       # Live-motion reveal gate: drives headless Chrome at 390x844 against the
       # BUILT site and fails if any scroll-revealed content never reveals. The
       # layout gate freezes animations so it cannot see this class; the bug is

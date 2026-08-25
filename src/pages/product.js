@@ -69,7 +69,7 @@ export function pdpMedia(item) {
   if (photos.length > 1) {
     const alt = String(item.name).replace(/"/g, '&quot;');
     return `
-        <div class="pdp-media" data-reveal>
+        <div class="pdp-media${item.sold ? ' is-sold' : ''}" data-reveal>
           <div class="plate plate--lg plate--photo" data-pdp-stage>
             ${plateTag(item)}
             <img class="plate-photo" src="${mediaURL(photos[0])}"
@@ -93,7 +93,7 @@ export function pdpMedia(item) {
 
   const views = ['front', 'detail', 'flat'];
   return `
-        <div class="pdp-media" data-reveal>
+        <div class="pdp-media${item.sold ? ' is-sold' : ''}" data-reveal>
           <div class="plate plate--lg ${item.photo ? 'plate--photo' : ''}" data-pdp-stage>
             ${plateTag(item)}
             ${plateMedia(item, { view: 'front' })}

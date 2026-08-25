@@ -913,10 +913,16 @@ h3.display {
   border: 1px solid var(--rule);
   color: var(--ink-soft);
 }
+/* Sold: the one tag that must be read at a glance — claret on the greyed
+   plate, larger and heavier than the channel chips. */
 .plate-tag--sold {
-  background: var(--ink);
-  border-color: var(--ink);
+  background: var(--claret);
+  border-color: var(--claret);
   color: var(--parchment);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  padding: 0.55rem 0.9rem;
 }
 .plate-tag--soon {
   background: var(--brass);
@@ -950,8 +956,13 @@ h3.display {
 .card:hover .plate svg {
   transform: scale(1.055) translateY(-1.5%);
 }
-.card.is-sold .plate {
-  opacity: 0.62;
+/* Sold plates go monotone rather than faint: the photograph stays legible
+   as a record, the colour drains, and the claret Sold tag does the talking.
+   The PDP stage gets the same treatment via .pdp-media.is-sold. */
+.card.is-sold .plate,
+.pdp-media.is-sold .plate {
+  opacity: 0.88;
+  filter: grayscale(1);
 }
 
 .card-body {
