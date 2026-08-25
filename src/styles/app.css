@@ -942,15 +942,6 @@ h3.display {
   font-size: 12px;
   padding: 0.65rem 0;
 }
-.card.is-sold .plate::after,
-.pdp-media.is-sold .plate::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  background: rgba(244, 240, 230, 0.58);
-  pointer-events: none;
-}
 .plate-tag--soon {
   background: var(--brass);
   border-color: var(--brass);
@@ -986,14 +977,8 @@ h3.display {
 /* Sold plates go monotone rather than faint: the photograph stays legible
    as a record, the colour drains, and the claret Sold tag does the talking.
    The PDP stage gets the same treatment via .pdp-media.is-sold. */
-/* Filter the PHOTOGRAPH, never the plate — a plate-level filter would drain
-   the claret sash to grey along with the garment. */
-.card.is-sold .plate-photo,
-.card.is-sold .plate > svg,
-.pdp-media.is-sold .plate-photo {
-  opacity: 0.88;
-  filter: grayscale(1);
-}
+/* Sold plates keep their colour (team call, 25 Aug 2026): the photograph is
+   untouched and the claret sash alone says sold. No filter, no veil. */
 
 .card-body {
   display: grid;
