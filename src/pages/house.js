@@ -177,9 +177,11 @@ export function privacy() {
   <section class="section" style="padding-top:0">
     <div class="wrap prose" data-reveal style="max-width:68ch">
       <p><strong>What we collect.</strong> Browsing the archive requires no account and sets
-      no cookies. We run no analytics and no trackers. If you give us your email address —
-      for drop notices or by writing to us — we use it only to reply or to tell you about
-      drops. We never sell it, share it, or add you to anything you didn't ask for.</p>
+      no cookies. We see traffic only as anonymous, aggregate counts — pages viewed and
+      visits per day, never profiles, never cross-site tracking. If you give us your email
+      address — for drop notices or by writing to us — we use it only to reply or to tell
+      you about drops. We never sell it, share it, or add you to anything you didn't ask
+      for.</p>
 
       <p><strong>Buying a piece.</strong> Checkout for marketplace-listed pieces completes on
       eBay or Depop, under their privacy policies — we never see your payment details. If we
@@ -187,10 +189,11 @@ export function privacy() {
       provider; card numbers would go to them, never to us, and a shipping address would be
       used solely to ship your piece.</p>
 
-      <p><strong>What the plumbing sees.</strong> Like nearly every website: our host
-      (GitHub Pages) keeps standard server logs, and our typefaces load from Google Fonts,
-      which means Google's servers see those requests. Neither is under our control, and we
-      add nothing on top.</p>
+      <p><strong>What the plumbing sees.</strong> Like nearly every website: the site is
+      served through Cloudflare, which fronts every request and gives us cookieless,
+      aggregate visit counts; our host (GitHub Pages) keeps standard server logs; and our
+      typefaces load from Google Fonts, which means Google's servers see those requests.
+      None of it identifies you to us, and we add nothing on top.</p>
 
       <p><strong>Questions, or want something removed?</strong> Write to
       <a href="mailto:tourarchive.help@gmail.com" style="border-bottom:1px solid var(--rule-strong)">tourarchive.help@gmail.com</a>
