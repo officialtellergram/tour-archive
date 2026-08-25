@@ -322,6 +322,18 @@ check('site-only drops keep a comparables link, not a checkout link', () => {
 
 const { mapManifestItem, manifestStock } = await import('../server/inventory.mjs');
 
+check('retired entries never map into stock', () => {
+  // Over the REAL manifest: `retired` keeps the record, removes the piece.
+  const raw = JSON.parse(
+    readFileSync(new URL('../public/stock/manifest.json', import.meta.url), 'utf8')
+  );
+  const retired = raw.items.filter((e) => e.retired).map((e) => e.id);
+  const mapped = new Set(manifestStock().map((i) => i.id));
+  for (const id of retired) assert(!mapped.has(id), `${id} is retired but still maps into stock`);
+  const probe = mapManifestItem({ ...manifestPlain, retired: true });
+  assert(probe, 'mapManifestItem itself stays retired-agnostic — the filter lives in manifestStock');
+});
+
 check('manifest stock leads with the highest price, newest sweep breaking ties', () => {
   // Over the REAL manifest: the file appends new mints at the end, so if this
   // ordering ever regresses, display priority silently becomes file order.

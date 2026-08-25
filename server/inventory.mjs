@@ -137,7 +137,10 @@ export function manifestStock() {
   try {
     const manifest = JSON.parse(readFileSync(MANIFEST_PATH, 'utf8'));
     return (manifest.items || [])
-      .filter((i) => !i._missing)
+      // `retired`: the listing ended without a sale and was not relisted —
+      // the piece leaves display but its record (photos, copy, specifics)
+      // stays archived in the manifest. Un-retiring is deleting the flag.
+      .filter((i) => !i._missing && !i.retired)
       // Display priority: price, highest first — the strongest pieces lead
       // the archive. Ties break to the newer sweep via the `_ingested` stamp
       // (YYYY-MM-DD, ISO-sortable as a plain string). Sorted HERE because the
