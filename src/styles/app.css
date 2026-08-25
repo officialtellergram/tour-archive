@@ -986,8 +986,11 @@ h3.display {
 /* Sold plates go monotone rather than faint: the photograph stays legible
    as a record, the colour drains, and the claret Sold tag does the talking.
    The PDP stage gets the same treatment via .pdp-media.is-sold. */
-.card.is-sold .plate,
-.pdp-media.is-sold .plate {
+/* Filter the PHOTOGRAPH, never the plate — a plate-level filter would drain
+   the claret sash to grey along with the garment. */
+.card.is-sold .plate-photo,
+.card.is-sold .plate > svg,
+.pdp-media.is-sold .plate-photo {
   opacity: 0.88;
   filter: grayscale(1);
 }
