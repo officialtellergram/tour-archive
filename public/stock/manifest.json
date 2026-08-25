@@ -1196,7 +1196,8 @@
         "Performance/Activity": "Golf"
       },
       "_specsPulled": "2026-08-20",
-      "file": "izod-abstract-golf-polo.jpg"
+      "file": "izod-abstract-golf-polo.jpg",
+      "sold": true
     },
     {
       "id": "stock-cross-creek-polo",
