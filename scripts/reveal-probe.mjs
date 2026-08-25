@@ -182,9 +182,12 @@ try {
       window.scrollTo(0, de.scrollHeight);
       return 'ok';
     })()`);
-    await sleep(2500); // stagger tail on the largest grid
-
-    const raw = await evaluate(`(() => {
+    // Poll until settled rather than sleeping a fixed window: a 35-card grid
+    // staggers ~2.7s on its own and a CI runner is slower still, so a single
+    // early sample fails on SPEED. The gate must fail only on nodes that
+    // NEVER reveal — so it keeps sampling, generously, before calling stuck.
+    const SETTLE_MS = 15_000;
+    const SAMPLE = `(() => {
       const owned = [
         ...document.querySelectorAll('[data-stagger] > *'),
         ...document.querySelectorAll('[data-reveal]'),
@@ -199,13 +202,20 @@ try {
         }
       }
       return JSON.stringify({ owned: owned.length, stuck: stuck.slice(0, 8), stuckCount: stuck.length });
-    })()`);
-    const r = JSON.parse(raw || '{}');
-    if (r.stuckCount > 0) {
-      console.log(`${C.red}✖ ${route}: ${r.stuckCount}/${r.owned} reveal-owned nodes never revealed — ${r.stuck.join(', ')}${C.off}`);
+    })()`;
+    const t0 = Date.now();
+    let r = { owned: 0, stuck: [], stuckCount: -1 };
+    while (Date.now() - t0 < SETTLE_MS) {
+      r = JSON.parse((await evaluate(SAMPLE)) || '{"owned":0,"stuck":[],"stuckCount":-1}');
+      if (r.stuckCount === 0) break;
+      await sleep(500);
+    }
+    const took = ((Date.now() - t0) / 1000).toFixed(1);
+    if (r.stuckCount !== 0) {
+      console.log(`${C.red}✖ ${route}: ${r.stuckCount}/${r.owned} reveal-owned nodes never revealed in ${SETTLE_MS / 1000}s — ${r.stuck.join(', ')}${C.off}`);
       failures++;
     } else {
-      console.log(`${C.green}✔${C.off} ${route} ${C.dim}— ${r.owned} reveal-owned nodes all visible after scroll-through${C.off}`);
+      console.log(`${C.green}✔${C.off} ${route} ${C.dim}— ${r.owned} reveal-owned nodes all visible ${took}s after scroll-through${C.off}`);
     }
   }
 

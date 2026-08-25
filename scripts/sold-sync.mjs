@@ -70,7 +70,8 @@ say(`${C.dim}   ${live.size} listings on the seller index${C.off}`);
 /* ---------------- 2. diff against the manifest ---------------- */
 
 const manifest = JSON.parse(readFileSync(MANIFEST, 'utf8'));
-const entries = manifest.items.filter((e) => itmId(e.listingUrl) && !e.sold && !e._missing);
+// Retired pieces are settled by hand — never re-probed, never re-reported.
+const entries = manifest.items.filter((e) => itmId(e.listingUrl) && !e.sold && !e.retired && !e._missing);
 const known = new Set(manifest.items.map((e) => itmId(e.listingUrl)).filter(Boolean));
 const offIndex = entries.filter((e) => !live.has(itmId(e.listingUrl)));
 const unminted = index.items.filter((i) => !known.has(itmId(i.link)));
