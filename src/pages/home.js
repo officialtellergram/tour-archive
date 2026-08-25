@@ -47,13 +47,16 @@ function eventStatus(event) {
 
 export function home() {
   const featured = featuredCollection();
-  const stock = items().filter(isAvailable);
+  // Sold pieces STAY on the page, marked — the record of demand is the point.
+  // Counts still speak to availability.
+  const stock = items();
+  const available = stock.filter(isAvailable);
   const tc = getCollection('tour-championship-2026');
 
   const ev = featured?.event;
   const coll = featured?.collection;
   const status = ev ? eventStatus(ev) : null;
-  const drop = coll ? itemsIn(coll.id).filter(isAvailable) : [];
+  const drop = coll ? itemsIn(coll.id) : [];
 
   /* The drop pane LEADS the page while its window is open (live/closing);
      outside the window the shop leads and the drop trails as a preview. */
@@ -64,7 +67,7 @@ export function home() {
   <section class="section">
     <div class="wrap">
       ${sectionHead({
-        eyebrow: stock.length ? `${stock.length} piece${stock.length === 1 ? '' : 's'} available` : 'The shop',
+        eyebrow: available.length ? `${available.length} piece${available.length === 1 ? '' : 's'} available` : 'The shop',
         title: 'In the shop now',
         link: { href: '/archive', label: 'The full archive' },
       })}
