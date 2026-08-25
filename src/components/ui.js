@@ -43,7 +43,9 @@ export function plateMedia(item, opts = {}) {
 }
 
 export function plateTag(item) {
-  if (item.sold) return `<span class="plate-tag plate-tag--sold">Sold</span>`;
+  // Sold: the corner sash carries the word; the parchment veil is CSS on the
+  // plate (.is-sold ::after). No channel chip — it isn't on the marketplace.
+  if (item.sold) return `<span class="plate-sash" aria-label="Sold">Sold</span>`;
   if (item.upcoming) return `<span class="plate-tag plate-tag--soon">Drop 01</span>`;
   // Syndicated stock checks out on the marketplace, so say so on the card
   // rather than surprising the buyer at the button.

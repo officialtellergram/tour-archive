@@ -913,16 +913,43 @@ h3.display {
   border: 1px solid var(--rule);
   color: var(--ink-soft);
 }
-/* Sold: the one tag that must be read at a glance — claret on the greyed
-   plate, larger and heavier than the channel chips. */
-.plate-tag--sold {
+/* Sold: a claret corner sash carries the word (the plate's own overflow
+   clips its ends), over a parchment veil laid by .is-sold ::after below.
+   The PDP stage is larger, so its sash scales up. */
+.plate-sash {
+  position: absolute;
+  z-index: 3;
+  top: 22px;
+  right: -44px;
+  width: 190px;
+  transform: rotate(45deg);
   background: var(--claret);
-  border-color: var(--claret);
   color: var(--parchment);
-  font-size: 11px;
+  text-align: center;
+  font-family: var(--sans);
+  font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.26em;
-  padding: 0.55rem 0.9rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  padding: 0.5rem 0;
+  box-shadow: 0 1px 0 rgba(22, 21, 15, 0.15);
+  pointer-events: none;
+}
+.pdp-media.is-sold .plate-sash {
+  top: 30px;
+  right: -58px;
+  width: 250px;
+  font-size: 12px;
+  padding: 0.65rem 0;
+}
+.card.is-sold .plate::after,
+.pdp-media.is-sold .plate::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: rgba(244, 240, 230, 0.58);
+  pointer-events: none;
 }
 .plate-tag--soon {
   background: var(--brass);
