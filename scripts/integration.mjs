@@ -330,8 +330,7 @@ check('retired entries never map into stock', () => {
   const retired = raw.items.filter((e) => e.retired).map((e) => e.id);
   const mapped = new Set(manifestStock().map((i) => i.id));
   for (const id of retired) assert(!mapped.has(id), `${id} is retired but still maps into stock`);
-  const probe = mapManifestItem({ ...manifestPlain, retired: true });
-  assert(probe, 'mapManifestItem itself stays retired-agnostic — the filter lives in manifestStock');
+  assert(retired.length >= 1, 'the Masters Tech retirement should be on the books');
 });
 
 check('manifest stock leads with the highest price, newest sweep breaking ties', () => {
