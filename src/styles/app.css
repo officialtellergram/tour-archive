@@ -597,9 +597,11 @@ h3.display {
   will-change: transform;
   overflow: hidden;
 }
-/* Tour Championship backdrop plates. Crossfade is opacity ONLY (the parallax
-   transform lives on the parent); subject stays centred as a phone's portrait
-   crop narrows, and 1920w sources render at-or-above 1:1 CSS pixels at 390px. */
+/* Landing backdrop plates. Crossfade is opacity ONLY (the parallax transform
+   lives on the parent); subject stays centred as a phone's portrait crop
+   narrows. Plates ship at 1760w / 1440w / 1600w: their in-file headroom/crop
+   ratios (1.329 / 1.134 / 1.369) keep each at-or-above 1:1 CSS pixels at
+   390x844 through the 1.09 drift (floors 1516 / 1294 / 1562 px). */
 .hero-slide {
   position: absolute;
   inset: 0;
@@ -613,14 +615,20 @@ h3.display {
 .hero-slide.is-on {
   opacity: 1;
 }
-/* Player plates are cropped in-file so the subject sits at 50% horizontally.
-   The Fleetwood photograph shipped with zero headroom (face at 4%), so every
-   top overlay — overscan, drift scale, a wrapped header — found his face
-   first. The file now carries 190px of seamless feathered bokeh headroom
-   (face at 25%), which clears them all at once; the crop stays top-anchored
-   so any vertical loss comes off his trousers, never his face. */
+/* Per-plate framing (slots are positional — keep in step with HERO_BACKDROPS).
+   Slide 1, Adobe #1708134 clubhouse: 300px feathered sky headroom in-file so
+   the roof ridge clears the header; default 50% 45%. Slide 2, Adobe #520602604
+   Atlanta skyline aerial: 700px feathered haze headroom in-file (1.134 ratio);
+   biased right so the tower cluster and the pond both survive a phone's
+   24%-wide window, high so the skyline clears the header once the plate goes
+   width-fit (>= 1.134 W/1.24H). Slide 3, Adobe #1708141 pines: recentred
+   in-file (x 16-100%, y 8-100%) and biased right so both trunks and the far
+   clubhouse sit inside the phone window. */
+.hero-slide:nth-of-type(2) {
+  object-position: 65% 30%;
+}
 .hero-slide:nth-of-type(3) {
-  object-position: 50% 0%;
+  object-position: 72% 45%;
 }
 /* Montage drift — each plate breathes on its own clock and bearing, so a
    deal always lands mid-movement, the way cut footage does. Scale never
@@ -640,14 +648,9 @@ h3.display {
   from { transform: scale(1.04) translate3d(0.5%, 0.6%, 0); }
   to { transform: scale(1.08) translate3d(-0.5%, -0.4%, 0); }
 }
-@keyframes hero-drift-d {
-  from { transform: scale(1.08); }
-  to { transform: scale(1.03) translate3d(0.6%, 0.6%, 0); }
-}
 .hero-slide:nth-of-type(1) { animation: hero-drift-a 26s ease-in-out infinite alternate; }
 .hero-slide:nth-of-type(2) { animation: hero-drift-b 32s ease-in-out infinite alternate; }
 .hero-slide:nth-of-type(3) { animation: hero-drift-c 24s ease-in-out infinite alternate; }
-.hero-slide:nth-of-type(4) { animation: hero-drift-d 29s ease-in-out infinite alternate; }
 @media (prefers-reduced-motion: reduce) {
   .hero-slide {
     animation: none;
@@ -656,8 +659,9 @@ h3.display {
 /* The veil owns ALL muting: photographs are a muted plate under parchment,
    never a full-strength backdrop. Strongest where the text mass sits (display
    centre, meta rail + buttons low), clearest above the logo. Ink display text
-   composites >=13:1 over the darkest plate region; the meta rail sits on
-   near-plain parchment. */
+   composites >=8.5:1 (AAA) in the display band and >=6:1 at the column corners
+   over the darkest plate region; the claret em runs ~5:1 (AA); the meta rail
+   sits on near-plain parchment. */
 /* Inverse transparency, per the deck-card rule: the scrim is owned by the
    copy. The frame runs near-clear so the photograph leads; a soft parchment
    pool sits behind the text column only, so every token — including the

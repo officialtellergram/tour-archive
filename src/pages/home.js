@@ -12,18 +12,21 @@ import { productCard, collectionTile, marquee, sectionHead } from '../components
 const BASE_URL = (import.meta.env?.BASE_URL || '/').replace(/\/*$/, '/');
 
 /**
- * The Tour Championship backdrop plates, in rotation order. Slide 1 is the
- * only plate near-native height in the hero slot, so it sits sharpest under
- * the display text; the format outlier ran last until it became a JPEG.
- * Paths are public/-relative; audit pins each to a file on disk, the 4-count,
- * the ?v stamp (Pages serves public/ unhashed behind a 600s cache), and the
- * index.html preload's agreement with slide 1.
+ * The landing backdrop plates, in rotation order — three Adobe Stock
+ * Standard-licensed derivatives (asset IDs, licence record and the 'never
+ * commit a master' rule: docs/tour-championship-2026.md § Licensed imagery).
+ * Slide 1 is the only eager plate, the preload target and the reduced-motion
+ * static, so the clubhouse leads. Slots are positional: app.css binds one drift
+ * keyframe and, for slides 2-3, an object-position hook per nth-of-type slot —
+ * reorder here and reorder those. Paths are public/-relative; audit pins each
+ * to a file on disk, the 3-count, the ?v stamp (Pages serves public/ unhashed;
+ * Cloudflare fronts /hero with a 4 h browser TTL, so a re-encode is a ?v bump
+ * and a new image is a new filename), and index.html's preload agreement.
  */
 const HERO_BACKDROPS = [
-  'hero/east-lake-seventh.jpg?v=1',
-  'hero/east-lake-aerial.jpg?v=1',
-  'hero/fleetwood-tour-championship.jpg?v=5',
-  'hero/tour-championship-04.jpg?v=2',
+  'hero/east-lake-clubhouse.jpg?v=1',
+  'hero/atlanta-skyline-aerial.jpg?v=1',
+  'hero/east-lake-pines.jpg?v=1',
 ];
 
 /** Phase-aware status line for the featured event. */

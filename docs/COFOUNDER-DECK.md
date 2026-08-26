@@ -69,6 +69,9 @@ PGA promotional imagery.
 /curate (the desk, signed in) · /curate/review (deck mid-swipe, stamp visible).
 **If a listed screenshot is not attached, render a parchment placeholder frame with
 the URL as a label — never invent UI.**
+- Home-hero screenshots must be captured after 26 Aug 2026; no screenshot showing
+  the earlier backdrop plates may be attached or reused. The aerial plate is an
+  Atlanta course, not East Lake — do not caption it as East Lake.
 
 ---
 

@@ -44,7 +44,30 @@ Public domain, no restrictions — strong candidates for the collection page:
 **Do not republish**: PGA Tour / Chris Condon photography, Getty/AP wire images,
 eastlakegolfclub.com imagery. All copyrighted; a shop page is commercial use.
 No free modern photo of the restored course exists — license or commission if
-one is ever needed. The archival-imagery route is both legal and more on-brand.
+one is ever needed (licensed 26 Aug 2026 — see § Licensed imagery; the licensed
+frames predate the 2024 restoration). The archival-imagery route is both legal
+and more on-brand.
+
+## Licensed imagery (hero plates, 26 Aug 2026)
+
+The four landing-hero plates used 10–26 Aug 2026 were removed from the site and
+the repo the same day (history rewrite pending — see the ops note in memory).
+They are replaced by three Adobe Stock **Standard** licences held on the team's
+Adobe ID, licensee Tour Archive. Standard = unlimited web views, ≤500k
+reproductions, no credit line required; none is Editorial — **confirm on
+stock.adobe.com › Licence history and fill the licence numbers below.** Only
+derivatives ship (1760w clubhouse, 1440w aerial, 1600w pines, each ≤200 KB);
+the masters live in `Desktop/Tour Archive/site-backdrops/` and are never
+committed or linked (audit hard-errors on any `public/hero` file over 600 KB).
+
+| Plate | Adobe asset | Contributor | Frame | Licence no. / date | Notes |
+|---|---|---|---|---|---|
+| `hero/east-lake-clubhouse.jpg` | 1708134 | photogolfer | 31 Oct 2006 | _fill in_ | East Lake, 2006 hole 6 (today's 15th), pre-2024 restoration |
+| `hero/atlanta-skyline-aerial.jpg` | 520602604 | Gregory Martin / Wirestock | c. 2022 drone | _fill in_ | Captioned "Atlanta" only — **NOT East Lake** (Midtown-adjacent course). Never label it East Lake in copy, alt text or the deck. |
+| `hero/east-lake-pines.jpg` | 1708141 | photogolfer | 31 Oct 2006 | _fill in_ | Tour Championship week 2006; grandstand/tents checked at full res — no sponsor, FedEx or PGA TOUR marks. |
+
+Figures in the 2006 frames are unidentifiable at shipped size; East Lake is
+referenced descriptively only.
 
 ## Trademark guardrails
 

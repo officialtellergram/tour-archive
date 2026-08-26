@@ -399,7 +399,7 @@ let heroTimer = null; //      singleton interval handle — the only one, ever
  *
  * The router has no unmount hook (outlet.innerHTML wipes the page), so this
  * mount doubles as the previous visit's cleanup: clear-before-arm kills a
- * stale timer even on a sub-8s home→away→home bounce, and the tick's
+ * stale timer even on a sub-5s home→away→home bounce, and the tick's
  * liveness re-query self-disposes the timer when home is left for good.
  * Never hold node references across ticks — they detach on every navigation.
  */
@@ -408,7 +408,7 @@ export function mountHeroBackdrop(outlet) {
   heroTimer = null;
 
   // Reduced motion: slide 1 carries .is-on from the template and CSS shows it
-  // — the static plate needs zero JS, no timer, and slides 2–4 never fetch.
+  // — the static plate needs zero JS, no timer, and slides 2–3 never fetch.
   if (reduced) return;
 
   const root = outlet || document;
