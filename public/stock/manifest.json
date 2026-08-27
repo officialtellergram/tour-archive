@@ -122,7 +122,8 @@
         "Shirt Length": "30 in",
         "Performance/Activity": "Golf"
       },
-      "_specsPulled": "2026-08-12"
+      "_specsPulled": "2026-08-12",
+      "sold": true
     },
     {
       "id": "stock-peter-millar-club-quarter-zip-navy",
