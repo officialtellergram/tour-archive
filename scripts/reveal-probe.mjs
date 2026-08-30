@@ -92,15 +92,26 @@ const BASE = `http://127.0.0.1:${serverPort}`;
 
 /* ---------------- browser lifecycle (per-platform kill discipline) ---------------- */
 
-const child = spawn(BROWSER, [
-  '--headless=new', '--disable-gpu', '--no-sandbox', '--no-first-run',
-  `--remote-debugging-port=${PORT}`,
-  `--user-data-dir=${join(process.env.TEMP || '/tmp', `reveal-probe-${process.pid}-${Date.now()}`)}`,
-  '--window-size=390,844',
-  BASE + ROUTES[0],
-], { stdio: 'ignore' });
+/* CI runners boot Chrome slowly and with a tiny /dev/shm (the classic
+   headless-crash cause), so the launch carries the CI flags and the startup
+   wait is generous; a boot that still yields no tab gets ONE relaunch. This
+   gate failed a scheduled deploy on 30 Aug 2026 with "no page target" — a
+   20 s startup window on a loaded runner — while the page itself was fine. */
+let child = null;
+function launch() {
+  child = spawn(BROWSER, [
+    '--headless=new', '--disable-gpu', '--no-sandbox', '--no-first-run',
+    '--no-default-browser-check', '--disable-dev-shm-usage', '--disable-extensions',
+    '--disable-background-networking', '--disable-features=Translate,OptimizationHints',
+    `--remote-debugging-port=${PORT}`,
+    `--user-data-dir=${join(process.env.TEMP || '/tmp', `reveal-probe-${process.pid}-${Date.now()}`)}`,
+    '--window-size=390,844',
+    BASE + ROUTES[0],
+  ], { stdio: 'ignore' });
+}
 
-function die(code) {
+function killBrowser() {
+  if (!child) return;
   if (process.platform === 'win32') {
     /* child.kill() only hits the launcher on Windows — tree-kill, then sweep
        whatever still LISTENs on the port (Edge can re-exec past the tree). */
@@ -114,29 +125,50 @@ function die(code) {
   } else {
     try { child.kill('SIGKILL'); } catch { /* gone */ }
   }
+  child = null;
+}
+
+function die(code) {
+  killBrowser();
   try { server.close(); } catch { /* closing */ }
   process.exit(code);
+}
+
+/** Wait up to `ms` for ANY page target — a slow boot shows about:blank before
+ *  the launch URL commits, and the route loop navigates explicitly anyway. */
+async function findPageTarget(ms) {
+  const t0 = Date.now();
+  while (Date.now() - t0 < ms) {
+    try {
+      const targets = await (await fetch(`http://127.0.0.1:${PORT}/json/list`)).json();
+      const page = targets.find((t) => t.type === 'page' && !/^(devtools|chrome-extension):/.test(t.url));
+      if (page) return page.webSocketDebuggerUrl;
+    } catch { /* booting */ }
+    await sleep(250);
+  }
+  return null;
 }
 
 /* ---------------- CDP plumbing ---------------- */
 
 try {
+  // Two 60 s launch budgets plus the route work must fit inside this.
   const watchdog = setTimeout(() => {
     console.log(`${C.red}✖ watchdog fired — page never settled${C.off}`);
     die(1);
-  }, 120_000);
+  }, 240_000);
   watchdog.unref?.();
 
-  let ws;
-  for (let i = 0; i < 80 && !ws; i++) {
-    try {
-      const targets = await (await fetch(`http://127.0.0.1:${PORT}/json/list`)).json();
-      const page = targets.find((t) => t.type === 'page' && t.url.includes('127.0.0.1'));
-      if (page) ws = page.webSocketDebuggerUrl;
-    } catch { /* booting */ }
-    await sleep(250);
+  launch();
+  let ws = await findPageTarget(60_000);
+  if (!ws) {
+    console.log(`${C.dim}   browser yielded no tab in 60 s — relaunching once${C.off}`);
+    killBrowser();
+    await sleep(1500);
+    launch();
+    ws = await findPageTarget(60_000);
   }
-  if (!ws) throw new Error('no page target');
+  if (!ws) throw new Error('no page target after two launches');
 
   const sock = new WebSocket(ws);
   await new Promise((res, rej) => { sock.onopen = res; sock.onerror = rej; });
