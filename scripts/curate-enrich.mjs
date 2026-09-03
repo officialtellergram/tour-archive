@@ -238,6 +238,20 @@ async function withBrowser(fn) {
     // in the instant before navigation commits. Track the last page's href
     // and discard reads that still come from it.
     let lastHref = 'about:blank';
+
+    /* eBay error-pages COLD hits on /itm/ pages (since ~mid-Aug 2026; walled
+       every eBay find in the 3 Sep round) but the classic seller index still
+       serves AND mints the session cookies that let same-tab navigations
+       through — the same warm bounce ebay-peek ships. One warm visit per
+       browser, then every find rides the warmed session. */
+    await evaluate(`location.href = 'https://www.ebay.com/sch/tourarchive/m.html'`);
+    for (let i = 0; i < 40; i++) {
+      const n = await evaluate(`document.querySelectorAll('li.s-item, li.s-card').length`);
+      if (Number(n) > 0) break;
+      await sleep(500);
+    }
+    lastHref = (await evaluate('location.href')) || lastHref;
+
     const peek = async (url) => {
       await evaluate(`location.href = ${JSON.stringify(url)}`);
       let best = null;
