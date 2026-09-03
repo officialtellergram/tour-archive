@@ -2055,6 +2055,119 @@
       },
       "_specsPulled": "2026-08-24",
       "file": "tc-navy-golf-vest.jpg"
+    },
+    {
+      "id": "stock-footjoy-titleist-polo",
+      "name": "FootJoy Titleist Polo",
+      "brand": "FootJoy",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "See listing",
+      "condition": "See listing",
+      "price": 44.99,
+      "colorway": [
+        "#8FAEDC",
+        "#EDF0F5",
+        "#4E76B8"
+      ],
+      "colorName": "Powder Stripe",
+      "story": "Powder-blue feeder stripe with a solid collar, the FJ mark at the collar point and the Titleist bar patch on the sleeve — tour-van issue, the shirt the pros actually get handed. Excellent shape.",
+      "details": [
+        "Checkout completes on eBay",
+        "Full photographs and condition notes on the listing"
+      ],
+      "measurements": {},
+      "channel": "ebay",
+      "listingUrl": "https://www.ebay.com/itm/407190587074",
+      "_ingested": "2026-09-02",
+      "_source": "own listing photo, i.ebayimg.com",
+      "photos": [
+        "carousel/footjoy-titleist-polo/01.jpg",
+        "carousel/footjoy-titleist-polo/02.webp",
+        "carousel/footjoy-titleist-polo/03.webp",
+        "carousel/footjoy-titleist-polo/04.webp",
+        "carousel/footjoy-titleist-polo/05.webp",
+        "carousel/footjoy-titleist-polo/06.webp"
+      ],
+      "_photosPulled": "2026-09-03",
+      "description": [
+        "Tour Footjoy Polo",
+        "Overbranded embroidery on this sick piece",
+        "Marked as size Small but Footjoy polos are notoriously oversized",
+        "“Length “Chest",
+        "All items are washed and inspected before sale",
+        "Every order comes with a mystery assortment of vintage PGA trading cards ⛳️🏌🏻♂️"
+      ],
+      "_descPulled": "2026-09-03",
+      "specifics": {
+        "Condition": "Pre-owned - Excellent",
+        "Brand": "FootJoy",
+        "Department": "Men",
+        "Type": "Polo",
+        "Neckline": "Collared",
+        "Size Type": "Regular",
+        "Size": "L",
+        "Color": "White"
+      },
+      "_specsPulled": "2026-09-03",
+      "file": "footjoy-titleist-polo.jpg"
+    },
+    {
+      "id": "stock-polo-golf-pinehurst-shirt",
+      "name": "Polo Golf Pinehurst Shirt",
+      "brand": "Polo Golf",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "See listing",
+      "condition": "See listing",
+      "price": 29.99,
+      "colorway": [
+        "#B04A52",
+        "#8E3038",
+        "#2C3157"
+      ],
+      "colorName": "Washed Crimson",
+      "story": "Polo Golf pique in sun-washed crimson, the crossed-clubs crest at the chest and Pinehurst’s putter boy — 1895 — stitched on the sleeve. Ralph Lauren doing the home of American golf, faded exactly right.",
+      "details": [
+        "Checkout completes on eBay",
+        "Full photographs and condition notes on the listing"
+      ],
+      "measurements": {},
+      "channel": "ebay",
+      "listingUrl": "https://www.ebay.com/itm/407190586333",
+      "_ingested": "2026-09-02",
+      "_source": "own listing photo, i.ebayimg.com",
+      "photos": [
+        "carousel/polo-golf-pinehurst-shirt/01.jpg",
+        "carousel/polo-golf-pinehurst-shirt/02.webp",
+        "carousel/polo-golf-pinehurst-shirt/03.webp",
+        "carousel/polo-golf-pinehurst-shirt/04.webp",
+        "carousel/polo-golf-pinehurst-shirt/05.webp"
+      ],
+      "_photosPulled": "2026-09-03",
+      "description": [
+        "Pinehurst embroidery on this thick cotton Polo golf piece",
+        "Navy piping on collar",
+        "Navy blue Ralph tag",
+        "“Length “Chest",
+        "All items are washed and inspected before sale",
+        "Every order comes with a mystery assortment of vintage PGA trading cards ⛳️🏌🏻♂️"
+      ],
+      "_descPulled": "2026-09-03",
+      "specifics": {
+        "Condition": "Pre-owned - Excellent",
+        "Brand": "Polo Golf",
+        "Department": "Men",
+        "Type": "Polo",
+        "Performance/Activity": "Golf",
+        "Size Type": "Regular",
+        "Size": "L",
+        "Color": "Red"
+      },
+      "_specsPulled": "2026-09-03",
+      "file": "polo-golf-pinehurst-shirt.jpg"
     }
   ]
 }
