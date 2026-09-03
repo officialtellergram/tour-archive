@@ -2111,7 +2111,8 @@
         "Color": "White"
       },
       "_specsPulled": "2026-09-03",
-      "file": "footjoy-titleist-polo.jpg"
+      "file": "footjoy-titleist-polo.jpg",
+      "sold": true
     },
     {
       "id": "stock-polo-golf-pinehurst-shirt",
@@ -2168,6 +2169,124 @@
       },
       "_specsPulled": "2026-09-03",
       "file": "polo-golf-pinehurst-shirt.jpg"
+    },
+    {
+      "id": "stock-peter-millar-scotty-cameron-quarter-zip",
+      "name": "Peter Millar Scotty Cameron Quarter-Zip",
+      "brand": "Peter Millar",
+      "year": "—",
+      "category": "Knitwear",
+      "garment": "sweater",
+      "size": "See listing",
+      "condition": "See listing",
+      "price": 114.09,
+      "colorway": [
+        "#6E3A4E",
+        "#54293C",
+        "#2C3157"
+      ],
+      "colorName": "Heather Burgundy",
+      "story": "Peter Millar interlock in heathered burgundy for Scotty Cameron — the Scotty dog at the chest, the putter script down the sleeve and the Circle T at the cuff. Putter-collector cloth.",
+      "details": [
+        "Checkout completes on eBay",
+        "Full photographs and condition notes on the listing"
+      ],
+      "measurements": {},
+      "channel": "ebay",
+      "listingUrl": "https://www.ebay.com/itm/407190587802",
+      "_ingested": "2026-09-03",
+      "_source": "own listing photo, i.ebayimg.com",
+      "photos": [
+        "carousel/peter-millar-scotty-cameron-quarter-zip/01.jpg",
+        "carousel/peter-millar-scotty-cameron-quarter-zip/02.webp",
+        "carousel/peter-millar-scotty-cameron-quarter-zip/03.webp",
+        "carousel/peter-millar-scotty-cameron-quarter-zip/04.webp",
+        "carousel/peter-millar-scotty-cameron-quarter-zip/05.webp",
+        "carousel/peter-millar-scotty-cameron-quarter-zip/06.webp",
+        "carousel/peter-millar-scotty-cameron-quarter-zip/07.webp",
+        "carousel/peter-millar-scotty-cameron-quarter-zip/08.webp"
+      ],
+      "_photosPulled": "2026-09-03",
+      "description": [
+        "Peter Millar + Scotty Cameron",
+        "Step up your crown collection",
+        "Embroidery on sleeve, chest and cuff",
+        "“Length “Chest",
+        "All items are washed and inspected before sale",
+        "Every order comes with a mystery assortment of vintage PGA trading cards ⛳️🏌🏻♂️"
+      ],
+      "_descPulled": "2026-09-03",
+      "specifics": {
+        "Condition": "Pre-owned",
+        "Brand": "Peter Millar",
+        "Color": "Red",
+        "Department": "Men",
+        "Performance/Activity": "Golf",
+        "Closure": "Zip",
+        "Type": "Casual",
+        "Size": "XL"
+      },
+      "_specsPulled": "2026-09-03",
+      "file": "peter-millar-scotty-cameron-quarter-zip.jpg"
+    },
+    {
+      "id": "stock-taylormade-knit-vest",
+      "name": "TaylorMade Knit Vest",
+      "brand": "TaylorMade",
+      "year": "1990s",
+      "category": "Knitwear",
+      "garment": "vest",
+      "size": "See listing",
+      "condition": "See listing",
+      "price": 114.99,
+      "colorway": [
+        "#7C93B4",
+        "#5C7396",
+        "#B8324A"
+      ],
+      "colorName": "Steel Blue",
+      "story": "Button-front knit vest in steel blue, the burner-era TaylorMade mark at the chest and a single welt pocket. The pro-shop cardigan vest of its decade, in cotton.",
+      "details": [
+        "Checkout completes on eBay",
+        "Full photographs and condition notes on the listing"
+      ],
+      "measurements": {},
+      "channel": "ebay",
+      "listingUrl": "https://www.ebay.com/itm/407190588878",
+      "_ingested": "2026-09-03",
+      "_source": "own listing photo, i.ebayimg.com",
+      "photos": [
+        "carousel/taylormade-knit-vest/01.jpg",
+        "carousel/taylormade-knit-vest/02.webp",
+        "carousel/taylormade-knit-vest/03.webp",
+        "carousel/taylormade-knit-vest/04.webp",
+        "carousel/taylormade-knit-vest/05.webp"
+      ],
+      "_photosPulled": "2026-09-03",
+      "description": [
+        "Beautiful retro logo on this absolute vintage golf gem",
+        "Great for a sophisticated, expensive fit on the course",
+        "Small blemishes on front of sweater, pictured",
+        "All items are washed and inspected before sale",
+        "Every order comes with a mystery assortment of vintage PGA trading cards ⛳️🏌🏻♂️"
+      ],
+      "_descPulled": "2026-09-03",
+      "specifics": {
+        "Condition": "Pre-owned - Good",
+        "Brand": "TaylorMade",
+        "Size Type": "Regular",
+        "Type": "Vest",
+        "Department": "Men",
+        "Theme": "Retro",
+        "Fabric Type": "Knit",
+        "Accents": "Logo",
+        "Outer Shell Material": "Cotton",
+        "Size": "L",
+        "Color": "Blue",
+        "Style": "Sweater"
+      },
+      "_specsPulled": "2026-09-03",
+      "file": "taylormade-knit-vest.jpg"
     }
   ]
 }
