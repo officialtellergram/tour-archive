@@ -320,7 +320,7 @@ check('site-only drops keep a comparables link, not a checkout link', () => {
 /* Manual syndication via the photo manifest                           */
 /* ------------------------------------------------------------------ */
 
-const { mapManifestItem, manifestStock } = await import('../server/inventory.mjs');
+const { mapManifestItem, manifestStock, EBAY_HOLD } = await import('../server/inventory.mjs');
 
 check('retired entries never map into stock', () => {
   // Over the REAL manifest: `retired` keeps the record, removes the piece.
@@ -333,6 +333,17 @@ check('retired entries never map into stock', () => {
   assert(retired.length >= 1, 'the Masters Tech retirement should be on the books');
 });
 
+check('the eBay hold empties display without touching records', () => {
+  if (!EBAY_HOLD) return; // dormant unless the hold is on
+  const raw = JSON.parse(
+    readFileSync(new URL('../public/stock/manifest.json', import.meta.url), 'utf8')
+  );
+  const ebayEntries = raw.items.filter((e) => /ebay\.com/.test(String(e.listingUrl || '')));
+  assert(ebayEntries.length > 0, 'records must remain in the manifest under the hold');
+  const mapped = new Set(manifestStock().map((i) => i.id));
+  for (const e of ebayEntries) assert(!mapped.has(e.id), `${e.id} still displays under the eBay hold`);
+});
+
 check('manifest stock leads with the highest price, newest sweep breaking ties', () => {
   // Over the REAL manifest: the file appends new mints at the end, so if this
   // ordering ever regresses, display priority silently becomes file order.
@@ -343,6 +354,7 @@ check('manifest stock leads with the highest price, newest sweep breaking ties',
     raw.items.map((e) => [e.id, { price: Number(e.price) || 0, date: e._ingested || '' }])
   );
   const order = manifestStock().map((i) => stampOf.get(i.id));
+  if (EBAY_HOLD && order.length < 2) return; // the hold empties display; nothing to order
   assert(order.length >= 2, 'needs two entries to prove an order');
   for (let k = 1; k < order.length; k++) {
     const [prev, cur] = [order[k - 1], order[k]];
