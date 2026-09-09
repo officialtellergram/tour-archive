@@ -1,4 +1,11 @@
 /**
+ * MOTHBALLED (9 Sep 2026) — the eBay account was suspended and the team
+ * pulled out for good; the seller index this sweep diffs against is a dead
+ * page. Its successor is scripts/stripe-sold.mjs (the Checkout Sessions API
+ * — an authenticated answer, not a forensic probe). The TourArchiveShopSweep
+ * scheduled task is unregistered and the npm alias ("sold") removed. The
+ * --push guard block below is the house pattern; stripe-sold reuses it.
+ *
  * Sold sync — the daily reconciliation between the manifest and eBay.
  *
  * Two signals, both required (verified live 24–25 Aug 2026):

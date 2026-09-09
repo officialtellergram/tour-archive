@@ -1,4 +1,9 @@
 /**
+ * MOTHBALLED (9 Sep 2026) — the eBay account was suspended and the team
+ * pulled out of eBay for good; there are no listings left to pull from.
+ * Every description it ever archived lives on in the manifest. The npm
+ * alias ("descriptions") is gone; run by hand only if a page still serves.
+ *
  * Listing pull — archives the cofounder's eBay description copy.
  *
  * The words on a listing die with the listing, same as its photographs. This

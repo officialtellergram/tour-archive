@@ -1,4 +1,10 @@
 /**
+ * MOTHBALLED (9 Sep 2026) — the eBay account was suspended and the team
+ * pulled out of eBay for good; there are no listings left to pull from.
+ * Every photo set it ever archived lives on in public/stock/. Kept as the
+ * reference implementation of a warm-bounced eBay reader. The npm alias
+ * ("photos") is gone; run by hand only if a page still serves.
+ *
  * Carousel pull — archives our own eBay listings' full photo sets.
  *
  * A listing's photographs die with the listing; the repo is the copy that

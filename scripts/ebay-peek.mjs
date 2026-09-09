@@ -1,4 +1,9 @@
 /**
+ * MOTHBALLED (9 Sep 2026) — our eBay account is closed; nothing of OURS is
+ * left to read. Kept because it can read ANY eBay page (the procurement desk
+ * still hunts other sellers' listings, and curate-enrich.mjs borrows its
+ * warm-bounce mechanism). No scheduled task points here any more.
+ *
  * One-off manual reader for OUR OWN eBay listings — the human-with-a-browser
  * equivalent, driven over CDP so the data can be transcribed accurately into
  * the stock manifest. Deliberately not a pipeline: the recurring sync stays
