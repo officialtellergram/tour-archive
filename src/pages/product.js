@@ -3,31 +3,28 @@ import { garmentSVG } from '../components/garment.js';
 import { productCard, breadcrumb, money, plateTag, plateMedia, sectionHead, mediaURL, escapeHtml, isPlaceholder } from '../components/ui.js';
 import { toast } from '../lib/motion.js';
 
-export const channelName = (item) =>
-  item.channel === 'depop' ? 'Depop' : item.channel === 'ebay' ? 'eBay' : 'the archive';
-
 /**
- * Commerce model: we hold no checkout of our own for marketplace stock. A piece
- * that is live on eBay or Depop sends the buyer to that listing to complete the
- * purchase — which is also what keeps us the right side of Depop's rule against
- * diverting sales away from their platform.
+ * Commerce model: checkout is a redirect-out to a Stripe Payment Link — our
+ * own hosted payment page, minted per piece by scripts/stripe-mint.mjs. Same
+ * redirect shape the marketplace era used, but the sale is first-party now.
+ * The button label always comes from the mapped listing (`CHANNEL_LABELS` in
+ * server/inventory.mjs), so this component never hardcodes a channel name.
  *
- * Site-only drop pieces (listed here ahead of the event, not yet syndicated)
- * still use the prototype reserve button; that flow needs a real decision about
- * payments before it means anything.
+ * Site-only drop pieces (listed here ahead of the event, not yet linked)
+ * still use the prototype reserve button; that flow needs a real decision
+ * about payments before it means anything.
  */
-function primaryAction(item) {
+export function primaryAction(item) {
   if (isAvailable(item) && item.syndicated) {
-    // One button per marketplace the piece is listed on. Today that is usually
-    // one; the intended end state is every piece on both, and this is already
-    // the simple checkout choice for that day.
+    // One button per checkout the piece offers. Today that is one Payment
+    // Link; the array shape stays so a second channel is still just data.
     const listings = item.listings?.length
       ? item.listings
-      : [{ channel: item.channel, url: item.market.url }];
+      : [{ channel: item.channel, url: item.market.url, label: item.market.label }];
     return listings
       .map(
         (l) => `<a class="btn btn--solid" href="${l.url}" target="_blank" rel="noopener"
-      data-magnetic>Buy on ${l.channel === 'depop' ? 'Depop' : 'eBay'} <span aria-hidden="true">↗</span></a>`
+      data-magnetic>${l.label || 'Buy now'} <span aria-hidden="true">↗</span></a>`
       )
       .join('');
   }
@@ -130,10 +127,7 @@ export function pdpMedia(item) {
 export function pdpDescription(item) {
   const paras = Array.isArray(item.description) ? item.description : [];
   if (!paras.length) return '';
-  const label =
-    item.channel === 'ebay' || item.channel === 'depop'
-      ? `From the ${channelName(item)} listing`
-      : 'From the original listing';
+  const label = 'From the original listing';
   return `
           <div class="pdp-listing-desc" style="display:grid;gap:.6rem">
             <p class="eyebrow">${label}</p>
@@ -283,9 +277,11 @@ export function product({ id }) {
           ${
             isAvailable(item) && item.syndicated
               ? `<p class="eyebrow" style="margin:-.4rem 0 0">
-                   Checkout completes on ${
-                     item.listings?.length > 1 ? 'the marketplace you choose' : channelName(item)
-                   } — you’ll be taken to the listing
+                   ${
+                     item.channel === 'stripe'
+                       ? 'Secure checkout by Stripe — you’ll be taken to our payment page'
+                       : 'Checkout completes on the marketplace — you’ll be taken to the listing'
+                   }
                  </p>`
               : ''
           }
@@ -310,11 +306,15 @@ export function product({ id }) {
   }. Dated from label construction and fibre content; read our
                   <a href="/mission" style="border-bottom:1px solid var(--rule-strong)">mission</a>.
                 </p>
-                <p style="margin:0">
+                ${
+                  item.channel === 'stripe'
+                    ? ''
+                    : `<p style="margin:0">
                   <a class="text-link" href="${item.market.url}" target="_blank" rel="noopener">
                     ${item.market.label} <span>↗</span>
                   </a>
-                </p>
+                </p>`
+                }
               </div></div>
             </div>
             <div class="accordion-item">

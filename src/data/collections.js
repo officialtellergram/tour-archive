@@ -36,17 +36,17 @@ export const basicStockCollection = {
   releaseNote: 'Listed continuously',
   heroLine: 'Everything that isn’t tied to a championship — sold as we find it.',
   summary:
-    'Open stock, photographed in house and syndicated to eBay and Depop as it is listed. Good pieces that don’t belong to a drop, catalogued as they come in.',
+    'Open stock, photographed in house and sold here directly, one of one. Good pieces that don’t belong to a drop, catalogued as they come in.',
   palette: ['#B9AE93', '#8C8570', '#3F3B31'],
   accent: '#8C8570',
   essay: [
     'Not everything we buy belongs to a championship. A clean lambswool crew with no story attached is still a clean lambswool crew, and it goes up here rather than being forced into a collection it has no claim to.',
-    'Pieces are photographed in house and listed here first; as each goes up on eBay or Depop, the listing takes over price and availability and checkout completes on the marketplace.',
+    'Pieces are photographed in house and listed here first; when one is ready to sell, checkout is one press of Buy now, handled by Stripe, and the piece is yours the moment the payment lands.',
   ],
   facts: [
     { k: 'Photographed', v: 'In house, as found' },
     { k: 'Grouping', v: 'None — open stock' },
-    { k: 'Syndication', v: 'eBay & Depop as listed' },
+    { k: 'Checkout', v: 'Direct — Stripe hosted' },
   ],
   sources: [],
 };

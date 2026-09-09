@@ -7,7 +7,7 @@
  * Boot order:
  *   1. Start from the curated catalogue — the site is never empty.
  *   2. Try the inventory API. If it answers, replace stock with the merged
- *      live set (eBay + Depop + site-only drops).
+ *      live set (direct stock + site-only drops).
  *   3. If it doesn't, stay on the seed and record why. The shop stays up; the
  *      reason is visible at /api/health and in `store.status()`.
  *
@@ -138,15 +138,7 @@ export const itemsIn = (collectionId) =>
 
 export const isAvailable = (item) => !item.sold && !item.upcoming;
 export const itemStatus = (item) =>
-  item.sold
-    ? 'Sold'
-    : item.upcoming
-    ? 'Reserved for the drop'
-    : item.syndicated
-    ? item.listings?.length > 1
-      ? 'Available on eBay & Depop'
-      : `Available on ${item.channel === 'depop' ? 'Depop' : 'eBay'}`
-    : 'Available — 1 of 1';
+  item.sold ? 'Sold' : item.upcoming ? 'Reserved for the drop' : 'Available — 1 of 1';
 
 export const categories = () => [...new Set(state.items.map((i) => i.category))].sort();
 

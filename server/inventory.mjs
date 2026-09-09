@@ -26,7 +26,14 @@ const MANIFEST_PATH = fileURLToPath(new URL('../public/stock/manifest.json', imp
  * collections.js persist as *enrichment* (they surface when a real listing
  * carries their catalogue number) but are no longer stock themselves.
  */
-const CHANNEL_LABELS = { depop: 'View on Depop', ebay: 'View on eBay' };
+const CHANNEL_LABELS = {
+  depop: 'View on Depop',
+  ebay: 'View on eBay',
+  // Direct checkout: a Stripe Payment Link minted from this entry by
+  // scripts/stripe-mint.mjs. First-party — the sale completes on our own
+  // hosted checkout, not a marketplace.
+  stripe: 'Buy now',
+};
 
 /**
  * One definition of what may follow `stock/`: a plain relative path.
@@ -63,7 +70,7 @@ const preferFact = (editorial, fact) =>
   isPlaceholder(editorial) && typeof fact === 'string' && fact.trim() ? fact : editorial;
 
 export function mapManifestItem(entry) {
-  const { _ingested, _source, _missing, _photosPulled, _descPulled, _specsPulled, file, listingUrl, listings: rawListings, photos: rawPhotos, specifics: rawSpecifics, ...item } = entry;
+  const { _ingested, _source, _missing, _photosPulled, _descPulled, _specsPulled, _stripe, _ebayUrl, file, listingUrl, listings: rawListings, photos: rawPhotos, specifics: rawSpecifics, ...item } = entry;
 
   // The robot-archived eBay item specifics — verbatim keys in listing order;
   // always an object so the PDP never branches on undefined.

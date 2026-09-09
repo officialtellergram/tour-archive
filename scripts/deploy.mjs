@@ -50,7 +50,7 @@ if (!existsSync(DIST)) {
     if (src.includes('localhost:5181')) {
       errors.push(`${file} hard-codes http://localhost:5181 — the deploy would call a dev machine`);
     }
-    for (const secret of ['EBAY_CLIENT_SECRET', 'DEPOP_API_KEY', 'ROBOT_PASSWORD', 'service_role']) {
+    for (const secret of ['EBAY_CLIENT_SECRET', 'DEPOP_API_KEY', 'ROBOT_PASSWORD', 'service_role', 'STRIPE_SECRET_KEY', 'sk_test_', 'sk_live_']) {
       if (src.includes(secret)) errors.push(`${file} references ${secret} — secrets must stay off the site`);
     }
 

@@ -47,14 +47,9 @@ export function plateTag(item) {
   // plate (.is-sold ::after). No channel chip — it isn't on the marketplace.
   if (item.sold) return `<span class="plate-sash" aria-label="Sold">Sold</span>`;
   if (item.upcoming) return `<span class="plate-tag plate-tag--soon">Drop 01</span>`;
-  // Syndicated stock checks out on the marketplace, so say so on the card
-  // rather than surprising the buyer at the button.
-  if (item.syndicated && item.listings?.length > 1)
-    return `<span class="plate-tag plate-tag--channel">eBay · Depop</span>`;
-  if (item.syndicated && item.channel === 'ebay')
-    return `<span class="plate-tag plate-tag--channel">eBay</span>`;
-  if (item.syndicated && item.channel === 'depop')
-    return `<span class="plate-tag plate-tag--channel">Depop</span>`;
+  // Direct stock: checkout is our own Stripe payment page, so the card needs
+  // no channel warning — every piece is simply what it says it is.
+  // (.plate-tag--channel CSS stays: curate.js still chips marketplace finds.)
   return `<span class="plate-tag">1 of 1</span>`;
 }
 

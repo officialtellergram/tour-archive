@@ -60,7 +60,7 @@ const { collections, items, journal } = await import('../src/data/collections.js
 const { home } = await import('../src/pages/home.js');
 const { collectionsIndex, collectionDetail } = await import('../src/pages/collections.js');
 const { archive } = await import('../src/pages/archive.js');
-const { product, pdpMedia, pdpDescription, pdpHeader, pdpSpecifics, pdpSizing } = await import('../src/pages/product.js');
+const { product, pdpMedia, pdpDescription, pdpHeader, pdpSpecifics, pdpSizing, primaryAction } = await import('../src/pages/product.js');
 const { mapManifestItem } = await import('../server/inventory.mjs');
 const { journalIndex, journalEntry } = await import('../src/pages/journal.js');
 const { mission, sell, sizing, privacy, notFound } = await import('../src/pages/house.js');
@@ -177,6 +177,16 @@ const pdpPlaceholder = { ...pdpCarousel, id: 'stock-sm-ph', year: '—', colorNa
 const pdpAllPlaceholder = { ...pdpPlaceholder, colorName: 'See photos' };
 const pdpHealed = { ...pdpCarousel, id: 'stock-sm-healed', year: '1990s', colorName: 'Teal Glen Check', condition: 'Pre-owned - Excellent', size: '2XL' };
 const pdpMeasured = { ...pdpCarousel, id: 'stock-sm-meas', size: 'XL', condition: 'Very Good', measurements: { 'Chest, flat': '22 in', Length: '27 in' } };
+/* Stripe-channel fixture — the pivoted checkout. Fixtures do NOT flow through
+   product() (smoke's store is never init'ed), so primaryAction is pinned as an
+   exported fragment, same pattern as the pdp* fragments above. */
+const pdpStripe = {
+  ...pdpCarousel,
+  id: 'stock-sm-stripe',
+  channel: 'stripe',
+  listings: [{ channel: 'stripe', url: 'https://buy.stripe.com/xxx', label: 'Buy now' }],
+  market: { label: 'Buy now', url: 'https://buy.stripe.com/xxx' },
+};
 
 /* Mosaic fixtures — the route cases only ever exercise the EMPTY store path
    (collectionsIndex under the never-init()ed shim), so the filled grid is
@@ -300,8 +310,8 @@ for (const [label, fn] of deskCases) {
     errors.push('pdpDescription: hostile markup was not escaped to entities');
   if (!block.includes('x &lt; y &amp; &quot;quotes&quot;'))
     errors.push('pdpDescription: the & < " escaping contract broke');
-  if (!block.includes('From the eBay listing'))
-    errors.push('pdpDescription: channel-aware eyebrow label missing');
+  if (!block.includes('From the original listing'))
+    errors.push('pdpDescription: eyebrow label missing');
   if ((block.match(/<p /g) || []).length !== 3)
     errors.push('pdpDescription: expected the label plus one <p> per paragraph (3 total)');
   if (pdpDescription(pdpDescribedSold) !== block)
@@ -310,6 +320,24 @@ for (const [label, fn] of deskCases) {
     errors.push('pdpDescription: empty description must yield the empty string — no label, no phantom grid row');
   if (pdpDescription(pdpCarousel) !== '')
     errors.push('pdpDescription: missing description field must yield the empty string');
+}
+
+/* Buy-button pins — the pivoted checkout. The label comes from the mapped
+   listing, never from a hardcoded channel name; "Buy on eBay" on a stripe
+   piece was a real shipped-code bug and this is its tombstone. */
+{
+  const btn = primaryAction(pdpStripe);
+  if (!btn.includes('Buy now'))
+    errors.push('primaryAction stripe: the mapped "Buy now" label is missing');
+  if (!btn.includes('https://buy.stripe.com/xxx'))
+    errors.push('primaryAction stripe: the payment link URL is missing from the button');
+  if (!btn.includes('target="_blank"'))
+    errors.push('primaryAction stripe: checkout must open in a new tab');
+  if (btn.includes('Buy on eBay') || btn.includes('Buy on Depop'))
+    errors.push('primaryAction stripe: a marketplace label leaked onto a stripe piece');
+  const fallback = primaryAction({ ...pdpStripe, listings: [] });
+  if (!fallback.includes('Buy now') || !fallback.includes('https://buy.stripe.com/xxx'))
+    errors.push('primaryAction stripe: the market-fallback branch dropped the label or URL');
 }
 
 /* Specifics facts-list pins — compaction (Size, Brand, measurements only),

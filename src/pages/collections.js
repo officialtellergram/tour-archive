@@ -174,7 +174,7 @@ export function collectionDetail({ id }) {
                     c.status === 'upcoming'
                       ? 'Pieces are photographed and catalogued as they are acquired — check the shop for what is already available.'
                       : c.status === 'live'
-                      ? 'Pieces are photographed in house and syndicated to eBay and Depop as they are listed — the shop shows what is live right now.'
+                      ? 'Pieces are photographed in house and sold here directly, one of one — the shop shows what is live right now.'
                       : 'When pieces surface that belong under this file, they are photographed, catalogued and listed in the shop.'
                   }
                 </p>
