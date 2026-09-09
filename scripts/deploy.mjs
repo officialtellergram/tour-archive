@@ -50,7 +50,7 @@ if (!existsSync(DIST)) {
     if (src.includes('localhost:5181')) {
       errors.push(`${file} hard-codes http://localhost:5181 — the deploy would call a dev machine`);
     }
-    for (const secret of ['EBAY_CLIENT_SECRET', 'DEPOP_API_KEY', 'ROBOT_PASSWORD', 'service_role', 'STRIPE_SECRET_KEY', 'sk_test_', 'sk_live_']) {
+    for (const secret of ['EBAY_CLIENT_SECRET', 'DEPOP_API_KEY', 'ROBOT_PASSWORD', 'service_role', 'STRIPE_SECRET_KEY', 'sk_test_', 'sk_live_', 'buy.stripe.com/test_']) {
       if (src.includes(secret)) errors.push(`${file} references ${secret} — secrets must stay off the site`);
     }
 
@@ -110,7 +110,14 @@ if (!existsSync(snapshot)) {
   warnings.push('dist/api/inventory.json is missing — run `npm run build:pages`; the site would fall back to the catalogue');
 } else {
   try {
-    const data = JSON.parse(readFileSync(snapshot, 'utf8'));
+    const raw = readFileSync(snapshot, 'utf8');
+    // A TEST-mode payment link in the shipped snapshot would put a play-money
+    // checkout in front of a real buyer. Hard stop, before any other check.
+    check(
+      !raw.includes('buy.stripe.com/test_'),
+      'the inventory snapshot carries TEST-mode Stripe links — mint against the live key before deploying'
+    );
+    const data = JSON.parse(raw);
     // Under the emergency eBay hold an EMPTY snapshot is the intended deploy.
     check(
       Array.isArray(data.items) && (data.items.length > 0 || EBAY_HOLD),

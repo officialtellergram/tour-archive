@@ -344,6 +344,27 @@ check('the eBay hold empties display without touching records', () => {
   for (const e of ebayEntries) assert(!mapped.has(e.id), `${e.id} still displays under the eBay hold`);
 });
 
+check('no TEST-mode Stripe link ever reaches display', () => {
+  // Over MAPPED items — the mapper strips listingUrl, so the proof asserts
+  // what actually ships: market.url and every listings[].url. Dormant against
+  // a clean manifest by design; goes red the day a test-mode mint leaks.
+  for (const item of manifestStock()) {
+    const urls = [item.market?.url || '', ...(item.listings || []).map((l) => l.url || '')];
+    for (const u of urls)
+      assert(!/^https:\/\/buy\.stripe\.com\/test_/.test(u), `${item.id} ships a test-mode payment link`);
+  }
+  // Fixture proof the pattern actually bites: a synthetic test-mode entry
+  // must map to a flaggable market.url (guards the regex, not just the data).
+  const leak = mapManifestItem({
+    id: 'stock-test-leak', file: 'x.jpg', name: 'Leak', price: 1,
+    channel: 'stripe', listingUrl: 'https://buy.stripe.com/test_abc',
+  });
+  assert(
+    /^https:\/\/buy\.stripe\.com\/test_/.test(leak.market.url),
+    'the test-link detector no longer recognises a test-mode payment link'
+  );
+});
+
 check('manifest stock leads with the highest price, newest sweep breaking ties', () => {
   // Over the REAL manifest: the file appends new mints at the end, so if this
   // ordering ever regresses, display priority silently becomes file order.
@@ -390,6 +411,18 @@ check('a manifest entry with a pasted Depop URL becomes a Depop listing', () => 
   equal(item.syndicated, true, 'syndicated — gets the badge and Buy button');
   equal(item.market.label, 'View on Depop', 'label');
   equal(item.market.url, 'https://www.depop.com/products/tourarchive-test-crew/', 'redirect target');
+});
+
+check('a manifest entry with a Stripe payment link becomes direct checkout', () => {
+  const item = mapManifestItem({
+    ...manifestPlain,
+    channel: 'stripe',
+    listingUrl: 'https://buy.stripe.com/live_fixture',
+  });
+  equal(item.channel, 'stripe', 'channel');
+  equal(item.syndicated, true, 'syndicated — gets the Buy button');
+  equal(item.market.label, 'Buy now', 'label');
+  equal(item.market.url, 'https://buy.stripe.com/live_fixture', 'redirect target');
 });
 
 check('a listingUrl without a recognised channel stays safely site stock', () => {

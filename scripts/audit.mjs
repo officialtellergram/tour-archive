@@ -145,6 +145,19 @@ for (const c of collections) {
       if (s._missing) { warnings.push(`${where}: photo file is missing`); continue; }
       if (!s.file && !s.listingUrl)
         errors.push(`${where}: needs a photo file or a listingUrl — otherwise there is nothing to show or sell`);
+
+      // Stripe tripwires. A test-mode link on the live site would let a
+      // visitor "buy" a one-of-one with play money — hard error, no judgment
+      // call. Covers the channel/listingUrl shorthand; the listings[]-array
+      // form is caught by the integration proof over mapped items.
+      if (s.channel === 'stripe') {
+        if (!/^https:\/\/buy\.stripe\.com\//.test(String(s.listingUrl || '')))
+          errors.push(`${where}: channel is stripe but listingUrl is not a buy.stripe.com link`);
+        if (!s._stripe?.product || !s._stripe?.price || !s._stripe?.link)
+          warnings.push(`${where}: stripe channel without _stripe ids — the mint should have recorded them`);
+      }
+      if (/buy\.stripe\.com\/test_/.test(String(s.listingUrl || '')) || s._stripe?.mode === 'test')
+        errors.push(`${where}: TEST-mode Stripe artifacts — test links must never ship to the live site`);
       if (!Array.isArray(s.colorway) || s.colorway.length !== 3)
         errors.push(`${where}: colorway must be exactly 3 colours`);
       if (typeof s.price !== 'number' || s.price <= 0)
@@ -181,11 +194,6 @@ for (const c of collections) {
           });
         }
       }
-      const hasEbayListing =
-        (s.channel === 'ebay' && s.listingUrl) ||
-        (Array.isArray(s.listings) && s.listings.some((l) => l?.channel === 'ebay' && l.url));
-      if (hasEbayListing && !(Array.isArray(s.photos) && s.photos.length))
-        warnings.push(`${where}: eBay listing but no carousel yet — npm run photos archives its frames`);
 
       // Listing description: robot-owned plain text. '<' is the loud tripwire
       // for the plain-text-only contract — reduction happens at pull, escaping
@@ -200,8 +208,6 @@ for (const c of collections) {
           });
         }
       }
-      if (hasEbayListing && !(Array.isArray(s.description) && s.description.length))
-        warnings.push(`${where}: eBay listing but no description yet — npm run descriptions archives the cofounder's copy`);
 
       // Item specifics: robot-owned mirror of eBay's About this item. Same
       // plain-text contract as description; buybox keys mean the pull scoped
@@ -240,8 +246,6 @@ for (const c of collections) {
             warnings.push(`${where}: hand size "${s.size}" disagrees with the eBay listing's "${specSize}" — reconcile by hand`);
         }
       }
-      if (hasEbayListing && !(s.specifics && typeof s.specifics === 'object' && Object.keys(s.specifics).length))
-        warnings.push(`${where}: eBay listing but no item specifics yet — npm run descriptions pulls them with the copy`);
 
       // sku: cofounder-owned, recorded VERBATIM from Seller Hub. Never normalized.
       if (s.sku !== undefined) {
@@ -259,8 +263,8 @@ for (const c of collections) {
           else skuSeen.set(key, s.id);
         }
       }
-      if (anySku && hasEbayListing && !s.sku)
-        warnings.push(`${where}: eBay listing but no sku — the Seller Hub mapping is seeded; record this one`);
+      if (anySku && !s.sold && !s.retired && !s.sku)
+        warnings.push(`${where}: live piece with no sku — the catalogue numbering is seeded; record this one`);
     }
   } catch {
     warnings.push('public/stock/manifest.json missing or unreadable');
