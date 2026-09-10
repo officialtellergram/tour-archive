@@ -307,4 +307,6 @@ if (MODE === 'test' && mintedNow) {
   );
 }
 console.log('');
-process.exit(failures ? 1 : 0);
+// exitCode, never process.exit(): a hard exit races undici's keep-alive
+// teardown on Windows (libuv async.c assertion) — let the loop drain.
+process.exitCode = failures ? 1 : 0;
