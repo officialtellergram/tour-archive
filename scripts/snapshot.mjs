@@ -20,7 +20,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { buildInventory, EBAY_HOLD } from '../server/inventory.mjs';
+import { buildInventory } from '../server/inventory.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const OUT_DIR = join(ROOT, 'dist', 'api');
@@ -40,14 +40,10 @@ try {
 }
 
 if (!payload.items?.length) {
-  if (EBAY_HOLD) {
-    // The emergency hold DELIBERATELY empties the shop (suspended account);
-    // an empty snapshot is the correct deploy, not a failure.
-    console.log(`${C.yellow ?? ''}   inventory empty by EBAY_HOLD — shipping the emptied shop deliberately${C.off}`);
-  } else {
-    console.log(`\n${C.red}✖ inventory is empty — refusing to write the snapshot${C.off}\n`);
-    process.exit(1);
-  }
+  // Unconditional again now the eBay hold is gone: post-pivot, an empty shop
+  // means something broke, never something intended.
+  console.log(`\n${C.red}✖ inventory is empty — refusing to write the snapshot${C.off}\n`);
+  process.exit(1);
 }
 
 payload.snapshot = {

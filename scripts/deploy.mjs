@@ -10,7 +10,6 @@
  */
 
 import { readFileSync, existsSync, readdirSync } from 'node:fs';
-import { EBAY_HOLD } from '../server/inventory.mjs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -118,11 +117,7 @@ if (!existsSync(snapshot)) {
       'the inventory snapshot carries TEST-mode Stripe links — mint against the live key before deploying'
     );
     const data = JSON.parse(raw);
-    // Under the emergency eBay hold an EMPTY snapshot is the intended deploy.
-    check(
-      Array.isArray(data.items) && (data.items.length > 0 || EBAY_HOLD),
-      'the inventory snapshot has no items'
-    );
+    check(Array.isArray(data.items) && data.items.length > 0, 'the inventory snapshot has no items');
     check(Array.isArray(data.collections) && data.collections.length > 0, 'the inventory snapshot has no collections');
 
     for (const item of data.items) {

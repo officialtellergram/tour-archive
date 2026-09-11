@@ -320,7 +320,7 @@ check('site-only drops keep a comparables link, not a checkout link', () => {
 /* Manual syndication via the photo manifest                           */
 /* ------------------------------------------------------------------ */
 
-const { mapManifestItem, manifestStock, EBAY_HOLD } = await import('../server/inventory.mjs');
+const { mapManifestItem, manifestStock } = await import('../server/inventory.mjs');
 
 check('retired entries never map into stock', () => {
   // Over the REAL manifest: `retired` keeps the record, removes the piece.
@@ -333,15 +333,54 @@ check('retired entries never map into stock', () => {
   assert(retired.length >= 1, 'the Masters Tech retirement should be on the books');
 });
 
-check('the eBay hold empties display without touching records', () => {
-  if (!EBAY_HOLD) return; // dormant unless the hold is on
+/*
+ * The eBay exit, made permanent (10 Sep 2026). The emergency hold that stood
+ * here for three days is gone; these replace it. They are not history — they
+ * are what stops a stray paste or a half-finished edit from putting a dead
+ * marketplace link in front of a buyer again.
+ */
+check('no marketplace listing survives anywhere in displayed stock', () => {
+  for (const item of manifestStock()) {
+    const urls = [item.market?.url || '', ...(item.listings || []).map((l) => l.url || '')];
+    for (const u of urls) {
+      // The comparables fallback is an eBay SEARCH url and is legitimate —
+      // it is market context for unsold site stock, never a checkout.
+      if (/ebay\.com\/sch/.test(u)) continue;
+      assert(!/ebay\.com|depop\.com/.test(u), `${item.id} still offers a marketplace checkout: ${u}`);
+    }
+  }
+});
+
+check('every live piece checks out through Stripe, live-mode only', () => {
   const raw = JSON.parse(
     readFileSync(new URL('../public/stock/manifest.json', import.meta.url), 'utf8')
   );
-  const ebayEntries = raw.items.filter((e) => /ebay\.com/.test(String(e.listingUrl || '')));
-  assert(ebayEntries.length > 0, 'records must remain in the manifest under the hold');
-  const mapped = new Set(manifestStock().map((i) => i.id));
-  for (const e of ebayEntries) assert(!mapped.has(e.id), `${e.id} still displays under the eBay hold`);
+  const live = raw.items.filter((e) => !e.sold && !e.retired && !e._missing && !e._draft);
+  assert(live.length > 0, 'the shop cannot be empty');
+  for (const e of live) {
+    equal(e.channel, 'stripe', `${e.id} channel`);
+    assert(
+      /^https:\/\/buy\.stripe\.com\//.test(String(e.listingUrl || '')),
+      `${e.id} has no Stripe payment link`
+    );
+    assert(!/buy\.stripe\.com\/test_/.test(e.listingUrl), `${e.id} carries a TEST-mode link`);
+    assert(e._stripe?.link && e._stripe?.price && e._stripe?.product, `${e.id} has no _stripe ledger`);
+    equal(e._stripe.mode, 'live', `${e.id} _stripe.mode`);
+  }
+});
+
+check('sold and retired pieces keep their record but offer no checkout', () => {
+  const raw = JSON.parse(
+    readFileSync(new URL('../public/stock/manifest.json', import.meta.url), 'utf8')
+  );
+  const past = raw.items.filter((e) => e.sold || e.retired);
+  assert(past.length >= 7, 'the six sales and the Masters Tech retirement are on the books');
+  for (const e of past) {
+    assert(!e.listingUrl, `${e.id} still carries a listingUrl — a sold piece must not link to a dead listing`);
+    assert(!e.channel, `${e.id} still claims a channel`);
+    assert(e._ebayUrl, `${e.id} lost its _ebayUrl — the eBay era stays on the record`);
+    assert(e.file, `${e.id} lost its photograph`);
+  }
 });
 
 check('no TEST-mode Stripe link ever reaches display', () => {
@@ -375,7 +414,6 @@ check('manifest stock leads with the highest price, newest sweep breaking ties',
     raw.items.map((e) => [e.id, { price: Number(e.price) || 0, date: e._ingested || '' }])
   );
   const order = manifestStock().map((i) => stampOf.get(i.id));
-  if (EBAY_HOLD && order.length < 2) return; // the hold empties display; nothing to order
   assert(order.length >= 2, 'needs two entries to prove an order');
   for (let k = 1; k < order.length; k++) {
     const [prev, cur] = [order[k - 1], order[k]];

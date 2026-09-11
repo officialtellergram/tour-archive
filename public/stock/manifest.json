@@ -29,8 +29,8 @@
       "measurements": {},
       "_ingested": "2026-08-02",
       "_source": "IMG_0371.JPEG",
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407115489714",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/5kQ8wOeH2fa51FAfke9k400",
       "photos": [
         "carousel/slazenger-golden-horseshoe-wind-shirt/01.jpg",
         "carousel/slazenger-golden-horseshoe-wind-shirt/02.webp",
@@ -60,7 +60,16 @@
         "Style": "Anorak",
         "Vintage": "Yes"
       },
-      "_specsPulled": "2026-08-12"
+      "_specsPulled": "2026-08-12",
+      "_ebayUrl": "https://www.ebay.com/itm/407115489714",
+      "_stripe": {
+        "product": "prod_VEm5b1ps14FHaz",
+        "price": "price_1UEIXYC1bWq01lTKaUkBTJdI",
+        "link": "plink_1UEIXYC1bWq01lTK25ynBlWL",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     },
     {
       "id": "stock-masters-peter-millar-quarter-zip-blue",
@@ -90,8 +99,6 @@
       "measurements": {},
       "_ingested": "2026-08-02",
       "_source": "IMG_0378.JPEG",
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407131456833",
       "photos": [
         "carousel/masters-peter-millar-quarter-zip-blue/01.jpg",
         "carousel/masters-peter-millar-quarter-zip-blue/02.webp",
@@ -123,7 +130,8 @@
         "Performance/Activity": "Golf"
       },
       "_specsPulled": "2026-08-12",
-      "sold": true
+      "sold": true,
+      "_ebayUrl": "https://www.ebay.com/itm/407131456833"
     },
     {
       "id": "stock-peter-millar-club-quarter-zip-navy",
@@ -153,8 +161,8 @@
       "measurements": {},
       "_ingested": "2026-08-02",
       "_source": "IMG_0383.JPEG",
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407115514561",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/6oUfZg42o9PL9825JE9k401",
       "photos": [
         "carousel/peter-millar-club-quarter-zip-navy/01.jpg",
         "carousel/peter-millar-club-quarter-zip-navy/02.webp",
@@ -182,7 +190,16 @@
         "Style": "Quarter Zip",
         "Material": "Cotton"
       },
-      "_specsPulled": "2026-08-12"
+      "_specsPulled": "2026-08-12",
+      "_ebayUrl": "https://www.ebay.com/itm/407115514561",
+      "_stripe": {
+        "product": "prod_VEm5w9lXUrVi1D",
+        "price": "price_1UEIXZC1bWq01lTKJTpr8ZvY",
+        "link": "plink_1UEIXZC1bWq01lTKeNuo943B",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     },
     {
       "id": "stock-ryder-cup-print-polo",
@@ -206,8 +223,8 @@
         "Full photographs and condition notes on the listing"
       ],
       "measurements": {},
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407115434329",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/aFa28q9mI5zvcke6NI9k402",
       "_ingested": "2026-08-02",
       "file": "ryder-cup-print-polo.jpg",
       "_source": "own listing photo, i.ebayimg.com",
@@ -240,7 +257,16 @@
         "Color": "Blue",
         "Shirt Length": "28 in"
       },
-      "_specsPulled": "2026-08-12"
+      "_specsPulled": "2026-08-12",
+      "_ebayUrl": "https://www.ebay.com/itm/407115434329",
+      "_stripe": {
+        "product": "prod_VEm5ITuVaIqiBt",
+        "price": "price_1UEIXZC1bWq01lTKuXi7vCiZ",
+        "link": "plink_1UEIXZC1bWq01lTKYKBq6ciQ",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     },
     {
       "id": "stock-sun-faded-golf-pullover",
@@ -264,8 +290,8 @@
         "Full photographs and condition notes on the listing"
       ],
       "measurements": {},
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407131442352",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/4gMeVcbuQ4vrcke2xs9k403",
       "_ingested": "2026-08-02",
       "file": "sun-faded-golf-pullover.jpg",
       "_source": "own listing photo, i.ebayimg.com",
@@ -299,7 +325,16 @@
         "Shirt Length": "26 in",
         "Performance/Activity": "Golf"
       },
-      "_specsPulled": "2026-08-12"
+      "_specsPulled": "2026-08-12",
+      "_ebayUrl": "https://www.ebay.com/itm/407131442352",
+      "_stripe": {
+        "product": "prod_VEm5udCe0F3yII",
+        "price": "price_1UEIXaC1bWq01lTK1mgxtA68",
+        "link": "plink_1UEIXaC1bWq01lTK4kN3HGGX",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     },
     {
       "id": "stock-university-of-kentucky-polo",
@@ -323,8 +358,8 @@
         "Full photographs and condition notes on the listing"
       ],
       "measurements": {},
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407115420034",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/bJe00i42o0fb9827RM9k404",
       "_ingested": "2026-08-02",
       "file": "university-of-kentucky-polo.jpg",
       "_source": "own listing photo, i.ebayimg.com",
@@ -350,7 +385,16 @@
         "Product": "Shirt",
         "Team": "Kentucky Wildcats"
       },
-      "_specsPulled": "2026-08-12"
+      "_specsPulled": "2026-08-12",
+      "_ebayUrl": "https://www.ebay.com/itm/407115420034",
+      "_stripe": {
+        "product": "prod_VEm5O9zeaTV3VF",
+        "price": "price_1UEIXaC1bWq01lTKb5Luws0n",
+        "link": "plink_1UEIXbC1bWq01lTKsjmVgTix",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     },
     {
       "id": "stock-bugle-boy-polo",
@@ -374,8 +418,8 @@
         "Full photographs and condition notes on the listing"
       ],
       "measurements": {},
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407115464142",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/9B69AScyUd1Xdoidc69k405",
       "_ingested": "2026-08-02",
       "file": "bugle-boy-polo.jpg",
       "_source": "own listing photo, i.ebayimg.com",
@@ -406,7 +450,16 @@
         "Color": "Multicolor",
         "Shirt Length": "27 in"
       },
-      "_specsPulled": "2026-08-12"
+      "_specsPulled": "2026-08-12",
+      "_ebayUrl": "https://www.ebay.com/itm/407115464142",
+      "_stripe": {
+        "product": "prod_VEm5FKvlg8pMTF",
+        "price": "price_1UEIXbC1bWq01lTKdhINCMAK",
+        "link": "plink_1UEIXbC1bWq01lTK4lyosW97",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     },
     {
       "id": "stock-masters-tech-striped-polo",
@@ -430,8 +483,6 @@
         "Full photographs and condition notes on the listing"
       ],
       "measurements": {},
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407131429837",
       "_ingested": "2026-08-10",
       "file": "masters-tech-striped-polo.jpg",
       "_source": "own listing photo, i.ebayimg.com",
@@ -464,7 +515,8 @@
       },
       "_specsPulled": "2026-08-12",
       "retired": true,
-      "retiredNote": "Listing ended by the seller 19 Aug 2026 (listing error); not relisted. Retired 25 Aug 2026."
+      "retiredNote": "Listing ended by the seller 19 Aug 2026 (listing error); not relisted. Retired 25 Aug 2026.",
+      "_ebayUrl": "https://www.ebay.com/itm/407131429837"
     },
     {
       "id": "stock-peter-millar-pine-valley-polo",
@@ -488,8 +540,8 @@
         "Full photographs and condition notes on the listing"
       ],
       "measurements": {},
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407131400410",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/3cI00iaqMge9fwqc829k406",
       "_ingested": "2026-08-10",
       "file": "peter-millar-pine-valley-polo.jpg",
       "_source": "own listing photo, i.ebayimg.com",
@@ -522,7 +574,16 @@
         "Model": "Peter Millar Pine Valley",
         "Shirt Length": "29 in"
       },
-      "_specsPulled": "2026-08-12"
+      "_specsPulled": "2026-08-12",
+      "_ebayUrl": "https://www.ebay.com/itm/407131400410",
+      "_stripe": {
+        "product": "prod_VEm5XzffQKwFc1",
+        "price": "price_1UEIXcC1bWq01lTKjS1rcOmu",
+        "link": "plink_1UEIXcC1bWq01lTK4Is1iZJX",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     },
     {
       "id": "stock-nike-ryder-cup-polo-valhalla",
@@ -546,8 +607,8 @@
         "Full photographs and condition notes on the listing"
       ],
       "measurements": {},
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407131336432",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/7sY5kC42o5zvbgadc69k407",
       "_ingested": "2026-08-10",
       "file": "nike-ryder-cup-polo-valhalla.jpg",
       "_source": "own listing photo, i.ebayimg.com",
@@ -579,7 +640,16 @@
         "Shirt Length": "29 in",
         "Performance/Activity": "Golf"
       },
-      "_specsPulled": "2026-08-12"
+      "_specsPulled": "2026-08-12",
+      "_ebayUrl": "https://www.ebay.com/itm/407131336432",
+      "_stripe": {
+        "product": "prod_VEm5CTgNEkaQTb",
+        "price": "price_1UEIXcC1bWq01lTKI5kcE3yr",
+        "link": "plink_1UEIXcC1bWq01lTKsftg6JzQ",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     },
     {
       "id": "stock-nike-tiger-woods-tshirt",
@@ -603,8 +673,8 @@
         "Full photographs and condition notes on the listing"
       ],
       "measurements": {},
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407131472633",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/fZufZg42o3rn5VQ4FA9k408",
       "_ingested": "2026-08-10",
       "file": "nike-tiger-woods-tshirt.jpg",
       "_source": "own listing photo, i.ebayimg.com",
@@ -635,7 +705,16 @@
         "Color": "Red",
         "Vintage": "Yes"
       },
-      "_specsPulled": "2026-08-12"
+      "_specsPulled": "2026-08-12",
+      "_ebayUrl": "https://www.ebay.com/itm/407131472633",
+      "_stripe": {
+        "product": "prod_VEm5dfYMiM9CDY",
+        "price": "price_1UEIXdC1bWq01lTKii1mRlcu",
+        "link": "plink_1UEIXdC1bWq01lTKyWjjR3r5",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     },
     {
       "id": "stock-peter-millar-taylormade-quarter-zip",
@@ -659,8 +738,8 @@
         "Full photographs and condition notes on the listing"
       ],
       "measurements": {},
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407131493486",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/00w4gy7eAd1X0Bw2xs9k409",
       "_ingested": "2026-08-10",
       "file": "peter-millar-taylormade-quarter-zip.jpg",
       "_source": "own listing photo, i.ebayimg.com",
@@ -691,7 +770,16 @@
         "Color": "Burgundy",
         "Style": "Quarter zip"
       },
-      "_specsPulled": "2026-08-12"
+      "_specsPulled": "2026-08-12",
+      "_ebayUrl": "https://www.ebay.com/itm/407131493486",
+      "_stripe": {
+        "product": "prod_VEm5d4MHIzWBtC",
+        "price": "price_1UEIXdC1bWq01lTKMkRHUbIB",
+        "link": "plink_1UEIXeC1bWq01lTKsDy8h3fK",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     },
     {
       "id": "stock-tasmanian-devil-golf-polo",
@@ -715,8 +803,8 @@
         "Full photographs and condition notes on the listing"
       ],
       "measurements": {},
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407152116404",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/28E6oG2Yk4vr6ZU1to9k40a",
       "_ingested": "2026-08-18",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -745,7 +833,16 @@
         "Color": "Green"
       },
       "_specsPulled": "2026-08-18",
-      "file": "tasmanian-devil-golf-polo.jpg"
+      "file": "tasmanian-devil-golf-polo.jpg",
+      "_ebayUrl": "https://www.ebay.com/itm/407152116404",
+      "_stripe": {
+        "product": "prod_VEm5PAiZWqjPsJ",
+        "price": "price_1UEIXeC1bWq01lTKWMJGB5Sb",
+        "link": "plink_1UEIXeC1bWq01lTK0fht2GHz",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     },
     {
       "id": "stock-wild-dunes-multicolor-polo",
@@ -769,8 +866,8 @@
         "Full photographs and condition notes on the listing"
       ],
       "measurements": {},
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407152092797",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/6oU00ibuQe6183Yb3Y9k40b",
       "_ingested": "2026-08-18",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -798,7 +895,16 @@
         "Size": "L"
       },
       "_specsPulled": "2026-08-18",
-      "file": "wild-dunes-multicolor-polo.jpg"
+      "file": "wild-dunes-multicolor-polo.jpg",
+      "_ebayUrl": "https://www.ebay.com/itm/407152092797",
+      "_stripe": {
+        "product": "prod_VEm5mx1fHLz3QU",
+        "price": "price_1UEIXfC1bWq01lTKLP7SMb2d",
+        "link": "plink_1UEIXfC1bWq01lTK9FD8k6x2",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     },
     {
       "id": "stock-callaway-retro-logo-polo",
@@ -822,8 +928,6 @@
         "Full photographs and condition notes on the listing"
       ],
       "measurements": {},
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407157486865",
       "_ingested": "2026-08-20",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -859,7 +963,8 @@
       },
       "_specsPulled": "2026-08-20",
       "file": "callaway-retro-logo-polo.jpg",
-      "sold": true
+      "sold": true,
+      "_ebayUrl": "https://www.ebay.com/itm/407157486865"
     },
     {
       "id": "stock-taylormade-navy-sweater",
@@ -883,8 +988,8 @@
         "Full photographs and condition notes on the listing"
       ],
       "measurements": {},
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407157573688",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/00w9ASbuQ7HDfwq9ZU9k40c",
       "_ingested": "2026-08-20",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -913,7 +1018,16 @@
         "Style": "Pullover"
       },
       "_specsPulled": "2026-08-20",
-      "file": "taylormade-navy-sweater.jpg"
+      "file": "taylormade-navy-sweater.jpg",
+      "_ebayUrl": "https://www.ebay.com/itm/407157573688",
+      "_stripe": {
+        "product": "prod_VEm5ljZSDyN8wN",
+        "price": "price_1UEIXfC1bWq01lTKWBVboV7d",
+        "link": "plink_1UEIXfC1bWq01lTKfjNdrEJS",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     },
     {
       "id": "stock-tpc-sawgrass-polo",
@@ -937,8 +1051,8 @@
         "Full photographs and condition notes on the listing"
       ],
       "measurements": {},
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407157494692",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/14A28qfL63rndoi4FA9k40d",
       "_ingested": "2026-08-20",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -968,7 +1082,16 @@
         "Shirt Length": "29 in"
       },
       "_specsPulled": "2026-08-20",
-      "file": "tpc-sawgrass-polo.jpg"
+      "file": "tpc-sawgrass-polo.jpg",
+      "_ebayUrl": "https://www.ebay.com/itm/407157494692",
+      "_stripe": {
+        "product": "prod_VEm5YKUSasCvux",
+        "price": "price_1UEIXgC1bWq01lTK2nrBI2dM",
+        "link": "plink_1UEIXgC1bWq01lTKoqdTzJVC",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     },
     {
       "id": "stock-houndstooth-cotton-golf-polo",
@@ -992,8 +1115,6 @@
         "Full photographs and condition notes on the listing"
       ],
       "measurements": {},
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407157532548",
       "_ingested": "2026-08-20",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -1027,7 +1148,8 @@
       },
       "_specsPulled": "2026-08-20",
       "file": "houndstooth-cotton-golf-polo.jpg",
-      "sold": true
+      "sold": true,
+      "_ebayUrl": "https://www.ebay.com/itm/407157532548"
     },
     {
       "id": "stock-peter-millar-quarter-zip-navy",
@@ -1051,8 +1173,8 @@
         "Full photographs and condition notes on the listing"
       ],
       "measurements": {},
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407157507222",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/dRm8wOgPa0fb83Ydc69k40e",
       "_ingested": "2026-08-20",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -1082,7 +1204,16 @@
         "Style": "Quarter Zip"
       },
       "_specsPulled": "2026-08-20",
-      "file": "peter-millar-quarter-zip-navy.jpg"
+      "file": "peter-millar-quarter-zip-navy.jpg",
+      "_ebayUrl": "https://www.ebay.com/itm/407157507222",
+      "_stripe": {
+        "product": "prod_VEm5lQITUtDbAP",
+        "price": "price_1UEIXgC1bWq01lTKTYbOxdn0",
+        "link": "plink_1UEIXhC1bWq01lTKdx1lUesT",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     },
     {
       "id": "stock-shinnecock-hills-polo",
@@ -1106,8 +1237,8 @@
         "Full photographs and condition notes on the listing"
       ],
       "measurements": {},
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407157470232",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/fZu3cufL6d1XgAuc829k40f",
       "_ingested": "2026-08-20",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -1140,7 +1271,16 @@
         "Shirt Length": "30 in"
       },
       "_specsPulled": "2026-08-20",
-      "file": "shinnecock-hills-polo.jpg"
+      "file": "shinnecock-hills-polo.jpg",
+      "_ebayUrl": "https://www.ebay.com/itm/407157470232",
+      "_stripe": {
+        "product": "prod_VEm5pbeIp9CAn3",
+        "price": "price_1UEIXhC1bWq01lTK5MXqWNIz",
+        "link": "plink_1UEIXhC1bWq01lTKGZazcwW0",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     },
     {
       "id": "stock-izod-abstract-golf-polo",
@@ -1164,8 +1304,6 @@
         "Full photographs and condition notes on the listing"
       ],
       "measurements": {},
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407154584789",
       "_ingested": "2026-08-20",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -1198,7 +1336,8 @@
       },
       "_specsPulled": "2026-08-20",
       "file": "izod-abstract-golf-polo.jpg",
-      "sold": true
+      "sold": true,
+      "_ebayUrl": "https://www.ebay.com/itm/407154584789"
     },
     {
       "id": "stock-cross-creek-polo",
@@ -1222,8 +1361,8 @@
         "Full photographs and condition notes on the listing"
       ],
       "measurements": {},
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407157525971",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/3cIdR8buQfa5esmfke9k40g",
       "_ingested": "2026-08-20",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -1253,7 +1392,16 @@
         "Shirt Length": "28 in"
       },
       "_specsPulled": "2026-08-20",
-      "file": "cross-creek-polo.jpg"
+      "file": "cross-creek-polo.jpg",
+      "_ebayUrl": "https://www.ebay.com/itm/407157525971",
+      "_stripe": {
+        "product": "prod_VEm5eWeDsppdXj",
+        "price": "price_1UEIXiC1bWq01lTKPWcaZ47W",
+        "link": "plink_1UEIXiC1bWq01lTKF1JlZASn",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     },
     {
       "id": "stock-boones-trace-national-polo",
@@ -1277,8 +1425,8 @@
         "Full photographs and condition notes on the listing"
       ],
       "measurements": {},
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407157461976",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/5kQ28qbuQ0fbcke0pk9k40h",
       "_ingested": "2026-08-20",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -1312,7 +1460,16 @@
         "Shirt Length": "30 in"
       },
       "_specsPulled": "2026-08-20",
-      "file": "boones-trace-national-polo.jpg"
+      "file": "boones-trace-national-polo.jpg",
+      "_ebayUrl": "https://www.ebay.com/itm/407157461976",
+      "_stripe": {
+        "product": "prod_VEm5UeQIeX9R9N",
+        "price": "price_1UEIXiC1bWq01lTKtguo5v6i",
+        "link": "plink_1UEIXiC1bWq01lTKNAhsP5ng",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     },
     {
       "id": "stock-peter-millar-hermitage-polo-teal",
@@ -1336,8 +1493,8 @@
         "Full photographs and condition notes on the listing"
       ],
       "measurements": {},
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407154712484",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/dRmaEWdCYge9gAu5JE9k40i",
       "_ingested": "2026-08-20",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -1367,7 +1524,16 @@
         "Size": "XL"
       },
       "_specsPulled": "2026-08-20",
-      "file": "peter-millar-hermitage-polo-teal.jpg"
+      "file": "peter-millar-hermitage-polo-teal.jpg",
+      "_ebayUrl": "https://www.ebay.com/itm/407154712484",
+      "_stripe": {
+        "product": "prod_VEm5LXJqqu9Buc",
+        "price": "price_1UEIXjC1bWq01lTKuSjQlpfo",
+        "link": "plink_1UEIXjC1bWq01lTKL0lCJMkw",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     },
     {
       "id": "stock-pga-national-honda-classic-polo",
@@ -1391,8 +1557,8 @@
         "Full photographs and condition notes on the listing"
       ],
       "measurements": {},
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407154740942",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/fZu6oGaqM0fbac69ZU9k40j",
       "_ingested": "2026-08-20",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -1423,7 +1589,16 @@
         "Size": "XL"
       },
       "_specsPulled": "2026-08-20",
-      "file": "pga-national-honda-classic-polo.jpg"
+      "file": "pga-national-honda-classic-polo.jpg",
+      "_ebayUrl": "https://www.ebay.com/itm/407154740942",
+      "_stripe": {
+        "product": "prod_VEm50VbyuyohCO",
+        "price": "price_1UEIXjC1bWq01lTKmR2dWrvd",
+        "link": "plink_1UEIXkC1bWq01lTKIxRulpo9",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     },
     {
       "id": "stock-peter-millar-hermitage-polo-navy",
@@ -1447,8 +1622,8 @@
         "Full photographs and condition notes on the listing"
       ],
       "measurements": {},
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407154728451",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/4gMdR856s2njgAu9ZU9k40k",
       "_ingested": "2026-08-20",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -1478,7 +1653,16 @@
         "Color": "Navy Blue"
       },
       "_specsPulled": "2026-08-20",
-      "file": "peter-millar-hermitage-polo-navy.jpg"
+      "file": "peter-millar-hermitage-polo-navy.jpg",
+      "_ebayUrl": "https://www.ebay.com/itm/407154728451",
+      "_stripe": {
+        "product": "prod_VEm5eyr7GznbaP",
+        "price": "price_1UEIXkC1bWq01lTK2cppvqWd",
+        "link": "plink_1UEIXkC1bWq01lTKHY27TLBD",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     },
     {
       "id": "stock-all-over-print-golf-sweater",
@@ -1502,8 +1686,8 @@
         "Full photographs and condition notes on the listing"
       ],
       "measurements": {},
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407154689365",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/28EaEWaqMge983Y3Bw9k40l",
       "_ingested": "2026-08-20",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -1535,7 +1719,16 @@
         "Performance/Activity": "Golf"
       },
       "_specsPulled": "2026-08-20",
-      "file": "all-over-print-golf-sweater.jpg"
+      "file": "all-over-print-golf-sweater.jpg",
+      "_ebayUrl": "https://www.ebay.com/itm/407154689365",
+      "_stripe": {
+        "product": "prod_VEm5Vz6OpRW3Z9",
+        "price": "price_1UEIXlC1bWq01lTKRlOz7UOe",
+        "link": "plink_1UEIXlC1bWq01lTKe35ikozs",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     },
     {
       "id": "stock-pinehurst-tc-reverse-weave",
@@ -1560,8 +1753,8 @@
       ],
       "measurements": {},
       "collection": "tour-championship-2026",
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407167043654",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/dRm4gy8iE4vr2JE0pk9k40m",
       "sku": "TA_TC26_03",
       "_ingested": "2026-08-21",
       "_source": "own listing photo, i.ebayimg.com",
@@ -1597,7 +1790,16 @@
         "Vintage": "Yes"
       },
       "_specsPulled": "2026-08-24",
-      "file": "pinehurst-tc-reverse-weave.jpg"
+      "file": "pinehurst-tc-reverse-weave.jpg",
+      "_ebayUrl": "https://www.ebay.com/itm/407167043654",
+      "_stripe": {
+        "product": "prod_VEm5m6JgQIOxpB",
+        "price": "price_1UEIXlC1bWq01lTKOOSWK9qj",
+        "link": "plink_1UEIXmC1bWq01lTKJ3H8HgBN",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     },
     {
       "id": "stock-slazenger-pga-tc-polo",
@@ -1622,8 +1824,8 @@
       ],
       "measurements": {},
       "collection": "tour-championship-2026",
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407167042454",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/bJe7sK1UgbXT83Ygoi9k40n",
       "sku": "TA_TC26_01",
       "_ingested": "2026-08-21",
       "_source": "own listing photo, i.ebayimg.com",
@@ -1658,7 +1860,16 @@
         "Shirt Length": "27 in"
       },
       "_specsPulled": "2026-08-24",
-      "file": "slazenger-pga-tc-polo.jpg"
+      "file": "slazenger-pga-tc-polo.jpg",
+      "_ebayUrl": "https://www.ebay.com/itm/407167042454",
+      "_stripe": {
+        "product": "prod_VEm5AWkOwPela1",
+        "price": "price_1UEIXmC1bWq01lTKqb9VYyQh",
+        "link": "plink_1UEIXmC1bWq01lTK3dRz9iFT",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     },
     {
       "id": "stock-southern-hills-tc-hat",
@@ -1683,8 +1894,8 @@
       ],
       "measurements": {},
       "collection": "tour-championship-2026",
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407167036049",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/4gM14m8iE4vrdoi5JE9k40o",
       "sku": "TA_TC26_06",
       "_ingested": "2026-08-21",
       "_source": "own listing photo, i.ebayimg.com",
@@ -1714,7 +1925,16 @@
         "Vintage": "Yes"
       },
       "_specsPulled": "2026-08-24",
-      "file": "southern-hills-tc-hat.jpg"
+      "file": "southern-hills-tc-hat.jpg",
+      "_ebayUrl": "https://www.ebay.com/itm/407167036049",
+      "_stripe": {
+        "product": "prod_VEm5PVtzLt7vy0",
+        "price": "price_1UEIXnC1bWq01lTKBneBNZ5b",
+        "link": "plink_1UEIXnC1bWq01lTKwxsaciUV",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     },
     {
       "id": "stock-peter-millar-east-lake-quarter-zip",
@@ -1739,8 +1959,8 @@
       ],
       "measurements": {},
       "collection": "tour-championship-2026",
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407167043098",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/dRm9AS42o8LH9827RM9k40p",
       "sku": "TA_TC26_02",
       "_ingested": "2026-08-21",
       "_source": "own listing photo, i.ebayimg.com",
@@ -1776,7 +1996,16 @@
         "Style": "Pullover"
       },
       "_specsPulled": "2026-08-24",
-      "file": "peter-millar-east-lake-quarter-zip.jpg"
+      "file": "peter-millar-east-lake-quarter-zip.jpg",
+      "_ebayUrl": "https://www.ebay.com/itm/407167043098",
+      "_stripe": {
+        "product": "prod_VEm5esDKyGoO09",
+        "price": "price_1UEIXnC1bWq01lTKqVCIvzWw",
+        "link": "plink_1UEIXnC1bWq01lTKAgX8OP8q",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     },
     {
       "id": "stock-izod-club-tc-polo",
@@ -1801,8 +2030,6 @@
       ],
       "measurements": {},
       "collection": "tour-championship-2026",
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407167040754",
       "sku": "TA_TC26_04",
       "_ingested": "2026-08-21",
       "_source": "own listing photo, i.ebayimg.com",
@@ -1838,7 +2065,8 @@
       },
       "_specsPulled": "2026-08-24",
       "file": "izod-club-tc-polo.jpg",
-      "sold": true
+      "sold": true,
+      "_ebayUrl": "https://www.ebay.com/itm/407167040754"
     },
     {
       "id": "stock-1988-tc-pebble-beach-snapback",
@@ -1863,8 +2091,8 @@
       ],
       "measurements": {},
       "collection": "tour-championship-2026",
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407167033141",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/dRmdR89mI3rnbga6NI9k40q",
       "sku": "TA_TC26_09",
       "_ingested": "2026-08-21",
       "_source": "own listing photo, i.ebayimg.com",
@@ -1894,7 +2122,16 @@
         "Vintage": "Yes"
       },
       "_specsPulled": "2026-08-24",
-      "file": "1988-tc-pebble-beach-snapback.jpg"
+      "file": "1988-tc-pebble-beach-snapback.jpg",
+      "_ebayUrl": "https://www.ebay.com/itm/407167033141",
+      "_stripe": {
+        "product": "prod_VEm6gzrSxYCZ7x",
+        "price": "price_1UEIXoC1bWq01lTKTAiQRI2W",
+        "link": "plink_1UEIXoC1bWq01lTK2lzf12LE",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     },
     {
       "id": "stock-2002-tc-magazine-fan-guide",
@@ -1919,8 +2156,8 @@
       ],
       "measurements": {},
       "collection": "tour-championship-2026",
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407167037794",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/28EfZggPage9ac64FA9k40r",
       "sku": "TA_TC26_07",
       "_ingested": "2026-08-21",
       "_source": "own listing photo, i.ebayimg.com",
@@ -1945,7 +2182,16 @@
         "Year": "2002"
       },
       "_specsPulled": "2026-08-24",
-      "file": "2002-tc-magazine-fan-guide.jpg"
+      "file": "2002-tc-magazine-fan-guide.jpg",
+      "_ebayUrl": "https://www.ebay.com/itm/407167037794",
+      "_stripe": {
+        "product": "prod_VEm6ssbDrBgUN6",
+        "price": "price_1UEIXoC1bWq01lTKirlE9G5C",
+        "link": "plink_1UEIXpC1bWq01lTKJY7FNyxH",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     },
     {
       "id": "stock-tc-east-lake-bag-towel",
@@ -1970,8 +2216,8 @@
       ],
       "measurements": {},
       "collection": "tour-championship-2026",
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407167036923",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/fZueVc0Qcge9bga8VQ9k40s",
       "sku": "TA_TC26_08",
       "_ingested": "2026-08-21",
       "_source": "own listing photo, i.ebayimg.com",
@@ -1996,7 +2242,16 @@
         "Event/Tournament": "Tour Championship"
       },
       "_specsPulled": "2026-08-24",
-      "file": "tc-east-lake-bag-towel.jpg"
+      "file": "tc-east-lake-bag-towel.jpg",
+      "_ebayUrl": "https://www.ebay.com/itm/407167036923",
+      "_stripe": {
+        "product": "prod_VEm6sRAXrbJjiV",
+        "price": "price_1UEIXpC1bWq01lTK08ei2qNG",
+        "link": "plink_1UEIXpC1bWq01lTK7zVqepIM",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     },
     {
       "id": "stock-tc-navy-golf-vest",
@@ -2021,8 +2276,8 @@
       ],
       "measurements": {},
       "collection": "tour-championship-2026",
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407167039666",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/3cI28q2YkaTPcke0pk9k40t",
       "sku": "TA_TC26_05",
       "_ingested": "2026-08-21",
       "_source": "own listing photo, i.ebayimg.com",
@@ -2054,7 +2309,16 @@
         "Vintage": "Yes"
       },
       "_specsPulled": "2026-08-24",
-      "file": "tc-navy-golf-vest.jpg"
+      "file": "tc-navy-golf-vest.jpg",
+      "_ebayUrl": "https://www.ebay.com/itm/407167039666",
+      "_stripe": {
+        "product": "prod_VEm6OGqARB5n8S",
+        "price": "price_1UEIXqC1bWq01lTKuRLdv3g0",
+        "link": "plink_1UEIXqC1bWq01lTKmFtuHPel",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     },
     {
       "id": "stock-footjoy-titleist-polo",
@@ -2078,8 +2342,6 @@
         "Full photographs and condition notes on the listing"
       ],
       "measurements": {},
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407190587074",
       "_ingested": "2026-09-02",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -2112,7 +2374,8 @@
       },
       "_specsPulled": "2026-09-03",
       "file": "footjoy-titleist-polo.jpg",
-      "sold": true
+      "sold": true,
+      "_ebayUrl": "https://www.ebay.com/itm/407190587074"
     },
     {
       "id": "stock-polo-golf-pinehurst-shirt",
@@ -2136,8 +2399,8 @@
         "Full photographs and condition notes on the listing"
       ],
       "measurements": {},
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407190586333",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/7sY9AS9mIbXT0Bw7RM9k40u",
       "_ingested": "2026-09-02",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -2168,7 +2431,16 @@
         "Color": "Red"
       },
       "_specsPulled": "2026-09-03",
-      "file": "polo-golf-pinehurst-shirt.jpg"
+      "file": "polo-golf-pinehurst-shirt.jpg",
+      "_ebayUrl": "https://www.ebay.com/itm/407190586333",
+      "_stripe": {
+        "product": "prod_VEm6gQyTjjNW5A",
+        "price": "price_1UEIXqC1bWq01lTKExNmlsC1",
+        "link": "plink_1UEIXqC1bWq01lTKJW5RwOUY",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     },
     {
       "id": "stock-peter-millar-scotty-cameron-quarter-zip",
@@ -2192,8 +2464,8 @@
         "Full photographs and condition notes on the listing"
       ],
       "measurements": {},
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407190587802",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/28E8wO56s5zv5VQ5JE9k40v",
       "_ingested": "2026-09-03",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -2227,7 +2499,16 @@
         "Size": "XL"
       },
       "_specsPulled": "2026-09-03",
-      "file": "peter-millar-scotty-cameron-quarter-zip.jpg"
+      "file": "peter-millar-scotty-cameron-quarter-zip.jpg",
+      "_ebayUrl": "https://www.ebay.com/itm/407190587802",
+      "_stripe": {
+        "product": "prod_VEm611OaJiUt8f",
+        "price": "price_1UEIXrC1bWq01lTKdLv2NRZO",
+        "link": "plink_1UEIXrC1bWq01lTKwVp7GUIW",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     },
     {
       "id": "stock-taylormade-knit-vest",
@@ -2251,8 +2532,8 @@
         "Full photographs and condition notes on the listing"
       ],
       "measurements": {},
-      "channel": "ebay",
-      "listingUrl": "https://www.ebay.com/itm/407190588878",
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/4gMfZgdCY2nj2JE0pk9k40w",
       "_ingested": "2026-09-03",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -2286,7 +2567,16 @@
         "Style": "Sweater"
       },
       "_specsPulled": "2026-09-03",
-      "file": "taylormade-knit-vest.jpg"
+      "file": "taylormade-knit-vest.jpg",
+      "_ebayUrl": "https://www.ebay.com/itm/407190588878",
+      "_stripe": {
+        "product": "prod_VEm6dmvgIEhjRt",
+        "price": "price_1UEIXrC1bWq01lTKUZY4fxhx",
+        "link": "plink_1UEIXsC1bWq01lTKkyrl6pH8",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-11"
+      }
     }
   ]
 }

@@ -139,13 +139,6 @@ export function mapManifestItem(entry) {
   });
 }
 
-/* EMERGENCY HOLD (7 Sep 2026): the eBay account is suspended, so every
-   eBay-syndicated entry leaves display — a visitor must never land on a
-   suspended-seller page from a Buy button. Records, photos and copy stay
-   untouched in the manifest; lifting the hold is flipping this to false.
-   Exported so the gates can relax their mapped-stock proofs while it is on. */
-export const EBAY_HOLD = true;
-
 export function manifestStock() {
   if (!existsSync(MANIFEST_PATH)) return [];
   try {
@@ -154,12 +147,10 @@ export function manifestStock() {
       // `retired`: the listing ended without a sale and was not relisted —
       // the piece leaves display but its record (photos, copy, specifics)
       // stays archived in the manifest. Un-retiring is deleting the flag.
-      .filter(
-        (i) =>
-          !i._missing &&
-          !i.retired &&
-          !(EBAY_HOLD && /ebay\.com/.test(String(i.listingUrl || '')))
-      )
+      // The eBay emergency hold (7 Sep 2026) lived here for three days and is
+      // gone: the account never came back and the shop sells directly now.
+      // What the era left behind is recorded per entry in `_ebayUrl`.
+      .filter((i) => !i._missing && !i.retired)
       // Display priority: price, highest first — the strongest pieces lead
       // the archive. Ties break to the newer sweep via the `_ingested` stamp
       // (YYYY-MM-DD, ISO-sortable as a plain string). Sorted HERE because the
