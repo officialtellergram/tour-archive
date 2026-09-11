@@ -54,13 +54,17 @@ function envKey() {
   return '';
 }
 const KEY = envKey();
-const MODE = KEY.startsWith('sk_test_') ? 'test' : KEY.startsWith('sk_live_') ? 'live' : null;
+/* Mode comes from the key prefix. Restricted keys (rk_) are accepted and
+   preferred: they carry only the handful of permissions these scripts need,
+   so a leaked one cannot touch payouts, bank details or account settings. */
+const MODE = /^[sr]k_test_/.test(KEY) ? 'test' : /^[sr]k_live_/.test(KEY) ? 'live' : null;
+const RESTRICTED = KEY.startsWith('rk_');
 if (!MODE) {
-  say(`${C.red}✖ STRIPE_SECRET_KEY missing or malformed${C.off}`);
+  say(`${C.red}✖ STRIPE_SECRET_KEY missing or not an sk_/rk_ test/live key${C.off}`);
   process.exit(1);
 }
 
-say(`\n${C.dim}── Tour Archive · stripe sold sweep (${MODE}${DRY ? ', dry' : ''}) ──${C.off}`);
+say(`\n${C.dim}── Tour Archive · stripe sold sweep (${MODE}${RESTRICTED ? ', restricted' : ''}${DRY ? ', dry' : ''}) ──${C.off}`);
 
 const AUTH = 'Basic ' + Buffer.from(KEY + ':').toString('base64');
 async function stripe(method, path, params) {

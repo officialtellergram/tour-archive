@@ -22,11 +22,12 @@
  *         --write    mint + write the manifest locally. NEVER runs git.
  *         --only=id  restrict to one entry (the proof-piece flow)
  *         --shipping=<cents>  flat rate when creating one (default 800)
- *         --live     required alongside --write when the key is sk_live_
+ *         --live     required alongside --write when the key is a live key
  *
- * Key discipline: sk_test_ mints play-money links the gates refuse to ship
+ * Key discipline: a test key mints play-money links the gates refuse to ship
  * (audit + deploy + integration all tripwire buy.stripe.com/test_). A live
- * key without --live aborts; --live with a test key aborts.
+ * key without --live aborts; --live with a test key aborts. Restricted keys
+ * (rk_) work and are preferred — see docs for the permissions they need.
  */
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
@@ -58,9 +59,13 @@ function envKey() {
 }
 
 const KEY = envKey();
-const MODE = KEY.startsWith('sk_test_') ? 'test' : KEY.startsWith('sk_live_') ? 'live' : null;
+/* Mode comes from the key prefix. Restricted keys (rk_) are accepted and
+   preferred: they carry only the handful of permissions these scripts need,
+   so a leaked one cannot touch payouts, bank details or account settings. */
+const MODE = /^[sr]k_test_/.test(KEY) ? 'test' : /^[sr]k_live_/.test(KEY) ? 'live' : null;
+const RESTRICTED = KEY.startsWith('rk_');
 if (!MODE) {
-  console.error(`${C.red}✖ STRIPE_SECRET_KEY missing or not an sk_test_/sk_live_ key${C.off}`);
+  console.error(`${C.red}✖ STRIPE_SECRET_KEY missing or not an sk_/rk_ test/live key${C.off}`);
   process.exit(1);
 }
 if (WRITE && MODE === 'live' && !LIVE) {
@@ -68,7 +73,7 @@ if (WRITE && MODE === 'live' && !LIVE) {
   process.exit(1);
 }
 if (LIVE && MODE !== 'live') {
-  console.error(`${C.red}✖ --live passed but the key is a test key — swap .env to sk_live_ first${C.off}`);
+  console.error(`${C.red}✖ --live passed but the key is a test key — put the live key in .env first${C.off}`);
   process.exit(1);
 }
 
@@ -149,8 +154,13 @@ if (!WRITE && !PROBE) {
 let failures = 0;
 const fail = (msg) => { failures += 1; console.log(`${C.red}   ✖ ${msg}${C.off}`); };
 
-const bal = await stripe('GET', '/v1/balance').catch((err) => (fail(`key rejected: ${err.message}`), null));
-if (bal) console.log(`${C.dim}   key OK (${MODE})${C.off}`);
+/* Key validation uses a Products read rather than Balance: it is a permission
+   the mint needs regardless, so a restricted key never has to carry Balance
+   access just to prove itself. */
+const keyOk = await stripe('GET', '/v1/products?limit=1')
+  .then(() => true)
+  .catch((err) => (fail(`key rejected: ${err.message}`), false));
+if (keyOk) console.log(`${C.dim}   key OK (${MODE}${RESTRICTED ? ', restricted' : ''})${C.off}`);
 
 async function findShippingRate() {
   const rates = await stripe('GET', '/v1/shipping_rates?active=true&limit=100');
