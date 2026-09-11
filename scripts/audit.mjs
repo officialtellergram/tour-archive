@@ -10,6 +10,7 @@
  */
 
 import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { isSafeStockPath } from '../server/inventory.mjs';
@@ -457,6 +458,78 @@ for (const file of files) {
   if (src.includes('signInWithPassword') && !rel.endsWith(join('curate', 'data.js'))) {
     errors.push(`${rel}: signInWithPassword outside src/curate/data.js — auth has one home`);
   }
+}
+
+/* ------------------------------------------------------------------ */
+/* Credentials must never reach a tracked file                         */
+/* ------------------------------------------------------------------ */
+
+/*
+ * .env is gitignored, the deploy check greps the built bundles, and neither
+ * would catch a key pasted into a committed script, doc or fixture. This
+ * scans exactly the set that can ever be pushed — what git tracks — so a
+ * secret is caught before the commit, not after it is public.
+ *
+ * The needles are assembled from fragments on purpose: written out whole,
+ * this file would match its own scan and the gate would flag itself forever.
+ */
+{
+  const sk = 'sk_';
+  const rk = 'rk_';
+  const whsec = 'whsec_';
+  const NEEDLES = [
+    // [label, regex, severity]
+    ['a Stripe secret key', new RegExp(`${sk}(test|live)_[A-Za-z0-9]{20,}`), 'error'],
+    ['a Stripe restricted key', new RegExp(`${rk}(test|live)_[A-Za-z0-9]{20,}`), 'error'],
+    ['a Stripe webhook signing secret', new RegExp(`${whsec}[A-Za-z0-9]{20,}`), 'error'],
+    ['a GitHub token', /gh[pousr]_[A-Za-z0-9]{30,}/, 'error'],
+  ];
+
+  let tracked = [];
+  try {
+    tracked = execFileSync('git', ['ls-files', '-z'], { cwd: ROOT, encoding: 'utf8', maxBuffer: 8 << 20 })
+      .split('\0')
+      .filter(Boolean);
+  } catch {
+    warnings.push('could not list tracked files (git unavailable) — the secret scan did not run');
+  }
+
+  const SKIP = /(^|\/)(package-lock\.json|public\/stock\/carousel\/)|\.(png|jpe?g|webp|gif|ico|pdf|woff2?)$/i;
+  let scanned = 0;
+  for (const rel of tracked) {
+    if (SKIP.test(rel)) continue;
+    let src;
+    try {
+      src = readFileSync(join(ROOT, rel), 'utf8');
+    } catch {
+      continue; // deleted-but-staged, or unreadable as text
+    }
+    scanned += 1;
+
+    /*
+     * Supabase keys are JWTs, and the ANON one is committed on purpose
+     * (src/curate/config.js — public by design, RLS is the real guard). So a
+     * bare JWT match would flag a file that is correct. Decode the payload
+     * and judge the role claim instead: only `service_role` is a secret.
+     */
+    for (const jwt of src.match(/eyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{10,}/g) || []) {
+      try {
+        const claims = JSON.parse(Buffer.from(jwt.split('.')[1], 'base64url').toString('utf8'));
+        if (claims.role === 'service_role')
+          errors.push(`${rel}: contains a Supabase service_role key — that key bypasses every row rule; move it to .env and roll it in the dashboard`);
+      } catch {
+        /* not a decodable JWT — the regex needles below still see it */
+      }
+    }
+
+    for (const [label, rx, severity] of NEEDLES) {
+      if (!rx.test(src)) continue;
+      const msg = `${rel}: contains what looks like ${label} — tracked files are public the moment they are pushed; move it to .env and roll the credential`;
+      if (severity === 'error') errors.push(msg);
+      else warnings.push(msg);
+    }
+  }
+  notes.push(`${scanned} tracked file(s) scanned for credentials`);
 }
 
 /* ------------------------------------------------------------------ */
