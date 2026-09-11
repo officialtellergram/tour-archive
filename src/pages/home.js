@@ -23,10 +23,14 @@ const BASE_URL = (import.meta.env?.BASE_URL || '/').replace(/\/*$/, '/');
  * Cloudflare fronts /hero with a 4 h browser TTL, so a re-encode is a ?v bump
  * and a new image is a new filename), and index.html's preload agreement.
  */
+/* Our own course photography (10 Sep 2026), built by scripts/hero-plates.py
+   from the shared Drive folder. These replace the licensed Adobe plates: the
+   Tour Championship is over, and shooting our own removes the licence
+   surface that forced the 26 Aug swap entirely. Order is the rotation. */
 const HERO_BACKDROPS = [
-  'hero/east-lake-clubhouse.jpg?v=1',
-  'hero/atlanta-skyline-aerial.jpg?v=1',
-  'hero/east-lake-pines.jpg?v=1',
+  'hero/ocean-hole.jpg?v=1',
+  'hero/links-sky.jpg?v=1',
+  'hero/sunset-water.jpg?v=1',
 ];
 
 /** Phase-aware status line for the featured event. */

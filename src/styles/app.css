@@ -616,20 +616,13 @@ h3.display {
   opacity: 1;
 }
 /* Per-plate framing (slots are positional — keep in step with HERO_BACKDROPS).
-   Slide 1, Adobe #1708134 clubhouse: 300px feathered sky headroom in-file so
-   the roof ridge clears the header; default 50% 45%. Slide 2, Adobe #520602604
-   Atlanta skyline aerial: 700px feathered haze headroom in-file (1.134 ratio);
-   biased right so the tower cluster and the pond both survive a phone's
-   24%-wide window, high so the skyline clears the header once the plate goes
-   width-fit (>= 1.134 W/1.24H). Slide 3, Adobe #1708141 pines: recentred
-   in-file (x 16-100%, y 8-100%) and biased right so both trunks and the far
-   clubhouse sit inside the phone window. */
-.hero-slide:nth-of-type(2) {
-  object-position: 65% 30%;
-}
-.hero-slide:nth-of-type(3) {
-  object-position: 72% 45%;
-}
+   The Adobe-era plates each needed their own object-position because their
+   crops were off-centre; these three are our own 4:3 frames, composed in
+   camera, and all sit correctly on the shared default (50% 45%). Slide 1
+   carries 120px of feathered sky headroom in-file so the horizon clears the
+   header — object-position Y is a no-op at height-fit viewports, so in-file
+   headroom is the only lever for that. Add a nth-of-type hook here if a
+   future plate needs one. */
 /* Montage drift — each plate breathes on its own clock and bearing, so a
    deal always lands mid-movement, the way cut footage does. Scale never
    drops below 1.03 (1.5% margin per side) and translate stays under 0.9%,
