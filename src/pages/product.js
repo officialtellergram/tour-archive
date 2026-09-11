@@ -321,10 +321,11 @@ export function product({ id }) {
               <button class="accordion-trigger">Shipping &amp; returns <i>+</i></button>
               <div class="accordion-panel"><div>
                 <p style="color:var(--ink-soft);font-weight:300;margin:0">
-                  Marketplace listings ship on that marketplace's terms. For pieces sold here,
-                  shipping and returns are agreed when you reserve — tracked, and never sold
-                  unseen. Sizing runs to period cut, so buy on measurements rather than the label.
-                  <a href="/sizing" style="border-bottom:1px solid var(--rule-strong)">Sizing &amp; condition guide</a>.
+                  Flat $8 shipping, tracked, out within 3 business days. Returns within 14 days
+                  of arrival — full refund, postage ours if the fault is ours. Sizing runs to
+                  period cut, so buy on measurements rather than the label.
+                  <a href="/terms" style="border-bottom:1px solid var(--rule-strong)">Terms of sale</a>
+                  and the <a href="/sizing" style="border-bottom:1px solid var(--rule-strong)">sizing &amp; condition guide</a>.
                 </p>
               </div></div>
             </div>

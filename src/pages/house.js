@@ -163,7 +163,7 @@ export function privacy() {
     <div class="wrap">
       ${breadcrumb([{ label: 'Home', href: '/' }, { label: 'Privacy' }])}
       <div data-hero>
-        <p class="eyebrow" data-hero-meta><span>Effective 13 August 2026</span></p>
+        <p class="eyebrow" data-hero-meta><span>Effective 10 September 2026</span></p>
         <h1 class="display" style="margin:.6rem 0 1.2rem;font-size:clamp(2.6rem,6vw,5.5rem)">
           <span class="line-mask"><span>Privacy</span></span>
         </h1>
@@ -183,11 +183,14 @@ export function privacy() {
       you about drops. We never sell it, share it, or add you to anything you didn't ask
       for.</p>
 
-      <p><strong>Buying a piece.</strong> Checkout for marketplace-listed pieces completes on
-      eBay or Depop, under their privacy policies — we never see your payment details. If we
-      ever take payment on this site directly, it will be processed by a dedicated payment
-      provider; card numbers would go to them, never to us, and a shipping address would be
-      used solely to ship your piece.</p>
+      <p><strong>Buying a piece.</strong> Checkout is handled by Stripe, on a payment page
+      they host. Your card number goes to Stripe and never touches this site or our
+      machines. Stripe passes back your name, email, shipping address and what you bought,
+      and we use those to send you your piece and to answer you if you write — nothing
+      else. Stripe describes its own handling of your data in its
+      <a href="https://stripe.com/privacy" target="_blank" rel="noopener" style="border-bottom:1px solid var(--rule-strong)">privacy policy</a>,
+      and our <a href="/terms" style="border-bottom:1px solid var(--rule-strong)">terms of sale</a>
+      cover shipping and returns.</p>
 
       <p><strong>What the plumbing sees.</strong> Like nearly every website: the site is
       served through Cloudflare, which fronts every request and gives us cookieless,
@@ -198,6 +201,75 @@ export function privacy() {
       <p><strong>Questions, or want something removed?</strong> Write to
       <a href="mailto:tourarchive.help@gmail.com" style="border-bottom:1px solid var(--rule-strong)">tourarchive.help@gmail.com</a>
       and a person will answer.</p>
+    </div>
+  </section>`;
+}
+
+/* ------------------------------- /terms ------------------------------- */
+
+/*
+ * Terms of sale. Load-bearing, not boilerplate: every Stripe Payment Link
+ * minted by scripts/stripe-mint.mjs carries a required consent checkbox
+ * pointing here, so this page must exist and stay honest before a piece can
+ * be bought. Written to be read — the house voice, not a licence.
+ */
+export function terms() {
+  return `
+  <section class="section" style="padding-top:calc(var(--header-h) + 4rem)">
+    <div class="wrap">
+      ${breadcrumb([{ label: 'Home', href: '/' }, { label: 'Terms of Sale' }])}
+      <div data-hero>
+        <p class="eyebrow" data-hero-meta><span>Effective 10 September 2026</span></p>
+        <h1 class="display" style="margin:.6rem 0 1.2rem;font-size:clamp(2.6rem,6vw,5.5rem)">
+          <span class="line-mask"><span>Terms of</span></span>
+          <span class="line-mask"><span>Sale</span></span>
+        </h1>
+        <p class="lede" data-hero-cta>
+          Every piece here is the only one of its kind. That single fact decides
+          most of what follows.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="wrap prose" data-reveal style="max-width:68ch">
+      <p><strong>One of one.</strong> Nothing in the archive is restocked. When a piece
+      sells, its checkout closes and the page keeps the record with a Sold mark. If two
+      people ever manage to pay for the same garment in the same minute, the first
+      completed checkout takes it and the second is refunded in full that day — and you
+      will hear it from us rather than have to notice it yourself.</p>
+
+      <p><strong>Paying.</strong> Checkout is handled by Stripe on their own hosted page.
+      Your card number goes to Stripe, never to us; we see your name, what you bought and
+      where to send it. Prices are in US dollars, and shipping is a flat $8 per piece,
+      shown before you pay.</p>
+
+      <p><strong>Shipping.</strong> Pieces go out tracked within 3 business days of your
+      order, and the tracking number follows by email. If something will take longer — we
+      are a small team, and occasionally a person is away — you will hear that from us
+      before you have to ask.</p>
+
+      <p><strong>Returns.</strong> If a piece is not what you expected, write to us within
+      14 days of it arriving and send it back in the condition it reached you. We refund
+      the full price once it arrives. Return postage is ours when the fault is ours —
+      misdescribed, mismeasured, damaged in transit — and yours when the piece is as
+      described but simply not for you.</p>
+
+      <p><strong>Condition, honestly.</strong> Everything here is secondhand and most of it
+      is decades old. Photographs are of the actual piece, never a stock image, and the
+      measurements in each listing are taken flat by hand. Buy on those measurements
+      rather than the size on the label — period sizing is not modern sizing. Ordinary
+      wear consistent with age is expected; anything past that is described and shown.</p>
+
+      <p><strong>If we get something wrong.</strong> A mistyped price, or a piece that
+      somehow sells twice, is our error and not your problem: we cancel, refund in full,
+      and tell you why.</p>
+
+      <p><strong>Questions before you buy?</strong> Write to
+      <a href="mailto:tourarchive.help@gmail.com" style="border-bottom:1px solid var(--rule-strong)">tourarchive.help@gmail.com</a>
+      and a person will answer. Ask for another photograph or another measurement — we
+      would rather you were sure.</p>
     </div>
   </section>`;
 }
