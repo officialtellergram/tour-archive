@@ -465,7 +465,12 @@ for (const [label, fn] of deskCases) {
 {
   const hero = home();
   const n = (hero.match(/class="hero-slide/g) || []).length;
-  if (n !== 3) errors.push(`home: expected 3 hero slides, got ${n}`);
+  // Count-agnostic on purpose: the rotation grew from 3 to the whole photo
+  // folder, and a hardcoded number here would have to be edited every time.
+  // What must hold is the shape — at least two slides, exactly one eager.
+  if (n < 2) errors.push(`home: expected at least 2 hero slides, got ${n}`);
+  if ((hero.match(/hero-slide is-on/g) || []).length !== 1)
+    errors.push('home: exactly one slide may start is-on');
   if (!hero.includes('hero-slide is-on'))
     errors.push('home: no slide marked is-on — first paint would be bare parchment');
   if (/hero-slide[^>]*loading="lazy"/.test(hero))

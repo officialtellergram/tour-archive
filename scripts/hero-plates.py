@@ -35,13 +35,29 @@ OUT = os.path.join(os.path.dirname(HERE), 'public', 'hero')
 BUDGET = 204_800
 WIDTH = 1760
 
-# The rotation, in order. `pad` is source-scale pixels of feathered sky added
-# above the frame; `crop` is an optional (l, t, r, b) box applied first.
+# The rotation, in order — the whole Drive folder, ordered for variety of
+# light rather than by filename. `pad` is source-scale pixels of feathered
+# sky added above the frame; `crop` is an optional (l, t, r, b) box applied
+# first. Only slide 1 is fetched eagerly; the rest defer until the rotation
+# reaches them, so a visitor downloads what they actually see.
 PLATES = [
     # first slide — also the one index.html preloads
     dict(src='IMG_5602.JPG', out='ocean-hole.jpg', pad=120, crop=None),
     dict(src='IMG_2870.JPG', out='links-sky.jpg', pad=0, crop=None),
+    dict(src='IMG_5832.JPG', out='cloud-over-bunker.jpg', pad=0, crop=None),
     dict(src='IMG_1887.JPG', out='sunset-water.jpg', pad=0, crop=None),
+    dict(src='IMG_1684.JPG', out='cypress-green.jpg', pad=0, crop=None),
+    dict(src='IMG_5390.JPG', out='golden-hour-fairway.jpg', pad=0, crop=None),
+    dict(src='IMG_2151.JPG', out='dusk-pond.jpg', pad=0, crop=None),
+    dict(src='IMG_1528.jpg', out='fairway-mackerel-sky.jpg', pad=0, crop=None),
+    dict(src='IMG_5833.JPG', out='cloud-and-bridge.jpg', pad=0, crop=None),
+    dict(src='IMG_1866.JPG', out='low-sun-fairway.jpg', pad=0, crop=None),
+    dict(src='IMG_4100.JPG', out='flag-and-pond.jpg', pad=0, crop=None),
+    dict(src='IMG_1804.JPG', out='hillside-clubhouse.jpg', pad=0, crop=None),
+    dict(src='IMG_5604.JPG', out='dusk-coastline.jpg', pad=0, crop=None),
+    dict(src='IMG_1813.JPG', out='sun-through-oaks.jpg', pad=0, crop=None),
+    dict(src='IMG_1678.JPG', out='cart-path-pines.jpg', pad=0, crop=None),
+    dict(src='IMG_9374.JPG', out='grey-sky-pond.jpg', pad=0, crop=None),
 ]
 
 
@@ -64,16 +80,27 @@ def feather_pad(im, pad_px, feather_rows, sample_rows=24, blur=40):
 
 
 def encode(img, name, blur=0.45):
-    """Step quality down until the plate fits the budget. Never ships over."""
-    img = img.filter(ImageFilter.GaussianBlur(blur))
+    """Fit the plate into the budget, then stop. Never ships over.
+
+    Two levers, in order of how much they cost the picture: quality first,
+    then a touch more blur. Dense foliage and sun-flare frames carry far more
+    high-frequency detail than an open fairway and can sit above budget at
+    every sane quality -- the sun-through-oaks frame did exactly that, at
+    which point the honest fix is to soften it slightly rather than ship
+    300 KB or drop the photograph. The plate lives under a parchment veil
+    behind text; nobody is pixel-peeping it.
+    """
     path = os.path.join(OUT, name)
-    for quality in (66, 62, 58, 54, 50):
-        img.save(path, 'JPEG', quality=quality, optimize=True, progressive=True, subsampling=2)
-        size = os.path.getsize(path)
-        if size <= BUDGET:
-            print('  %-22s %dx%d  q%d  %,d B'.replace('%,d', '%d') % (name, img.width, img.height, quality, size))
-            return path
-    print('!! %s over budget at every quality' % name, file=sys.stderr)
+    for extra in (0.0, 0.35, 0.8, 1.4):
+        soft = img.filter(ImageFilter.GaussianBlur(blur + extra))
+        for quality in (66, 62, 58, 54, 50, 46, 42):
+            soft.save(path, 'JPEG', quality=quality, optimize=True, progressive=True, subsampling=2)
+            size = os.path.getsize(path)
+            if size <= BUDGET:
+                note = '' if extra == 0.0 else '  (+%.2f blur)' % extra
+                print('  %-24s %dx%d  q%d  %d B%s' % (name, soft.width, soft.height, quality, size, note))
+                return path
+    print('!! %s over budget even at q42 with extra blur' % name, file=sys.stderr)
     sys.exit(1)
 
 

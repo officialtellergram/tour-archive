@@ -31,7 +31,20 @@ const BASE_URL = (import.meta.env?.BASE_URL || '/').replace(/\/*$/, '/');
 const HERO_BACKDROPS = [
   'hero/ocean-hole.jpg?v=1',
   'hero/links-sky.jpg?v=1',
+  'hero/cloud-over-bunker.jpg?v=1',
   'hero/sunset-water.jpg?v=1',
+  'hero/cypress-green.jpg?v=1',
+  'hero/golden-hour-fairway.jpg?v=1',
+  'hero/dusk-pond.jpg?v=1',
+  'hero/fairway-mackerel-sky.jpg?v=1',
+  'hero/cloud-and-bridge.jpg?v=1',
+  'hero/low-sun-fairway.jpg?v=1',
+  'hero/flag-and-pond.jpg?v=1',
+  'hero/hillside-clubhouse.jpg?v=1',
+  'hero/dusk-coastline.jpg?v=1',
+  'hero/sun-through-oaks.jpg?v=1',
+  'hero/cart-path-pines.jpg?v=1',
+  'hero/grey-sky-pond.jpg?v=1',
 ];
 
 /** Phase-aware status line for the featured event. */

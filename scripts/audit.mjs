@@ -294,8 +294,15 @@ for (const c of collections) {
     errors.push('home.js: HERO_BACKDROPS is not defined — home() would throw');
   } else {
     const plates = [...m[1].matchAll(/['"]([^'"]+)['"]/g)].map((x) => x[1]);
-    if (plates.length !== 3)
-      errors.push(`home.js: HERO_BACKDROPS lists ${plates.length} plates — the rotation is built for 3 (app.css binds one drift and any object-position hook per nth-of-type slot)`);
+    /* The count is free now: mountHeroBackdrop iterates whatever it finds and
+       app.css cycles its three drifts with nth-of-type(3n+k). Two is the floor
+       (one plate is a still image, and the loader bails under two), and the
+       ceiling is about weight — every plate past the first defers, but a
+       visitor who sits through the whole rotation downloads all of them. */
+    if (plates.length < 2)
+      errors.push(`home.js: HERO_BACKDROPS lists ${plates.length} plate(s) — the rotation needs at least 2`);
+    if (plates.length > 24)
+      warnings.push(`home.js: ${plates.length} hero plates — past ~24 the rotation is longer than any visit and the deferred weight stops paying for itself`);
     for (const p of plates) {
       const clean = p.split('?')[0];
       if (!clean.startsWith('hero/')) {

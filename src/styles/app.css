@@ -641,9 +641,14 @@ h3.display {
   from { transform: scale(1.04) translate3d(0.5%, 0.6%, 0); }
   to { transform: scale(1.08) translate3d(-0.5%, -0.4%, 0); }
 }
-.hero-slide:nth-of-type(1) { animation: hero-drift-a 26s ease-in-out infinite alternate; }
-.hero-slide:nth-of-type(2) { animation: hero-drift-b 32s ease-in-out infinite alternate; }
-.hero-slide:nth-of-type(3) { animation: hero-drift-c 24s ease-in-out infinite alternate; }
+/* The three drifts CYCLE across however many plates the rotation carries —
+   bound to nth-of-type(1/2/3) they stopped at slide 3 and every plate after
+   it sat perfectly still, which reads as a broken slideshow rather than a
+   calm one. Different periods (26/32/24s) keep neighbouring slides off each
+   other's clock. */
+.hero-slide:nth-of-type(3n + 1) { animation: hero-drift-a 26s ease-in-out infinite alternate; }
+.hero-slide:nth-of-type(3n + 2) { animation: hero-drift-b 32s ease-in-out infinite alternate; }
+.hero-slide:nth-of-type(3n + 3) { animation: hero-drift-c 24s ease-in-out infinite alternate; }
 @media (prefers-reduced-motion: reduce) {
   .hero-slide {
     animation: none;
