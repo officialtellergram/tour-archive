@@ -159,6 +159,19 @@ for (const c of collections) {
       }
       if (/buy\.stripe\.com\/test_/.test(String(s.listingUrl || '')) || s._stripe?.mode === 'test')
         errors.push(`${where}: TEST-mode Stripe artifacts — test links must never ship to the live site`);
+      /*
+       * Marketplace wording in hand-authored copy. The components and the
+       * mapper were swept at the Stripe pivot, but `details` is per-entry
+       * prose living in the manifest, which no source sweep reaches — and
+       * "Checkout completes on eBay" duly shipped on 37 product pages for a
+       * day after the shop stopped using eBay. The words, not the links, are
+       * what a customer actually reads.
+       */
+      for (const d of Array.isArray(s.details) ? s.details : []) {
+        if (/\b(ebay|depop)\b/i.test(d))
+          errors.push(`${where}: details line "${d}" names a marketplace — the shop sells directly now`);
+      }
+
       if (!Array.isArray(s.colorway) || s.colorway.length !== 3)
         errors.push(`${where}: colorway must be exactly 3 colours`);
       if (typeof s.price !== 'number' || s.price <= 0)

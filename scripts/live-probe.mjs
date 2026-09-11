@@ -203,6 +203,11 @@ try {
         target: b ? b.getAttribute('target') : '',
         note: (document.body.innerText.match(/Secure checkout by Stripe[^\\n]*/i) || [''])[0],
         status: (document.body.innerText.match(/Available — 1 of 1/) || [''])[0],
+        // Visible TEXT, not links: the pivot's copy sweep covered components
+        // but not the manifest's per-entry detail lines, and "Checkout
+        // completes on eBay" reached live product pages that way. A live
+        // piece's PDP has no comparables link, so innerText is clean here.
+        marketWord: (document.body.innerText.match(/\b(ebay|depop)\b/i) || [''])[0],
       });
     })()`);
     const p = JSON.parse(pdp || '{}');
@@ -215,6 +220,8 @@ try {
     else fail(`button target is "${p.target}"`);
     if (p.note) pass(`checkout note: "${p.note}"`);
     else fail('the Stripe checkout note is missing from the PDP');
+    if (!p.marketWord) pass('no marketplace named anywhere a customer reads');
+    else fail(`the PDP still says "${p.marketWord}" in visible copy`);
 
     // the link a real buyer would land on must actually serve
     if (/^https:\/\//.test(p.href || '')) {
