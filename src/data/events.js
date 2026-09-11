@@ -24,8 +24,11 @@ export const events = [
     ends: '2026-08-30',
     /** The drop opens the Sunday BEFORE round 1 — the countdown targets this. */
     dropOpens: '2026-08-23',
-    /** The drop stays open this many days after the trophy is handed over. */
-    dropCloses: '2026-09-13',
+    /** The drop stays open until this date. Editorial, not a fact about the
+        championship: it is when WE stop fronting the landing with it. Closed
+        early (10 Sep 2026) to move the site into its off-season shape — the
+        remaining TC pieces stay on sale, they just stop leading the page. */
+    dropCloses: '2026-09-09',
   },
 ];
 

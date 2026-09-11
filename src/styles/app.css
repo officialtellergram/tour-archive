@@ -773,6 +773,12 @@ h3.display {
   height: auto;
   mix-blend-mode: multiply; /* ink on paper, even if the PNG carries any white */
 }
+/* Off season: no championship to announce, so the mark carries the hero and
+   grows to suit. Roughly double, still inside the stage at 390px. */
+.hero-logo--xl {
+  width: clamp(150px, 17vw, 260px);
+  margin-bottom: clamp(0.4rem, 1.4vw, 1rem);
+}
 .hero-crest .crest-shield {
   fill: var(--racing-green);
 }

@@ -5,6 +5,7 @@ import {
   itemsIn,
   featuredCollection,
   getCollection,
+  launchCollections,
   daysUntil,
 } from '../data/store.js';
 import { productCard, collectionTile, marquee, sectionHead } from '../components/ui.js';
@@ -41,7 +42,9 @@ function eventStatus(event) {
     case 'closing':
       return { chip: 'Final days', line: 'The trophy is handed over; the drop closes shortly.' };
     case 'past':
-      return { chip: 'Closed', line: 'This drop has closed. The next event is on the calendar.' };
+      // The drop's WINDOW is shut; its pieces are still one-of-one stock and
+      // still buyable, so this must never read as "the shop is closed".
+      return { chip: 'Drop closed', line: 'The championship is played. What remains of the drop is still one of one.' };
     default: {
       const days = daysUntil(event);
       return {
@@ -69,9 +72,22 @@ export function home() {
      outside the window the shop leads and the drop trails as a preview. */
   const dropFirst = !!ev && (ev.phase === 'live' || ev.phase === 'closing');
 
+  /*
+   * OFF SEASON. featuredEvent() never returns null — it falls back to the
+   * most recently finished event so the page cannot go blank — which means
+   * a finished championship would otherwise keep fronting the landing for
+   * months, counting down to something already played. Once the window is
+   * past, the hero, the marquee and the files pane stop being about one
+   * tournament and become about the archive; the drop keeps a pane of its
+   * own for as long as pieces remain. A new event in events.js flips all of
+   * it back automatically — this is a phase, not a rewrite.
+   */
+  const eventLed = !!ev && ev.phase !== 'past';
+  const dropLeft = drop.filter(isAvailable).length;
+
   const shopSection = `
   <!-- ============ IN THE SHOP NOW ============ -->
-  <section class="section">
+  <section class="section" id="shop">
     <div class="wrap">
       ${sectionHead({
         eyebrow: available.length ? `${available.length} piece${available.length === 1 ? '' : 's'} available` : 'The shop',
@@ -103,7 +119,11 @@ export function home() {
   <section class="section" style="background:var(--parchment-deep)">
     <div class="wrap">
       ${sectionHead({
-        eyebrow: `${coll.drop} · ${status.chip}`,
+        eyebrow: eventLed
+          ? `${coll.drop} · ${status.chip}`
+          : dropLeft
+          ? `${coll.drop} · ${dropLeft} still available`
+          : `${coll.drop} · Fully claimed`,
         title: coll.name,
         link: { href: `/collections/${coll.id}`, label: 'Open the collection' },
       })}
@@ -139,9 +159,10 @@ export function home() {
       ).join('')}
     </div>
     <div class="wrap hero-inner">
-      <img class="hero-logo" src="${BASE_URL}brand/logo.png?v=2" alt="Tour Archive" data-hero-cta />
+      <img class="hero-logo${eventLed ? '' : ' hero-logo--xl'}" src="${BASE_URL}brand/logo.png?v=2"
+        alt="Tour Archive" ${eventLed ? 'data-hero-cta' : 'data-hero-lead'} />
       ${
-        ev && coll
+        eventLed && coll
           ? `
       <p class="eyebrow" data-hero-lead style="color:var(--claret)">
         <span>${ev.phase === 'live' ? `${coll.drop} · Out Now` : coll.drop}</span>
@@ -168,24 +189,35 @@ export function home() {
       </p>`
           : `
       <h1 class="display">
-        <span class="line-mask"><span>Vintage golf,</span></span>
-        <span class="line-mask"><span>sourced by the</span></span>
-        <span class="line-mask"><span><em>tournament</em>.</span></span>
+        <span class="line-mask"><span style="color:var(--navy)">Tour <em style="color:var(--claret)">Archive</em>.</span></span>
       </h1>
-      <p class="lede" data-hero-cta style="text-align:center">${BRAND.blurb}</p>`
+      <div style="display:flex;gap:.85rem;flex-wrap:wrap;justify-content:center" data-hero-cta>
+        <a class="btn btn--solid" href="#shop" data-magnetic>See the inventory</a>
+      </div>`
       }
     </div>
     <div class="scroll-cue" aria-hidden="true"><i></i>Scroll</div>
   </section>
 
-  ${marquee([
-    'Drop No. 01 — The Tour Championship',
-    'East Lake, Atlanta',
-    'One of one, always',
-    'Photographed in house',
-    'Virginia thrift &amp; estate sourcing',
-    'Global submissions welcome',
-  ])}
+  ${marquee(
+    eventLed
+      ? [
+          `${coll ? coll.drop : 'Drop No. 01'} — ${coll ? coll.name : 'The Tour Championship'}`,
+          'East Lake, Atlanta',
+          'One of one, always',
+          'Photographed in house',
+          'Virginia thrift &amp; estate sourcing',
+          'Global submissions welcome',
+        ]
+      : [
+          'The archive is open',
+          'One of one, always',
+          'Photographed in house',
+          'Sourced by championship',
+          'Virginia thrift &amp; estate sourcing',
+          'Global submissions welcome',
+        ]
+  )}
 
   ${dropFirst ? featuredSection + shopSection : shopSection + featuredSection}
 
@@ -193,16 +225,19 @@ export function home() {
   <section class="section">
     <div class="wrap">
       ${sectionHead({
-        eyebrow: 'The research behind the drop',
+        eyebrow: eventLed ? 'The research behind the drop' : 'The research behind the archive',
         title: 'The Files',
         link: { href: '/collections', label: 'All collections' },
       })}
       <p class="lede" data-reveal style="margin-bottom:clamp(2rem,4vw,3rem)">
-        Every drop begins as a file — the championship, the course, the wardrobe that
-        belongs to it. The first file is open: East Lake, tournament week, one of one.
+        ${
+          eventLed
+            ? 'Every drop begins as a file — the championship, the course, the wardrobe that belongs to it. The first file is open: East Lake, tournament week, one of one.'
+            : 'Every drop begins as a file — the championship, the course, the wardrobe that belongs to it. Drop No. 01 is played out; the next files are being assembled course by course.'
+        }
       </p>
       <div class="grid-collections" data-stagger>
-        ${tc ? collectionTile(tc) : ''}
+        ${(eventLed ? [tc] : launchCollections()).filter(Boolean).map(collectionTile).join('')}
       </div>
     </div>
   </section>
@@ -233,8 +268,12 @@ export function home() {
             <p style="color:rgba(244,240,230,.62)">Real archival garments, dated and graded honestly, photographed as found. No reproductions, no restocks — when it is gone, it is gone.</p></div>
           </li>
           <li style="border-color:rgba(244,240,230,.2)">
-            <div><h4 style="color:var(--parchment)">First drop: East Lake</h4>
-            <p style="color:rgba(244,240,230,.62)">Drop No. 01 opens with the 2026 TOUR Championship — thirty players, Bobby Jones’s home club, 27 – 30 August.</p></div>
+            <div><h4 style="color:var(--parchment)">${eventLed ? 'First drop: East Lake' : 'Filed by championship'}</h4>
+            <p style="color:rgba(244,240,230,.62)">${
+              eventLed
+                ? 'Drop No. 01 opens with the 2026 TOUR Championship — thirty players, Bobby Jones’s home club, 27 – 30 August.'
+                : 'Drop No. 01 was the 2026 TOUR Championship at East Lake. Between championships the archive keeps listing — course by course, as the pieces surface.'
+            }</p></div>
           </li>
         </ol>
       </div>
