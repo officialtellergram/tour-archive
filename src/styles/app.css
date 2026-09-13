@@ -1303,6 +1303,73 @@ h3.display {
   }
 }
 
+
+/* ------------------------------------------------------------------ */
+/* Fitts's law — 44px of thumb, without 44px of ink                    */
+/* ------------------------------------------------------------------ */
+
+/*
+ * Measured by scripts/ux-probe.mjs at 390px: the menu trigger was 51x19,
+ * the drawer close 84x19, the breadcrumb 33x14 and the wordmark 155x40 —
+ * every one of them a control a phone user actually presses, and every one
+ * under the 44px a fingertip needs (WCAG 2.5.5, Apple HIG).
+ *
+ * Two different fixes, chosen by whether the element has room to grow:
+ *
+ *   1. HIT-AREA OVERLAY (::after, inset negative). The element does not
+ *      move or change size by a single pixel; only the region that
+ *      responds to a press grows. This is right for type set in a header
+ *      or a breadcrumb, where making the LETTERS bigger would wreck the
+ *      composition to fix an ergonomics problem.
+ *   2. REAL SIZE (min-height + flex centring). Right where the control is
+ *      already a discrete object with space around it — the filter chips
+ *      especially, which are the archive's primary interaction and sit
+ *      0.5rem apart, so overlapping overlays would send a press to the
+ *      neighbouring chip. A slightly taller filter bar is the honest cost.
+ *
+ * Inline links inside prose are deliberately NOT padded out: Jakob's law
+ * says a text link should look and behave like a text link, and a 44px
+ * band around a word in a sentence would collide with the line above.
+ */
+
+.nav-toggle,
+.drawer-close,
+.wordmark,
+.breadcrumb a {
+  position: relative;
+}
+.nav-toggle::after,
+.drawer-close::after,
+.wordmark::after,
+.breadcrumb a::after {
+  content: '';
+  position: absolute;
+  /* grows the press region to >=44px in both axes; purely a hit area */
+  inset: -14px -12px;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+/* Discrete controls with room: give them the size for real. */
+.chip,
+.text-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+/* Footer navigation is stacked 21px type — genuinely pressed, and with a
+   whole column of room, so it gets real height rather than an overlay
+   (stacked overlays would overlap and send a press to the wrong row). */
+.footer-grid ul a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.signup input,
+.signup button {
+  min-height: 44px;
+}
+
 /* filter bar */
 .filters {
   display: flex;

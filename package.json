@@ -18,6 +18,7 @@
     "audit": "node scripts/audit.mjs",
     "smoke": "node scripts/smoke.mjs",
     "layout": "node scripts/layout.mjs",
+    "ux": "node scripts/ux-probe.mjs",
     "integration": "node scripts/integration.mjs",
     "deploy:check": "npm run build && node scripts/deploy.mjs",
     "check": "node scripts/audit.mjs && node scripts/smoke.mjs && node scripts/integration.mjs",
