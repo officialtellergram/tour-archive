@@ -656,10 +656,22 @@ h3.display {
 }
 /* The veil owns ALL muting: photographs are a muted plate under parchment,
    never a full-strength backdrop. Strongest where the text mass sits (display
-   centre, meta rail + buttons low), clearest above the logo. Ink display text
-   composites >=8.5:1 (AAA) in the display band and >=6:1 at the column corners
-   over the darkest plate region; the claret em runs ~5:1 (AA); the meta rail
-   sits on near-plain parchment. */
+   centre, meta rail + buttons low), clearest above the logo.
+
+   CONTRAST, re-measured 14 Sep 2026 after the pool was softened from
+   0.78/0.68 to 0.58/0.48 on request. Sampled off the RENDERED composite with
+   the copy hidden — plate plus veil, the ground a glyph actually sits on —
+   across several plates in the rotation, over the type column only:
+
+     navy display type    4.9 - 11.3:1   (AA 4.5 everywhere, mostly AAA)
+     claret em            3.2 -  6.3:1   (large-text AA is 3:1)
+
+   The claret italic is the tight one: it ran ~5:1 before and now bottoms out
+   near 3.2:1 against a bright horizon. That is still passing for display-size
+   type, with less room than it had. Soften this pool further and the claret
+   is what breaks first — raise the alphas back toward 0.7 before touching
+   the word's colour. Method: scripts/ux-probe.mjs is the routine check;
+   the one-off ground sampler is in the 14 Sep session notes. */
 /* Inverse transparency, per the deck-card rule: the scrim is owned by the
    copy. The frame runs near-clear so the photograph leads; a soft parchment
    pool sits behind the text column only, so every token — including the
@@ -677,8 +689,8 @@ h3.display {
     ),
     radial-gradient(
       ellipse 50% 54% at 50% 46%,
-      rgba(244, 240, 230, 0.78) 0%,
-      rgba(244, 240, 230, 0.68) 48%,
+      rgba(244, 240, 230, 0.58) 0%,
+      rgba(244, 240, 230, 0.48) 48%,
       rgba(244, 240, 230, 0) 74%
     ),
     linear-gradient(
@@ -703,8 +715,8 @@ h3.display {
       ),
       radial-gradient(
         ellipse 110% 48% at 50% 46%,
-        rgba(244, 240, 230, 0.78) 0%,
-        rgba(244, 240, 230, 0.68) 50%,
+        rgba(244, 240, 230, 0.58) 0%,
+        rgba(244, 240, 230, 0.48) 50%,
         rgba(244, 240, 230, 0) 76%
       ),
       linear-gradient(
