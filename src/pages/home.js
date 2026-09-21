@@ -227,7 +227,7 @@ export function home() {
   ${marquee(
     eventLed
       ? [
-          `${coll ? coll.drop : 'Drop No. 01'} — ${coll ? coll.name : 'The Tour Championship'}`,
+          `${coll ? coll.drop : 'The drop'} — ${coll ? coll.name : 'Tour Archive'}`,
           coll ? coll.place : 'East Lake, Atlanta',
           'One of one, always',
           'Photographed in house',
@@ -258,7 +258,7 @@ export function home() {
         ${
           eventLed
             ? `Every drop begins as a file — the championship, the course, the wardrobe that belongs to it. ${coll.drop} is open: ${coll.place}, tournament week, one of one.`
-            : 'Every drop begins as a file — the championship, the course, the wardrobe that belongs to it. Drop No. 01 is played out; the next files are being assembled course by course.'
+            : 'Every drop begins as a file — the championship, the course, the wardrobe that belongs to it. The last drop is played out; the next files are being assembled course by course.'
         }
       </p>
       <div class="grid-collections" data-stagger>
@@ -297,7 +297,7 @@ export function home() {
             <p style="color:rgba(244,240,230,.62)">${
               eventLed
                 ? `${coll.drop} opens with ${ev.title} — ${ev.venue}, ${dateRange(ev)}.`
-                : 'Drop No. 01 was the 2026 TOUR Championship at East Lake. Between championships the archive keeps listing — course by course, as the pieces surface.'
+                : 'Between championships the archive keeps listing — course by course, as the pieces surface. Every past drop stays on the shelf until its last piece is claimed.'
             }</p></div>
           </li>
         </ol>

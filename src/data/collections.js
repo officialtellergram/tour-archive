@@ -95,9 +95,11 @@ export const collections = [
     heroLines: ['The Tour', 'Championship'],
     place: 'East Lake, Atlanta',
     years: '2026',
-    status: 'upcoming',
-    statusLabel: 'First drop',
-    releaseNote: 'Opens tournament week',
+    // Drop No. 01 ran 23 Aug – 9 Sep 2026. Its remaining pieces stay on
+    // sale; the collection reads as a closed drop, not a coming one.
+    status: 'archived',
+    statusLabel: 'Drop No. 01 · Closed',
+    releaseNote: 'Closed 9 September 2026',
     heroLine: 'A collection of iconic attire from the Tour Championship.',
     // Verbatim from Chal's write-up — the house wrote none of this line.
     summary:

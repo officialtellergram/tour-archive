@@ -1,6 +1,7 @@
 /** House pages: /mission, /sell, /sizing, and the 404. */
 
 import { BRAND } from '../data/store.js';
+import { featuredCollection } from '../data/store.js';
 import { breadcrumb } from '../components/ui.js';
 import { toast } from '../lib/motion.js';
 
@@ -47,9 +48,13 @@ export function mission() {
       <div data-reveal data-reveal-delay="0.08">
         <p class="eyebrow" style="margin-bottom:.9rem">Where to start</p>
         <div style="display:flex;gap:.75rem;flex-wrap:wrap">
-          <a class="btn btn--solid" href="/collections/tour-championship-2026" data-magnetic>
-            Preview Drop No. 01
-          </a>
+          ${(() => {
+            const fc = featuredCollection();
+            const c = fc?.collection;
+            return c && fc.event?.phase !== 'past'
+              ? `<a class="btn btn--solid" href="/collections/${c.id}" data-magnetic>Shop ${c.drop}</a>`
+              : `<a class="btn btn--solid" href="/archive?filter=available" data-magnetic>In the shop now</a>`;
+          })()}
           <a class="btn" href="/sell" data-magnetic>Sell to the archive</a>
         </div>
       </div>

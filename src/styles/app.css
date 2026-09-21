@@ -1956,29 +1956,49 @@ h3.display {
   .header-inner {
     gap: 0.75rem;
   }
-  /* a wrapping flex row splits a stat from its number — stack one per row so
-     every label keeps its value */
+  /* A wrapping flex row splits a stat from its number, so the rail stacks
+     one per row — but each row stays CENTRED as a label+value pair, the way
+     the desktop rail reads. The earlier label-left/value-right grid pinned
+     "Medinah, Illinois" to the screen edge and made a stat sheet of it. The
+     rail is also narrower than the stage so its rules stop short of the
+     edges, and the type steps down a size across the whole stack. */
   .hero-meta {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: 0.55rem;
-    text-align: left;
+    gap: 0.45rem;
+    width: min(100%, 300px);
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    padding-block: 0.85rem;
   }
   .hero-meta span {
-    display: grid;
-    grid-template-columns: 1fr auto;
+    display: flex;
+    justify-content: center;
     align-items: baseline;
-    gap: 1rem;
-    padding-bottom: 0.5rem;
+    gap: 0.6rem;
+    padding-bottom: 0.45rem;
     border-bottom: 1px solid var(--rule);
   }
   .hero-meta b {
-    justify-self: end;
+    font-size: 13px;
     white-space: nowrap;
   }
   .hero-meta span:last-child {
     border-bottom: 0;
     padding-bottom: 0;
+  }
+  .hero .lede {
+    font-size: 1.02rem;
+    max-width: 30ch;
+  }
+  .hero-inner .hero-title-wrap {
+    width: min(84vw, 720px);
+  }
+  .hero-logo--sm {
+    width: 40px;
+  }
+  .hero-inner {
+    gap: 0.9rem;
   }
   .journal-row {
     grid-template-columns: 1fr;

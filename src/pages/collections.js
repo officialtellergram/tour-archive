@@ -1,4 +1,6 @@
 import {
+  BASIC_STOCK,
+  featuredCollection,
   launchCollections,
   itemsIn,
   isAvailable,
@@ -15,6 +17,8 @@ import { collectionTile, productCard, breadcrumb, sectionHead, marquee } from '.
 export function collectionsIndex() {
   const launch = launchCollections();
   const ev = featuredEvent();
+  const fc = featuredCollection()?.collection;
+  const dropCount = launchCollections().filter((c) => c.id !== BASIC_STOCK).length;
   const reel = launch.map((c) => `${c.drop} — ${c.name} · ${c.place}`);
 
   return `
@@ -23,14 +27,19 @@ export function collectionsIndex() {
       ${breadcrumb([{ label: 'Home', href: '/' }, { label: 'Collections' }])}
       <div class="coll-hero-grid" data-hero>
         <div>
-          <p class="eyebrow" data-hero-meta><span>One drop · one open shelf</span></p>
+          <p class="eyebrow" data-hero-meta><span>${
+            dropCount === 1 ? 'One drop' : dropCount === 2 ? 'Two drops' : `${dropCount} drops`
+          } · one open shelf</span></p>
           <h1 class="display" style="margin:.6rem 0 1.4rem;font-size:clamp(3rem,8vw,7.5rem)">
             <span class="line-mask"><span>The Collections</span></span>
           </h1>
           <p class="lede" data-hero-cta>
-            Every piece we buy is placed into the championship era it came from. Drop No. 01
-            opens ${ev ? dateRange(ev) : 'tournament week'} at East Lake, and Basic Stock —
-            the open shelf — is listed continuously as pieces are photographed.
+            Every piece we buy is placed into the championship era it came from. ${
+              fc && ev
+                ? `${fc.drop} ${ev.phase === 'past' ? 'ran' : 'runs'} ${dateRange(ev)} at ${fc.place}`
+                : 'Each drop opens tournament week'
+            }, and Basic Stock — the open shelf — is listed continuously as pieces are
+            photographed.
           </p>
         </div>
         <div data-hero-cta>

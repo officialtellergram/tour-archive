@@ -46,7 +46,7 @@ export function plateTag(item) {
   // Sold: the corner sash carries the word; the parchment veil is CSS on the
   // plate (.is-sold ::after). No channel chip — it isn't on the marketplace.
   if (item.sold) return `<span class="plate-sash" aria-label="Sold">Sold</span>`;
-  if (item.upcoming) return `<span class="plate-tag plate-tag--soon">Drop 01</span>`;
+  if (item.upcoming) return `<span class="plate-tag plate-tag--soon">Next drop</span>`;
   // Direct stock: checkout is our own Stripe payment page, so the card needs
   // no channel warning — every piece is simply what it says it is.
   // (.plate-tag--channel CSS stays: curate.js still chips marketplace finds.)
@@ -131,7 +131,7 @@ export function collectionTile(collection) {
             ? `<span>${stock.length} piece${stock.length === 1 ? '' : 's'}</span>
                <span>${live ? `${live} available` : 'Fully archived'}</span>`
             : collection.status === 'upcoming'
-            ? `<span>First drop</span><span>Wardrobe in assembly</span>`
+            ? `<span>Next drop</span><span>Wardrobe in assembly</span>`
             : collection.status === 'live'
             ? `<span>Open stock</span><span>Listed continuously</span>`
             : `<span>Research file</span><span>Wardrobe in sourcing</span>`
