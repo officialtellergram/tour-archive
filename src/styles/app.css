@@ -798,15 +798,22 @@ h3.display {
 }
 /* A drop with its own title art: the art is the headline, the mark sits
    small beneath it — the reverse of the off-season hero, deliberately. */
-.hero-title-wrap {
+.hero-inner .hero-title-wrap {
   margin: 0;
   line-height: 0;
+  /* the wrapper carries the size — a grid child under a max-width would
+     otherwise shrink the art to a fraction of what the img rule asks for */
+  /* 94vw fills a phone; the desktop cap keeps the Shop button inside a
+     900px-tall first view — bigger than this and the primary action
+     drops below the fold */
+  width: min(94vw, 720px);
+  max-width: none;
+  justify-self: center;
 }
-.hero-title {
-  width: clamp(280px, 72vw, 680px);
+.hero-inner .hero-title {
+  width: 100%;
   height: auto;
   display: block;
-  margin-inline: auto;
 }
 .hero-logo--sm {
   width: clamp(44px, 4.6vw, 64px);
