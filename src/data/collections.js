@@ -53,9 +53,46 @@ export const basicStockCollection = {
 
 export const collections = [
   {
+    id: 'presidents-cup-2026',
+    drop: 'Drop No. 02',
+    name: 'The Presidents Cup Collection',
+    heroLines: ['The Presidents', 'Cup'],
+    // Title art from the logo-animation set replaces the two display lines
+    // on the landing; heroLines stay as the fallback and for the drawer.
+    heroImage: 'brand/presidents-cup-title.webp?v=1',
+    heroImageAlt: 'The Presidents Cup Collection',
+    place: 'Medinah, Illinois',
+    years: '2026',
+    status: 'live',
+    statusLabel: 'Now open',
+    releaseNote: 'Opens tournament week',
+    heroLine: 'A collection of iconic attire from the Presidents Cup.',
+    summary:
+      'Twelve against twelve at Medinah Country Club — the United States against the International side, on Course No. 3, 24 to 27 September 2026.',
+    // Medinah oaks and turf; the sides' navy and red are the accents.
+    palette: ['#2F4A2A', '#B9A57B', '#3B3F5C'],
+    accent: '#8A1C2B',
+    // Chal owns the essay. Left empty rather than filled with house prose —
+    // the audit warns, the page renders without it.
+    essay: [],
+    facts: [
+      { k: 'Championship', v: '2026 Presidents Cup' },
+      { k: 'Rounds', v: '24 – 27 September 2026' },
+      { k: 'Course', v: 'Medinah Country Club (No. 3), Medinah, Illinois' },
+      { k: 'Captains', v: 'Brandt Snedeker (USA) · Geoff Ogilvy (International)' },
+      { k: 'Format', v: 'Twelve a side, match play' },
+    ],
+    sources: [
+      { label: 'Presidents Cup — official site', url: 'https://www.presidentscup.com/' },
+      { label: 'Wikipedia — 2026 Presidents Cup', url: 'https://en.wikipedia.org/wiki/2026_Presidents_Cup' },
+    ],
+  },
+  {
     id: 'tour-championship-2026',
     drop: 'Drop No. 01',
     name: 'The Tour Championship',
+    // The hero sets the name on two lines, the second in claret italic.
+    heroLines: ['The Tour', 'Championship'],
     place: 'East Lake, Atlanta',
     years: '2026',
     status: 'upcoming',

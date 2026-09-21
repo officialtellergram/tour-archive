@@ -2528,6 +2528,222 @@
         "mode": "live",
         "minted": "2026-09-11"
       }
+    },
+    {
+      "id": "stock-presidents-cup-usa-cashmere-sweater",
+      "file": "presidents-cup-usa-cashmere-sweater.jpg",
+      "name": "Presidents Cup USA Cashmere Sweater",
+      "brand": "Unattributed",
+      "year": "—",
+      "category": "Knitwear",
+      "garment": "sweater",
+      "size": "XL",
+      "condition": "Pre-owned",
+      "price": 99.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "100% Cashmere team USA sweater",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "26 in",
+        "Pit To Pit": "26 in",
+        "Sleeves": "30 in"
+      },
+      "collection": "presidents-cup-2026",
+      "_ingested": "2026-09-21",
+      "_source": "stripe:prod_VIWUs3NBEEdr4H",
+      "description": [
+        "100% Cashmere team USA sweater",
+        "Style worn by Tiger himself",
+        "All items are washed and inspected before sale; there may be minor signs of wear given the vintage nature of the product."
+      ],
+      "_stripe": {
+        "product": "prod_VIWUs3NBEEdr4H",
+        "price": "price_1UI89kC1bWq01lTKxvyGJmlg",
+        "link": "plink_1UI8LeC1bWq01lTKqtenMXY4",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-21"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/cNicN46awfa5cke9ZU9k40x"
+    },
+    {
+      "id": "stock-tiger-woods-presidents-cup-polo",
+      "file": "tiger-woods-presidents-cup-polo.jpg",
+      "name": "Tiger Woods Presidents Cup Polo",
+      "brand": "Nike",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "L",
+      "condition": "Pre-owned",
+      "price": 74.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "Orchid colored Presidents Cup polo from the Nike Tiger Woods collection",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {},
+      "collection": "presidents-cup-2026",
+      "_ingested": "2026-09-21",
+      "_source": "stripe:prod_VIWlclQTsTXKHB",
+      "description": [
+        "Orchid colored Presidents Cup polo from the Nike Tiger Woods collection",
+        "100% cotton",
+        "All items are washed and inspected before sale; there may be minor signs of wear given the vintage nature of the product."
+      ],
+      "_stripe": {
+        "product": "prod_VIWlclQTsTXKHB",
+        "price": "price_1UI89XC1bWq01lTKS2z1Wl96",
+        "link": "plink_1UI8LeC1bWq01lTKAH5slJS7",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-21"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/cNi6oG1Ug9PLcke9ZU9k40y"
+    },
+    {
+      "id": "stock-vintage-presidents-cup-tee-shirt",
+      "file": "vintage-presidents-cup-tee-shirt.jpg",
+      "name": "Vintage Presidents Cup tee shirt",
+      "brand": "Unattributed",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "XL",
+      "condition": "Pre-owned",
+      "price": 49.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "1990s President's Cup tee from Robert Trent Jones GC",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "28 in",
+        "Chest": "25 in"
+      },
+      "collection": "presidents-cup-2026",
+      "_ingested": "2026-09-21",
+      "_source": "stripe:prod_VIWfp6i1qANHrh",
+      "description": [
+        "1990s President's Cup tee from Robert Trent Jones GC",
+        "Made in USA",
+        "All items are washed and inspected before sale; there may be minor signs of wear given the vintage nature of the product."
+      ],
+      "_stripe": {
+        "product": "prod_VIWfp6i1qANHrh",
+        "price": "price_1UI89LC1bWq01lTKimQCS74t",
+        "link": "plink_1UI8LfC1bWq01lTKaIwaVc6j",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-21"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/5kQ14m6awfa5ac69ZU9k40z"
+    },
+    {
+      "id": "stock-presidents-cup-robert-trent-jones-gc-polo",
+      "file": "presidents-cup-robert-trent-jones-gc-polo.jpg",
+      "name": "Presidents Cup Robert Trent Jones GC Polo",
+      "brand": "Unattributed",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "XL",
+      "condition": "Pre-owned",
+      "price": 44.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "Vintage Presidents Cup polo featuring embroidery from Robert Trent Jones GC",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "27 in",
+        "Pit To Pit": "26 in"
+      },
+      "collection": "presidents-cup-2026",
+      "_ingested": "2026-09-21",
+      "_source": "stripe:prod_VIWONyBJUUAOXO",
+      "description": [
+        "Vintage Presidents Cup polo featuring embroidery from Robert Trent Jones GC",
+        "Heavy Cotton Construction",
+        "All items are washed and inspected before sale; there may be minor signs of wear given the vintage nature of the product."
+      ],
+      "_stripe": {
+        "product": "prod_VIWONyBJUUAOXO",
+        "price": "price_1UI897C1bWq01lTKNfl3h4AL",
+        "link": "plink_1UI8LfC1bWq01lTK6IG3gcNn",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-21"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/aFabJ07eA2nj4RMfke9k40A"
+    },
+    {
+      "id": "stock-vintage-medinah-country-club-knit-polo",
+      "file": "vintage-medinah-country-club-knit-polo.jpg",
+      "name": "Vintage Medinah Country Club Knit Polo",
+      "brand": "Unattributed",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "XL",
+      "condition": "Pre-owned",
+      "price": 34.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "Soft Vintage knit for Medinah CC",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {},
+      "collection": "presidents-cup-2026",
+      "_ingested": "2026-09-21",
+      "_source": "stripe:prod_VIWuuzoUKeb7qS",
+      "description": [
+        "Soft Vintage knit for Medinah CC",
+        "Host of the 2026 President's Cup",
+        "More like a sweater than a polo",
+        "All items are washed and inspected before sale; there may be minor signs of wear given the vintage nature of the product."
+      ],
+      "_stripe": {
+        "product": "prod_VIWuuzoUKeb7qS",
+        "price": "price_1UI88lC1bWq01lTKQmJ0gAZU",
+        "link": "plink_1UI8LfC1bWq01lTKKBPtmxca",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-09-21"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/8x23cu2YkaTP5VQ1to9k40B"
     }
   ]
 }

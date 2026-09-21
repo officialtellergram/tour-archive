@@ -127,7 +127,7 @@ export const items = () => state.items;
 export const collections = () => state.collections;
 
 /** The collections the launch chrome and index surface. Order is editorial: the drop leads. */
-const LAUNCH_IDS = ['tour-championship-2026', BASIC_STOCK];
+const LAUNCH_IDS = ['presidents-cup-2026', 'tour-championship-2026', BASIC_STOCK];
 export const launchCollections = () =>
   LAUNCH_IDS.map((id) => state.collections.find((c) => c.id === id)).filter(Boolean);
 

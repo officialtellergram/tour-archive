@@ -13,6 +13,21 @@
 
 export const events = [
   {
+    id: 'presidents-cup-2026',
+    collection: 'presidents-cup-2026',
+    title: 'The 2026 Presidents Cup',
+    venue: 'Medinah Country Club',
+    city: 'Medinah, Illinois',
+    // Thu 24 – Sun 27 Sep 2026, per presidentscup.com. Verified 2026-09-21.
+    starts: '2026-09-24',
+    ends: '2026-09-27',
+    /** Drop No. 02 opens the Monday of tournament week, noon Eastern. */
+    dropOpens: '2026-09-21',
+    /** Two weeks after the trophy. Editorial — when we stop fronting the
+        landing with it; the pieces stay on sale after. */
+    dropCloses: '2026-10-11',
+  },
+  {
     id: 'tour-championship-2026',
     collection: 'tour-championship-2026',
     title: 'The 2026 TOUR Championship',

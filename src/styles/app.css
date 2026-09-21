@@ -796,6 +796,22 @@ h3.display {
   width: clamp(150px, 17vw, 260px);
   margin-bottom: clamp(0.4rem, 1.4vw, 1rem);
 }
+/* A drop with its own title art: the art is the headline, the mark sits
+   small beneath it — the reverse of the off-season hero, deliberately. */
+.hero-title-wrap {
+  margin: 0;
+  line-height: 0;
+}
+.hero-title {
+  width: clamp(280px, 72vw, 680px);
+  height: auto;
+  display: block;
+  margin-inline: auto;
+}
+.hero-logo--sm {
+  width: clamp(44px, 4.6vw, 64px);
+  margin-top: clamp(0.2rem, 1vw, 0.6rem);
+}
 .hero-crest .crest-shield {
   fill: var(--racing-green);
 }

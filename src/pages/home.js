@@ -7,6 +7,7 @@ import {
   getCollection,
   launchCollections,
   daysUntil,
+  dateRange,
 } from '../data/store.js';
 import { productCard, collectionTile, marquee, sectionHead } from '../components/ui.js';
 
@@ -74,7 +75,6 @@ export function home() {
   // Counts still speak to availability.
   const stock = items();
   const available = stock.filter(isAvailable);
-  const tc = getCollection('tour-championship-2026');
 
   const ev = featured?.event;
   const coll = featured?.collection;
@@ -172,24 +172,36 @@ export function home() {
       ).join('')}
     </div>
     <div class="wrap hero-inner">
-      <img class="hero-logo${eventLed ? '' : ' hero-logo--xl'}" src="${BASE_URL}brand/logo.png?v=2"
-        alt="Tour Archive" ${eventLed ? 'data-hero-cta' : 'data-hero-lead'} />
+      ${
+        eventLed && coll?.heroImage
+          ? ''
+          : `<img class="hero-logo${eventLed ? '' : ' hero-logo--xl'}" src="${BASE_URL}brand/logo.png?v=2"
+        alt="Tour Archive" ${eventLed ? 'data-hero-cta' : 'data-hero-lead'} />`
+      }
       ${
         eventLed && coll
           ? `
       <p class="eyebrow" data-hero-lead style="color:var(--claret)">
         <span>${ev.phase === 'live' ? `${coll.drop} · Out Now` : coll.drop}</span>
       </p>
-      <h1 class="display">
-        <span class="line-mask"><span style="color:var(--navy)">The Tour</span></span>
-        <span class="line-mask"><span><em>Championship</em><span style="color:var(--navy)">.</span></span></span>
+      ${
+        coll.heroImage
+          ? `<h1 class="hero-title-wrap" data-hero-cta>
+        <img class="hero-title" src="${BASE_URL}${coll.heroImage}" alt="${coll.heroImageAlt || coll.name}"
+          fetchpriority="high" decoding="async" />
       </h1>
+      <img class="hero-logo hero-logo--sm" src="${BASE_URL}brand/logo.png?v=2" alt="Tour Archive" data-hero-cta />`
+          : `<h1 class="display">
+        <span class="line-mask"><span style="color:var(--navy)">${(coll.heroLines || [coll.name, ''])[0]}</span></span>
+        <span class="line-mask"><span><em>${(coll.heroLines || ['', ''])[1]}</em><span style="color:var(--navy)">.</span></span></span>
+      </h1>`
+      }
       <p class="lede" data-hero-cta style="text-align:center;font-weight:500;color:var(--ink)">
         ${coll.heroLine}
       </p>
       <div class="hero-meta" data-hero-meta>
         <span>Status <b>${status.chip}</b></span>
-        <span>Venue <b>East Lake, Atlanta</b></span>
+        <span>Venue <b>${coll.place}</b></span>
       </div>
       <div style="display:flex;gap:.85rem;flex-wrap:wrap;justify-content:center" data-hero-cta>
         <a class="btn btn--solid" href="/collections/${coll.id}" data-magnetic>
@@ -216,7 +228,7 @@ export function home() {
     eventLed
       ? [
           `${coll ? coll.drop : 'Drop No. 01'} — ${coll ? coll.name : 'The Tour Championship'}`,
-          'East Lake, Atlanta',
+          coll ? coll.place : 'East Lake, Atlanta',
           'One of one, always',
           'Photographed in house',
           'Virginia thrift &amp; estate sourcing',
@@ -245,12 +257,12 @@ export function home() {
       <p class="lede" data-reveal style="margin-bottom:clamp(2rem,4vw,3rem)">
         ${
           eventLed
-            ? 'Every drop begins as a file — the championship, the course, the wardrobe that belongs to it. The first file is open: East Lake, tournament week, one of one.'
+            ? `Every drop begins as a file — the championship, the course, the wardrobe that belongs to it. ${coll.drop} is open: ${coll.place}, tournament week, one of one.`
             : 'Every drop begins as a file — the championship, the course, the wardrobe that belongs to it. Drop No. 01 is played out; the next files are being assembled course by course.'
         }
       </p>
       <div class="grid-collections" data-stagger>
-        ${(eventLed ? [tc] : launchCollections()).filter(Boolean).map(collectionTile).join('')}
+        ${(eventLed ? [coll] : launchCollections()).filter(Boolean).map(collectionTile).join('')}
       </div>
     </div>
   </section>
@@ -281,10 +293,10 @@ export function home() {
             <p style="color:rgba(244,240,230,.62)">Real archival garments, dated and graded honestly, photographed as found. No reproductions, no restocks — when it is gone, it is gone.</p></div>
           </li>
           <li style="border-color:rgba(244,240,230,.2)">
-            <div><h4 style="color:var(--parchment)">${eventLed ? 'First drop: East Lake' : 'Filed by championship'}</h4>
+            <div><h4 style="color:var(--parchment)">${eventLed ? `${coll.drop}: ${coll.place}` : 'Filed by championship'}</h4>
             <p style="color:rgba(244,240,230,.62)">${
               eventLed
-                ? 'Drop No. 01 opens with the 2026 TOUR Championship — thirty players, Bobby Jones’s home club, 27 – 30 August.'
+                ? `${coll.drop} opens with ${ev.title} — ${ev.venue}, ${dateRange(ev)}.`
                 : 'Drop No. 01 was the 2026 TOUR Championship at East Lake. Between championships the archive keeps listing — course by course, as the pieces surface.'
             }</p></div>
           </li>
