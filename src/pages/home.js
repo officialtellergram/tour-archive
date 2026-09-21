@@ -172,7 +172,7 @@ export function home() {
       ).join('')}
     </div>
     <div class="wrap hero-inner">
-      <img class="hero-logo${eventLed ? '' : ' hero-logo--xl'}" src="${BASE_URL}brand/logo.png?v=2"
+      <img class="hero-logo${eventLed ? (coll?.heroImage ? ' hero-logo--drop' : '') : ' hero-logo--xl'}" src="${BASE_URL}brand/logo.png?v=2"
         alt="Tour Archive" ${eventLed ? 'data-hero-cta' : 'data-hero-lead'} />
       ${
         eventLed && coll

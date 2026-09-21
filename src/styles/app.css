@@ -796,6 +796,11 @@ h3.display {
   width: clamp(150px, 17vw, 260px);
   margin-bottom: clamp(0.4rem, 1.4vw, 1rem);
 }
+/* A drop with its own title art: the mark sits above the art and yields to
+   it — about three-quarters of the default size. */
+.hero-logo--drop {
+  width: clamp(62px, 6.6vw, 96px);
+}
 /* A drop with its own title art: the art is the headline, the mark sits
    small beneath it — the reverse of the off-season hero, deliberately. */
 .hero-inner .hero-title-wrap {
