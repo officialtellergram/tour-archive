@@ -2595,7 +2595,10 @@
       "details": [
         "Checkout completes with Stripe"
       ],
-      "measurements": {},
+      "measurements": {
+        "Length": "30 in",
+        "Chest": "23 in"
+      },
       "collection": "presidents-cup-2026",
       "_ingested": "2026-09-21",
       "_source": "stripe:prod_VIWlclQTsTXKHB",
@@ -2724,7 +2727,10 @@
       "details": [
         "Checkout completes with Stripe"
       ],
-      "measurements": {},
+      "measurements": {
+        "Length": "28 in",
+        "Chest": "25 in"
+      },
       "collection": "presidents-cup-2026",
       "_ingested": "2026-09-21",
       "_source": "stripe:prod_VIWuuzoUKeb7qS",

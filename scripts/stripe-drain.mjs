@@ -120,15 +120,26 @@ const brandOf = (hay) => BRANDS.find((b) => new RegExp(`\\b${b.replace(/[&]/g, '
 const SIZE_RX = /\bsize\s*:?\s*(XS|S|M|L|XL|XXL|2XL|3XL)\b/i;
 const MEAS_RX = /^\s*measurements?\s*:?\s*(.+)$/i;
 
-/** "26\" Length - 24\" Pit to Pit" → { Length: '26 in', 'Pit to Pit': '24 in' } */
+/**
+ * "26\" Length - 24\" Pit to Pit"  →  { Length: '26 in', 'Pit to Pit': '24 in' }
+ * "30\" Length 23\" Chest"         →  { Length: '30 in', Chest: '23 in' }
+ *
+ * Henry separates pairs with a dash, a comma, or nothing but a space. So
+ * this walks number→label pairs directly: a number (with or without an inch
+ * mark), then the words up to the next number or separator. Label-first
+ * pairs ("Chest 23\"") are read the same way in a second pass.
+ */
 function parseMeasurements(line) {
   const out = {};
-  for (const seg of line.split(/\s*[-–—,•|]\s*|\s{2,}/)) {
-    const m = seg.match(/^\s*([\d.]+)\s*["”″]?\s*([A-Za-z][A-Za-z ]{1,24}?)\s*$/) ||
-              seg.match(/^\s*([A-Za-z][A-Za-z ]{1,24}?)\s*:?\s*([\d.]+)\s*["”″]?\s*$/);
-    if (!m) continue;
-    const [n, label] = /^[\d.]/.test(m[1]) ? [m[1], m[2]] : [m[2], m[1]];
-    out[label.trim().replace(/\b\w/g, (c) => c.toUpperCase())] = `${n} in`;
+  const put = (label, n) => {
+    const key = label.trim().replace(/\s+/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+    if (key.length >= 2 && key.length <= 24 && !out[key]) out[key] = `${n} in`;
+  };
+  const numFirst = /([\d.]+)\s*["”″]?\s*([A-Za-z][A-Za-z ]*?)\s*(?=[\d.]+\s*["”″]?\s*[A-Za-z]|[-–—,•|]|$)/g;
+  for (const m of line.matchAll(numFirst)) put(m[2], m[1]);
+  if (!Object.keys(out).length) {
+    const labelFirst = /([A-Za-z][A-Za-z ]{1,24}?)\s*:?\s*([\d.]+)\s*["”″]?(?=\s|$)/g;
+    for (const m of line.matchAll(labelFirst)) put(m[1], m[2]);
   }
   return out;
 }
@@ -244,6 +255,20 @@ if (REFRESH) {
   for (const p of products) {
     const entry = byProduct.get(p.id);
     if (!entry) continue;
+    // measurements the first pass could not read: re-parse from the product
+    // description when the manifest's map is empty and Stripe's copy has one
+    if (!Object.keys(entry.measurements || {}).length) {
+      const measLine = segments(p.description).find((l) => MEAS_RX.test(l));
+      const parsed = measLine ? parseMeasurements(measLine.match(MEAS_RX)[1]) : {};
+      if (Object.keys(parsed).length) {
+        console.log(`${C.dim}   ${WRITE ? 'measuring' : 'would measure'} ${entry.id} — ${JSON.stringify(parsed)}${C.off}`);
+        if (WRITE) {
+          entry.measurements = parsed;
+          writeFileSync(MANIFEST, JSON.stringify(manifest, null, 2) + '\n', 'utf8');
+          refreshed += 1;
+        }
+      }
+    }
     const have = Array.isArray(entry.photos) ? entry.photos.length : (entry.file ? 1 : 0);
     const now = (p.images || []).length;
     if (now <= Math.max(have, 1)) continue;
