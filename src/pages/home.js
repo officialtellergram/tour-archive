@@ -172,12 +172,8 @@ export function home() {
       ).join('')}
     </div>
     <div class="wrap hero-inner">
-      ${
-        eventLed && coll?.heroImage
-          ? ''
-          : `<img class="hero-logo${eventLed ? '' : ' hero-logo--xl'}" src="${BASE_URL}brand/logo.png?v=2"
-        alt="Tour Archive" ${eventLed ? 'data-hero-cta' : 'data-hero-lead'} />`
-      }
+      <img class="hero-logo${eventLed ? '' : ' hero-logo--xl'}" src="${BASE_URL}brand/logo.png?v=2"
+        alt="Tour Archive" ${eventLed ? 'data-hero-cta' : 'data-hero-lead'} />
       ${
         eventLed && coll
           ? `
@@ -189,8 +185,7 @@ export function home() {
           ? `<h1 class="hero-title-wrap" data-hero-cta>
         <img class="hero-title" src="${BASE_URL}${coll.heroImage}" alt="${coll.heroImageAlt || coll.name}"
           fetchpriority="high" decoding="async" />
-      </h1>
-      <img class="hero-logo hero-logo--sm" src="${BASE_URL}brand/logo.png?v=2" alt="Tour Archive" data-hero-cta />`
+      </h1>`
           : `<h1 class="display">
         <span class="line-mask"><span style="color:var(--navy)">${(coll.heroLines || [coll.name, ''])[0]}</span></span>
         <span class="line-mask"><span><em>${(coll.heroLines || ['', ''])[1]}</em><span style="color:var(--navy)">.</span></span></span>
