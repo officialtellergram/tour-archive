@@ -29,6 +29,12 @@
  *                     NEVER runs git. A human gates and pushes.
  *         --collection=<id>   collection for scaffolded entries
  *                             (default: basic-stock)
+ *         --refresh   re-pull PHOTOGRAPHS for products already archived whose
+ *                     Stripe image count now exceeds the manifest's. The
+ *                     phone dashboard attaches one image; the rest get added
+ *                     from the web dashboard later, and this is how they
+ *                     reach the carousel. Copy and price are never touched —
+ *                     the manifest owns those once an entry exists.
  */
 import { spawnSync } from 'node:child_process';
 import { readFileSync, writeFileSync, existsSync, mkdirSync, unlinkSync } from 'node:fs';
@@ -45,6 +51,7 @@ const API = 'https://api.stripe.com';
 
 const args = process.argv.slice(2);
 const WRITE = args.includes('--write');
+const REFRESH = args.includes('--refresh');
 const COLLECTION = (args.find((a) => a.startsWith('--collection=')) || '').slice(13) || 'basic-stock';
 const C = { red: '\x1b[31m', yellow: '\x1b[33m', green: '\x1b[32m', dim: '\x1b[2m', off: '\x1b[0m' };
 
@@ -206,6 +213,54 @@ async function fetchTo(url, dst) {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`${res.status} fetching ${url}`);
   writeFileSync(dst, Buffer.from(await res.arrayBuffer()));
+}
+
+/* Fit every image of a product into hero + carousel slots for an entry.
+   Frame 01 of the carousel is the hero again so the PDP rail is complete. */
+async function pullPhotos(p, entry) {
+  const slug = entry.id.replace(/^stock-/, '');
+  const all = p.images.slice(0, 8);
+  const raw0 = join(tmp, `${slug}-0`);
+  await fetchTo(all[0], raw0);
+  const fit = spawnSync('python', [FIT, raw0, join(STOCK, entry.file)], { encoding: 'utf8' });
+  if (fit.status !== 0) throw new Error(`photo-fit: ${(fit.stderr || fit.stdout).trim().slice(0, 200)}`);
+  console.log(`${C.dim}      ${fit.stdout.trim()}${C.off}`);
+  if (all.length < 2) return [];
+  const photos = all.map((_, i) => `carousel/${slug}/${String(i + 1).padStart(2, '0')}.jpg`);
+  spawnSync('python', [FIT, raw0, join(STOCK, photos[0])], { encoding: 'utf8' });
+  for (let i = 1; i < all.length; i++) {
+    const r = join(tmp, `${slug}-${i}`);
+    await fetchTo(all[i], r);
+    const f = spawnSync('python', [FIT, r, join(STOCK, photos[i])], { encoding: 'utf8' });
+    if (f.status !== 0) throw new Error(`photo-fit (carousel ${i + 1}): ${(f.stderr || '').trim().slice(0, 200)}`);
+    console.log(`${C.dim}      ${f.stdout.trim()}${C.off}`);
+  }
+  return photos;
+}
+
+if (REFRESH) {
+  const byProduct = new Map(manifest.items.filter((e) => e._stripe?.product).map((e) => [e._stripe.product, e]));
+  let refreshed = 0;
+  for (const p of products) {
+    const entry = byProduct.get(p.id);
+    if (!entry) continue;
+    const have = Array.isArray(entry.photos) ? entry.photos.length : (entry.file ? 1 : 0);
+    const now = (p.images || []).length;
+    if (now <= Math.max(have, 1)) continue;
+    console.log(`${C.dim}   ${WRITE ? 'refreshing' : 'would refresh'} ${entry.id} — ${have} photo(s) archived, ${now} on Stripe${C.off}`);
+    if (!WRITE) { refreshed += 1; continue; }
+    try {
+      const photos = await pullPhotos(p, entry);
+      if (photos.length) entry.photos = photos;
+      entry._photosPulled = new Date().toISOString().slice(0, 10);
+      writeFileSync(MANIFEST, JSON.stringify(manifest, null, 2) + '\n', 'utf8');
+      refreshed += 1;
+      console.log(`${C.green}   ✔ ${entry.id} — ${photos.length || 1} frame(s)${C.off}`);
+    } catch (err) {
+      console.log(`${C.red}   ✖ ${entry.id}: ${err.message}${C.off}`);
+    }
+  }
+  console.log(`${C.dim}   ${refreshed} ${WRITE ? 'refreshed' : 'would refresh'}${C.off}`);
 }
 
 for (const p of fresh) {
