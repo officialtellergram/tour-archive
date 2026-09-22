@@ -9,3 +9,5 @@ shots/
 # any log, not just the ones we happen to produce today — a scheduled task
 # writing into the repo root is how a log gets committed by accident
 *.log
+# python bytecode from the photo tools
+__pycache__/

@@ -2572,7 +2572,13 @@
         "minted": "2026-09-21"
       },
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/cNicN46awfa5cke9ZU9k40x"
+      "listingUrl": "https://buy.stripe.com/cNicN46awfa5cke9ZU9k40x",
+      "photos": [
+        "carousel/presidents-cup-usa-cashmere-sweater/01.jpg",
+        "carousel/presidents-cup-usa-cashmere-sweater/02.jpg",
+        "carousel/presidents-cup-usa-cashmere-sweater/03.jpg"
+      ],
+      "_photosPulled": "2026-09-21"
     },
     {
       "id": "stock-tiger-woods-presidents-cup-polo",
@@ -2616,7 +2622,15 @@
         "minted": "2026-09-21"
       },
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/cNi6oG1Ug9PLcke9ZU9k40y"
+      "listingUrl": "https://buy.stripe.com/cNi6oG1Ug9PLcke9ZU9k40y",
+      "photos": [
+        "carousel/tiger-woods-presidents-cup-polo/01.jpg",
+        "carousel/tiger-woods-presidents-cup-polo/02.jpg",
+        "carousel/tiger-woods-presidents-cup-polo/03.jpg",
+        "carousel/tiger-woods-presidents-cup-polo/04.jpg",
+        "carousel/tiger-woods-presidents-cup-polo/05.jpg"
+      ],
+      "_photosPulled": "2026-09-21"
     },
     {
       "id": "stock-vintage-presidents-cup-tee-shirt",
@@ -2660,7 +2674,15 @@
         "minted": "2026-09-21"
       },
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/5kQ14m6awfa5ac69ZU9k40z"
+      "listingUrl": "https://buy.stripe.com/5kQ14m6awfa5ac69ZU9k40z",
+      "photos": [
+        "carousel/vintage-presidents-cup-tee-shirt/01.jpg",
+        "carousel/vintage-presidents-cup-tee-shirt/02.jpg",
+        "carousel/vintage-presidents-cup-tee-shirt/03.jpg",
+        "carousel/vintage-presidents-cup-tee-shirt/04.jpg",
+        "carousel/vintage-presidents-cup-tee-shirt/05.jpg"
+      ],
+      "_photosPulled": "2026-09-21"
     },
     {
       "id": "stock-presidents-cup-robert-trent-jones-gc-polo",
@@ -2704,7 +2726,14 @@
         "minted": "2026-09-21"
       },
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/aFabJ07eA2nj4RMfke9k40A"
+      "listingUrl": "https://buy.stripe.com/aFabJ07eA2nj4RMfke9k40A",
+      "photos": [
+        "carousel/presidents-cup-robert-trent-jones-gc-polo/01.jpg",
+        "carousel/presidents-cup-robert-trent-jones-gc-polo/02.jpg",
+        "carousel/presidents-cup-robert-trent-jones-gc-polo/03.jpg",
+        "carousel/presidents-cup-robert-trent-jones-gc-polo/04.jpg"
+      ],
+      "_photosPulled": "2026-09-21"
     },
     {
       "id": "stock-vintage-medinah-country-club-knit-polo",
@@ -2749,7 +2778,12 @@
         "minted": "2026-09-21"
       },
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/8x23cu2YkaTP5VQ1to9k40B"
+      "listingUrl": "https://buy.stripe.com/8x23cu2YkaTP5VQ1to9k40B",
+      "photos": [
+        "carousel/vintage-medinah-country-club-knit-polo/01.jpg",
+        "carousel/vintage-medinah-country-club-knit-polo/02.jpg"
+      ],
+      "_photosPulled": "2026-09-21"
     }
   ]
 }

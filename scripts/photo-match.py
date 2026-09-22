@@ -17,18 +17,22 @@ clever; together they separate a purple polo from a navy sweater reliably,
 which is the job.
 
 Prints a table and writes <folder>/match.json for photo-place.py to act on.
+Rotation defaults to the camera's own (EXIF) orientation; a shot that is the
+hero photograph itself is flagged duplicate and photo-place skips it.
 """
 import io
 import json
 import os
 import sys
 
-from PIL import Image, ImageOps
+from PIL import Image, ImageChops, ImageOps
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STOCK = os.path.join(ROOT, 'public', 'stock')
 MANIFEST = os.path.join(STOCK, 'manifest.json')
 THUMB = (16, 20)
+UPRIGHT_TOL = 0.08   # keep EXIF orientation unless a rotation beats it by more
+DUP_TOL = 6.0        # thumbnail grey difference below this = same photograph
 
 
 def load(path):
@@ -45,7 +49,7 @@ def features(im):
     total = float(sum(hist)) or 1.0
     hist = [v / total for v in hist]
     t = core.resize(THUMB, Image.BOX)
-    px = [c / 255.0 for p in t.getdata() for c in p]
+    px = [c / 255.0 for p in t.get_flattened_data() for c in p]
     return hist, px
 
 
@@ -55,6 +59,16 @@ def distance(a, b):
     dh = sum(abs(x - y) for x, y in zip(ha, hb))           # 0..2
     dp = sum(abs(x - y) for x, y in zip(pa, pb)) / len(pa)  # 0..1
     return 0.6 * dh + 0.4 * dp * 2
+
+
+def duplicate(im, hero):
+    """Mean grey difference on a 24x32 thumbnail; the same photograph scores
+    ~1-3, a different framing of the same garment 30+."""
+    def sig(x):
+        return x.convert('L').resize((24, 32), Image.BOX)
+    a, b = sig(im), sig(hero)
+    diff = ImageChops.difference(a, b)
+    return (sum(diff.get_flattened_data()) / (24 * 32)) < DUP_TOL
 
 
 def rotations(im):
@@ -75,16 +89,18 @@ def main():
     else:
         slugs = sys.argv[2:]
     heroes = {}
+    hero_ims = {}
     for slug in slugs:
         p = os.path.join(STOCK, f'{slug}.jpg')
         if not os.path.exists(p):
             print('!! no hero for', slug, file=sys.stderr)
             continue
-        heroes[slug] = features(load(p))
+        hero_ims[slug] = load(p)
+        heroes[slug] = features(hero_ims[slug])
     if not heroes:
         sys.exit(1)
 
-    files = sorted(f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f)))
+    files = sorted(f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f)) and not f.endswith('.json'))
     result = []
     print('%-28s %-46s %6s %5s %s' % ('photo', 'best match', 'rot', 'dist', 'margin'))
     for f in files:
@@ -103,9 +119,20 @@ def main():
         # margin against the best score for a DIFFERENT piece
         other = next((s for s in scored if s[1] != best[1]), None)
         margin = (other[0] - best[0]) if other else 9.9
-        flag = '' if margin >= 0.06 else '  <- check'
-        print('%-28s %-46s %6s %5.3f %6.3f%s' % (f[:28], best[1], f'{best[2]}°', best[0], margin, flag))
-        result.append({'file': f, 'slug': best[1], 'rotate': best[2], 'dist': round(best[0], 4), 'margin': round(margin, 4), 'confident': margin >= 0.06})
+        # Rotation: EXIF already uprights a phone shot, so the camera's own
+        # orientation wins unless another rotation is decisively closer. A
+        # detail shot (a cuff, a label) resembles the hero's layout at any
+        # angle, and letting that noise choose the rotation turned every
+        # upright close-up sideways on the first drop this ran for.
+        upright = min(s[0] for s in scored if s[1] == best[1] and s[2] == 0)
+        rotate = 0 if upright - best[0] < UPRIGHT_TOL else best[2]
+        # A shot that IS the hero (Henry uploads one to Stripe; the same
+        # file sits in the folder) adds nothing to a carousel.
+        dup = duplicate(im.rotate(rotate, expand=True) if rotate else im, hero_ims[best[1]])
+        flag = ('  <- duplicate of hero' if dup else '') + ('' if margin >= 0.06 else '  <- check')
+        print('%-28s %-46s %6s %5.3f %6.3f%s' % (f[:28], best[1], f'{rotate}°', best[0], margin, flag))
+        result.append({'file': f, 'slug': best[1], 'rotate': rotate, 'dist': round(best[0], 4), 'margin': round(margin, 4),
+                       'confident': margin >= 0.06, 'duplicate': dup})
 
     out = os.path.join(folder, 'match.json')
     io.open(out, 'w', encoding='utf-8').write(json.dumps(result, indent=2))
@@ -115,6 +142,9 @@ def main():
         by.setdefault(r['slug'], []).append(r['file'])
     for slug, fs in by.items():
         print('  %-46s %d shot(s)' % (slug, len(fs)))
+    print()
+    print('Edit match.json by hand for anything the table got wrong (slug, rotate,')
+    print('duplicate), then: python scripts/photo-place.py <folder> --all')
 
 
 if __name__ == '__main__':

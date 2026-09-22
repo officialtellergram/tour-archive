@@ -43,6 +43,8 @@ def main():
     for m in matches:
         if not (take_all or m['confident']):
             continue
+        if m.get('duplicate'):
+            continue  # the hero itself, already frame 01
         if only and m['slug'] not in only:
             continue
         groups.setdefault(m['slug'], []).append(m)
@@ -81,7 +83,7 @@ def main():
         entry['_photosPulled'] = __import__('datetime').date.today().isoformat()
         io.open(MANIFEST, 'w', encoding='utf-8', newline='').write(json.dumps(manifest, indent=2, ensure_ascii=False) + '\n')
         placed += 1
-        print('  ✔ %s — %d frames' % (slug, len(frames)))
+        print('  ok %s - %d frames' % (slug, len(frames)))
     print('\n%d piece(s) given a carousel' % placed)
 
 
