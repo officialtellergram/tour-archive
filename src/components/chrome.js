@@ -41,7 +41,7 @@ function headerHTML() {
     </div>
   </div>
 
-  <div class="drawer" id="site-drawer" data-drawer aria-hidden="true">
+  <div class="drawer" id="site-drawer" data-drawer aria-hidden="true" inert>
     <div style="display:flex;align-items:center;justify-content:flex-end">
       <button class="drawer-close" data-drawer-close>Close</button>
     </div>
@@ -137,18 +137,28 @@ export function mountChrome() {
   const drawer = document.querySelector('[data-drawer]');
   const openBtn = document.querySelector('[data-drawer-open]');
 
+  // The shut drawer is clip-path'd, not display:none, so without `inert` a Tab
+  // would still land on its links (invisible, and behind the page). inert
+  // travels with aria-hidden; the keyboard is handed to Close on open and
+  // back to the toggle on close, and :focus-visible keeps that silent for a
+  // mouse.
   const close = () => {
     if (!drawer?.classList.contains('is-open')) return;
+    const hadFocus = drawer.contains(document.activeElement);
     closeDrawer(drawer);
     drawer.setAttribute('aria-hidden', 'true');
+    drawer.setAttribute('inert', '');
     openBtn?.setAttribute('aria-expanded', 'false');
+    if (hadFocus) openBtn?.focus({ preventScroll: true });
   };
 
   openBtn?.addEventListener('click', () => {
     if (!drawer) return;
     openDrawer(drawer);
     drawer.setAttribute('aria-hidden', 'false');
+    drawer.removeAttribute('inert');
     openBtn.setAttribute('aria-expanded', 'true');
+    drawer.querySelector('[data-drawer-close]')?.focus({ preventScroll: true });
   });
   document.querySelector('[data-drawer-close]')?.addEventListener('click', close);
   drawer?.addEventListener('click', (e) => {

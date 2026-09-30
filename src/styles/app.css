@@ -96,6 +96,28 @@ button {
   cursor: pointer;
 }
 
+/* ---------- keyboard focus (WCAG 2.4.7) ----------
+   One house ring. :focus-visible stays silent for a mouse click and draws
+   for a Tab, so nothing changes for the pointer. Navy on the parchment
+   surfaces; parchment inside the navy ones (drawer, footer). The ring sits
+   3px outside the box, so navy controls (solid buttons, pressed chips) still
+   read against the page around them. [tabindex="-1"] is programmatic-only
+   (the outlet) and never earns a ring. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+summary:focus-visible,
+[tabindex]:not([tabindex='-1']):focus-visible {
+  outline: 2px solid var(--navy);
+  outline-offset: 3px;
+}
+.drawer :focus-visible,
+.site-footer :focus-visible {
+  outline-color: var(--parchment);
+}
+
 ::selection {
   background: var(--navy);
   color: var(--parchment);
@@ -1901,7 +1923,6 @@ h3.display {
   font-family: var(--display);
   font-size: 1rem;
   padding: 0.7rem 0;
-  outline: none;
 }
 .signup input::placeholder {
   color: rgba(244, 240, 230, 0.45);
@@ -2078,7 +2099,6 @@ h3.display {
   padding: 0.7rem 0;
   font: inherit;
   color: inherit;
-  outline: none;
   border-radius: 0;
 }
 .curate-form textarea {
