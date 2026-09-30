@@ -1048,9 +1048,10 @@ const errorEvent = (message, extra = {}) => ({
   error: extra.error ?? Object.assign(new Error(message), { stack: `Error: ${message}\n    at boot (https://tourarchive.example/assets/main-abc123.js:12:34)` }),
 });
 
-check('errors: the flag ships as a boolean, default off', () => {
+check('errors: the flag is a boolean', () => {
+  // Not pinned to false: the owner flips it once the table exists, and the
+  // gate must stay green in both states.
   equal(typeof errorsConfig.ERRORS_ENABLED, 'boolean', 'ERRORS_ENABLED is a boolean');
-  equal(errorsConfig.ERRORS_ENABLED, false, 'off until the table exists');
 });
 
 check('errors: disabled → attaches nothing, sends nothing', () => {
@@ -1071,11 +1072,12 @@ check('errors: dev → inert even when enabled', () => {
   equal(beacons.length, 0, 'nothing sent');
 });
 
-check('errors: the default install is inert with the shipped flag', () => {
+check('errors: the default install follows the shipped flag exactly', () => {
   const { win, beacons, listeners } = fakeWindow();
-  equal(errors.installErrorBeacon(win), false, 'shipped config installs nothing');
-  equal(Object.keys(listeners).length, 0, 'no listeners');
-  equal(beacons.length, 0, 'nothing sent');
+  const on = errorsConfig.ERRORS_ENABLED;
+  equal(errors.installErrorBeacon(win), on, 'install mirrors the flag');
+  equal(Object.keys(listeners).length, on ? 2 : 0, on ? 'both listeners' : 'no listeners');
+  equal(beacons.length, 0, 'installing sends nothing by itself');
 });
 
 check('errors: enabled → listeners attach and the beacon carries a well-shaped row', () => {

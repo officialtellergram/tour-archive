@@ -62,6 +62,27 @@ create policy "beacon insert" on public.site_errors
 -- and no policy, those verbs return nothing / do nothing even if a grant
 -- were ever added by accident.
 
+-- Rate cap, server side. The client stops at three reports per page load,
+-- but the anon key is public, so anything can POST to this table. A trigger
+-- refuses inserts once the last minute holds 120 rows: a real outage still
+-- lands two a second, a script pointed at the endpoint cannot fill the disk.
+-- security definer so the count runs with the owner's select, which anon
+-- does not have.
+create or replace function public.site_errors_throttle() returns trigger
+  language plpgsql security definer set search_path = public as $$
+begin
+  if (select count(*) from public.site_errors where at > now() - interval '1 minute') >= 120 then
+    raise exception 'site_errors: rate limit';
+  end if;
+  return new;
+end $$;
+revoke all on function public.site_errors_throttle() from public;
+
+drop trigger if exists site_errors_throttle on public.site_errors;
+create trigger site_errors_throttle
+  before insert on public.site_errors
+  for each row execute function public.site_errors_throttle();
+
 -- Optional: automatic 30-day prune. pg_cron is available on Supabase
 -- (Database → Extensions → enable pg_cron), after which this schedules the
 -- delete nightly at 04:10 UTC. Left commented so the file runs clean on a

@@ -167,6 +167,23 @@ export function mountChrome() {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') close();
   });
+  // While the drawer is open it is the whole page for the keyboard: Tab past
+  // its last link wraps to Close, Shift+Tab before Close wraps to the last
+  // link. Without this a Tab walks out into the page behind the overlay.
+  drawer?.addEventListener('keydown', (e) => {
+    if (e.key !== 'Tab' || !drawer.classList.contains('is-open')) return;
+    const f = [...drawer.querySelectorAll('a[href], button')];
+    if (!f.length) return;
+    const first = f[0];
+    const last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus({ preventScroll: true });
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus({ preventScroll: true });
+    }
+  });
 
   document.querySelector('[data-signup]')?.addEventListener('submit', (e) => {
     e.preventDefault();

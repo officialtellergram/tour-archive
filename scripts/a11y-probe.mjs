@@ -39,7 +39,8 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const args = process.argv.slice(2);
 const ORIGIN_ARG = args.find((a) => /^https?:\/\//.test(a));
-const WIDTH = Number((args.find((a) => a.startsWith('--width')) || '').split('=')[1] || args[args.indexOf('--width') + 1] || 1280);
+const wi = args.indexOf('--width');
+const WIDTH = Number((args.find((a) => a.startsWith('--width=')) || '').split('=')[1] || (wi !== -1 ? args[wi + 1] : 0) || 1280);
 const HEIGHT = WIDTH >= 1000 ? 900 : 844;
 
 const TAGS = ['wcag2a', 'wcag2aa', 'wcag21aa'];
@@ -162,11 +163,19 @@ async function main() {
     });
 
   async function go(route) {
-    await evaluate(`location.href = ${JSON.stringify(`${BASE}${route}?a11y=${Date.now()}`)}`);
-    for (let i = 0; i < 80; i++) {
-      if (Number(await evaluate(`document.querySelectorAll('[data-outlet] *').length`)) > 0) break;
-      await sleep(250);
+    // The stamp proves the poll is looking at the NEW document, not the
+    // outlet of the page we just left; a route whose outlet never renders is
+    // a failure, not a quiet pass with zero violations.
+    const stamp = String(Date.now());
+    await evaluate(`location.href = ${JSON.stringify(`${BASE}${route}?a11y=${stamp}`)}`);
+    let rendered = false;
+    for (let i = 0; i < 80 && !rendered; i++) {
+      rendered = Boolean(await evaluate(
+        `location.search.includes(${JSON.stringify(stamp)}) && document.querySelectorAll('[data-outlet] *').length > 0`
+      ));
+      if (!rendered) await sleep(250);
     }
+    if (!rendered) throw new Error(`/${route}: outlet never rendered`);
     await sleep(1800); // let stock land and reveals settle
   }
 

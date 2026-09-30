@@ -18,13 +18,14 @@ The facts the recommendations rest on:
 - A single-page shop. One inline `<script>` in the head of `index.html` (the
   home-route hero preload shim), Vite-hashed JS/CSS from the same origin,
   photos from the same origin.
-- The only third-party resources are the two typefaces, loaded from Google
-  Fonts (`fonts.googleapis.com` for the stylesheet, `fonts.gstatic.com` for
-  the files).
+- The two typefaces are self-hosted from `public/fonts/` (declared in
+  `src/styles/fonts.css`); the page loads no third-party resources.
 - Embeds nothing: no third-party iframes, no analytics, no tag manager.
 - Checkout **redirects** to Stripe Payment Links (`buy.stripe.com`) in a new
   document. Stripe is never embedded on the page today.
-- The one form (the drop-list signup) opens a `mailto:`; there is no backend.
+- The two forms (drop-list signup, Sell to Us) open a `mailto:` via script;
+  there is no form backend. The Procurement Desk (`/curate`) and the
+  first-party error beacon (`src/lib/errors.js`) talk to the Supabase origin.
 
 So: nothing on the site needs a camera, a microphone, a location, or to be
 framed by another site. That is what makes the lock-down below safe.
@@ -121,8 +122,7 @@ visitor's browser.
 ### Permissions-Policy: `camera=(), microphone=(), geolocation=()`
 
 Denies the three capabilities a shop has no business asking for, to this
-document and to anything it might embed. Google Fonts is a stylesheet and a
-font file, not a document, so the policy does not touch it.
+document and to anything it might embed.
 
 **Do not add `payment=()`.** Checkout today is a redirect, so it would be
 harmless — but the moment Stripe Payment Links (or Checkout, or a Payment
@@ -145,8 +145,8 @@ Puts the page in its own browsing-context group, so a page that opened it
 (or one it opens) cannot reach back through `window.opener`. Stripe opens from
 a plain link, not `window.open`, so nothing on the site relies on an opener
 relationship. Note this is COOP only — no `Cross-Origin-Embedder-Policy`,
-which would force every cross-origin resource (the Google Fonts files included)
-to opt in, and buys nothing for a site that never needs `SharedArrayBuffer`.
+which would force every cross-origin resource to opt in, and buys nothing for
+a site that never needs `SharedArrayBuffer`.
 
 ## Content-Security-Policy: deferred
 
@@ -160,8 +160,6 @@ not in the rule above because the site cannot honour a strict one yet:
   (roughly 170 of them across `src/pages` and `src/components`), which
   `style-src` treats as inline styles and refuses without `'unsafe-inline'`
   or a hash per attribute.
-- Google Fonts needs `style-src https://fonts.googleapis.com` and
-  `font-src https://fonts.gstatic.com`.
 
 Shipping `script-src 'self'` today would break the preload shim; shipping
 `script-src 'self' 'unsafe-inline'` grants exactly the thing a CSP exists to
@@ -179,9 +177,8 @@ The path to a CSP worth having:
 2. **Move inline styles out.** Replace `style="…"` attributes with classes and
    let the motion code set styles via the CSSOM (`el.style.x = …` is allowed;
    only `style` *attributes* and `<style>` blocks are governed). Then
-   `style-src 'self' https://fonts.googleapis.com` becomes possible. Until
-   then, `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com` is
-   the honest interim — styles are far less dangerous than scripts.
+   `style-src 'self'` becomes possible. Until then,
+   `style-src 'self' 'unsafe-inline'` is the honest interim — styles are far less dangerous than scripts.
 3. **Start in report-only.** `Content-Security-Policy-Report-Only` with the
    intended policy, watch the console on every route (the a11y and ux probes
    can be taught to collect `securitypolicyviolation` events), then promote.
@@ -191,10 +188,10 @@ A target policy, once 1 and 2 are done:
 ```
 default-src 'self';
 script-src 'self' 'sha256-<head-shim-hash>';
-style-src 'self' https://fonts.googleapis.com;
+style-src 'self';
 img-src 'self' data:;
-font-src 'self' https://fonts.gstatic.com;
-connect-src 'self';
+font-src 'self';
+connect-src 'self' https://ulavwoubrjyvbbaxaweh.supabase.co;
 form-action 'self' https://buy.stripe.com;
 frame-ancestors 'none';
 base-uri 'self';
@@ -202,8 +199,9 @@ object-src 'none';
 upgrade-insecure-requests
 ```
 
-`connect-src` widens to the Supabase origin if the procurement desk ever ships
-to the public build. If Stripe is embedded, add `frame-src https://js.stripe.com
+`connect-src` already names the Supabase origin because the Procurement Desk
+(`/curate`) and the error beacon (`src/lib/errors.js`) post to it from the
+public build. If Stripe is embedded, add `frame-src https://js.stripe.com
 https://checkout.stripe.com` and `script-src https://js.stripe.com`.
 
 ## Verify

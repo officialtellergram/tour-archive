@@ -11,3 +11,5 @@ shots/
 *.log
 # python bytecode from the photo tools
 __pycache__/
+# workflow worktrees live here
+.claude/
