@@ -93,20 +93,20 @@ export function sell() {
         <form data-sell-form data-reveal style="display:grid;gap:1.1rem">
           <label style="display:grid;gap:.4rem">
             <span class="eyebrow">Your name</span>
-            <input required name="name" style="background:none;border:0;border-bottom:1px solid var(--rule-strong);padding:.7rem 0;font:inherit;color:inherit;outline:none" />
+            <input required name="name" style="background:none;border:0;border-bottom:1px solid var(--rule-strong);padding:.7rem 0;font:inherit;color:inherit" />
           </label>
           <label style="display:grid;gap:.4rem">
             <span class="eyebrow">Email</span>
-            <input required type="email" name="email" style="background:none;border:0;border-bottom:1px solid var(--rule-strong);padding:.7rem 0;font:inherit;color:inherit;outline:none" />
+            <input required type="email" name="email" style="background:none;border:0;border-bottom:1px solid var(--rule-strong);padding:.7rem 0;font:inherit;color:inherit" />
           </label>
           <label style="display:grid;gap:.4rem">
             <span class="eyebrow">Where are you sending from?</span>
-            <input required name="location" placeholder="City, country" style="background:none;border:0;border-bottom:1px solid var(--rule-strong);padding:.7rem 0;font:inherit;color:inherit;outline:none" />
+            <input required name="location" placeholder="City, country" style="background:none;border:0;border-bottom:1px solid var(--rule-strong);padding:.7rem 0;font:inherit;color:inherit" />
           </label>
           <label style="display:grid;gap:.4rem">
             <span class="eyebrow">What have you got?</span>
             <textarea required name="detail" rows="5" placeholder="Brand, era, size, condition, and where it came from"
-              style="background:none;border:1px solid var(--rule);padding:.9rem;font:inherit;color:inherit;outline:none;resize:vertical"></textarea>
+              style="background:none;border:1px solid var(--rule);padding:.9rem;font:inherit;color:inherit;resize:vertical"></textarea>
           </label>
           <button class="btn btn--solid" type="submit" data-magnetic style="justify-self:start">
             Send for appraisal
