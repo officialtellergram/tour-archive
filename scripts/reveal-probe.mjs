@@ -71,7 +71,11 @@ const server = createServer((req, res) => {
   const clean = normalize(decodeURIComponent((req.url || '/').split('?')[0])).replace(/^([/\\])+/, '');
   let file = join(DIST, clean);
   try {
-    if (!existsSync(file) || statSync(file).isDirectory()) file = join(DIST, 'index.html');
+    // A prerendered route is a directory with its own index.html — serve it
+    // the way GitHub Pages does; anything else falls back to the shell.
+    if (existsSync(file) && statSync(file).isDirectory() && existsSync(join(file, 'index.html')))
+      file = join(file, 'index.html');
+    else if (!existsSync(file) || statSync(file).isDirectory()) file = join(DIST, 'index.html');
   } catch {
     file = join(DIST, 'index.html');
   }

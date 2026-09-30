@@ -5,7 +5,7 @@
 
 import { BRAND, launchCollections, items, isAvailable } from '../data/store.js';
 import { openDrawer, closeDrawer, toast } from '../lib/motion.js';
-import { currentPath, applyBaseToLinks, stripBase } from '../lib/router.js';
+import { currentPath, applyBaseToLinks, stripBase, hashHTML } from '../lib/router.js';
 
 const BASE_URL = (import.meta.env?.BASE_URL || '/').replace(/\/*$/, '/');
 
@@ -19,7 +19,9 @@ export const NAV_SECONDARY = [
   { label: 'Sell to Us', href: '/sell' },
 ];
 
-function headerHTML() {
+/* headerHTML/footerHTML are exported for scripts/prerender.mjs, which bakes
+   the same chrome into every prerendered page. */
+export function headerHTML() {
   return `
   <div class="site-header">
     <div class="wrap header-inner">
@@ -74,7 +76,7 @@ function headerHTML() {
   </div>`;
 }
 
-function footerHTML() {
+export function footerHTML() {
   return `
   <div class="site-footer">
     <div class="wrap">
@@ -128,8 +130,18 @@ function footerHTML() {
 export function mountChrome() {
   const header = document.querySelector('[data-site-header]');
   const footer = document.querySelector('[data-site-footer]');
-  if (header) header.innerHTML = headerHTML();
-  if (footer) footer.innerHTML = footerHTML();
+  // A prerendered document already holds this markup (scripts/prerender.mjs
+  // stamps each slot with the hash of the string it baked). When the fresh
+  // render hashes the same, the DOM is left alone — same content, no
+  // re-parse, no repaint. Any difference (stock changed since the build)
+  // re-renders as before. See router.js render() for the outlet's twin.
+  const fill = (el, html) => {
+    if (!el) return;
+    if (el.dataset.prerenderHash !== hashHTML(html)) el.innerHTML = html;
+    delete el.dataset.prerenderHash;
+  };
+  fill(header, headerHTML());
+  fill(footer, footerHTML());
   // Chrome renders once, outside the router, so it needs the base applied here.
   applyBaseToLinks(header);
   applyBaseToLinks(footer);
