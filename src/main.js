@@ -1,3 +1,4 @@
+import './styles/fonts.css';
 import './styles/app.css';
 
 import { route, setNotFound, hooks, start, routeTable } from './lib/router.js';

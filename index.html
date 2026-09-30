@@ -12,7 +12,7 @@
          (the SPA renders the hero after boot, so the preload scanner never sees
          it). Path must equal HERO_BACKDROPS[0] in src/pages/home.js — audit
          pins the two together. setAttribute keeps audit's href harvest quiet.
-         Sits before the fonts link so it runs at parse time. -->
+         Sits before the font preloads so it runs at parse time. -->
     <script>
       (function () {
         var base = '%BASE_URL%';
@@ -27,12 +27,13 @@
         document.head.appendChild(l);
       })();
     </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Typefaces are served from this site (public/fonts/, declared in
+         src/styles/fonts.css, licence in public/fonts/OFL.txt). The three faces
+         on screen above the fold start fetching now rather than after the CSS
+         parses. Each file is a variable font, so one covers every weight. -->
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="%BASE_URL%fonts/cormorant-garamond-latin.woff2" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="%BASE_URL%fonts/cormorant-garamond-italic-latin.woff2" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="%BASE_URL%fonts/jost-latin.woff2" />
     <!-- The TA signature mark. Vite prefixes %BASE_URL% at build time. -->
     <link rel="icon" type="image/png" href="%BASE_URL%brand/favicon.png?v=2" />
     <link rel="apple-touch-icon" href="%BASE_URL%brand/lockup.png?v=2" />
