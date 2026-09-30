@@ -20,6 +20,14 @@ export const SUPABASE_ANON_KEY =
 export const FINDS_TABLE = 'curation_finds';
 
 /**
+ * First-party error beacon (src/lib/errors.js). Off until the table exists:
+ * run supabase/site_errors.sql in the SQL editor, then set this true and
+ * push. Never on under `vite dev` regardless. docs/OPERATIONS.md § Error
+ * tracking.
+ */
+export const ERRORS_ENABLED = false;
+
+/**
  * Practice-mode desk passphrase — SHA-256 of the phrase, never the phrase
  * itself. One passphrase for the whole team, asked once per device; input is
  * trimmed and lowercased before hashing so phone keyboards can't fumble it.

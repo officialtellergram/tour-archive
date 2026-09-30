@@ -201,6 +201,9 @@ export function privacy() {
       served through Cloudflare, which fronts every request and gives us cookieless,
       aggregate visit counts; our host (GitHub Pages) keeps standard server logs; and our
       typefaces load from Google Fonts, which means Google's servers see those requests.
+      If the site itself breaks in your browser, it may send us the error message and
+      the address of the page it broke on so we can fix it — no name, no email, no
+      cookie — and only while we have that switched on.
       None of it identifies you to us, and we add nothing on top.</p>
 
       <p><strong>Questions, or want something removed?</strong> Write to
