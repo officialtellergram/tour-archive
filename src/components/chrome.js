@@ -47,7 +47,7 @@ function headerHTML() {
     </div>
     <div class="drawer-body">
       <div>
-        <h4>Collections</h4>
+        <h2>Collections</h2>
         <ul class="drawer-list">
           ${launchCollections()
             .map(
@@ -60,7 +60,7 @@ function headerHTML() {
         </ul>
       </div>
       <div>
-        <h4>Browse</h4>
+        <h2>Browse</h2>
         <ul class="drawer-list">
           ${[...NAV_PRIMARY, ...NAV_SECONDARY]
             .map((n) => `<li><a href="${n.href}"><span>${n.label}</span></a></li>`)
@@ -88,7 +88,7 @@ function footerHTML() {
           </form>
         </div>
         <div>
-          <h4>Collections</h4>
+          <h2>Collections</h2>
           <ul>
             ${launchCollections()
               .map((c) => `<li><a href="/collections/${c.id}">${c.name}</a></li>`)
@@ -96,7 +96,7 @@ function footerHTML() {
           </ul>
         </div>
         <div>
-          <h4>Browse</h4>
+          <h2>Browse</h2>
           <ul>
             <li><a href="/collections">All Collections</a></li>
             <li><a href="/archive">The Archive</a></li>
@@ -104,7 +104,7 @@ function footerHTML() {
           </ul>
         </div>
         <div>
-          <h4>House</h4>
+          <h2>House</h2>
           <ul>
             <li><a href="/mission">Our Mission</a></li>
             <li><a href="/sell">Sell to Us</a></li>

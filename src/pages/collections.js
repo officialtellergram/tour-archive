@@ -64,7 +64,7 @@ export function collectionsIndex() {
   <section class="section">
     <div class="wrap">
       <div class="grid-collections" data-stagger>
-        ${launch.map(collectionTile).join('')}
+        ${launch.map((c) => collectionTile(c, { level: 2 })).join('')}
       </div>
     </div>
   </section>`;
@@ -169,7 +169,7 @@ export function collectionDetail({ id }) {
                     ? 'Open stock'
                     : 'Research file'
                 }</p>
-                <h3 class="display" style="font-size:clamp(1.8rem,3vw,2.8rem)">
+                <h2 class="display" style="font-size:clamp(1.8rem,3vw,2.8rem);line-height:1.02">
                   ${
                     c.status === 'upcoming'
                       ? 'The pieces arrive with the drop'
@@ -177,7 +177,7 @@ export function collectionDetail({ id }) {
                       ? 'New stock is listed as it is photographed'
                       : 'This file feeds the sourcing list'
                   }
-                </h3>
+                </h2>
                 <p class="lede" style="text-align:center">
                   ${
                     c.status === 'upcoming'

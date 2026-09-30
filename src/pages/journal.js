@@ -26,7 +26,7 @@ export function journalIndex() {
             (j) => `
           <a class="journal-row" href="/journal/${j.id}" data-reveal data-cursor-text="Read">
             <span class="eyebrow">${j.kicker}</span>
-            <h3>${j.title}</h3>
+            <h2>${j.title}</h2>
             <p>${j.excerpt}</p>
             <span class="eyebrow">${j.date}</span>
           </a>`
