@@ -12,6 +12,21 @@
 
 import { animate, inView, scroll, stagger, hover } from 'motion';
 import { animate as anime, createTimeline, svg, utils, stagger as aStagger } from 'animejs';
+import { webpURL } from './media.js';
+
+/**
+ * Point a photograph at a new frame. The templates wrap JPEG photos in a
+ * <picture> with a WebP <source> in front (pictureTag in ui.js); a browser
+ * that took the <source> ignores a bare img.src swap, so the source moves
+ * too — to the frame's WebP sibling when it has one, else the frame itself
+ * (the archived carousel frames are already WebP). Bare <img> swaps as before.
+ */
+export function setFrame(img, url) {
+  const wrap = img?.parentElement;
+  const source = wrap?.tagName === 'PICTURE' ? wrap.querySelector('source[type="image/webp"]') : null;
+  if (source) source.srcset = webpURL(url) || url;
+  img.src = url;
+}
 
 export const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -596,14 +611,14 @@ export function initCardCycle() {
         clearInterval(cycleTimer);
         return;
       }
-      img.src = reel[i];
+      setFrame(img, reel[i]);
       i = (i + 1) % reel.length;
     }, 650);
 
     const stop = () => {
       clearInterval(cycleTimer);
       delete plate.dataset.cycling;
-      img.src = home;
+      setFrame(img, home);
     };
     plate.addEventListener('pointerleave', stop, { once: true });
   });

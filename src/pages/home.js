@@ -9,7 +9,7 @@ import {
   daysUntil,
   dateRange,
 } from '../data/store.js';
-import { productCard, collectionTile, marquee, sectionHead } from '../components/ui.js';
+import { productCard, collectionTile, marquee, sectionHead, sizeAttrs } from '../components/ui.js';
 
 const BASE_URL = (import.meta.env?.BASE_URL || '/').replace(/\/*$/, '/');
 
@@ -109,7 +109,7 @@ export function home() {
       })}
       ${
         stock.length
-          ? `<div class="grid-products" data-stagger>${stock.map(productCard).join('')}</div>`
+          ? `<div class="grid-products" data-stagger>${stock.map((it) => productCard(it)).join('')}</div>`
           : `<div class="empty-state" style="border-bottom:0">
                <p class="eyebrow">Between listings</p>
                <h3 class="display">The next pieces are being photographed</h3>
@@ -142,7 +142,7 @@ export function home() {
       })}
       ${
         drop.length
-          ? `<div class="grid-products" data-stagger>${drop.map(productCard).join('')}</div>`
+          ? `<div class="grid-products" data-stagger>${drop.map((it) => productCard(it)).join('')}</div>`
           : `<div class="empty-state" style="border-bottom:0;padding-top:1rem">
                <p class="eyebrow">${status.chip}</p>
                <h3 class="display" style="font-size:clamp(1.6rem,2.6vw,2.4rem)">
@@ -165,15 +165,15 @@ export function home() {
     <div class="hero-bg" data-hero-backdrop>
       ${HERO_BACKDROPS.map((p, i) =>
         i === 0
-          ? `<img class="hero-slide is-on" src="${BASE_URL}${p}" alt="" aria-hidden="true"
+          ? `<img class="hero-slide is-on" src="${BASE_URL}${p}" alt="" aria-hidden="true"${sizeAttrs(p)}
               fetchpriority="high" decoding="async" />`
-          : `<img class="hero-slide" data-src="${BASE_URL}${p}" alt="" aria-hidden="true"
+          : `<img class="hero-slide" data-src="${BASE_URL}${p}" alt="" aria-hidden="true"${sizeAttrs(p)}
               decoding="async" />`
       ).join('')}
     </div>
     <div class="wrap hero-inner">
       <img class="hero-logo${eventLed ? (coll?.heroImage ? ' hero-logo--drop' : '') : ' hero-logo--xl'}" src="${BASE_URL}brand/logo.png?v=2"
-        alt="Tour Archive" ${eventLed ? 'data-hero-cta' : 'data-hero-lead'} />
+        alt="Tour Archive"${sizeAttrs('brand/logo.png')} decoding="async" ${eventLed ? 'data-hero-cta' : 'data-hero-lead'} />
       ${
         eventLed && coll
           ? `
@@ -183,7 +183,7 @@ export function home() {
       ${
         coll.heroImage
           ? `<h1 class="hero-title-wrap" data-hero-cta>
-        <img class="hero-title" src="${BASE_URL}${coll.heroImage}" alt="${coll.heroImageAlt || coll.name}"
+        <img class="hero-title" src="${BASE_URL}${coll.heroImage}" alt="${coll.heroImageAlt || coll.name}"${sizeAttrs(coll.heroImage)}
           fetchpriority="high" decoding="async" />
       </h1>`
           : `<h1 class="display">
