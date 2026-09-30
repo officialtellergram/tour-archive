@@ -41,7 +41,7 @@ function headerHTML() {
     </div>
   </div>
 
-  <div class="drawer" id="site-drawer" data-drawer aria-hidden="true">
+  <div class="drawer" id="site-drawer" data-drawer aria-hidden="true" inert>
     <div style="display:flex;align-items:center;justify-content:flex-end">
       <button class="drawer-close" data-drawer-close>Close</button>
     </div>
@@ -141,11 +141,16 @@ export function mountChrome() {
     if (!drawer?.classList.contains('is-open')) return;
     closeDrawer(drawer);
     drawer.setAttribute('aria-hidden', 'true');
+    // A shut drawer is clip-path'd, not display:none — its links would still
+    // take keyboard focus while aria-hidden says they are not there. inert is
+    // the attribute that makes both statements true at once.
+    drawer.setAttribute('inert', '');
     openBtn?.setAttribute('aria-expanded', 'false');
   };
 
   openBtn?.addEventListener('click', () => {
     if (!drawer) return;
+    drawer.removeAttribute('inert');
     openDrawer(drawer);
     drawer.setAttribute('aria-hidden', 'false');
     openBtn.setAttribute('aria-expanded', 'true');
