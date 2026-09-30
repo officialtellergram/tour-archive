@@ -166,6 +166,39 @@ summary:focus-visible,
   transform-origin: 50% 100%;
 }
 
+/* ---------- intro plate ---------- */
+
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 9995;
+  background: var(--navy);
+  /* lifts with a clip wipe (see playIntro) so the mark never squashes */
+  clip-path: inset(0 0 0 0);
+  cursor: pointer;
+}
+/* A block child of the fixed plate, not a grid item: a grid's implicit row
+   is auto-sized, which turned height:100% into auto and let the portrait
+   clip run to 2275px tall on a desktop viewport. */
+.intro video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  /* black -> navy, white -> white: the letterbox bars vanish with the ground */
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+.no-intro .intro,
+.intro.is-done {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .intro {
+    display: none;
+  }
+}
+
 .skip-link {
   position: absolute;
   left: -9999px;

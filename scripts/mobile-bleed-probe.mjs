@@ -87,7 +87,7 @@ try {
   };
 
   for (const route of ROUTES) {
-    await send('Page.navigate', { url: BASE + route });
+    await send('Page.navigate', { url: `${BASE}${route}?bleed=${Date.now()}` }); // stamp: no intro plate
     await sleep(2600); // let boot + drift run live
     const raw = await evaluate(BLEED);
     const d = raw ? JSON.parse(raw) : {};

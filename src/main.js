@@ -12,6 +12,7 @@ import {
   mountHeroBackdrop,
   veilIn,
   veilOut,
+  playIntro,
 } from './lib/motion.js';
 import { mountChrome, syncNav } from './components/chrome.js';
 import { installErrorBeacon } from './lib/errors.js';
@@ -96,6 +97,9 @@ hooks({
 async function boot() {
   // First, so a store failure is caught too. Inert unless ERRORS_ENABLED.
   installErrorBeacon();
+
+  // The intro plate plays while stock loads; page motion waits on it.
+  playIntro();
 
   await initStore();
 

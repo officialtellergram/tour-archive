@@ -188,7 +188,8 @@ try {
   let failures = 0;
 
   for (const route of ROUTES) {
-    await evaluate(`location.href = ${JSON.stringify(BASE + route)}`);
+    // ?reveal= stamp: the intro plate stands down for probes (index.html head)
+    await evaluate(`location.href = ${JSON.stringify(`${BASE}${route}?reveal=${Date.now()}`)}`);
     // Wait for the SPA to mount something.
     let mounted = false;
     for (let i = 0; i < 40 && !mounted; i++) {

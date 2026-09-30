@@ -26,6 +26,18 @@
         l.setAttribute('href', base + 'hero/ocean-hole.jpg?v=1');
         document.head.appendChild(l);
       })();
+      /* The intro plate (the wordmark drawing itself) shows once per tab
+         session and never for: reduced motion, automation (the gates measure
+         the page, not the curtain), or a URL a probe stamped. Decided here,
+         before first paint, so the page neither flashes nor waits on JS. */
+      (function () {
+        var skip = false;
+        try { skip = sessionStorage.getItem('ta-intro') === '1'; } catch (e) {}
+        if (!skip && window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) skip = true;
+        if (!skip && navigator.webdriver) skip = true;
+        if (!skip && /[?&](ux|a11y|probe|reveal|layout|bleed)=/.test(location.search)) skip = true;
+        if (skip) document.documentElement.className += ' no-intro';
+      })();
     </script>
     <!-- Typefaces are served from this site (public/fonts/, declared in
          src/styles/fonts.css, licence in public/fonts/OFL.txt). The three faces
@@ -66,6 +78,14 @@
     <footer data-site-footer></footer>
 
     <div class="page-veil" data-veil aria-hidden="true"></div>
+
+    <!-- Intro plate: the TA wordmark drawing itself, once per session. The
+         clip is white on black; screen-blended over navy the black vanishes
+         and only the brush survives. Decorative: hidden from the tree, no
+         audio, and any click or key lifts it early. -->
+    <div class="intro" data-intro aria-hidden="true">
+      <video data-intro-video muted playsinline preload="none" src="%BASE_URL%brand/intro.mp4?v=1"></video>
+    </div>
 
     <script type="module" src="/src/main.js"></script>
   </body>

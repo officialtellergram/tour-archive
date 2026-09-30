@@ -107,6 +107,84 @@ export function initMarquee(root = document) {
 }
 
 /* ------------------------------------------------------------------ */
+/* Intro plate                                                         */
+/* ------------------------------------------------------------------ */
+
+/* The clip draws the swing and the wordmark over its first 2.75 s, holds,
+   then wipes itself off at 4.75 s. The page comes in at INTRO_HOLD_MS (the
+   mark complete plus a beat) and the clip keeps holding under the wipe, so
+   the exit is the house wipe, not the clip's own. */
+const INTRO_HOLD_MS = 3100;
+const INTRO_READY_MS = 1500; // no decodable frame by then: skip, never stall
+let introPromise = null;
+
+/** The pending intro, or null once it has begun to lift (or never showed). */
+export function introPending() {
+  return introPromise;
+}
+
+/**
+ * Play the intro plate if the head shim left it in place. Resolves when the
+ * plate begins to lift, so page motion starts under the wipe rather than
+ * after it. Any click or key lifts it early.
+ */
+export function playIntro() {
+  const box = document.querySelector('[data-intro]');
+  const video = box?.querySelector('video');
+  if (!box || !video || reduced || document.documentElement.classList.contains('no-intro')) {
+    return Promise.resolve();
+  }
+  try {
+    sessionStorage.setItem('ta-intro', '1');
+  } catch {
+    /* private mode: the intro simply shows again next load */
+  }
+  introPromise = new Promise((resolve) => {
+    let done = false;
+    const timers = [];
+    const finish = () => {
+      if (done) return;
+      done = true;
+      timers.forEach(clearTimeout);
+      window.removeEventListener('keydown', finish);
+      introPromise = null;
+      resolve();
+      animate(box, { clipPath: ['inset(0 0 0 0)', 'inset(0 0 100% 0)'] }, { duration: 0.55, ease: EASE })
+        .finished.then(() => {
+          box.classList.add('is-done');
+          try {
+            video.pause();
+          } catch {
+            /* already gone */
+          }
+        });
+    };
+    // preload="none" in the markup: a skipped intro must not fetch the clip,
+    // and a hidden media fetch was enough to stall the reveal gate. Ask for
+    // it only now, when the plate is really going to show.
+    video.preload = 'auto';
+    video.load();
+    const ready = new Promise((r) => {
+      if (video.readyState >= 3) return r(true);
+      video.addEventListener('canplay', () => r(true), { once: true });
+      timers.push(setTimeout(() => r(false), INTRO_READY_MS));
+    });
+    ready.then((ok) => {
+      if (done) return;
+      if (!ok) return finish();
+      const p = video.play();
+      if (p && p.catch) p.catch(finish);
+      timers.push(setTimeout(finish, INTRO_HOLD_MS));
+    });
+    video.addEventListener('ended', finish, { once: true });
+    video.addEventListener('error', finish, { once: true });
+    box.addEventListener('click', finish, { once: true });
+    window.addEventListener('keydown', finish);
+  });
+  return introPromise;
+}
+
+/* ------------------------------------------------------------------ */
 /* Page transition veil                                                */
 /* ------------------------------------------------------------------ */
 
@@ -147,6 +225,16 @@ export function initReveals(root = document) {
     return;
   }
   nodes.forEach((n) => {
+    // Already scrolled past when the observer registers (a fast thumb, or a
+    // page that mounted under the intro plate): show it now. An observer
+    // registered below a node reports "not intersecting" and would leave it
+    // invisible until the visitor scrolled back up.
+    if (n.getBoundingClientRect().bottom < 0) {
+      n.style.opacity = '1';
+      n.style.transform = 'none';
+      n.classList.add('is-in');
+      return;
+    }
     inView(
       n,
       (el) => {
@@ -180,6 +268,11 @@ export function initGridStagger(root = document) {
     const kids = [...grid.children];
     if (!kids.length) return;
     if (reduced) {
+      kids.forEach((k) => (k.style.opacity = '1'));
+      return;
+    }
+    // Same rule for a grid already above the fold when it registers.
+    if (grid.getBoundingClientRect().bottom < 0) {
       kids.forEach((k) => (k.style.opacity = '1'));
       return;
     }
@@ -537,12 +630,19 @@ export function toast(message) {
 
 /** Called after every route render. */
 export function mountPageMotion(outlet) {
-  heroSequence(outlet);
-  initReveals(outlet);
-  initGridStagger(outlet);
-  initParallax(outlet);
-  initCounters(outlet);
-  initMagnetic(outlet);
-  initAccordions(outlet);
-  initMarquee(outlet);
+  const go = () => {
+    heroSequence(outlet);
+    initReveals(outlet);
+    initGridStagger(outlet);
+    initParallax(outlet);
+    initCounters(outlet);
+    initMagnetic(outlet);
+    initAccordions(outlet);
+    initMarquee(outlet);
+  };
+  // First load under the intro plate: hold the choreography until the plate
+  // starts to lift, or the hero would play to an empty house.
+  const pending = introPending();
+  if (pending) pending.then(go);
+  else go();
 }
