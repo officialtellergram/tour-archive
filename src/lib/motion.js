@@ -151,16 +151,28 @@ export function initReveals(root = document) {
       n,
       (el) => {
         const delay = Number(el.dataset.revealDelay || 0);
+        // 0.5s / 14px: content is fully in within the 400ms Doherty window
+        // plus one beat — the rest state (26px→14px) lives in app.css too.
         animate(
           el,
-          { opacity: [0, 1], transform: ['translateY(26px)', 'translateY(0px)'] },
-          { duration: 0.85, delay, ease: EASE }
+          { opacity: [0, 1], transform: ['translateY(14px)', 'translateY(0px)'] },
+          { duration: 0.5, delay, ease: EASE }
         ).finished.then(() => el.classList.add('is-in'));
       },
       { margin: '0px 0px -12% 0px', amount: 0.15 }
     );
   });
 }
+
+/* Grid stagger: 40ms a card, capped so the LAST card of any grid starts by
+   0.7s — with the 0.5s tween a 30-card (or 300-card) grid is fully in by
+   ~1.2s. motion's stagger() has no max option (it is startDelay + step *
+   distance, nothing else), so the cap is a plain min over the function it
+   returns; animate() accepts any (i, total) => seconds as delay. */
+const GRID_STEP = 0.04;
+const GRID_DELAY_MAX = 0.7;
+const gridStep = stagger(GRID_STEP, { from: 'first' });
+const gridDelay = (i, total) => Math.min(gridStep(i, total), GRID_DELAY_MAX);
 
 /** Staggered reveal for grids (products, tiles). */
 export function initGridStagger(root = document) {
@@ -173,15 +185,15 @@ export function initGridStagger(root = document) {
     }
     kids.forEach((k) => {
       k.style.opacity = '0';
-      k.style.transform = 'translateY(30px)';
+      k.style.transform = 'translateY(14px)';
     });
     inView(
       grid,
       () => {
         animate(
           kids,
-          { opacity: [0, 1], transform: ['translateY(30px)', 'translateY(0px)'] },
-          { duration: 0.8, delay: stagger(0.055), ease: EASE }
+          { opacity: [0, 1], transform: ['translateY(14px)', 'translateY(0px)'] },
+          { duration: 0.5, delay: gridDelay, ease: EASE }
         );
       },
       // 'some' (any pixel), NEVER a fraction: a 27-card single-column grid is
