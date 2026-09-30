@@ -199,8 +199,8 @@ export function privacy() {
 
       <p><strong>What the plumbing sees.</strong> Like nearly every website: the site is
       served through Cloudflare, which fronts every request and gives us cookieless,
-      aggregate visit counts; our host (GitHub Pages) keeps standard server logs; and our
-      typefaces load from Google Fonts, which means Google's servers see those requests.
+      aggregate visit counts; and our host (GitHub Pages) keeps standard server logs. Our
+      typefaces are served from this site, so no font request leaves it.
       None of it identifies you to us, and we add nothing on top.</p>
 
       <p><strong>Questions, or want something removed?</strong> Write to
