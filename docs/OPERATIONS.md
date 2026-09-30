@@ -124,6 +124,38 @@ authed page in this same repo, no new hosting, no new stack:
 Auth stays comfortably inside the 50K MAU free allowance (the team is not
 50,000 people).
 
+## Error tracking (first-party, dormant until switched on, $0)
+
+The site has no Sentry and never will — a third-party SDK would break the
+privacy page's "we add nothing on top". Instead `src/lib/errors.js` is a
+beacon that posts an uncaught error's message, page path, stack and
+user-agent to a table in our own Supabase project. No cookie, no visitor id,
+at most three rows per page load, browser-extension noise dropped. It is
+compiled into the site but does nothing until the flag is on.
+
+**Switch it on (once, ~5 min):**
+
+1. Supabase dashboard → **SQL Editor → New query** → paste the whole of
+   `supabase/site_errors.sql` → Run. It is idempotent; re-running is safe.
+   This creates `site_errors` with RLS on and a single policy: the public
+   anon key may insert and nothing else.
+2. In `src/curate/config.js` set `ERRORS_ENABLED = true`, commit, push. The
+   next deploy carries it. (`vite dev` stays silent regardless — dev errors
+   belong in the console.)
+
+**Where to look:** dashboard → **Table editor → site_errors**, sorted by
+`at` descending. The `path` + `message` pair is usually the whole story;
+`ua` tells you which browser; `stack` names the bundled file and line.
+
+**Prune:** retention intent is 30 days and nothing enforces it by itself.
+In the SQL editor, `delete from public.site_errors where at < now() -
+interval '30 days';` — or enable the `pg_cron` extension (Database →
+Extensions) and uncomment the schedule at the foot of `site_errors.sql` to
+run that nightly. Free-tier storage is 500 MB and a row is under 4 KB, so
+forgetting for a season costs nothing; prune for tidiness, not survival.
+
+**Switch it off:** set the flag back to `false` and push. The table can stay.
+
 ## Photo storage runway
 
 Photos ship in the repo today (~250 KB each, compressed). Budget math:

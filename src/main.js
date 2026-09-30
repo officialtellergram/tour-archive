@@ -14,6 +14,7 @@ import {
   veilOut,
 } from './lib/motion.js';
 import { mountChrome, syncNav } from './components/chrome.js';
+import { installErrorBeacon } from './lib/errors.js';
 
 import { home } from './pages/home.js';
 import { collectionsIndex, collectionDetail } from './pages/collections.js';
@@ -93,6 +94,9 @@ hooks({
  * analytics). Same ordering, without stalling the document lifecycle.
  */
 async function boot() {
+  // First, so a store failure is caught too. Inert unless ERRORS_ENABLED.
+  installErrorBeacon();
+
   await initStore();
 
   mountChrome();

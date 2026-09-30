@@ -998,6 +998,189 @@ check('STATUSES and the SQL check constraint cannot drift apart', () => {
 });
 
 /* ------------------------------------------------------------------ */
+/* Error beacon — src/lib/errors.js against a fake window. Never the     */
+/* network: the transport is the mocked sendBeacon / fetch on the fake.  */
+/* ------------------------------------------------------------------ */
+
+const errors = await import('../src/lib/errors.js');
+const errorsConfig = await import('../src/curate/config.js');
+
+/** A fake window with a recording sendBeacon, and optionally a recording fetch. */
+function fakeWindow({ withFetch = false, path = '/item/ta-ds-01?utm=x#top', referrer = '' } = {}) {
+  const origin = 'https://tourarchive.example';
+  const beacons = [];
+  const fetches = [];
+  const listeners = {};
+  const win = {
+    location: { origin, pathname: path.split(/[?#]/)[0], search: '', hash: '', href: `${origin}${path}` },
+    document: { referrer },
+    navigator: {
+      userAgent: 'SmokeBrowser/1.0',
+      sendBeacon: (url, blob) => {
+        beacons.push({ url, blob });
+        return true;
+      },
+    },
+    Blob: class {
+      constructor(parts, opts) {
+        this.text = parts.join('');
+        this.type = opts && opts.type;
+      }
+    },
+    addEventListener: (type, fn) => {
+      (listeners[type] ||= []).push(fn);
+    },
+  };
+  if (withFetch) {
+    win.fetch = (url, init) => {
+      fetches.push({ url, init });
+      return Promise.resolve({ ok: true });
+    };
+  }
+  return { win, beacons, fetches, listeners, origin };
+}
+
+const errorEvent = (message, extra = {}) => ({
+  message,
+  filename: extra.filename ?? 'https://tourarchive.example/assets/main-abc123.js',
+  lineno: extra.lineno ?? 12,
+  colno: extra.colno ?? 34,
+  error: extra.error ?? Object.assign(new Error(message), { stack: `Error: ${message}\n    at boot (https://tourarchive.example/assets/main-abc123.js:12:34)` }),
+});
+
+check('errors: the flag ships as a boolean, default off', () => {
+  equal(typeof errorsConfig.ERRORS_ENABLED, 'boolean', 'ERRORS_ENABLED is a boolean');
+  equal(errorsConfig.ERRORS_ENABLED, false, 'off until the table exists');
+});
+
+check('errors: disabled → attaches nothing, sends nothing', () => {
+  const { win, beacons, fetches, listeners } = fakeWindow({ withFetch: true });
+  const r = errors.createReporter({ win, enabled: false, url: 'https://x.supabase.co', key: 'k' });
+  equal(r.install(), false, 'install reports inert');
+  equal(Object.keys(listeners).length, 0, 'no listeners attached');
+  equal(r.report('error', errorEvent('boom')), false, 'a direct report is dropped');
+  equal(beacons.length + fetches.length, 0, 'nothing left the window');
+});
+
+check('errors: dev → inert even when enabled', () => {
+  const { win, beacons, listeners } = fakeWindow();
+  const r = errors.createReporter({ win, enabled: true, dev: true, url: 'https://x.supabase.co', key: 'k' });
+  equal(r.install(), false, 'install reports inert under dev');
+  equal(Object.keys(listeners).length, 0, 'no listeners');
+  equal(r.report('error', errorEvent('boom')), false, 'dropped');
+  equal(beacons.length, 0, 'nothing sent');
+});
+
+check('errors: the default install is inert with the shipped flag', () => {
+  const { win, beacons, listeners } = fakeWindow();
+  equal(errors.installErrorBeacon(win), false, 'shipped config installs nothing');
+  equal(Object.keys(listeners).length, 0, 'no listeners');
+  equal(beacons.length, 0, 'nothing sent');
+});
+
+check('errors: enabled → listeners attach and the beacon carries a well-shaped row', () => {
+  const { win, beacons, listeners } = fakeWindow({ referrer: 'https://tourarchive.example/collections?x=1#y' });
+  const r = errors.createReporter({ win, enabled: true, url: 'https://x.supabase.co/', key: 'anon-key' });
+  equal(r.install(), true, 'installed');
+  assert(listeners.error?.length === 1 && listeners.unhandledrejection?.length === 1, 'both listeners attached once');
+
+  listeners.error[0](errorEvent('boom'));
+  equal(beacons.length, 1, 'one beacon');
+  const { url, blob } = beacons[0];
+  assert(url.startsWith('https://x.supabase.co/rest/v1/site_errors?apikey=anon-key'), `endpoint is the table with the key in the query, got ${url}`);
+  equal(blob.type, 'application/json', 'JSON body');
+  const row = JSON.parse(blob.text);
+  equal(JSON.stringify(Object.keys(row).sort()), JSON.stringify(['col', 'line', 'message', 'path', 'ref', 'source', 'stack', 'ua']), 'exactly the table columns');
+  equal(row.path, '/item/ta-ds-01', 'query string and hash stripped from path');
+  equal(row.ref, '/collections', 'referrer reduced to its path');
+  equal(row.message, 'boom', 'message');
+  equal(row.line, 12, 'line');
+  equal(row.col, 34, 'col');
+  equal(row.ua, 'SmokeBrowser/1.0', 'ua');
+  assert(row.stack.includes('at boot'), 'stack carried');
+  assert(!('email' in row) && !('id' in row) && !('cookie' in row), 'nothing identifying');
+});
+
+check('errors: fetch keepalive is preferred and carries the PostgREST headers', () => {
+  const { win, beacons, fetches } = fakeWindow({ withFetch: true });
+  const r = errors.createReporter({ win, enabled: true, url: 'https://x.supabase.co', key: 'anon-key' });
+  equal(r.report('error', errorEvent('boom')), true, 'sent');
+  equal(fetches.length, 1, 'went by fetch');
+  equal(beacons.length, 0, 'not by beacon');
+  const { url, init } = fetches[0];
+  equal(url, 'https://x.supabase.co/rest/v1/site_errors', 'plain endpoint, key in headers not query');
+  equal(init.method, 'POST', 'POST');
+  equal(init.keepalive, true, 'keepalive');
+  equal(init.headers.apikey, 'anon-key', 'apikey header');
+  equal(init.headers.Authorization, 'Bearer anon-key', 'bearer header');
+  equal(init.headers.Prefer, 'return=minimal', 'return=minimal (insert without select privilege)');
+  equal(init.headers['Content-Type'], 'application/json', 'json content type');
+  equal(JSON.parse(init.body).message, 'boom', 'same row shape');
+});
+
+check('errors: at most three per page load, identical messages once', () => {
+  const { win, beacons } = fakeWindow();
+  const r = errors.createReporter({ win, enabled: true, url: 'https://x.supabase.co', key: 'k' });
+  equal(r.report('error', errorEvent('one')), true, 'first');
+  equal(r.report('error', errorEvent('one')), false, 'duplicate dropped');
+  equal(r.report('error', errorEvent('two')), true, 'second');
+  equal(r.report('error', errorEvent('three')), true, 'third');
+  equal(r.report('error', errorEvent('four')), false, 'fourth dropped');
+  equal(beacons.length, 3, 'three rows');
+  equal(r.sent, 3, 'counter agrees');
+});
+
+check('errors: extension and opaque cross-origin noise is dropped', () => {
+  const { win, beacons } = fakeWindow();
+  const r = errors.createReporter({ win, enabled: true, url: 'https://x.supabase.co', key: 'k' });
+  equal(r.report('error', errorEvent('ext', { filename: 'chrome-extension://abc/content.js', error: { message: 'ext', stack: 'Error: ext\n    at chrome-extension://abc/content.js:1:1' } })), false, 'chrome extension source dropped');
+  equal(r.report('error', errorEvent('moz', { filename: '', error: { message: 'moz', stack: 'Error: moz\n    at moz-extension://abc/x.js:1:1' } })), false, 'firefox extension stack dropped');
+  equal(r.report('error', errorEvent('foreign', { filename: 'https://cdn.example.net/thing.js', error: { message: 'foreign', stack: 'Error\n    at https://cdn.example.net/thing.js:1:1' } })), false, 'other-origin script dropped');
+  equal(r.report('error', { message: 'Script error.', filename: '', lineno: 0, colno: 0, error: null }), false, 'opaque Script error. dropped');
+  equal(r.report('error', { message: '', filename: '', lineno: 0, colno: 0, error: null }), false, 'empty message dropped');
+  equal(beacons.length, 0, 'nothing sent');
+  equal(r.report('error', { message: 'thrown string', filename: '', lineno: 0, colno: 0, error: null }), true, 'no URL anywhere → kept');
+});
+
+check('errors: unhandled rejections are described and long fields truncated to the CHECK limits', () => {
+  const { win, beacons } = fakeWindow();
+  const r = errors.createReporter({ win, enabled: true, url: 'https://x.supabase.co', key: 'k' });
+  const long = 'x'.repeat(5000);
+  const reason = Object.assign(new Error(long), { stack: `Error: ${long}\n    at https://tourarchive.example/assets/a.js:1:1` });
+  equal(r.report('unhandledrejection', { reason }), true, 'sent');
+  const row = JSON.parse(beacons[0].blob.text);
+  assert(row.message.startsWith('Unhandled rejection: '), 'prefixed');
+  equal(row.message.length, errors.LIMITS.message, 'message capped');
+  equal(row.stack.length, errors.LIMITS.stack, 'stack capped');
+  equal(row.source, '', 'rejections carry no source');
+  equal(r.report('unhandledrejection', { reason: 'plain string' }), true, 'string reasons are fine');
+  equal(JSON.parse(beacons[1].blob.text).message, 'Unhandled rejection: plain string', 'string reason described');
+});
+
+check('errors: a throwing transport never escapes', () => {
+  const { win } = fakeWindow();
+  const r = errors.createReporter({ win, enabled: true, url: 'https://x.supabase.co', key: 'k', transport: () => { throw new Error('network down'); } });
+  equal(r.report('error', errorEvent('boom')), false, 'reported as not sent');
+  equal(r.sent, 0, 'nothing counted');
+});
+
+check('errors: the SQL grants anon insert only, and the limits match the client', () => {
+  const sql = readFileSync(new URL('../supabase/site_errors.sql', import.meta.url), 'utf8');
+  assert(/create table if not exists public\.site_errors/.test(sql), 'table declared');
+  assert(/enable row level security/.test(sql), 'RLS on');
+  assert(/for insert to anon with check \(true\)/.test(sql), 'anon insert policy');
+  assert(!/for (select|update|delete) to anon/.test(sql), 'no anon select/update/delete policy');
+  assert(!/grant (select|update|delete)[^;]*to anon/.test(sql), 'no anon select/update/delete grant');
+  assert(/comment on table public\.site_errors/.test(sql), 'retention intent recorded on the table');
+  for (const [col, n] of Object.entries(errors.LIMITS)) {
+    const rx = new RegExp(`char_length\\(${col}\\)\\s*<=\\s*${n}\\b`);
+    assert(rx.test(sql), `${col} capped at ${n} in SQL as in LIMITS`);
+  }
+  for (const col of ['path', 'message', 'source', 'line', 'col', 'stack', 'ua', 'ref'])
+    assert(new RegExp(`^\\s+${col}\\s+(text|int)\\b`, 'm').test(sql), `column ${col} exists`);
+});
+
+/* ------------------------------------------------------------------ */
 
 const C = { red: '\x1b[31m', green: '\x1b[32m', dim: '\x1b[2m', off: '\x1b[0m' };
 console.log(`\n${C.dim}── Tour Archive · marketplace integration ──${C.off}`);
