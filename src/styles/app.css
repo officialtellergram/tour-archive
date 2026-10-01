@@ -193,13 +193,16 @@ summary:focus-visible,
 /* A block child of the fixed plate, not a grid item: a grid's implicit row
    is auto-sized, which turned height:100% into auto and let the portrait
    clip run to 2275px tall on a desktop viewport. */
+.intro {
+  --intro-h: min(38vh, 340px);
+}
 .intro video {
   /* A small mark in the middle of the plate, the same size on a phone and a
-     desktop: the clip is 9:16 and the wordmark fills about half its width. */
+     desktop: the clip is 9:16 and the mark fills about half its width. */
   position: absolute;
   top: 50%;
   left: 50%;
-  height: min(38vh, 340px);
+  height: var(--intro-h);
   width: auto;
   aspect-ratio: 9 / 16;
   transform: translate(-50%, -50%);
@@ -207,6 +210,33 @@ summary:focus-visible,
   /* black -> navy, white -> white: the letterbox bars vanish with the ground */
   mix-blend-mode: screen;
   pointer-events: none;
+}
+/* The line under the mark is type, not video: the clip's own lettering
+   aliased at this size, real text stays sharp. Semibold for the same reason.
+   It arrives as the brush finishes (playIntro adds .is-tagged). */
+.intro-tag {
+  position: absolute;
+  top: calc(50% + var(--intro-h) * 0.3);
+  left: 0;
+  right: 0;
+  margin: 0;
+  text-align: center;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(13px, 1.7vh, 16px);
+  letter-spacing: 0.42em;
+  /* tracking adds a trailing gap after the last letter; pull the line back to centre */
+  text-indent: 0.42em;
+  text-transform: uppercase;
+  color: var(--parchment);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  pointer-events: none;
+}
+.intro.is-tagged .intro-tag {
+  opacity: 1;
+  transform: none;
 }
 .no-intro .intro,
 .intro.is-done {

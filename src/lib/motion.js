@@ -125,11 +125,12 @@ export function initMarquee(root = document) {
 /* Intro plate                                                         */
 /* ------------------------------------------------------------------ */
 
-/* The clip draws the swing and the wordmark over its first 2.75 s, holds,
-   then wipes itself off at 4.75 s. Played at INTRO_RATE the mark lands at
-   about 1.4 s; the page comes in at INTRO_HOLD_MS (the mark complete plus a
-   beat) and the clip keeps holding under the wipe, so the exit is the house
-   wipe, not the clip's own. */
+/* The clip draws the brush mark over its first 2 s, holds, then wipes itself
+   off at 4 s. Played at INTRO_RATE the mark lands at about 1 s; the line
+   beneath it (.intro-tag, real type) arrives at INTRO_TAG_MS; the page comes
+   in at INTRO_HOLD_MS and the clip is still holding under the wipe, so the
+   exit is the house wipe, not the clip's own. */
+const INTRO_TAG_MS = 800;
 const INTRO_RATE = 2; // the clip at double time: the mark lands at ~1.4 s
 const INTRO_HOLD_MS = 1550;
 const INTRO_READY_MS = 1500; // no decodable frame by then: skip, never stall
@@ -192,6 +193,7 @@ export function playIntro() {
       video.playbackRate = INTRO_RATE;
       const p = video.play();
       if (p && p.catch) p.catch(finish);
+      timers.push(setTimeout(() => box.classList.add('is-tagged'), INTRO_TAG_MS));
       timers.push(setTimeout(finish, INTRO_HOLD_MS));
     });
     video.addEventListener('ended', finish, { once: true });
