@@ -114,12 +114,13 @@ function gridHTML(list) {
     return `
     <div class="empty-state">
       <p class="eyebrow">Nothing matches</p>
-      <h3 class="display">No pieces under those filters</h3>
+      <h2 class="display" style="font-size:clamp(1.7rem,3vw,2.8rem);line-height:1.02">No pieces under those filters</h2>
       <p class="lede" style="text-align:center">Loosen a filter, or reset and start again.</p>
       <button class="btn btn--ghost" data-filter-reset>Reset filters</button>
     </div>`;
   }
-  return `<div class="grid-products" data-stagger>${list.map(productCard).join('')}</div>`;
+  // Cards sit straight under the page h1 here — h2, not the h3 they take under a section head.
+  return `<div class="grid-products" data-stagger>${list.map((i) => productCard(i, { level: 2 })).join('')}</div>`;
 }
 
 export function archive() {

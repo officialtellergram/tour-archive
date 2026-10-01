@@ -53,7 +53,9 @@ export function plateTag(item) {
   return `<span class="plate-tag">1 of 1</span>`;
 }
 
-export function productCard(item) {
+/** `level`: heading level of the name — 3 under a section head (default), 2 when the cards sit directly under the page h1. */
+export function productCard(item, opts) {
+  const level = opts && typeof opts === 'object' && opts.level ? opts.level : 3;
   const coll = getCollection(item.collection);
   // Hover deals the archived carousel (initCardCycle in motion.js); resolved
   // URLs are baked here so the swapper only ever assigns src.
@@ -75,7 +77,7 @@ export function productCard(item) {
         <span>${item.brand}</span>
         <span>${item.year}</span>
       </div>
-      <h3 class="card-name">${item.name}</h3>
+      <h${level} class="card-name">${item.name}</h${level}>
       <div class="card-foot">
         <span>${coll ? coll.name : item.category}${isPlaceholder(item.size) ? '' : ` · ${escapeHtml(item.size)}`}</span>
         <span class="card-price">${money(item.price)}</span>
@@ -98,7 +100,9 @@ export function mosaicMedia(items) {
     .join('')}</div>`;
 }
 
-export function collectionTile(collection) {
+/** `level`: heading level of the name — 3 under a section head (default), 2 when the tiles sit directly under the page h1. */
+export function collectionTile(collection, opts) {
+  const level = opts && typeof opts === 'object' && opts.level ? opts.level : 3;
   const stock = itemsIn(collection.id);
   const live = stock.filter(isAvailable).length;
   const lead = stock[0];
@@ -119,7 +123,7 @@ export function collectionTile(collection) {
         <span>${collection.drop}</span>
         <span class="status-dot" data-status="${collection.status}">${collection.statusLabel}</span>
       </div>
-      <h3>${collection.name}</h3>
+      <h${level}>${collection.name}</h${level}>
       <div class="tile-meta">
         <span>${collection.place}</span>
         <span>${collection.years}</span>

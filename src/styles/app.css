@@ -548,7 +548,7 @@ h3.display {
   color: rgba(244, 240, 230, 0.5);
   white-space: nowrap;
 }
-.drawer h4 {
+.drawer h2 {
   font-family: var(--sans);
   font-size: 10px;
   letter-spacing: 0.26em;
@@ -1226,6 +1226,7 @@ h3.display {
   gap: 0.5rem;
   border-top: 1px solid var(--rule);
 }
+.tile-body h2,
 .tile-body h3 {
   margin: 0;
   font-size: clamp(1.6rem, 2.2vw, 2.2rem);
@@ -1790,7 +1791,7 @@ h3.display {
     gap: 0.6rem;
   }
 }
-.journal-row h3 {
+.journal-row h2 {
   margin: 0;
   font-size: clamp(1.5rem, 2.4vw, 2.1rem);
   font-weight: 300;
@@ -1875,7 +1876,7 @@ h3.display {
   letter-spacing: 0.2em;
   color: var(--brass);
 }
-.process-list h4 {
+.process-list h3 {
   margin: 0 0 0.5rem;
   font-size: 1.5rem;
   font-weight: 400;
@@ -1909,7 +1910,7 @@ h3.display {
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
   }
 }
-.footer-grid h4 {
+.footer-grid h2 {
   font-family: var(--sans);
   font-size: 9px;
   letter-spacing: 0.26em;

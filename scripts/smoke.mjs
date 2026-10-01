@@ -7,52 +7,12 @@
  * accidental `undefined`/`[object Object]` leaking into the markup.
  */
 
+import installDomShim from './lib/dom-shim.mjs';
+
 /* ---------------- minimal DOM shim ---------------- */
 
-const noop = () => {};
-const fakeEl = {
-  innerHTML: '',
-  textContent: '',
-  style: {},
-  dataset: {},
-  classList: { add: noop, remove: noop, toggle: noop, contains: () => false },
-  addEventListener: noop,
-  removeEventListener: noop,
-  setAttribute: noop,
-  getAttribute: () => null,
-  removeAttribute: noop,
-  querySelector: () => null,
-  querySelectorAll: () => [],
-  closest: () => null,
-  appendChild: noop,
-  insertAdjacentHTML: noop,
-  getBoundingClientRect: () => ({ top: 0, left: 0, width: 0, height: 0 }),
-};
-
-globalThis.window = {
-  matchMedia: () => ({ matches: false, addEventListener: noop }),
-  addEventListener: noop,
-  location: { pathname: '/', search: '', hash: '', origin: 'http://localhost' },
-  scrollY: 0,
-  innerWidth: 1440,
-  innerHeight: 900,
-  requestAnimationFrame: noop,
-  open: noop,
-};
-globalThis.document = {
-  ...fakeEl,
-  createElement: () => ({ ...fakeEl }),
-  body: { ...fakeEl },
-  documentElement: { ...fakeEl },
-};
-globalThis.history = { pushState: noop, replaceState: noop };
-globalThis.matchMedia = window.matchMedia;
-// anime.js sniffs for a browser via `window`; once it finds one it expects the
-// full rAF pair to exist.
-globalThis.requestAnimationFrame = () => 0;
-globalThis.cancelAnimationFrame = noop;
-window.requestAnimationFrame = globalThis.requestAnimationFrame;
-window.cancelAnimationFrame = noop;
+// Shared with scripts/seo-gate.mjs. Installed before any src/ import.
+installDomShim();
 
 /* ---------------- render every route ---------------- */
 

@@ -464,7 +464,7 @@ export function openDrawer(drawer) {
   drawerScrollY = window.scrollY;
   document.body.style.top = `-${drawerScrollY}px`;
   document.body.classList.add('is-locked');
-  const items = drawer.querySelectorAll('.drawer-list li, .drawer h4');
+  const items = drawer.querySelectorAll('.drawer-list li, .drawer h2');
   if (reduced) {
     drawer.style.clipPath = 'inset(0 0 0% 0)';
     items.forEach((i) => (i.style.opacity = '1'));

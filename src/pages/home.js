@@ -280,15 +280,15 @@ export function home() {
         </div>
         <ol class="process-list" style="border-color:rgba(244,240,230,.2)" data-reveal data-reveal-delay="0.1">
           <li style="border-color:rgba(244,240,230,.2)">
-            <div><h4 style="color:var(--parchment)">Sourced by tournament</h4>
+            <div><h3 style="color:var(--parchment)">Sourced by tournament</h3>
             <p style="color:rgba(244,240,230,.62)">Every piece is filed under the championship era it came from — the course, the week, the wardrobe that belongs to it.</p></div>
           </li>
           <li style="border-color:rgba(244,240,230,.2)">
-            <div><h4 style="color:var(--parchment)">One of one, always</h4>
+            <div><h3 style="color:var(--parchment)">One of one, always</h3>
             <p style="color:rgba(244,240,230,.62)">Real archival garments, dated and graded honestly, photographed as found. No reproductions, no restocks — when it is gone, it is gone.</p></div>
           </li>
           <li style="border-color:rgba(244,240,230,.2)">
-            <div><h4 style="color:var(--parchment)">${eventLed ? `${coll.drop}: ${coll.place}` : 'Filed by championship'}</h4>
+            <div><h3 style="color:var(--parchment)">${eventLed ? `${coll.drop}: ${coll.place}` : 'Filed by championship'}</h3>
             <p style="color:rgba(244,240,230,.62)">${
               eventLed
                 ? `${coll.drop} opens with ${ev.title} — ${ev.venue}, ${dateRange(ev)}.`

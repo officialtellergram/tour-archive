@@ -17,6 +17,7 @@
     "reveal": "node scripts/reveal-probe.mjs",
     "audit": "node scripts/audit.mjs",
     "smoke": "node scripts/smoke.mjs",
+    "seo": "node scripts/seo-gate.mjs",
     "layout": "node scripts/layout.mjs",
     "ux": "node scripts/ux-probe.mjs",
     "a11y": "node scripts/a11y-probe.mjs",
@@ -24,8 +25,8 @@
     "seo:live": "node scripts/seo-live.mjs",
     "integration": "node scripts/integration.mjs",
     "deploy:check": "npm run build && node scripts/deploy.mjs",
-    "check": "node scripts/audit.mjs && node scripts/smoke.mjs && node scripts/integration.mjs",
-    "check:all": "node scripts/audit.mjs && node scripts/smoke.mjs && node scripts/integration.mjs && node scripts/layout.mjs"
+    "check": "node scripts/audit.mjs && node scripts/smoke.mjs && node scripts/seo-gate.mjs && node scripts/integration.mjs",
+    "check:all": "node scripts/audit.mjs && node scripts/smoke.mjs && node scripts/seo-gate.mjs && node scripts/integration.mjs && node scripts/layout.mjs"
   },
   "devDependencies": {
     "axe-core": "^4.13.0",
