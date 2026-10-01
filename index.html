@@ -55,8 +55,17 @@
       content="Vintage and thrifted golf apparel catalogued by the championship it belongs to. One of one, sold direct."
     />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="%BASE_URL%brand/lockup.png?v=2" />
-    <meta name="twitter:card" content="summary" />
+    <!-- The share card: 1200x630, the lockup on the site navy, made by
+         scripts/og-image.py. Absolute on purpose — the scrapers that unfurl a
+         link (iMessage, X, LinkedIn, Slack) do not resolve relative image
+         URLs, and the canonical origin is always https://tourarchive.us, never
+         www and never Vite's base path. Per-route pages override this default
+         at prerender time. Bump ?v= whenever og.jpg is regenerated. -->
+    <meta property="og:image" content="https://tourarchive.us/brand/og.jpg?v=1" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Tour Archive" />
+    <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body>
     <!-- paper grain overlay -->

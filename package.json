@@ -21,6 +21,7 @@
     "ux": "node scripts/ux-probe.mjs",
     "a11y": "node scripts/a11y-probe.mjs",
     "headers": "node scripts/headers-probe.mjs",
+    "seo:live": "node scripts/seo-live.mjs",
     "integration": "node scripts/integration.mjs",
     "deploy:check": "npm run build && node scripts/deploy.mjs",
     "check": "node scripts/audit.mjs && node scripts/smoke.mjs && node scripts/integration.mjs",
