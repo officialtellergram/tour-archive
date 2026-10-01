@@ -2,6 +2,9 @@
 
 import { garmentSVG, collectionMark } from './garment.js';
 import { getCollection, itemsIn, isAvailable, BASIC_STOCK } from '../data/store.js';
+import { webpURL, sizeAttrs } from '../lib/media.js';
+
+export { webpURL, sizeAttrs, imageSize } from '../lib/media.js';
 
 export const money = (n) => `$${n.toLocaleString('en-US')}`;
 
@@ -32,12 +35,40 @@ export const mediaURL = (path) =>
 /** Resolve an item's photo — the item-level wrapper over mediaURL. */
 export const photoURL = (item) => mediaURL(item.photo);
 
-/** Real photography when we have it; the drawn plate otherwise. */
+/**
+ * One photograph, fully dressed. `path` is a public/-relative path (or an
+ * absolute marketplace URL); the tag gets its intrinsic width/height (space
+ * is reserved before the bytes land — the CSS still sizes the box, so the
+ * attributes change nothing visible), decoding="async", loading="lazy"
+ * unless `eager`, fetchpriority="high" when `priority` (the LCP candidate),
+ * and — when the file is a JPEG with a build-time WebP sibling — a
+ * <picture> with the WebP <source> in front and the JPEG as the fallback.
+ * `alt` is interpolated as given: escape it first. `attrs` is raw extra
+ * markup for the <img>.
+ *
+ * Runtime swaps (the card hover reel, the PDP stage) go through
+ * setFrame() in motion.js, which moves the <source> along with the <img>.
+ */
+export function pictureTag(path, { className = '', alt = '', eager = false, priority = false, attrs = '' } = {}) {
+  const url = mediaURL(path);
+  // .webp siblings exist only in dist/ (scripts/images.mjs), never under the dev server.
+  const webp = import.meta.env?.DEV ? '' : webpURL(url);
+  const img = `<img${className ? ` class="${className}"` : ''} src="${url}" alt="${alt}"${sizeAttrs(path)}${
+    eager ? '' : ' loading="lazy"'
+  }${priority ? ' fetchpriority="high"' : ''} decoding="async"${attrs ? ` ${attrs}` : ''} />`;
+  return webp ? `<picture><source type="image/webp" srcset="${webp}" />${img}</picture>` : img;
+}
+
+/** Real photography when we have it; the drawn plate otherwise.
+ *  opts.eager / opts.priority pass through to pictureTag (the PDP stage). */
 export function plateMedia(item, opts = {}) {
-  const url = photoURL(item);
-  if (url) {
-    return `<img class="plate-photo" src="${url}" alt="${String(item.name).replace(/"/g, '&quot;')}"
-      loading="lazy" />`;
+  if (item.photo) {
+    return pictureTag(item.photo, {
+      className: 'plate-photo',
+      alt: String(item.name).replace(/"/g, '&quot;'),
+      eager: !!opts.eager,
+      priority: !!opts.priority,
+    });
   }
   return garmentSVG(item, opts);
 }
@@ -53,10 +84,22 @@ export function plateTag(item) {
   return `<span class="plate-tag">1 of 1</span>`;
 }
 
-/** `level`: heading level of the name — 3 under a section head (default), 2 when the cards sit directly under the page h1. */
+/**
+ * A listing card. The second argument is either the card's grid index
+ * (`list.map(productCard)` passes it for free) or `{ level, index }`.
+ * `level` is the heading level of the name: 3 under a section head (default),
+ * 2 when the cards sit directly under the page h1. `index` drives loading:
+ * the first two cards of a grid that opens the page (/archive,
+ * /collections/<id>) load eagerly, since they sit in the first view at 390px,
+ * with the very first marked fetchpriority="high" as the route's LCP
+ * candidate. A grid that never opens the page (the home showcase, the PDP's
+ * related row) calls `(it) => productCard(it)` so every card there stays lazy.
+ */
 export function productCard(item, opts) {
+  const index = Number.isInteger(opts) ? opts : opts?.index;
   const level = opts && typeof opts === 'object' && opts.level ? opts.level : 3;
   const coll = getCollection(item.collection);
+  const eager = Number.isInteger(index) && index < 2;
   // Hover deals the archived carousel (initCardCycle in motion.js); resolved
   // URLs are baked here so the swapper only ever assigns src.
   const cycle =
@@ -70,7 +113,7 @@ export function productCard(item, opts) {
     <div class="plate ${item.photo ? 'plate--photo' : ''}"
       data-cursor-text="${item.sold ? 'Archived' : 'View'}"${cycle}>
       ${plateTag(item)}
-      ${plateMedia(item)}
+      ${plateMedia(item, { eager, priority: eager && index === 0 })}
     </div>
     <div class="card-body">
       <div class="card-brand">
@@ -96,7 +139,7 @@ export function mosaicMedia(items) {
   if (!shot.length) return '';
   const cells = [...shot.filter(isAvailable), ...shot.filter((i) => !isAvailable(i))].slice(0, 4);
   return `<div class="tile-mosaic" aria-hidden="true">${cells
-    .map((i) => `<img src="${mediaURL(i.photo)}" alt="" loading="lazy" decoding="async" />`)
+    .map((i) => pictureTag(i.photo))
     .join('')}</div>`;
 }
 

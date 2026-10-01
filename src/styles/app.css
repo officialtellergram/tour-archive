@@ -82,6 +82,19 @@ svg {
   display: block;
   max-width: 100%;
 }
+/* A <picture> is only a WebP <source> in front of the same <img> (pictureTag
+   in ui.js): it generates no box, so every rule that positions or sizes an
+   img — the absolute plate photo, the mosaic grid cell — sees the exact tree
+   it saw before the wrapper existed. */
+picture {
+  display: contents;
+}
+/* …and its <source> must generate nothing either: Chromium gives <source> a
+   box when its parent is display: contents, and that empty box became a grid
+   item — it pushed every mosaic cell into the second column. */
+picture > source {
+  display: none;
+}
 
 a {
   color: inherit;
@@ -1211,8 +1224,12 @@ h3.display {
   display: block;
 }
 /* Odd counts (1 or 3 photographed pieces): the last cell spans the row —
-   never an empty cell. No-op at 2 and 4. */
-.tile-mosaic img:last-child:nth-child(odd) {
+   never an empty cell. No-op at 2 and 4. The cell is the <img>: its
+   <picture> wrapper is display: contents (base rules), so the odd-count test
+   reads off the wrapper's position in the grid while the span lands on the
+   img box. Bare <img> cells (no WebP sibling) still match. */
+.tile-mosaic > picture:last-child:nth-child(odd) > img,
+.tile-mosaic > img:last-child:nth-child(odd) {
   grid-column: span 2;
 }
 /* Hover mirrors the drawn plate's lift. Scale the CONTAINER, not the imgs:

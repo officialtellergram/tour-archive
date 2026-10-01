@@ -11,7 +11,9 @@
     "mint": "node scripts/stripe-mint.mjs",
     "sold:stripe": "node scripts/stripe-sold.mjs",
     "build": "vite build",
-    "build:pages": "vite build && node scripts/snapshot.mjs",
+    "build:pages": "vite build && node scripts/images.mjs && node scripts/snapshot.mjs",
+    "images": "node scripts/images.mjs",
+    "vitals": "node scripts/vitals.mjs",
     "stage": "node scripts/stage.mjs",
     "preview": "vite preview --port 5180",
     "reveal": "node scripts/reveal-probe.mjs",
@@ -30,6 +32,8 @@
   },
   "devDependencies": {
     "axe-core": "^4.13.0",
+    "lighthouse": "^13.5.0",
+    "sharp": "^0.35.5",
     "vite": "^8.1.5"
   },
   "dependencies": {

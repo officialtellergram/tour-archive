@@ -1,7 +1,7 @@
 import { getItem, getCollection, itemsIn, itemStatus, isAvailable, featuredEvent, dateRange } from '../data/store.js';
 import { garmentSVG } from '../components/garment.js';
-import { productCard, breadcrumb, money, plateTag, plateMedia, sectionHead, mediaURL, escapeHtml, isPlaceholder } from '../components/ui.js';
-import { toast } from '../lib/motion.js';
+import { productCard, breadcrumb, money, plateTag, plateMedia, pictureTag, sectionHead, mediaURL, escapeHtml, isPlaceholder } from '../components/ui.js';
+import { toast, setFrame } from '../lib/motion.js';
 
 /**
  * Commerce model: checkout is a redirect-out to a Stripe Payment Link — our
@@ -69,8 +69,7 @@ export function pdpMedia(item) {
         <div class="pdp-media${item.sold ? ' is-sold' : ''}" data-reveal>
           <div class="plate plate--lg plate--photo" data-pdp-stage>
             ${plateTag(item)}
-            <img class="plate-photo" src="${mediaURL(photos[0])}"
-              alt="${alt} — view 1 of ${photos.length}" />
+            ${pictureTag(photos[0], { className: 'plate-photo', alt: `${alt} — view 1 of ${photos.length}`, eager: true, priority: true })}
             <button class="pdp-arrow pdp-arrow--prev" data-step="-1" aria-label="Previous photo">&lsaquo;</button>
             <button class="pdp-arrow pdp-arrow--next" data-step="1" aria-label="Next photo">&rsaquo;</button>
           </div>
@@ -79,8 +78,7 @@ export function pdpMedia(item) {
               .map(
                 (p, i) => `
               <button class="plate plate--photo" data-idx="${i}" aria-pressed="${i === 0}">
-                <img class="plate-photo" src="${mediaURL(p)}"
-                  alt="${alt} — view ${i + 1} of ${photos.length}" loading="lazy" />
+                ${pictureTag(p, { className: 'plate-photo', alt: `${alt} — view ${i + 1} of ${photos.length}` })}
               </button>`
               )
               .join('')}
@@ -93,7 +91,7 @@ export function pdpMedia(item) {
         <div class="pdp-media${item.sold ? ' is-sold' : ''}" data-reveal>
           <div class="plate plate--lg ${item.photo ? 'plate--photo' : ''}" data-pdp-stage>
             ${plateTag(item)}
-            ${plateMedia(item, { view: 'front' })}
+            ${plateMedia(item, { view: 'front', eager: true, priority: true })}
           </div>
           ${
             item.photo
@@ -345,7 +343,7 @@ export function product({ id }) {
                    ? { href: `/collections/${coll.id}`, label: 'Open collection' }
                    : null,
                })}
-               <div class="grid-products" data-stagger>${related.map(productCard).join('')}</div>
+               <div class="grid-products" data-stagger>${related.map((it) => productCard(it)).join('')}</div>
              </div>
            </section>`
         : ''
@@ -368,7 +366,7 @@ export function mountProduct(outlet) {
       const img = stage.querySelector('.plate-photo');
       if (!photos.length || !img) return;
       cur = ((i % photos.length) + photos.length) % photos.length;
-      img.src = mediaURL(photos[cur]);
+      setFrame(img, mediaURL(photos[cur])); // moves the WebP <source> along with the img
       img.alt = `${item.name} — view ${cur + 1} of ${photos.length}`;
       thumbs
         ?.querySelectorAll('[data-idx]')

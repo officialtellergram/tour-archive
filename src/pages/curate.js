@@ -91,7 +91,7 @@ function thumb(f, mod = '') {
   const src = findPhotoSrc(f);
   if (!src) return `<span class="${cls} curate-thumb--blank" aria-hidden="true"></span>`;
   return `<span class="${cls}" data-photo-slot>
-      <img src="${esc(src)}" alt="" loading="lazy" referrerpolicy="no-referrer"
+      <img src="${esc(src)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"
         onerror="this.parentElement.classList.add('curate-thumb--blank');this.remove()" />
     </span>`;
 }
@@ -756,7 +756,7 @@ export function reviewCardHTML(f) {
       src
         ? `<div class="deck-photo" data-photo-slot>
             <img class="plate-photo" src="${esc(src)}" alt="${esc(displayTitle(f))}"
-              loading="lazy" referrerpolicy="no-referrer" draggable="false"
+              loading="lazy" decoding="async" referrerpolicy="no-referrer" draggable="false"
               onerror="this.closest('.deck-card-body').classList.remove('deck-card-body--photo');this.remove()" />
           </div>`
         : ''

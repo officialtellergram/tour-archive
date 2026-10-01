@@ -120,7 +120,7 @@ function gridHTML(list) {
     </div>`;
   }
   // Cards sit straight under the page h1 here — h2, not the h3 they take under a section head.
-  return `<div class="grid-products" data-stagger>${list.map((i) => productCard(i, { level: 2 })).join('')}</div>`;
+  return `<div class="grid-products" data-stagger>${list.map((i, n) => productCard(i, { level: 2, index: n })).join('')}</div>`;
 }
 
 export function archive() {
