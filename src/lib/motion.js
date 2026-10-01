@@ -111,10 +111,12 @@ export function initMarquee(root = document) {
 /* ------------------------------------------------------------------ */
 
 /* The clip draws the swing and the wordmark over its first 2.75 s, holds,
-   then wipes itself off at 4.75 s. The page comes in at INTRO_HOLD_MS (the
-   mark complete plus a beat) and the clip keeps holding under the wipe, so
-   the exit is the house wipe, not the clip's own. */
-const INTRO_HOLD_MS = 3100;
+   then wipes itself off at 4.75 s. Played at INTRO_RATE the mark lands at
+   about 1.4 s; the page comes in at INTRO_HOLD_MS (the mark complete plus a
+   beat) and the clip keeps holding under the wipe, so the exit is the house
+   wipe, not the clip's own. */
+const INTRO_RATE = 2; // the clip at double time: the mark lands at ~1.4 s
+const INTRO_HOLD_MS = 1550;
 const INTRO_READY_MS = 1500; // no decodable frame by then: skip, never stall
 let introPromise = null;
 
@@ -149,7 +151,7 @@ export function playIntro() {
       window.removeEventListener('keydown', finish);
       introPromise = null;
       resolve();
-      animate(box, { clipPath: ['inset(0 0 0 0)', 'inset(0 0 100% 0)'] }, { duration: 0.55, ease: EASE })
+      animate(box, { clipPath: ['inset(0 0 0 0)', 'inset(0 0 100% 0)'] }, { duration: 0.45, ease: EASE })
         .finished.then(() => {
           box.classList.add('is-done');
           try {
@@ -172,6 +174,7 @@ export function playIntro() {
     ready.then((ok) => {
       if (done) return;
       if (!ok) return finish();
+      video.playbackRate = INTRO_RATE;
       const p = video.play();
       if (p && p.catch) p.catch(finish);
       timers.push(setTimeout(finish, INTRO_HOLD_MS));
