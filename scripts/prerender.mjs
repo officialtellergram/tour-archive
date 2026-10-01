@@ -5,7 +5,9 @@
  * for every path but "/". A crawler that respects status codes (all of them)
  * therefore never indexes /archive, a collection or a piece. This script,
  * run by `npm run build:pages` after the Vite build and the inventory
- * snapshot, writes dist/<route>/index.html for every route worth indexing,
+ * snapshot, writes dist/<route>.html for every route worth indexing (GitHub
+ * Pages serves foo.html at /foo with a 200 and no trailing-slash redirect; a
+ * foo/index.html would 301 /foo to /foo/ and contradict every canonical),
  * so Pages answers each with 200 and the page's own markup.
  *
  * Each file is the built dist/index.html shell with:
@@ -180,7 +182,7 @@ async function main() {
   for (const page of selected) {
     try {
       const html = renderPage(page);
-      const out = page.route === '/' ? indexPath : join(DIST, ...page.route.split('/').filter(Boolean), 'index.html');
+      const out = page.route === '/' ? indexPath : join(DIST, `${page.route.slice(1)}.html`);
       mkdirSync(dirname(out), { recursive: true });
       writeFileSync(out, html, 'utf8');
       written.push(page);
@@ -218,7 +220,7 @@ async function main() {
     const canonical = page.route === '/' ? `${ORIGIN}/` : `${ORIGIN}${page.route}`;
     const item = page.kind === 'item' ? page.record : null;
     const image = item?.photo ? assetURL(item.photo) : assetURL(SITE.ogImage);
-    const dims = item?.photo ? imageSize(join(ROOT, 'public', ...item.photo.split('/'))) : null;
+    const dims = imageSize(join(ROOT, 'public', ...(item?.photo || SITE.ogImage).replace(/\?.*$/, '').split('/')));
 
     const meta = [
       `<title>${esc(title)}</title>`,
@@ -257,8 +259,8 @@ async function main() {
        cascade at equal specificity. */
     const MOTION_SEL = '.line-mask > span, [data-hero-lead] > *, [data-hero-meta] > *, [data-hero-cta], [data-reveal], [data-stagger] > *';
     const motion = [
-      `<style data-prerender-motion>${MOTION_SEL} { opacity: 0; }</style>`,
-      `<noscript><style>${MOTION_SEL} { opacity: 1 !important; transform: none !important; }</style></noscript>`,
+      `<style data-prerender-motion>${MOTION_SEL} { opacity: 0; } .accordion-item.is-open > .accordion-panel { height: auto; }</style>`,
+      `<noscript><style>${MOTION_SEL} { opacity: 1 !important; transform: none !important; } .intro { display: none !important; }</style></noscript>`,
     ].join('\n    ');
 
     let doc = shell;
@@ -289,7 +291,7 @@ async function main() {
     );
 
     if (doc.includes('buy.stripe.com/test_')) throw new Error('a TEST-mode Stripe link reached the page');
-    if (item && (doc.match(/<h1[\s>]/g) || []).length !== 1) throw new Error('item page must have exactly one <h1>');
+    if ((doc.match(/<h1[\s>]/g) || []).length !== 1) throw new Error(`${page.route} must have exactly one <h1>`);
     return doc;
   }
 
@@ -424,7 +426,7 @@ async function main() {
   function withAssetBase(html) {
     if (BASE === '/') return html;
     return html
-      .replace(/\b(src|data-src)="\/(?!\/)/g, `$1="${BASE}`)
+      .replace(/\b(src|data-src|srcset)="\/(?!\/)/g, `$1="${BASE}`)
       .replace(/data-cycle="([^"]*)"/g, (m, list) => `data-cycle="${list.replace(/(^|\|)\/(?!\/)/g, `$1${BASE}`)}"`);
   }
   function withLinkBase(html) {

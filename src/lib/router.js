@@ -223,5 +223,12 @@ export function start() {
   });
 
   window.addEventListener('popstate', () => render({ isPop: true }));
+  // /archive/ and /archive are one page; keep the address bar on the
+  // canonical, slashless form so same-page navigation stays a no-op.
+  {
+    const { pathname, search, hash } = window.location;
+    if (toAppPath(pathname) !== '/' && pathname.endsWith('/'))
+      history.replaceState(history.state, '', pathname.replace(/\/+$/, '') + search + hash);
+  }
   return render({ scroll: false });
 }

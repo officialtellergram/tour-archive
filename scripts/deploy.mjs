@@ -102,7 +102,7 @@ if (existsSync(DIST)) {
 if (existsSync(DIST)) {
   const sitemapPath = join(DIST, 'sitemap.xml');
   const robotsPath = join(DIST, 'robots.txt');
-  check(existsSync(join(DIST, 'archive', 'index.html')), 'dist/archive/index.html is missing — run `npm run build:pages` (the prerender writes it)');
+  check(existsSync(join(DIST, 'archive.html')), 'dist/archive.html is missing — run `npm run build:pages` (the prerender writes it)');
   check(existsSync(sitemapPath), 'dist/sitemap.xml is missing — the prerender writes it');
   check(existsSync(robotsPath), 'dist/robots.txt is missing — the prerender writes it');
 
@@ -112,7 +112,7 @@ if (existsSync(DIST)) {
     for (const name of readdirSync(dir)) {
       const p = join(dir, name);
       if (statSync(p).isDirectory()) walk(p);
-      else if (name === 'index.html' && readFileSync(p, 'utf8').includes(' data-prerendered=')) pages.push(p);
+      else if (name.endsWith('.html') && readFileSync(p, 'utf8').includes(' data-prerendered=')) pages.push(p);
     }
   };
   walk(DIST);
@@ -127,11 +127,9 @@ if (existsSync(DIST)) {
       errors.push(`${rel} has no canonical link on the tourarchive.us origin`);
     if (html.includes('href="https://www.tourarchive.us'))
       errors.push(`${rel} emits a www URL — the canonical origin is https://tourarchive.us`);
-    if (rel.startsWith('item/')) {
-      itemPages += 1;
-      const h1 = (html.match(/<h1[\s>]/g) || []).length;
-      if (h1 !== 1) errors.push(`${rel} has ${h1} <h1> elements — an item page needs exactly one`);
-    }
+    if (rel.startsWith('item/')) itemPages += 1;
+    const h1 = (html.match(/<h1[\s>]/g) || []).length;
+    if (h1 !== 1) errors.push(`${rel} has ${h1} <h1> elements — every page needs exactly one`);
   }
 
   if (existsSync(sitemapPath)) {
@@ -146,7 +144,7 @@ if (existsSync(DIST)) {
         continue;
       }
       const route = loc.slice('https://tourarchive.us'.length).replace(/\/+$/, '');
-      const file = route ? join(DIST, ...route.split('/').filter(Boolean), 'index.html') : join(DIST, 'index.html');
+      const file = route ? join(DIST, `${route.slice(1)}.html`) : join(DIST, 'index.html');
       if (!existsSync(file)) errors.push(`sitemap URL ${loc} has no prerendered file`);
     }
     notes.push(`prerender: ${pages.length} page(s), ${itemPages} item page(s), ${locs.length} sitemap URL(s)`);

@@ -42,7 +42,8 @@ createServer(async (req, res) => {
   }
   const rel = normalize(path.slice(PREFIX.length + 1)).replace(/^([/\\.])+/, '');
   const candidates = [join(DIST, rel)];
-  if (!extname(rel)) candidates.push(join(DIST, '404.html'), join(DIST, 'index.html'));
+  // Pages serves a prerendered <route>.html at /<route>; unknown paths get 404.html.
+  if (!extname(rel)) candidates.push(join(DIST, `${rel}.html`), join(DIST, '404.html'), join(DIST, 'index.html'));
   for (const file of candidates) {
     try {
       const body = await readFile(file);
