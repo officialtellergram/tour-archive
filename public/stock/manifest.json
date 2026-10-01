@@ -2784,6 +2784,196 @@
         "carousel/vintage-medinah-country-club-knit-polo/02.jpg"
       ],
       "_photosPulled": "2026-09-21"
+    },
+    {
+      "id": "stock-vintage-taylormade-retro-logo-polo",
+      "file": "vintage-taylormade-retro-logo-polo.jpg",
+      "name": "Vintage Taylormade Retro Logo Polo",
+      "brand": "TaylorMade",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "L",
+      "condition": "Pre-owned",
+      "price": 99.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "A great piece of Taylormade legacy with their iconic bikini logo embroidered on the left chest. 100% Cotton and 100% likely to improve your golf game.",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {},
+      "collection": "basic-stock",
+      "_ingested": "2026-10-01",
+      "_source": "stripe:prod_VMTkXSuZxYOzqp",
+      "description": [
+        "A great piece of Taylormade legacy with their iconic bikini logo embroidered on the left chest. 100% Cotton and 100% likely to improve your golf game.",
+        "All items are washed and inspected before sale",
+        "Each order comes with a mystery assortment of vintage PGA trading cards!"
+      ],
+      "_stripe": {
+        "product": "prod_VMTkXSuZxYOzqp",
+        "price": "price_1ULkmmC1bWq01lTKNqKIXagO",
+        "link": "plink_1ULkpcC1bWq01lTKsekdElfr",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-10-01"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/00wcN48iE7HDcke1to9k40C",
+      "photos": [
+        "carousel/vintage-taylormade-retro-logo-polo/01.jpg",
+        "carousel/vintage-taylormade-retro-logo-polo/02.jpg",
+        "carousel/vintage-taylormade-retro-logo-polo/03.jpg",
+        "carousel/vintage-taylormade-retro-logo-polo/04.jpg"
+      ],
+      "_photosPulled": "2026-10-01"
+    },
+    {
+      "id": "stock-1990s-titleist-coach-jacket",
+      "file": "1990s-titleist-coach-jacket.jpg",
+      "name": "1990s Titleist Coach Jacket",
+      "brand": "Titleist",
+      "year": "—",
+      "category": "Outerwear",
+      "garment": "jacket",
+      "size": "L",
+      "condition": "Pre-owned",
+      "price": 114.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "A rare piece from the archive featuring Titleist branding on the chest and across the back. This is guaranteed to catch eyes in the clubhouse.",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {},
+      "collection": "basic-stock",
+      "_ingested": "2026-10-01",
+      "_source": "stripe:prod_VMTgEFqQAQcihC",
+      "description": [
+        "A rare piece from the archive featuring Titleist branding on the chest and across the back. This is guaranteed to catch eyes in the clubhouse.",
+        "All items are washed and inspected before sale",
+        "Each order comes with a mystery assortment of vintage PGA trading cards!"
+      ],
+      "_stripe": {
+        "product": "prod_VMTgEFqQAQcihC",
+        "price": "price_1ULkiiC1bWq01lTKhR8LxZ0a",
+        "link": "plink_1ULkpdC1bWq01lTKfhIwX0ae",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-10-01"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/14A7sK1Ug8LH2JEc829k40D",
+      "photos": [
+        "carousel/1990s-titleist-coach-jacket/01.jpg",
+        "carousel/1990s-titleist-coach-jacket/02.jpg",
+        "carousel/1990s-titleist-coach-jacket/03.jpg"
+      ],
+      "_photosPulled": "2026-10-01"
+    },
+    {
+      "id": "stock-black-cotton-ralph-lauren-cardigan",
+      "file": "black-cotton-ralph-lauren-cardigan.jpg",
+      "name": "Black Cotton Ralph Lauren Cardigan",
+      "brand": "Ralph Lauren",
+      "year": "—",
+      "category": "Knitwear",
+      "garment": "cardigan",
+      "size": "L",
+      "condition": "Pre-owned",
+      "price": 24.99,
+      "colorway": [
+        "#3A3A36",
+        "#262623",
+        "#141412"
+      ],
+      "colorName": "Black",
+      "story": "Soft and Sleek Piece for Fall-time, On-course layering.  (Marked XL but fits smaller)",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {},
+      "collection": "basic-stock",
+      "_ingested": "2026-10-01",
+      "_source": "stripe:prod_VMTabIibHSX77Q",
+      "description": [
+        "Soft and Sleek Piece for Fall-time, On-course layering.  (Marked XL but fits smaller)",
+        "All items are washed and inspected before sale",
+        "Each order comes with a mystery assortment of vintage PGA trading cards!"
+      ],
+      "_stripe": {
+        "product": "prod_VMTabIibHSX77Q",
+        "price": "price_1ULkcsC1bWq01lTKm9Aaz5pb",
+        "link": "plink_1ULkpdC1bWq01lTK7NtftpvL",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-10-01"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/8x2eVceH26Dz3NI7RM9k40E",
+      "photos": [
+        "carousel/black-cotton-ralph-lauren-cardigan/01.jpg",
+        "carousel/black-cotton-ralph-lauren-cardigan/02.jpg",
+        "carousel/black-cotton-ralph-lauren-cardigan/03.jpg"
+      ],
+      "_photosPulled": "2026-10-01"
+    },
+    {
+      "id": "stock-vintage-grand-slam-golf-polo",
+      "file": "vintage-grand-slam-golf-polo.jpg",
+      "name": "Vintage Grand Slam Golf Polo",
+      "brand": "Grand Slam",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "XL",
+      "condition": "Pre-owned",
+      "price": 24.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "Nicely sun-faded and softened polo from Grand Slam featuring an abstract design. Penguin embroidery on the sleeve.",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {},
+      "collection": "basic-stock",
+      "_ingested": "2026-10-01",
+      "_source": "stripe:prod_VMTXGsSXuxr59G",
+      "description": [
+        "Nicely sun-faded and softened polo from Grand Slam featuring an abstract design. Penguin embroidery on the sleeve.",
+        "All items are washed and inspected before sale",
+        "Each order comes with a mystery assortment of vintage PGA trading cards!"
+      ],
+      "_stripe": {
+        "product": "prod_VMTXGsSXuxr59G",
+        "price": "price_1ULka0C1bWq01lTKVFxsrBYQ",
+        "link": "plink_1ULkpdC1bWq01lTKVuQYBLLa",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-10-01"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/dRm14m0Qc4vrckefke9k40F",
+      "photos": [
+        "carousel/vintage-grand-slam-golf-polo/01.jpg",
+        "carousel/vintage-grand-slam-golf-polo/02.jpg",
+        "carousel/vintage-grand-slam-golf-polo/03.jpg",
+        "carousel/vintage-grand-slam-golf-polo/04.jpg"
+      ],
+      "_photosPulled": "2026-10-01"
     }
   ]
 }
