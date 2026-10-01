@@ -26,27 +26,30 @@ import { mission, sell, mountSell, sizing, privacy, terms, notFound } from './pa
 import { curate, mountCurate, curateReview, mountCurateReview } from './pages/curate.js';
 
 import { getCollection, getItem, getJournal, init as initStore, status as storeStatus } from './data/store.js';
+import { pageTitle } from './data/seo.js';
 
 /* ----------------------------- routes ----------------------------- */
 
-route('/', home, { title: 'Vintage golf, sourced by tournament' });
-route('/collections', collectionsIndex, { title: 'Collections' });
+/* Static titles live in src/data/seo.js so the build-time prerender
+   (scripts/prerender.mjs) writes the same <title> the router sets at boot. */
+route('/', home, { title: pageTitle('/') });
+route('/collections', collectionsIndex, { title: pageTitle('/collections') });
 route('/collections/:id', collectionDetail, {
   title: ({ id }) => getCollection(id)?.name || 'Collection',
 });
-route('/archive', archive, { title: 'The Archive' });
+route('/archive', archive, { title: pageTitle('/archive') });
 route('/item/:id', product, { title: ({ id }) => getItem(id)?.name || 'Piece' });
-route('/journal', journalIndex, { title: 'Journal' });
+route('/journal', journalIndex, { title: pageTitle('/journal') });
 route('/journal/:id', journalEntry, {
   title: ({ id }) => getJournal(id)?.title || 'Journal',
 });
-route('/mission', mission, { title: 'Our Mission' });
-route('/sell', sell, { title: 'Sell to Us' });
-route('/sizing', sizing, { title: 'Sizing & Condition' });
-route('/privacy', privacy, { title: 'Privacy' });
-route('/terms', terms, { title: 'Terms of Sale' });
-route('/curate', curate, { title: 'Procurement Desk' });
-route('/curate/review', curateReview, { title: 'Review Session' });
+route('/mission', mission, { title: pageTitle('/mission') });
+route('/sell', sell, { title: pageTitle('/sell') });
+route('/sizing', sizing, { title: pageTitle('/sizing') });
+route('/privacy', privacy, { title: pageTitle('/privacy') });
+route('/terms', terms, { title: pageTitle('/terms') });
+route('/curate', curate, { title: pageTitle('/curate') });
+route('/curate/review', curateReview, { title: pageTitle('/curate/review') });
 
 setNotFound(notFound);
 
@@ -72,6 +75,14 @@ hooks({
   after: async ({ path, outlet, isPop }) => {
     syncNav();
     mountPageMotion(outlet);
+    // A prerendered document ships an inline style holding the first-view
+    // elements at opacity 0 (scripts/prerender.mjs), so the page paints
+    // exactly as the empty shell would — nothing shows, then hides, then
+    // animates. Page motion has now claimed those elements with inline
+    // styles of its own (or is holding them under the intro plate), so the
+    // sheet has done its job; dropping it leaves the page as the SPA has
+    // always left it.
+    document.querySelector('style[data-prerender-motion]')?.remove();
     MOUNTS.forEach(([rx, fn]) => {
       if (rx.test(path)) fn(outlet);
     });

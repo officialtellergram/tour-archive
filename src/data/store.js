@@ -66,6 +66,43 @@ let state = {
 /* Boot                                                                */
 /* ------------------------------------------------------------------ */
 
+/**
+ * Adopt an inventory payload as the live stock. The browser reaches this
+ * through init() after the fetch; the build-time prerender
+ * (scripts/prerender.mjs) calls it directly with dist/api/inventory.json so
+ * the same page functions render the same stock in Node, without a fetch.
+ * Throws on an empty payload — an empty shop is never adopted silently.
+ */
+export function hydrate(payload) {
+  if (!Array.isArray(payload?.items) || !payload.items.length) {
+    throw new Error('inventory API returned no items');
+  }
+
+  const items = payload.items;
+  const collections = [...(payload.collections || seedCollections)];
+
+  // The seed ships Basic Stock since the launch strip. This only fires
+  // against an older inventory payload (a pre-promotion snapshot) — without
+  // it, live mode would render Basic Stock twice.
+  if (!collections.some((c) => c.id === BASIC_STOCK)) {
+    collections.push(basicStockCollection);
+  }
+
+  // Boot comment above predates the pivot: the fallback is now an EMPTY
+  // shop, never fake stock.
+
+  state = {
+    items,
+    collections,
+    source: 'live',
+    generatedAt: payload.generatedAt || null,
+    channels: payload.sources || [],
+    cache: payload.cache || null,
+    error: null,
+  };
+  return state;
+}
+
 export async function init({ timeout = 4000 } = {}) {
   try {
     const ctl = new AbortController();
@@ -74,33 +111,7 @@ export async function init({ timeout = 4000 } = {}) {
     clearTimeout(timer);
 
     if (!res.ok) throw new Error(`inventory returned ${res.status} from ${INVENTORY_URL}`);
-    const payload = await res.json();
-    if (!Array.isArray(payload.items) || !payload.items.length) {
-      throw new Error('inventory API returned no items');
-    }
-
-    const items = payload.items;
-    const collections = [...(payload.collections || seedCollections)];
-
-    // The seed ships Basic Stock since the launch strip. This only fires
-    // against an older inventory payload (a pre-promotion snapshot) — without
-    // it, live mode would render Basic Stock twice.
-    if (!collections.some((c) => c.id === BASIC_STOCK)) {
-      collections.push(basicStockCollection);
-    }
-
-    // Boot comment above predates the pivot: the fallback is now an EMPTY
-    // shop, never fake stock.
-
-    state = {
-      items,
-      collections,
-      source: 'live',
-      generatedAt: payload.generatedAt || null,
-      channels: payload.sources || [],
-      cache: payload.cache || null,
-      error: null,
-    };
+    hydrate(await res.json());
   } catch (err) {
     // Expected whenever the API isn't running — the mockup still works.
     state = { ...state, source: 'seed', error: err.message };

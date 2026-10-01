@@ -1,7 +1,7 @@
 /**
  * Minimal DOM shim for rendering the site's page functions in Node.
  *
- * Shared by scripts/smoke.mjs and scripts/seo-gate.mjs (and anything else that
+ * Shared by scripts/smoke.mjs, scripts/seo-gate.mjs and scripts/prerender.mjs (and anything else that
  * wants to call a page function without a browser). It is deliberately tiny:
  * every element is the same inert object, queries find nothing, listeners are
  * swallowed. Page functions return HTML strings and only touch the DOM at
@@ -44,12 +44,12 @@ export const makeEl = () => ({ ...fakeEl, style: {}, dataset: {} });
  * a caller can override a query or two (the SEO gate captures the chrome's
  * innerHTML this way). `pathname` seeds window.location for pages that read it.
  */
-export default function installDomShim({ pathname = '/', search = '' } = {}) {
+export function installDomShim({ pathname = '/', search = '', origin = 'http://localhost' } = {}) {
   globalThis.window = {
     matchMedia: () => ({ matches: false, addEventListener: noop }),
     addEventListener: noop,
     removeEventListener: noop,
-    location: { pathname, search, hash: '', origin: 'http://localhost' },
+    location: { pathname, search, hash: '', origin },
     scrollY: 0,
     innerWidth: 1440,
     innerHeight: 900,
@@ -72,4 +72,13 @@ export default function installDomShim({ pathname = '/', search = '' } = {}) {
   window.cancelAnimationFrame = noop;
 
   return { window: globalThis.window, document: globalThis.document };
+}
+
+export default installDomShim;
+
+/** Move the shimmed location between renders (the prerender walks every route). */
+export function setShimLocation(pathname, search = '') {
+  if (!globalThis.window?.location) throw new Error('installDomShim() first');
+  globalThis.window.location.pathname = pathname;
+  globalThis.window.location.search = search;
 }

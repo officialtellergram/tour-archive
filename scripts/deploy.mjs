@@ -9,8 +9,8 @@
  * Runs against the built output, so `npm run build` first.
  */
 
-import { readFileSync, existsSync, readdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
+import { join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
@@ -69,17 +69,93 @@ if (!existsSync(DIST)) {
 
 /*
  * GitHub Pages has no redirect rules. It does serve 404.html for unmatched
- * paths, so an identical copy of index.html is what stops every deep link from
+ * paths, so a copy of the SPA shell is what stops every deep link from
  * erroring on direct load or refresh. This is the single most common way a
  * client-routed site ships broken.
+ *
+ * Since the prerender, index.html is the HOME page (filled outlet, home
+ * metadata), so the two are no longer byte-identical: 404.html must be the
+ * pristine shell — empty outlet, no data-prerendered stamp — pointing at the
+ * same hashed bundles as the pages, or a fresh route would boot stale code.
  */
 if (existsSync(DIST)) {
   const fallback = join(DIST, '404.html');
   check(existsSync(fallback), 'dist/404.html is missing — deep links would 404 on GitHub Pages');
   if (existsSync(fallback) && existsSync(join(DIST, 'index.html'))) {
-    const same =
-      readFileSync(fallback, 'utf8') === readFileSync(join(DIST, 'index.html'), 'utf8');
-    check(same, 'dist/404.html differs from index.html — the SPA fallback would serve stale markup');
+    const fb = readFileSync(fallback, 'utf8');
+    const idx = readFileSync(join(DIST, 'index.html'), 'utf8');
+    check(!fb.includes(' data-prerendered='), 'dist/404.html is a prerendered page — the SPA fallback must be the empty shell');
+    check(fb.includes('<main id="main" data-outlet tabindex="-1"></main>'), 'dist/404.html has a filled outlet — the fallback must boot the router into an empty page');
+    const bundles = (html) => (html.match(/\/assets\/index-[\w-]+\.(?:js|css)/g) || []).sort().join(',');
+    check(bundles(fb) === bundles(idx), 'dist/404.html references different bundles than index.html — the SPA fallback would serve stale code');
+  }
+}
+
+/* ---------------- 2b. prerendered routes, sitemap, robots ---------------- */
+
+/*
+ * scripts/prerender.mjs writes real HTML for every indexable route so Pages
+ * answers them with 200 instead of the 404 fallback. What ships must be
+ * complete and consistent: every sitemap URL a file, every file in the
+ * sitemap, no test-mode checkout on any page, one <h1> per item page.
+ */
+if (existsSync(DIST)) {
+  const sitemapPath = join(DIST, 'sitemap.xml');
+  const robotsPath = join(DIST, 'robots.txt');
+  check(existsSync(join(DIST, 'archive', 'index.html')), 'dist/archive/index.html is missing — run `npm run build:pages` (the prerender writes it)');
+  check(existsSync(sitemapPath), 'dist/sitemap.xml is missing — the prerender writes it');
+  check(existsSync(robotsPath), 'dist/robots.txt is missing — the prerender writes it');
+
+  // every prerendered page on disk
+  const pages = [];
+  const walk = (dir) => {
+    for (const name of readdirSync(dir)) {
+      const p = join(dir, name);
+      if (statSync(p).isDirectory()) walk(p);
+      else if (name === 'index.html' && readFileSync(p, 'utf8').includes(' data-prerendered=')) pages.push(p);
+    }
+  };
+  walk(DIST);
+
+  let itemPages = 0;
+  for (const p of pages) {
+    const html = readFileSync(p, 'utf8');
+    const rel = relative(DIST, p).split(sep).join('/');
+    if (html.includes('buy.stripe.com/test_'))
+      errors.push(`${rel} carries a TEST-mode Stripe link — a prerendered page would put play-money checkout in front of a buyer`);
+    if (!/<link rel="canonical" href="https:\/\/tourarchive\.us(\/[^"]*)?" \/>/.test(html))
+      errors.push(`${rel} has no canonical link on the tourarchive.us origin`);
+    if (html.includes('href="https://www.tourarchive.us'))
+      errors.push(`${rel} emits a www URL — the canonical origin is https://tourarchive.us`);
+    if (rel.startsWith('item/')) {
+      itemPages += 1;
+      const h1 = (html.match(/<h1[\s>]/g) || []).length;
+      if (h1 !== 1) errors.push(`${rel} has ${h1} <h1> elements — an item page needs exactly one`);
+    }
+  }
+
+  if (existsSync(sitemapPath)) {
+    const xml = readFileSync(sitemapPath, 'utf8');
+    check(xml.startsWith('<?xml') && xml.includes('<urlset') && xml.trimEnd().endsWith('</urlset>'), 'dist/sitemap.xml is not a sitemap');
+    const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+    check(locs.length === pages.length, `sitemap lists ${locs.length} URL(s) but ${pages.length} page(s) were prerendered`);
+    check(new Set(locs).size === locs.length, 'sitemap repeats a URL');
+    for (const loc of locs) {
+      if (!loc.startsWith('https://tourarchive.us/')) {
+        errors.push(`sitemap URL ${loc} is off the canonical origin`);
+        continue;
+      }
+      const route = loc.slice('https://tourarchive.us'.length).replace(/\/+$/, '');
+      const file = route ? join(DIST, ...route.split('/').filter(Boolean), 'index.html') : join(DIST, 'index.html');
+      if (!existsSync(file)) errors.push(`sitemap URL ${loc} has no prerendered file`);
+    }
+    notes.push(`prerender: ${pages.length} page(s), ${itemPages} item page(s), ${locs.length} sitemap URL(s)`);
+  }
+
+  if (existsSync(robotsPath)) {
+    const robots = readFileSync(robotsPath, 'utf8');
+    check(/^Sitemap: https:\/\/tourarchive\.us\/sitemap\.xml$/m.test(robots), 'robots.txt does not point at https://tourarchive.us/sitemap.xml');
+    check(/^Disallow: \/curate$/m.test(robots), 'robots.txt does not keep crawlers out of /curate');
   }
 }
 

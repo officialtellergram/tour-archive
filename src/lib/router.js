@@ -45,6 +45,23 @@ export function withBase(appPath) {
 export const stripBase = (href) => toAppPath(String(href).split(/[?#]/)[0]);
 
 /**
+ * FNV-1a over a markup string, as 8 hex characters. Not security — identity.
+ * scripts/prerender.mjs stamps each filled slot (`data-prerender-hash`) with
+ * the hash of the exact string it baked; at boot the same function over the
+ * freshly rendered string says whether the DOM already holds this markup.
+ * Runs identically in Node and the browser, which is the whole point.
+ */
+export function hashHTML(html) {
+  let h = 0x811c9dc5;
+  const s = String(html);
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 0x01000193) >>> 0;
+  }
+  return h.toString(16).padStart(8, '0');
+}
+
+/**
  * Rewrite internal hrefs in the DOM to include the deploy base.
  *
  * The click handler already routes correctly without this, but the `href`
@@ -145,7 +162,30 @@ export async function render({ scroll = true, isPop = false } = {}) {
   const resolved = await view.html;
   if (onBefore) await onBefore({ path, isPop });
 
-  outlet.innerHTML = typeof resolved === 'string' ? resolved : '';
+  /*
+   * Prerender hydration. On a document scripts/prerender.mjs wrote, the
+   * outlet already holds this route's markup and carries the hash of the
+   * exact string that was baked. If the fresh render hashes the same, the
+   * DOM is left as it is: assigning identical innerHTML would tear down and
+   * re-parse the page (and re-decode the hero plate) for no visible change.
+   * Any difference — stock changed since the build, a date-driven line
+   * moved on, a project-page base — re-renders exactly as before. The stamp
+   * is dropped after the first render, so every later route change assigns.
+   * The first-view motion state on a prerendered page is handled by the
+   * inline <style data-prerender-motion> the prerender writes (main.js
+   * removes it once page motion has claimed its elements).
+   */
+  const html = typeof resolved === 'string' ? resolved : '';
+  const prerendered =
+    !current &&
+    document.documentElement.dataset.prerendered === path &&
+    outlet.dataset.prerenderHash === hashHTML(html);
+  if (!prerendered) outlet.innerHTML = html;
+  // Diagnostic for the probes: on a prerendered document, was the baked
+  // markup kept or replaced? Set once, on the first render only.
+  if (!current && document.documentElement.dataset.prerendered)
+    outlet.dataset.hydration = prerendered ? 'kept' : 'rendered';
+  delete outlet.dataset.prerenderHash;
   applyBaseToLinks(outlet);
   current = { path, params: view.params, meta: view.meta };
 
