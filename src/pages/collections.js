@@ -188,7 +188,7 @@ export function collectionDetail({ id }) {
                   }
                 </p>
                 <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center">
-                  <a class="btn btn--solid" href="/archive?filter=available" data-magnetic>In the shop now</a>
+                  <a class="btn btn--solid" href="/archive" data-magnetic>In the shop now</a>
                   <a class="btn" href="/sell" data-magnetic>Sell to the archive</a>
                 </div>
               </div>

@@ -202,7 +202,7 @@ export function home() {
         <a class="btn btn--solid" href="/collections/${coll.id}" data-magnetic>
           ${ev.phase === 'live' ? `Shop ${coll.drop}` : `Preview ${coll.drop}`}
         </a>
-        ${ev.phase === 'live' ? '' : `<a class="btn" href="/archive?filter=available" data-magnetic>In the shop now</a>`}
+        ${ev.phase === 'live' ? '' : `<a class="btn" href="/archive" data-magnetic>In the shop now</a>`}
       </div>
       <p class="eyebrow" data-hero-cta style="max-width:52ch;text-align:center;line-height:1.8">
         ${status.line}

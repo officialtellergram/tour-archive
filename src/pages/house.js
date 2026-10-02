@@ -53,7 +53,7 @@ export function mission() {
             const c = fc?.collection;
             return c && fc.event?.phase !== 'past'
               ? `<a class="btn btn--solid" href="/collections/${c.id}" data-magnetic>Shop ${c.drop}</a>`
-              : `<a class="btn btn--solid" href="/archive?filter=available" data-magnetic>In the shop now</a>`;
+              : `<a class="btn btn--solid" href="/archive" data-magnetic>In the shop now</a>`;
           })()}
           <a class="btn" href="/sell" data-magnetic>Sell to the archive</a>
         </div>
