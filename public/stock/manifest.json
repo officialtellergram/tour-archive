@@ -12,7 +12,7 @@
       "garment": "windshirt",
       "size": "See photos",
       "condition": "Very Good",
-      "price": 100,
+      "price": 49.99,
       "colorway": [
         "#2E6E63",
         "#1C4640",
@@ -30,7 +30,7 @@
       "_ingested": "2026-08-02",
       "_source": "IMG_0371.JPEG",
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/5kQ8wOeH2fa51FAfke9k400",
+      "listingUrl": "https://buy.stripe.com/5kQ00idCY5zvac60pk9k40G",
       "photos": [
         "carousel/slazenger-golden-horseshoe-wind-shirt/01.jpg",
         "carousel/slazenger-golden-horseshoe-wind-shirt/02.webp",
@@ -64,11 +64,12 @@
       "_ebayUrl": "https://www.ebay.com/itm/407115489714",
       "_stripe": {
         "product": "prod_VEm5b1ps14FHaz",
-        "price": "price_1UEIXYC1bWq01lTKaUkBTJdI",
-        "link": "plink_1UEIXYC1bWq01lTK25ynBlWL",
+        "price": "price_1ULsvQC1bWq01lTKFeW1L6Yc",
+        "link": "plink_1ULuthC1bWq01lTKEqeCMuKH",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-11"
+        "minted": "2026-09-11",
+        "repriced": "2026-10-02"
       }
     },
     {
@@ -144,7 +145,7 @@
       "garment": "sweater",
       "size": "L",
       "condition": "Very Good",
-      "price": 75,
+      "price": 74.99,
       "colorway": [
         "#232A38",
         "#161C27",
@@ -162,7 +163,7 @@
       "_ingested": "2026-08-02",
       "_source": "IMG_0383.JPEG",
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/6oUfZg42o9PL9825JE9k401",
+      "listingUrl": "https://buy.stripe.com/bJe4gycyUfa54RMgoi9k40H",
       "photos": [
         "carousel/peter-millar-club-quarter-zip-navy/01.jpg",
         "carousel/peter-millar-club-quarter-zip-navy/02.webp",
@@ -194,11 +195,12 @@
       "_ebayUrl": "https://www.ebay.com/itm/407115514561",
       "_stripe": {
         "product": "prod_VEm5w9lXUrVi1D",
-        "price": "price_1UEIXZC1bWq01lTKJTpr8ZvY",
-        "link": "plink_1UEIXZC1bWq01lTKeNuo943B",
+        "price": "price_1ULsuMC1bWq01lTKYgiDPLZP",
+        "link": "plink_1ULuthC1bWq01lTKefIjHC01",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-11"
+        "minted": "2026-09-11",
+        "repriced": "2026-10-02"
       }
     },
     {
@@ -210,7 +212,7 @@
       "garment": "polo",
       "size": "See listing",
       "condition": "See listing",
-      "price": 25,
+      "price": 24.99,
       "colorway": [
         "#1F3352",
         "#8E2436",
@@ -223,7 +225,7 @@
       ],
       "measurements": {},
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/aFa28q9mI5zvcke6NI9k402",
+      "listingUrl": "https://buy.stripe.com/8x28wOeH23rnac66NI9k40I",
       "_ingested": "2026-08-02",
       "file": "ryder-cup-print-polo.jpg",
       "_source": "own listing photo, i.ebayimg.com",
@@ -260,11 +262,12 @@
       "_ebayUrl": "https://www.ebay.com/itm/407115434329",
       "_stripe": {
         "product": "prod_VEm5ITuVaIqiBt",
-        "price": "price_1UEIXZC1bWq01lTKuXi7vCiZ",
-        "link": "plink_1UEIXZC1bWq01lTKYKBq6ciQ",
+        "price": "price_1ULstZC1bWq01lTKTk5LEFnO",
+        "link": "plink_1ULutiC1bWq01lTKXNPZJH0K",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-11"
+        "minted": "2026-09-11",
+        "repriced": "2026-10-02"
       }
     },
     {
@@ -276,7 +279,7 @@
       "garment": "sweater",
       "size": "See listing",
       "condition": "See listing",
-      "price": 45,
+      "price": 44.99,
       "colorway": [
         "#B9AE93",
         "#8C8570",
@@ -289,7 +292,7 @@
       ],
       "measurements": {},
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/4gMeVcbuQ4vrcke2xs9k403",
+      "listingUrl": "https://buy.stripe.com/dRm3cucyU1jf0Bw7RM9k40J",
       "_ingested": "2026-08-02",
       "file": "sun-faded-golf-pullover.jpg",
       "_source": "own listing photo, i.ebayimg.com",
@@ -327,11 +330,12 @@
       "_ebayUrl": "https://www.ebay.com/itm/407131442352",
       "_stripe": {
         "product": "prod_VEm5udCe0F3yII",
-        "price": "price_1UEIXaC1bWq01lTK1mgxtA68",
-        "link": "plink_1UEIXaC1bWq01lTK4kN3HGGX",
+        "price": "price_1ULssXC1bWq01lTKsTFp5MfH",
+        "link": "plink_1ULutjC1bWq01lTKrgToNl3l",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-11"
+        "minted": "2026-09-11",
+        "repriced": "2026-10-02"
       }
     },
     {
@@ -343,7 +347,7 @@
       "garment": "polo",
       "size": "See listing",
       "condition": "See listing",
-      "price": 25,
+      "price": 24.99,
       "colorway": [
         "#3B6ABF",
         "#27509E",
@@ -356,7 +360,7 @@
       ],
       "measurements": {},
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/bJe00i42o0fb9827RM9k404",
+      "listingUrl": "https://buy.stripe.com/cNi5kCaqM8LHdoi5JE9k40K",
       "_ingested": "2026-08-02",
       "file": "university-of-kentucky-polo.jpg",
       "_source": "own listing photo, i.ebayimg.com",
@@ -386,11 +390,12 @@
       "_ebayUrl": "https://www.ebay.com/itm/407115420034",
       "_stripe": {
         "product": "prod_VEm5O9zeaTV3VF",
-        "price": "price_1UEIXaC1bWq01lTKb5Luws0n",
-        "link": "plink_1UEIXbC1bWq01lTKsjmVgTix",
+        "price": "price_1ULsreC1bWq01lTKz30guxot",
+        "link": "plink_1ULutjC1bWq01lTK9ZlnfoNM",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-11"
+        "minted": "2026-09-11",
+        "repriced": "2026-10-02"
       }
     },
     {
@@ -402,7 +407,7 @@
       "garment": "polo",
       "size": "See listing",
       "condition": "See listing",
-      "price": 15,
+      "price": 19.99,
       "colorway": [
         "#C4BCA6",
         "#A39A82",
@@ -415,7 +420,7 @@
       ],
       "measurements": {},
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/9B69AScyUd1Xdoidc69k405",
+      "listingUrl": "https://buy.stripe.com/8x28wO56s9PLfwq9ZU9k40L",
       "_ingested": "2026-08-02",
       "file": "bugle-boy-polo.jpg",
       "_source": "own listing photo, i.ebayimg.com",
@@ -450,11 +455,12 @@
       "_ebayUrl": "https://www.ebay.com/itm/407115464142",
       "_stripe": {
         "product": "prod_VEm5FKvlg8pMTF",
-        "price": "price_1UEIXbC1bWq01lTKdhINCMAK",
-        "link": "plink_1UEIXbC1bWq01lTK4lyosW97",
+        "price": "price_1ULsqjC1bWq01lTKVtMz2I2E",
+        "link": "plink_1ULutkC1bWq01lTK4jCo7bY4",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-11"
+        "minted": "2026-09-11",
+        "repriced": "2026-10-02"
       }
     },
     {
@@ -520,7 +526,7 @@
       "garment": "polo",
       "size": "See listing",
       "condition": "See listing",
-      "price": 45,
+      "price": 44.99,
       "colorway": [
         "#5FA8D8",
         "#BBD4EA",
@@ -533,7 +539,7 @@
       ],
       "measurements": {},
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/3cI00iaqMge9fwqc829k406",
+      "listingUrl": "https://buy.stripe.com/aFa14mfL61jf0Bw7RM9k40M",
       "_ingested": "2026-08-10",
       "file": "peter-millar-pine-valley-polo.jpg",
       "_source": "own listing photo, i.ebayimg.com",
@@ -570,11 +576,12 @@
       "_ebayUrl": "https://www.ebay.com/itm/407131400410",
       "_stripe": {
         "product": "prod_VEm5XzffQKwFc1",
-        "price": "price_1UEIXcC1bWq01lTKjS1rcOmu",
-        "link": "plink_1UEIXcC1bWq01lTK4Is1iZJX",
+        "price": "price_1ULspjC1bWq01lTKue1445P6",
+        "link": "plink_1ULutkC1bWq01lTKpqxJc28q",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-11"
+        "minted": "2026-09-11",
+        "repriced": "2026-10-02"
       }
     },
     {
@@ -586,7 +593,7 @@
       "garment": "polo",
       "size": "See listing",
       "condition": "See listing",
-      "price": 20,
+      "price": 19.99,
       "colorway": [
         "#A5283C",
         "#E5DFD5",
@@ -599,7 +606,7 @@
       ],
       "measurements": {},
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/7sY5kC42o5zvbgadc69k407",
+      "listingUrl": "https://buy.stripe.com/bJe3cu9mIaTP3NI1to9k40N",
       "_ingested": "2026-08-10",
       "file": "nike-ryder-cup-polo-valhalla.jpg",
       "_source": "own listing photo, i.ebayimg.com",
@@ -635,11 +642,12 @@
       "_ebayUrl": "https://www.ebay.com/itm/407131336432",
       "_stripe": {
         "product": "prod_VEm5CTgNEkaQTb",
-        "price": "price_1UEIXcC1bWq01lTKI5kcE3yr",
-        "link": "plink_1UEIXcC1bWq01lTKsftg6JzQ",
+        "price": "price_1ULsorC1bWq01lTKhaPP0KH3",
+        "link": "plink_1ULutlC1bWq01lTKmy61eRP0",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-11"
+        "minted": "2026-09-11",
+        "repriced": "2026-10-02"
       }
     },
     {
@@ -651,7 +659,7 @@
       "garment": "polo",
       "size": "See listing",
       "condition": "See listing",
-      "price": 35,
+      "price": 29.99,
       "colorway": [
         "#A64B7E",
         "#8A3A66",
@@ -664,7 +672,7 @@
       ],
       "measurements": {},
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/fZufZg42o3rn5VQ4FA9k408",
+      "listingUrl": "https://buy.stripe.com/5kQ5kC2Yke615VQ2xs9k40O",
       "_ingested": "2026-08-10",
       "file": "nike-tiger-woods-tshirt.jpg",
       "_source": "own listing photo, i.ebayimg.com",
@@ -699,11 +707,12 @@
       "_ebayUrl": "https://www.ebay.com/itm/407131472633",
       "_stripe": {
         "product": "prod_VEm5dfYMiM9CDY",
-        "price": "price_1UEIXdC1bWq01lTKii1mRlcu",
-        "link": "plink_1UEIXdC1bWq01lTKyWjjR3r5",
+        "price": "price_1ULsn4C1bWq01lTKnxWRbNWw",
+        "link": "plink_1ULutlC1bWq01lTKBgYXLk4m",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-11"
+        "minted": "2026-09-11",
+        "repriced": "2026-10-02"
       }
     },
     {
@@ -715,7 +724,7 @@
       "garment": "sweater",
       "size": "See listing",
       "condition": "See listing",
-      "price": 150,
+      "price": 114.99,
       "colorway": [
         "#4A2733",
         "#33161F",
@@ -728,7 +737,7 @@
       ],
       "measurements": {},
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/00w4gy7eAd1X0Bw2xs9k409",
+      "listingUrl": "https://buy.stripe.com/8x28wOdCYbXT6ZU5JE9k40P",
       "_ingested": "2026-08-10",
       "file": "peter-millar-taylormade-quarter-zip.jpg",
       "_source": "own listing photo, i.ebayimg.com",
@@ -763,11 +772,12 @@
       "_ebayUrl": "https://www.ebay.com/itm/407131493486",
       "_stripe": {
         "product": "prod_VEm5d4MHIzWBtC",
-        "price": "price_1UEIXdC1bWq01lTKMkRHUbIB",
-        "link": "plink_1UEIXeC1bWq01lTKsDy8h3fK",
+        "price": "price_1ULslBC1bWq01lTKUDNjMFhB",
+        "link": "plink_1ULutmC1bWq01lTKTfrwL1sq",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-11"
+        "minted": "2026-09-11",
+        "repriced": "2026-10-02"
       }
     },
     {
@@ -779,7 +789,7 @@
       "garment": "polo",
       "size": "See listing",
       "condition": "See listing",
-      "price": 25,
+      "price": 19.99,
       "colorway": [
         "#3F6B52",
         "#2E5140",
@@ -792,7 +802,7 @@
       ],
       "measurements": {},
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/28E6oG2Yk4vr6ZU1to9k40a",
+      "listingUrl": "https://buy.stripe.com/6oUaEW8iEe613NIgoi9k40Q",
       "_ingested": "2026-08-18",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -825,11 +835,12 @@
       "_ebayUrl": "https://www.ebay.com/itm/407152116404",
       "_stripe": {
         "product": "prod_VEm5PAiZWqjPsJ",
-        "price": "price_1UEIXeC1bWq01lTKWMJGB5Sb",
-        "link": "plink_1UEIXeC1bWq01lTK0fht2GHz",
+        "price": "price_1ULsk6C1bWq01lTKqSVlNpnl",
+        "link": "plink_1ULutmC1bWq01lTKvTXOjRss",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-11"
+        "minted": "2026-09-11",
+        "repriced": "2026-10-02"
       }
     },
     {
@@ -841,7 +852,7 @@
       "garment": "polo",
       "size": "See listing",
       "condition": "See listing",
-      "price": 30,
+      "price": 24.99,
       "colorway": [
         "#A3B29F",
         "#6F8BA0",
@@ -854,7 +865,7 @@
       ],
       "measurements": {},
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/6oU00ibuQe6183Yb3Y9k40b",
+      "listingUrl": "https://buy.stripe.com/7sY4gy1Ugd1X9826NI9k40R",
       "_ingested": "2026-08-18",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -886,11 +897,12 @@
       "_ebayUrl": "https://www.ebay.com/itm/407152092797",
       "_stripe": {
         "product": "prod_VEm5mx1fHLz3QU",
-        "price": "price_1UEIXfC1bWq01lTKLP7SMb2d",
-        "link": "plink_1UEIXfC1bWq01lTK9FD8k6x2",
+        "price": "price_1ULsj6C1bWq01lTK432Gda8c",
+        "link": "plink_1ULutnC1bWq01lTKolPFYNln",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-11"
+        "minted": "2026-09-11",
+        "repriced": "2026-10-02"
       }
     },
     {
@@ -959,7 +971,7 @@
       "garment": "sweater",
       "size": "See listing",
       "condition": "See listing",
-      "price": 150,
+      "price": 124.99,
       "colorway": [
         "#5A6584",
         "#3D4663",
@@ -972,7 +984,7 @@
       ],
       "measurements": {},
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/00w9ASbuQ7HDfwq9ZU9k40c",
+      "listingUrl": "https://buy.stripe.com/3cI00icyU4vrgAuega9k40S",
       "_ingested": "2026-08-20",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -1005,11 +1017,12 @@
       "_ebayUrl": "https://www.ebay.com/itm/407157573688",
       "_stripe": {
         "product": "prod_VEm5ljZSDyN8wN",
-        "price": "price_1UEIXfC1bWq01lTKWBVboV7d",
-        "link": "plink_1UEIXfC1bWq01lTKfjNdrEJS",
+        "price": "price_1ULsiEC1bWq01lTKeIgCGV4r",
+        "link": "plink_1ULutoC1bWq01lTKJJZcbdpQ",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-11"
+        "minted": "2026-09-11",
+        "repriced": "2026-10-02"
       }
     },
     {
@@ -1021,7 +1034,7 @@
       "garment": "polo",
       "size": "See listing",
       "condition": "See listing",
-      "price": 25,
+      "price": 19.99,
       "colorway": [
         "#A62B35",
         "#7E1F28",
@@ -1034,7 +1047,7 @@
       ],
       "measurements": {},
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/14A28qfL63rndoi4FA9k40d",
+      "listingUrl": "https://buy.stripe.com/fZubJ0eH2bXTac6goi9k40T",
       "_ingested": "2026-08-20",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -1068,11 +1081,12 @@
       "_ebayUrl": "https://www.ebay.com/itm/407157494692",
       "_stripe": {
         "product": "prod_VEm5YKUSasCvux",
-        "price": "price_1UEIXgC1bWq01lTK2nrBI2dM",
-        "link": "plink_1UEIXgC1bWq01lTKoqdTzJVC",
+        "price": "price_1ULsh1C1bWq01lTKOJuuoVJe",
+        "link": "plink_1ULutoC1bWq01lTKi0hnmrp7",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-11"
+        "minted": "2026-09-11",
+        "repriced": "2026-10-02"
       }
     },
     {
@@ -1151,8 +1165,6 @@
         "Checkout completes with Stripe"
       ],
       "measurements": {},
-      "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/dRm8wOgPa0fb83Ydc69k40e",
       "_ingested": "2026-08-20",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -1191,7 +1203,9 @@
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
         "minted": "2026-09-11"
-      }
+      },
+      "retired": true,
+      "_retiredWhy": "product archived in Stripe 2026-10-01"
     },
     {
       "id": "stock-shinnecock-hills-polo",
@@ -1202,7 +1216,7 @@
       "garment": "polo",
       "size": "See listing",
       "condition": "See listing",
-      "price": 50,
+      "price": 44.99,
       "colorway": [
         "#BFD4EA",
         "#EFF3F6",
@@ -1215,7 +1229,7 @@
       ],
       "measurements": {},
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/fZu3cufL6d1XgAuc829k40f",
+      "listingUrl": "https://buy.stripe.com/4gM28q2Yk5zvfwq2xs9k40U",
       "_ingested": "2026-08-20",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -1252,11 +1266,12 @@
       "_ebayUrl": "https://www.ebay.com/itm/407157470232",
       "_stripe": {
         "product": "prod_VEm5pbeIp9CAn3",
-        "price": "price_1UEIXhC1bWq01lTK5MXqWNIz",
-        "link": "plink_1UEIXhC1bWq01lTKGZazcwW0",
+        "price": "price_1ULsctC1bWq01lTKKQBypgO9",
+        "link": "plink_1ULutpC1bWq01lTKHWJgVyIk",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-11"
+        "minted": "2026-09-11",
+        "repriced": "2026-10-02"
       }
     },
     {
@@ -1322,7 +1337,7 @@
       "garment": "polo",
       "size": "See listing",
       "condition": "See listing",
-      "price": 25,
+      "price": 19.99,
       "colorway": [
         "#8FB0DC",
         "#6E8FC0",
@@ -1335,7 +1350,7 @@
       ],
       "measurements": {},
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/3cIdR8buQfa5esmfke9k40g",
+      "listingUrl": "https://buy.stripe.com/7sY14mdCYge9ckeega9k40V",
       "_ingested": "2026-08-20",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -1369,11 +1384,12 @@
       "_ebayUrl": "https://www.ebay.com/itm/407157525971",
       "_stripe": {
         "product": "prod_VEm5eWeDsppdXj",
-        "price": "price_1UEIXiC1bWq01lTKPWcaZ47W",
-        "link": "plink_1UEIXiC1bWq01lTKF1JlZASn",
+        "price": "price_1ULsbUC1bWq01lTK1iTXwVMH",
+        "link": "plink_1ULutpC1bWq01lTKFFUdQYRI",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-11"
+        "minted": "2026-09-11",
+        "repriced": "2026-10-02"
       }
     },
     {
@@ -1385,7 +1401,7 @@
       "garment": "polo",
       "size": "See listing",
       "condition": "See listing",
-      "price": 30,
+      "price": 24.99,
       "colorway": [
         "#EFEDE6",
         "#263056",
@@ -1398,7 +1414,7 @@
       ],
       "measurements": {},
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/5kQ28qbuQ0fbcke0pk9k40h",
+      "listingUrl": "https://buy.stripe.com/bJe4gy56s3rnckegoi9k40W",
       "_ingested": "2026-08-20",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -1436,11 +1452,12 @@
       "_ebayUrl": "https://www.ebay.com/itm/407157461976",
       "_stripe": {
         "product": "prod_VEm5UeQIeX9R9N",
-        "price": "price_1UEIXiC1bWq01lTKtguo5v6i",
-        "link": "plink_1UEIXiC1bWq01lTKNAhsP5ng",
+        "price": "price_1ULsaCC1bWq01lTKqGyZT1g3",
+        "link": "plink_1ULutqC1bWq01lTKHkngLfj0",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-11"
+        "minted": "2026-09-11",
+        "repriced": "2026-10-02"
       }
     },
     {
@@ -1452,7 +1469,7 @@
       "garment": "polo",
       "size": "See listing",
       "condition": "See listing",
-      "price": 50,
+      "price": 49.99,
       "colorway": [
         "#52AFA8",
         "#A7D8D2",
@@ -1465,7 +1482,7 @@
       ],
       "measurements": {},
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/dRmaEWdCYge9gAu5JE9k40i",
+      "listingUrl": "https://buy.stripe.com/7sY9AS42o0fbfwq4FA9k40X",
       "_ingested": "2026-08-20",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -1499,11 +1516,12 @@
       "_ebayUrl": "https://www.ebay.com/itm/407154712484",
       "_stripe": {
         "product": "prod_VEm5LXJqqu9Buc",
-        "price": "price_1UEIXjC1bWq01lTKuSjQlpfo",
-        "link": "plink_1UEIXjC1bWq01lTKL0lCJMkw",
+        "price": "price_1ULsZ7C1bWq01lTKCADRm1G4",
+        "link": "plink_1ULutrC1bWq01lTKLhuhtA2O",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-11"
+        "minted": "2026-09-11",
+        "repriced": "2026-10-02"
       }
     },
     {
@@ -1515,7 +1533,7 @@
       "garment": "polo",
       "size": "See listing",
       "condition": "See listing",
-      "price": 30,
+      "price": 24.99,
       "colorway": [
         "#C4C3DC",
         "#A9A8C8",
@@ -1528,7 +1546,7 @@
       ],
       "measurements": {},
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/fZu6oGaqM0fbac69ZU9k40j",
+      "listingUrl": "https://buy.stripe.com/4gM7sKcyU1jfgAu2xs9k40Y",
       "_ingested": "2026-08-20",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -1563,11 +1581,12 @@
       "_ebayUrl": "https://www.ebay.com/itm/407154740942",
       "_stripe": {
         "product": "prod_VEm50VbyuyohCO",
-        "price": "price_1UEIXjC1bWq01lTKmR2dWrvd",
-        "link": "plink_1UEIXkC1bWq01lTKIxRulpo9",
+        "price": "price_1ULsVCC1bWq01lTKyAhNm1uK",
+        "link": "plink_1ULutrC1bWq01lTKoqgKOZc7",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-11"
+        "minted": "2026-09-11",
+        "repriced": "2026-10-02"
       }
     },
     {
@@ -1579,7 +1598,7 @@
       "garment": "polo",
       "size": "See listing",
       "condition": "See listing",
-      "price": 50,
+      "price": 49.99,
       "colorway": [
         "#4A62B4",
         "#93A8D8",
@@ -1592,7 +1611,7 @@
       ],
       "measurements": {},
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/4gMdR856s2njgAu9ZU9k40k",
+      "listingUrl": "https://buy.stripe.com/eVqcN42Yk8LH0Bw2xs9k40Z",
       "_ingested": "2026-08-20",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -1626,11 +1645,12 @@
       "_ebayUrl": "https://www.ebay.com/itm/407154728451",
       "_stripe": {
         "product": "prod_VEm5eyr7GznbaP",
-        "price": "price_1UEIXkC1bWq01lTK2cppvqWd",
-        "link": "plink_1UEIXkC1bWq01lTKHY27TLBD",
+        "price": "price_1ULsW1C1bWq01lTKo0NH8Vmk",
+        "link": "plink_1ULutsC1bWq01lTK89pUSgk4",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-11"
+        "minted": "2026-09-11",
+        "repriced": "2026-10-02"
       }
     },
     {
@@ -1642,7 +1662,7 @@
       "garment": "sweater",
       "size": "See listing",
       "condition": "See listing",
-      "price": 75,
+      "price": 74.99,
       "colorway": [
         "#2F7568",
         "#6E2F44",
@@ -1655,7 +1675,7 @@
       ],
       "measurements": {},
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/28EaEWaqMge983Y3Bw9k40l",
+      "listingUrl": "https://buy.stripe.com/bJefZg9mI6Dz9825JE9k410",
       "_ingested": "2026-08-20",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -1691,11 +1711,12 @@
       "_ebayUrl": "https://www.ebay.com/itm/407154689365",
       "_stripe": {
         "product": "prod_VEm5Vz6OpRW3Z9",
-        "price": "price_1UEIXlC1bWq01lTKRlOz7UOe",
-        "link": "plink_1UEIXlC1bWq01lTKe35ikozs",
+        "price": "price_1ULsTcC1bWq01lTKweADIF2N",
+        "link": "plink_1ULutsC1bWq01lTKFjewQzXa",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-11"
+        "minted": "2026-09-11",
+        "repriced": "2026-10-02"
       }
     },
     {
@@ -1707,7 +1728,7 @@
       "garment": "sweater",
       "size": "See listing",
       "condition": "See listing",
-      "price": 150,
+      "price": 74.99,
       "colorway": [
         "#A32638",
         "#7C1B2B",
@@ -1721,7 +1742,7 @@
       "measurements": {},
       "collection": "tour-championship-2026",
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/dRm4gy8iE4vr2JE0pk9k40m",
+      "listingUrl": "https://buy.stripe.com/3cIbJ00Qc7HD3NI6NI9k411",
       "sku": "TA_TC26_03",
       "_ingested": "2026-08-21",
       "_source": "own listing photo, i.ebayimg.com",
@@ -1761,11 +1782,12 @@
       "_ebayUrl": "https://www.ebay.com/itm/407167043654",
       "_stripe": {
         "product": "prod_VEm5m6JgQIOxpB",
-        "price": "price_1UEIXlC1bWq01lTKOOSWK9qj",
-        "link": "plink_1UEIXmC1bWq01lTKJ3H8HgBN",
+        "price": "price_1ULsRlC1bWq01lTKYCfjjVNP",
+        "link": "plink_1ULuttC1bWq01lTKl6IhjPJz",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-11"
+        "minted": "2026-09-11",
+        "repriced": "2026-10-02"
       }
     },
     {
@@ -1777,7 +1799,7 @@
       "garment": "polo",
       "size": "See listing",
       "condition": "See listing",
-      "price": 75,
+      "price": 64.99,
       "colorway": [
         "#B9B4AE",
         "#EDEAE4",
@@ -1791,7 +1813,7 @@
       "measurements": {},
       "collection": "tour-championship-2026",
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/bJe7sK1UgbXT83Ygoi9k40n",
+      "listingUrl": "https://buy.stripe.com/3cIeVc42o6Dzfwqb3Y9k412",
       "sku": "TA_TC26_01",
       "_ingested": "2026-08-21",
       "_source": "own listing photo, i.ebayimg.com",
@@ -1830,11 +1852,12 @@
       "_ebayUrl": "https://www.ebay.com/itm/407167042454",
       "_stripe": {
         "product": "prod_VEm5AWkOwPela1",
-        "price": "price_1UEIXmC1bWq01lTKqb9VYyQh",
-        "link": "plink_1UEIXmC1bWq01lTK3dRz9iFT",
+        "price": "price_1ULsOJC1bWq01lTKmKSneUtf",
+        "link": "plink_1ULuttC1bWq01lTKsx5Xp63E",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-11"
+        "minted": "2026-09-11",
+        "repriced": "2026-10-02"
       }
     },
     {
@@ -1846,7 +1869,7 @@
       "garment": "cap",
       "size": "See listing",
       "condition": "See listing",
-      "price": 50,
+      "price": 44.99,
       "colorway": [
         "#F0EFEA",
         "#2C3157",
@@ -1860,7 +1883,7 @@
       "measurements": {},
       "collection": "tour-championship-2026",
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/4gM14m8iE4vrdoi5JE9k40o",
+      "listingUrl": "https://buy.stripe.com/14A7sK0Qc0fbfwq4FA9k413",
       "sku": "TA_TC26_06",
       "_ingested": "2026-08-21",
       "_source": "own listing photo, i.ebayimg.com",
@@ -1894,11 +1917,12 @@
       "_ebayUrl": "https://www.ebay.com/itm/407167036049",
       "_stripe": {
         "product": "prod_VEm5PVtzLt7vy0",
-        "price": "price_1UEIXnC1bWq01lTKBneBNZ5b",
-        "link": "plink_1UEIXnC1bWq01lTKwxsaciUV",
+        "price": "price_1ULsKtC1bWq01lTKeWCnZp9v",
+        "link": "plink_1ULutuC1bWq01lTKj8U6UyZ7",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-11"
+        "minted": "2026-09-11",
+        "repriced": "2026-10-02"
       }
     },
     {
@@ -1910,7 +1934,7 @@
       "garment": "sweater",
       "size": "See listing",
       "condition": "See listing",
-      "price": 100,
+      "price": 74.99,
       "colorway": [
         "#2A3157",
         "#1D2340",
@@ -1924,7 +1948,7 @@
       "measurements": {},
       "collection": "tour-championship-2026",
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/dRm9AS42o8LH9827RM9k40p",
+      "listingUrl": "https://buy.stripe.com/eVq5kC7eA2nj0Bwega9k414",
       "sku": "TA_TC26_02",
       "_ingested": "2026-08-21",
       "_source": "own listing photo, i.ebayimg.com",
@@ -1964,11 +1988,12 @@
       "_ebayUrl": "https://www.ebay.com/itm/407167043098",
       "_stripe": {
         "product": "prod_VEm5esDKyGoO09",
-        "price": "price_1UEIXnC1bWq01lTKqVCIvzWw",
-        "link": "plink_1UEIXnC1bWq01lTKAgX8OP8q",
+        "price": "price_1ULsItC1bWq01lTKvhyPVw1r",
+        "link": "plink_1ULutuC1bWq01lTKPrGsmpvj",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-11"
+        "minted": "2026-09-11",
+        "repriced": "2026-10-02"
       }
     },
     {
@@ -2038,7 +2063,7 @@
       "garment": "cap",
       "size": "See listing",
       "condition": "See listing",
-      "price": 45,
+      "price": 34.99,
       "colorway": [
         "#A3242E",
         "#223C8C",
@@ -2052,7 +2077,7 @@
       "measurements": {},
       "collection": "tour-championship-2026",
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/dRmdR89mI3rnbga6NI9k40q",
+      "listingUrl": "https://buy.stripe.com/cNi6oGfL63rn0Bw4FA9k415",
       "sku": "TA_TC26_09",
       "_ingested": "2026-08-21",
       "_source": "own listing photo, i.ebayimg.com",
@@ -2086,11 +2111,12 @@
       "_ebayUrl": "https://www.ebay.com/itm/407167033141",
       "_stripe": {
         "product": "prod_VEm6gzrSxYCZ7x",
-        "price": "price_1UEIXoC1bWq01lTKTAiQRI2W",
-        "link": "plink_1UEIXoC1bWq01lTK2lzf12LE",
+        "price": "price_1ULsEOC1bWq01lTKQSLHZ7Iq",
+        "link": "plink_1ULutvC1bWq01lTKV3V0UM5x",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-11"
+        "minted": "2026-09-11",
+        "repriced": "2026-10-02"
       }
     },
     {
@@ -2102,7 +2128,7 @@
       "garment": "memorabilia",
       "size": "See listing",
       "condition": "See listing",
-      "price": 30,
+      "price": 24.99,
       "colorway": [
         "#2A3C7E",
         "#C8102E",
@@ -2116,7 +2142,7 @@
       "measurements": {},
       "collection": "tour-championship-2026",
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/28EfZggPage9ac64FA9k40r",
+      "listingUrl": "https://buy.stripe.com/7sYbJ02Yk2njfwq5JE9k416",
       "sku": "TA_TC26_07",
       "_ingested": "2026-08-21",
       "_source": "own listing photo, i.ebayimg.com",
@@ -2145,11 +2171,12 @@
       "_ebayUrl": "https://www.ebay.com/itm/407167037794",
       "_stripe": {
         "product": "prod_VEm6ssbDrBgUN6",
-        "price": "price_1UEIXoC1bWq01lTKirlE9G5C",
-        "link": "plink_1UEIXpC1bWq01lTKJY7FNyxH",
+        "price": "price_1ULsBdC1bWq01lTKmHsLKMOn",
+        "link": "plink_1ULutwC1bWq01lTKoGszizOO",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-11"
+        "minted": "2026-09-11",
+        "repriced": "2026-10-02"
       }
     },
     {
@@ -2161,7 +2188,7 @@
       "garment": "memorabilia",
       "size": "See listing",
       "condition": "See listing",
-      "price": 35,
+      "price": 27.99,
       "colorway": [
         "#1A1A1C",
         "#EDEBE6",
@@ -2175,7 +2202,7 @@
       "measurements": {},
       "collection": "tour-championship-2026",
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/fZueVc0Qcge9bga8VQ9k40s",
+      "listingUrl": "https://buy.stripe.com/9B6cN48iEaTPgAugoi9k417",
       "sku": "TA_TC26_08",
       "_ingested": "2026-08-21",
       "_source": "own listing photo, i.ebayimg.com",
@@ -2204,11 +2231,12 @@
       "_ebayUrl": "https://www.ebay.com/itm/407167036923",
       "_stripe": {
         "product": "prod_VEm6sRAXrbJjiV",
-        "price": "price_1UEIXpC1bWq01lTK08ei2qNG",
-        "link": "plink_1UEIXpC1bWq01lTK7zVqepIM",
+        "price": "price_1ULs8PC1bWq01lTKrPkdYAHJ",
+        "link": "plink_1ULutwC1bWq01lTKrLkY3tOf",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-11"
+        "minted": "2026-09-11",
+        "repriced": "2026-10-02"
       }
     },
     {
@@ -2220,7 +2248,7 @@
       "garment": "vest",
       "size": "See listing",
       "condition": "See listing",
-      "price": 40,
+      "price": 29.99,
       "colorway": [
         "#35426E",
         "#26314F",
@@ -2234,7 +2262,7 @@
       "measurements": {},
       "collection": "tour-championship-2026",
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/3cI28q2YkaTPcke0pk9k40t",
+      "listingUrl": "https://buy.stripe.com/aFa7sKeH22nj1FA0pk9k418",
       "sku": "TA_TC26_05",
       "_ingested": "2026-08-21",
       "_source": "own listing photo, i.ebayimg.com",
@@ -2270,11 +2298,12 @@
       "_ebayUrl": "https://www.ebay.com/itm/407167039666",
       "_stripe": {
         "product": "prod_VEm6OGqARB5n8S",
-        "price": "price_1UEIXqC1bWq01lTKuRLdv3g0",
-        "link": "plink_1UEIXqC1bWq01lTKmFtuHPel",
+        "price": "price_1ULs7TC1bWq01lTK4TnUmCjZ",
+        "link": "plink_1ULutxC1bWq01lTKCFnbGUM7",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-11"
+        "minted": "2026-09-11",
+        "repriced": "2026-10-02"
       }
     },
     {
@@ -2404,7 +2433,7 @@
       "garment": "sweater",
       "size": "See listing",
       "condition": "See listing",
-      "price": 114.09,
+      "price": 114.99,
       "colorway": [
         "#6E3A4E",
         "#54293C",
@@ -2417,7 +2446,7 @@
       ],
       "measurements": {},
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/28E8wO56s5zv5VQ5JE9k40v",
+      "listingUrl": "https://buy.stripe.com/9B600i0Qc7HDesm5JE9k419",
       "_ingested": "2026-09-03",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -2455,11 +2484,12 @@
       "_ebayUrl": "https://www.ebay.com/itm/407190587802",
       "_stripe": {
         "product": "prod_VEm611OaJiUt8f",
-        "price": "price_1UEIXrC1bWq01lTKdLv2NRZO",
-        "link": "plink_1UEIXrC1bWq01lTKwVp7GUIW",
+        "price": "price_1ULs4JC1bWq01lTKNgnDPxrv",
+        "link": "plink_1ULutxC1bWq01lTKYy1cNmGy",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-11"
+        "minted": "2026-09-11",
+        "repriced": "2026-10-02"
       }
     },
     {
@@ -2484,7 +2514,7 @@
       ],
       "measurements": {},
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/4gMfZgdCY2nj2JE0pk9k40w",
+      "listingUrl": "https://buy.stripe.com/cNi00iaqM3rn2JE8VQ9k41a",
       "_ingested": "2026-09-03",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -2522,11 +2552,12 @@
       "_ebayUrl": "https://www.ebay.com/itm/407190588878",
       "_stripe": {
         "product": "prod_VEm6dmvgIEhjRt",
-        "price": "price_1UEIXrC1bWq01lTKUZY4fxhx",
-        "link": "plink_1UEIXsC1bWq01lTKkyrl6pH8",
+        "price": "price_1ULs21C1bWq01lTKkFNe7Sa0",
+        "link": "plink_1ULutyC1bWq01lTKfEfE6f82",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-11"
+        "minted": "2026-09-11",
+        "repriced": "2026-10-02"
       }
     },
     {

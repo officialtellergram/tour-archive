@@ -10,6 +10,7 @@
     "curate:enrich": "node scripts/curate-enrich.mjs",
     "mint": "node scripts/stripe-mint.mjs",
     "sold:stripe": "node scripts/stripe-sold.mjs",
+    "drift": "node scripts/stripe-drift.mjs",
     "build": "vite build",
     "build:pages": "vite build && node scripts/images.mjs && node scripts/snapshot.mjs && node scripts/prerender.mjs",
     "images": "node scripts/images.mjs",
