@@ -13,3 +13,5 @@ shots/
 __pycache__/
 # workflow worktrees live here
 .claude/
+# wrangler local state
+.wrangler/

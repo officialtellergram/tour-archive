@@ -1,0 +1,9 @@
+{
+  // Stripe → GitHub trigger for the Stripe sync. See src/index.js.
+  // Deploy: cd worker/stripe-hook && npx wrangler deploy
+  "name": "tour-archive-stripe-hook",
+  "main": "src/index.js",
+  "compatibility_date": "2026-09-15",
+  "workers_dev": true,
+  "observability": { "enabled": true }
+}
