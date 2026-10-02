@@ -18,7 +18,13 @@ name: Stripe price drift
 
 on:
   schedule:
-    - cron: '17 * * * *' # hourly, off the top of the hour
+    # Every ten minutes, off the round numbers. The job is ~15 s and commits
+    # only when something sold or drifted. Stripe itself closes a sold link
+    # the instant it is paid (one completed session per link), so this
+    # interval is only how long the site can still SHOW a sold piece as
+    # available; it can never sell twice. GitHub may run schedules a few
+    # minutes late under load.
+    - cron: '7-57/10 * * * *'
   workflow_dispatch:
 
 permissions:
