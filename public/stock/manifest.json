@@ -2501,7 +2501,7 @@
       "garment": "vest",
       "size": "See listing",
       "condition": "See listing",
-      "price": 114.99,
+      "price": 144.99,
       "colorway": [
         "#7C93B4",
         "#5C7396",
@@ -2514,7 +2514,7 @@
       ],
       "measurements": {},
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/cNi00iaqM3rn2JE8VQ9k41a",
+      "listingUrl": "https://buy.stripe.com/fZu00i42o1jffwq2xs9k41b",
       "_ingested": "2026-09-03",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -2552,8 +2552,8 @@
       "_ebayUrl": "https://www.ebay.com/itm/407190588878",
       "_stripe": {
         "product": "prod_VEm6dmvgIEhjRt",
-        "price": "price_1ULs21C1bWq01lTKkFNe7Sa0",
-        "link": "plink_1ULutyC1bWq01lTKfEfE6f82",
+        "price": "price_1UM985C1bWq01lTKIjx18Aul",
+        "link": "plink_1UM9qeC1bWq01lTKGIWUJRUJ",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
         "minted": "2026-09-11",
