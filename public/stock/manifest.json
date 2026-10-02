@@ -2900,16 +2900,16 @@
         "link": "plink_1ULkpdC1bWq01lTKfhIwX0ae",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-10-01"
+        "minted": "2026-10-01",
+        "soldSession": "cs_live_a1dLjd2dLYNqY5h4UTwfvXyp97XgO0TkKBobbzKuhrFUsbFV0pl7brWt5T"
       },
-      "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/14A7sK1Ug8LH2JEc829k40D",
       "photos": [
         "carousel/1990s-titleist-coach-jacket/01.jpg",
         "carousel/1990s-titleist-coach-jacket/02.jpg",
         "carousel/1990s-titleist-coach-jacket/03.jpg"
       ],
-      "_photosPulled": "2026-10-01"
+      "_photosPulled": "2026-10-01",
+      "sold": true
     },
     {
       "id": "stock-black-cotton-ralph-lauren-cardigan",

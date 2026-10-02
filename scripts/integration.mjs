@@ -378,7 +378,12 @@ check('sold and retired pieces keep their record but offer no checkout', () => {
   for (const e of past) {
     assert(!e.listingUrl, `${e.id} still carries a listingUrl — a sold piece must not link to a dead listing`);
     assert(!e.channel, `${e.id} still claims a channel`);
-    assert(e._ebayUrl, `${e.id} lost its _ebayUrl — the eBay era stays on the record`);
+    // Provenance stays on the record. A piece from the eBay era keeps its
+    // _ebayUrl; a piece listed straight into Stripe (drained) never had one
+    // and keeps its _source and, once sold, the paying session.
+    const drained = typeof e._source === 'string' && e._source.startsWith('stripe:');
+    assert(e._ebayUrl || drained, `${e.id} lost its provenance — neither an _ebayUrl nor a stripe: _source remains`);
+    if (drained && e.sold) assert(e._stripe?.soldSession, `${e.id} is sold with no Stripe session on record`);
     assert(e.file, `${e.id} lost its photograph`);
   }
 });

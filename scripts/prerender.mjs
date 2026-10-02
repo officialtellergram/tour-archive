@@ -348,6 +348,27 @@ async function main() {
           availability,
           itemCondition: 'https://schema.org/UsedCondition',
           url: canonical,
+          shippingDetails: {
+            '@type': 'OfferShippingDetails',
+            shippingRate: { '@type': 'MonetaryAmount', value: seo.COMMERCE.shipping.toFixed(2), currency: seo.COMMERCE.currency },
+            shippingDestination: { '@type': 'DefinedRegion', addressCountry: seo.COMMERCE.country },
+            deliveryTime: {
+              '@type': 'ShippingDeliveryTime',
+              handlingTime: { '@type': 'QuantitativeValue', minValue: seo.COMMERCE.handlingDays[0], maxValue: seo.COMMERCE.handlingDays[1], unitCode: 'DAY' },
+              ...(seo.COMMERCE.transitDays
+                ? { transitTime: { '@type': 'QuantitativeValue', minValue: seo.COMMERCE.transitDays[0], maxValue: seo.COMMERCE.transitDays[1], unitCode: 'DAY' } }
+                : {}),
+            },
+          },
+          hasMerchantReturnPolicy: {
+            '@type': 'MerchantReturnPolicy',
+            applicableCountry: seo.COMMERCE.country,
+            returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+            merchantReturnDays: seo.COMMERCE.returnDays,
+            returnMethod: 'https://schema.org/ReturnByMail',
+            returnFees: 'https://schema.org/ReturnFeesCustomerResponsibility',
+            itemDefectReturnFees: 'https://schema.org/FreeReturn',
+          },
         },
       });
       blocks.push(

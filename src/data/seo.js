@@ -24,6 +24,24 @@ export const SITE = {
   logo: 'brand/logo.png?v=2',
 };
 
+/**
+ * What the shop promises about delivery and returns, as schema.org wants it
+ * (Offer.shippingDetails and Offer.hasMerchantReturnPolicy; Search Console
+ * flags both when absent). These MIRROR the Terms of Sale page: flat $8 per
+ * piece, US addresses only, out within 3 business days, 14 days to return,
+ * return postage ours when the fault is ours and the buyer's otherwise.
+ * Change the terms and this together. No transit time is stated because the
+ * terms do not promise one; add `transitDays: [min, max]` when they do.
+ */
+export const COMMERCE = {
+  country: 'US',
+  currency: 'USD',
+  shipping: 8,
+  handlingDays: [0, 3],
+  transitDays: null,
+  returnDays: 14,
+};
+
 /** Static pages: the <title> stem (the router appends " — Tour Archive")
  *  and the description a search result shows. */
 export const PAGES = {

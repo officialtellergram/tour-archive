@@ -121,6 +121,12 @@ if (sold.length && !DRY) {
   for (const { e, session } of sold) {
     const target = manifest.items.find((x) => x.id === e.id);
     target.sold = true;
+    // A sold piece keeps its record and offers no checkout: the public link
+    // goes, the _stripe ledger (product, price, link id, session) stays.
+    // integration.mjs enforces this; the first real sale (2 Oct 2026) is
+    // what showed the sweep was not doing it.
+    delete target.channel;
+    delete target.listingUrl;
     target._stripe.soldSession = session.id;
   }
   writeFileSync(MANIFEST, JSON.stringify(manifest, null, 2) + '\n', 'utf8');

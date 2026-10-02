@@ -9,8 +9,12 @@ name: Stripe price drift
 # Lightweight on purpose: no npm install (the script is Node built-ins + fetch),
 # a no-op commit-wise when nothing drifted, and silent until the secret exists.
 #
+# The same run marks sold pieces (scripts/stripe-sold.mjs) before it repairs
+# drift, so a sale shows as sold on the site within the hour.
+#
 # Needs one repository secret, STRIPE_DRIFT_KEY: a RESTRICTED live key with
-# Products write, Prices read, Payment Links write, everything else None.
+# Products write, Prices read, Payment Links write, Checkout Sessions read,
+# everything else None.
 
 on:
   schedule:
@@ -49,6 +53,24 @@ jobs:
         with:
           node-version: 22
 
+      # A paid Checkout Session against a piece's link IS the sale. The sweep
+      # marks the piece sold, takes its checkout off the record and closes the
+      # link. Needs Checkout Sessions: Read on the key; without it this step
+      # reports the refusal and the drift repair below still runs.
+      - name: Mark sold pieces
+        if: steps.key.outputs.present == 'true'
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          node scripts/stripe-sold.mjs | tee sold.log
+          {
+            echo '### Stripe sold sweep'
+            echo '```'
+            sed 's/\x1b\[[0-9;]*m//g' sold.log | tail -20
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          rm -f sold.log
+
       - name: Repair drifted links
         if: steps.key.outputs.present == 'true'
         run: |
@@ -74,8 +96,8 @@ jobs:
           git config user.name "tour-archive-drift"
           git config user.email "actions@users.noreply.github.com"
           git add public/stock/manifest.json
-          git commit -m "Drift repair: checkout links re-minted on the prices set in Stripe" \
-                     -m "Automatic (stripe-drift.yml). A price was changed in the Stripe Dashboard; the links bound to the archived price were replaced and the site's prices updated to match."
+          git commit -m "Stripe sync: sold pieces marked, drifted links re-minted" \
+                     -m "Automatic (stripe-drift.yml). Either a piece sold (marked sold, checkout removed, link closed) or a price was changed in the Stripe Dashboard (the link bound to the archived price replaced, the site's price updated). The run summary says which."
           git pull --rebase origin main
           git push origin HEAD:main
           # A push made with the workflow token does not start other workflows;
