@@ -1,0 +1,83 @@
+name: Stripe price drift
+
+# A Stripe Price is immutable: repricing in the Dashboard makes a new price and
+# archives the old one, and every Payment Link stays bound to the old price, so
+# the buy button dies (1 Oct 2026: 31 of them). This job notices and repairs it:
+# a new link on the product's current price, the manifest updated, the site
+# redeployed through the normal gated workflow.
+#
+# Lightweight on purpose: no npm install (the script is Node built-ins + fetch),
+# a no-op commit-wise when nothing drifted, and silent until the secret exists.
+#
+# Needs one repository secret, STRIPE_DRIFT_KEY: a RESTRICTED live key with
+# Products write, Prices read, Payment Links write, everything else None.
+
+on:
+  schedule:
+    - cron: '17 * * * *' # hourly, off the top of the hour
+  workflow_dispatch:
+
+permissions:
+  contents: write # commit the repaired manifest
+  actions: write # start the deploy (a push by this token does not trigger it)
+
+concurrency:
+  group: stripe-drift
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    env:
+      STRIPE_SECRET_KEY: ${{ secrets.STRIPE_DRIFT_KEY }}
+    steps:
+      - name: Skip until the key is set
+        id: key
+        run: |
+          if [ -z "$STRIPE_SECRET_KEY" ]; then
+            echo "STRIPE_DRIFT_KEY is not set; nothing to do." >> "$GITHUB_STEP_SUMMARY"
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.key.outputs.present == 'true'
+
+      - uses: actions/setup-node@v4
+        if: steps.key.outputs.present == 'true'
+        with:
+          node-version: 22
+
+      - name: Repair drifted links
+        if: steps.key.outputs.present == 'true'
+        run: |
+          set -o pipefail
+          node scripts/stripe-drift.mjs --write --live | tee drift.log
+          {
+            echo '### Stripe drift'
+            echo '```'
+            sed 's/\x1b\[[0-9;]*m//g' drift.log | tail -40
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          rm -f drift.log
+
+      - name: Publish if anything changed
+        if: steps.key.outputs.present == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if git diff --quiet -- public/stock/manifest.json; then
+            echo "Manifest unchanged; nothing to publish."
+            exit 0
+          fi
+          git config user.name "tour-archive-drift"
+          git config user.email "actions@users.noreply.github.com"
+          git add public/stock/manifest.json
+          git commit -m "Drift repair: checkout links re-minted on the prices set in Stripe" \
+                     -m "Automatic (stripe-drift.yml). A price was changed in the Stripe Dashboard; the links bound to the archived price were replaced and the site's prices updated to match."
+          git pull --rebase origin main
+          git push origin HEAD:main
+          # A push made with the workflow token does not start other workflows;
+          # a manual dispatch does. The deploy runs its usual gates.
+          gh workflow run "Deploy to GitHub Pages" --ref main

@@ -24,7 +24,7 @@
  * It never touches a sold piece, never runs git, and refuses a test key
  * unless --test is passed.
  */
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -36,10 +36,18 @@ const WRITE = args.includes('--write');
 const LIVE = args.includes('--live');
 const TEST = args.includes('--test');
 
-const env = Object.fromEntries(
-  readFileSync(join(ROOT, '.env'), 'utf8').split(/\r?\n/).filter((l) => l.includes('=') && !l.startsWith('#'))
-    .map((l) => [l.slice(0, l.indexOf('=')).trim(), l.slice(l.indexOf('=') + 1).trim()])
-);
+// Locally the key lives in .env; in the scheduled job it arrives as an
+// environment variable (a repository secret) and there is no .env at all.
+const envPath = join(ROOT, '.env');
+const env = {
+  ...(existsSync(envPath)
+    ? Object.fromEntries(
+        readFileSync(envPath, 'utf8').split(/\r?\n/).filter((l) => l.includes('=') && !l.startsWith('#'))
+          .map((l) => [l.slice(0, l.indexOf('=')).trim(), l.slice(l.indexOf('=') + 1).trim()])
+      )
+    : {}),
+  ...(process.env.STRIPE_SECRET_KEY ? { STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY } : {}),
+};
 const KEY = TEST ? env.STRIPE_TEST_SECRET_KEY : env.STRIPE_SECRET_KEY;
 if (!KEY) throw new Error('no Stripe key in .env');
 const liveKey = /^(sk|rk)_live_/.test(KEY);
