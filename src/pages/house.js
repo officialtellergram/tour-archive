@@ -112,8 +112,9 @@ export function sell() {
             Send for appraisal
           </button>
           <p style="font-size:.85rem;color:var(--ink-faint);margin:0">
-            Submitting opens your own mail app with the details filled in —
-            attach your photographs there before sending.
+            Submitting opens Gmail with the details filled in —
+            attach your photographs there before sending. Not on Gmail?
+            <button type="submit" data-via="mail" style="background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;border-bottom:1px solid var(--rule-strong)">Use your own mail app</button>.
           </p>
         </form>
       </div>
@@ -125,8 +126,13 @@ export function mountSell(outlet) {
   outlet.querySelector('[data-sell-form]')?.addEventListener('submit', (e) => {
     e.preventDefault();
     const f = e.currentTarget;
-    // No submissions backend — appraisals travel by the visitor's own mail
-    // app, which also carries the photographs a static form can't accept.
+    // No submissions backend — appraisals travel by mail, which also carries
+    // the photographs a static form can't accept. The main button opens a
+    // Gmail compose window (most sellers are on Gmail, and a mailto: often
+    // opens a mail app nobody set up); the small link beside it keeps the
+    // plain mailto: for everyone else.
+    const to = 'tourarchive.help@gmail.com';
+    const subject = 'Sell to the Archive — appraisal';
     const body = [
       `Name: ${f.name.value.trim()}`,
       `Email: ${f.email.value.trim()}`,
@@ -136,10 +142,19 @@ export function mountSell(outlet) {
       '',
       '(Photographs attached.)',
     ].join('\r\n');
-    window.location.href = `mailto:tourarchive.help@gmail.com?subject=${encodeURIComponent(
-      'Sell to the Archive — appraisal'
-    )}&body=${encodeURIComponent(body)}`;
-    toast('Opening your mail app — attach your photographs and send');
+    if (e.submitter?.dataset.via === 'mail') {
+      window.location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      toast('Opening your mail app — attach your photographs and send');
+    } else {
+      const gmail = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      // No 'noopener' feature here: with it window.open always returns null
+      // and a blocked pop-up could not be told from an opened one. Cut the
+      // opener by hand instead; if the pop-up was blocked, use this tab.
+      const w = window.open(gmail, '_blank');
+      if (w) w.opener = null;
+      else window.location.href = gmail;
+      toast('Opening Gmail — attach your photographs and send');
+    }
     f.reset();
   });
 }
