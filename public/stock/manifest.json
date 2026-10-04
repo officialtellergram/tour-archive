@@ -2650,10 +2650,9 @@
         "link": "plink_1UI8LeC1bWq01lTKAH5slJS7",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-21"
+        "minted": "2026-09-21",
+        "soldSession": "cs_live_a1aRIwQZvRv6vaBCHjPGvT7r93qqsWMD8fhMmxhhkY4qGPKOZjBJRpoBd8"
       },
-      "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/cNi6oG1Ug9PLcke9ZU9k40y",
       "photos": [
         "carousel/tiger-woods-presidents-cup-polo/01.jpg",
         "carousel/tiger-woods-presidents-cup-polo/02.jpg",
@@ -2661,7 +2660,8 @@
         "carousel/tiger-woods-presidents-cup-polo/04.jpg",
         "carousel/tiger-woods-presidents-cup-polo/05.jpg"
       ],
-      "_photosPulled": "2026-09-21"
+      "_photosPulled": "2026-09-21",
+      "sold": true
     },
     {
       "id": "stock-vintage-presidents-cup-tee-shirt",
