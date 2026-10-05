@@ -2381,8 +2381,6 @@
         "Checkout completes with Stripe"
       ],
       "measurements": {},
-      "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/7sY9AS9mIbXT0Bw7RM9k40u",
       "_ingested": "2026-09-02",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -2421,8 +2419,10 @@
         "link": "plink_1UEIXqC1bWq01lTKJW5RwOUY",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-09-11"
-      }
+        "minted": "2026-09-11",
+        "soldSession": "cs_live_a1fpoS6hSCXhaCVoAm35sHg8pe8etydSw6pz3j88E3zFRZciZ3qLbXsHxH"
+      },
+      "sold": true
     },
     {
       "id": "stock-peter-millar-scotty-cameron-quarter-zip",
