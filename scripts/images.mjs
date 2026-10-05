@@ -31,7 +31,7 @@ const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const PUBLIC = join(ROOT, 'public');
 const DIST = join(ROOT, 'dist');
 const CHECK_ONLY = process.argv.includes('--check');
-const QUALITY = { stock: 78, hero: 72 };
+const QUALITY = { stock: 78, hero: 72, ebay: 82 };
 const CONCURRENCY = 4;
 const C = { red: '\x1b[31m', yellow: '\x1b[33m', green: '\x1b[32m', dim: '\x1b[2m', off: '\x1b[0m' };
 
@@ -41,15 +41,19 @@ const posix = (p) => p.split(sep).join('/');
 
 /* ---------------- sources ---------------- */
 
-function walk(dir) {
+function walk(dir, rx = /\.jpe?g$/i) {
   if (!existsSync(dir)) return [];
   return readdirSync(dir, { recursive: true, withFileTypes: true })
-    .filter((d) => d.isFile() && /\.jpe?g$/i.test(d.name))
+    .filter((d) => d.isFile() && rx.test(d.name))
     .map((d) => join(d.parentPath ?? d.path, d.name));
 }
 const sources = [
   ...walk(join(PUBLIC, 'stock')).map((f) => ({ file: f, kind: 'stock' })),
   ...walk(join(PUBLIC, 'hero')).map((f) => ({ file: f, kind: 'hero' })),
+  // The eBay-era carousels hold .webp frames; eBay's bulk upload fetches
+  // JPEG/PNG only, so each gets a JPEG twin at dist/ebay/<slug>/NN.jpg for
+  // scripts/ebay-csv.mjs to point at. Build output only, never committed.
+  ...walk(join(PUBLIC, 'stock', 'carousel'), /\.webp$/i).map((f) => ({ file: f, kind: 'ebay' })),
 ];
 
 /* ---------------- sharp ---------------- */
@@ -120,7 +124,9 @@ async function run() {
         for (let job = queue.shift(); job; job = queue.shift()) {
           const { file, kind } = job;
           const rel = relative(PUBLIC, file);
-          const out = join(DIST, rel).replace(/\.jpe?g$/i, '.webp');
+          const out = kind === 'ebay'
+            ? join(DIST, 'ebay', relative(join(PUBLIC, 'stock', 'carousel'), file)).replace(/\.webp$/i, '.jpg')
+            : join(DIST, rel).replace(/\.jpe?g$/i, '.webp');
           const src = statSync(file);
           jpgBytes += src.size;
           if (existsSync(out) && statSync(out).mtimeMs >= src.mtimeMs) {
@@ -130,7 +136,9 @@ async function run() {
           }
           try {
             mkdirSync(dirname(out), { recursive: true });
-            const info = await sharp(file).webp({ quality: QUALITY[kind], effort: 4 }).toFile(out);
+            const info = kind === 'ebay'
+              ? await sharp(file).jpeg({ quality: QUALITY.ebay }).toFile(out)
+              : await sharp(file).webp({ quality: QUALITY[kind], effort: 4 }).toFile(out);
             webpBytes += info.size;
             written += 1;
           } catch (err) {
