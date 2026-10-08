@@ -3005,6 +3005,353 @@
         "carousel/vintage-grand-slam-golf-polo/04.jpg"
       ],
       "_photosPulled": "2026-10-01"
+    },
+    {
+      "id": "stock-peter-millar-country-club-of-virginia-polo",
+      "file": "peter-millar-country-club-of-virginia-polo.jpg",
+      "name": "Peter Millar Country Club of Virginia Polo",
+      "brand": "Peter Millar",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "M",
+      "condition": "Pre-owned",
+      "price": 17,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "Crown Crafted CCV",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {},
+      "collection": "basic-stock",
+      "_ingested": "2026-10-08",
+      "_source": "stripe:prod_VOv93Jr4lfHcY7",
+      "description": [
+        "Crown Crafted CCV"
+      ],
+      "_stripe": {
+        "product": "prod_VOv93Jr4lfHcY7",
+        "price": "price_1UOKZDC1bWq01lTKoXyy8nHJ",
+        "link": "plink_1UOKpzC1bWq01lTKCq0JI4KA",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-10-08"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/7sY4gy8iEe610Bw9ZU9k41c",
+      "photos": [
+        "carousel/peter-millar-country-club-of-virginia-polo/01.jpg",
+        "carousel/peter-millar-country-club-of-virginia-polo/02.jpg",
+        "carousel/peter-millar-country-club-of-virginia-polo/03.jpg",
+        "carousel/peter-millar-country-club-of-virginia-polo/04.jpg"
+      ],
+      "_photosPulled": "2026-10-08"
+    },
+    {
+      "id": "stock-taylormade-richmond-cc-snapback",
+      "file": "taylormade-richmond-cc-snapback.jpg",
+      "name": "Taylormade Richmond CC Snapback",
+      "brand": "TaylorMade",
+      "year": "—",
+      "category": "Knitwear",
+      "garment": "sweater",
+      "size": "One size",
+      "condition": "Pre-owned",
+      "price": 24.99,
+      "colorway": [
+        "#E4CF8E",
+        "#C9B172",
+        "#7C6B3E"
+      ],
+      "colorName": "Gorse Yellow",
+      "story": "Cool faded yellow with the Richmond CC crest embroidered on the side. One size fits all.",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {},
+      "collection": "basic-stock",
+      "_ingested": "2026-10-08",
+      "_source": "stripe:prod_VOv7d9ivPJZYhK",
+      "description": [
+        "Cool faded yellow with the Richmond CC crest embroidered on the side. One size fits all."
+      ],
+      "_stripe": {
+        "product": "prod_VOv7d9ivPJZYhK",
+        "price": "price_1UOKZAC1bWq01lTKjBZaLUgL",
+        "link": "plink_1UOKq0C1bWq01lTKUgIq0fNV",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-10-08"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/9B64gy56s8LH3NIgoi9k41d",
+      "photos": [
+        "carousel/taylormade-richmond-cc-snapback/01.jpg",
+        "carousel/taylormade-richmond-cc-snapback/02.jpg",
+        "carousel/taylormade-richmond-cc-snapback/03.jpg"
+      ],
+      "_photosPulled": "2026-10-08"
+    },
+    {
+      "id": "stock-vintage-patterned-haggar-polo",
+      "file": "vintage-patterned-haggar-polo.jpg",
+      "name": "Vintage Patterned Haggar Polo",
+      "brand": "Haggar",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "S",
+      "condition": "Pre-owned",
+      "price": 24.99,
+      "colorway": [
+        "#8E2436",
+        "#6A1A28",
+        "#42101A"
+      ],
+      "colorName": "Cardinal",
+      "story": "Slight Sun Fade on this dark red Haggar pattern. Sneaky collar embroidery to complete the look. Tagged size Small. Measurements: 29\"",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "29 in",
+        "Chest": "20 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-10-08",
+      "_source": "stripe:prod_VOv3HYfKt8O1AX",
+      "description": [
+        "Slight Sun Fade on this dark red Haggar pattern. Sneaky collar embroidery to complete the look. Tagged size Small. Measurements: 29\"",
+        "Length 20\" Chest"
+      ],
+      "_stripe": {
+        "product": "prod_VOv3HYfKt8O1AX",
+        "price": "price_1UOKZ5C1bWq01lTKOo58pJvm",
+        "link": "plink_1UOKq0C1bWq01lTKUkwCYl08",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-10-08"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/00w5kC0Qc0fb4RM5JE9k41e",
+      "photos": [
+        "carousel/vintage-patterned-haggar-polo/01.jpg",
+        "carousel/vintage-patterned-haggar-polo/02.jpg",
+        "carousel/vintage-patterned-haggar-polo/03.jpg",
+        "carousel/vintage-patterned-haggar-polo/04.jpg",
+        "carousel/vintage-patterned-haggar-polo/05.jpg"
+      ],
+      "_photosPulled": "2026-10-08"
+    },
+    {
+      "id": "stock-vintage-multicolor-chaps-polo",
+      "file": "vintage-multicolor-chaps-polo.jpg",
+      "name": "Vintage Multicolor Chaps Polo",
+      "brand": "Chaps Ralph Lauren",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "L",
+      "condition": "Pre-owned",
+      "price": 44.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "Sweet Multicolor Gradient with some Sun Fade. Cotton Webbing. Measurements: 30\"",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "30 in",
+        "Chest": "23 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-10-08",
+      "_source": "stripe:prod_VOuvHsxQ0335zM",
+      "description": [
+        "Sweet Multicolor Gradient with some Sun Fade. Cotton Webbing. Measurements: 30\"",
+        "Length 23\" Chest"
+      ],
+      "_stripe": {
+        "product": "prod_VOuvHsxQ0335zM",
+        "price": "price_1UOKYxC1bWq01lTKpQPjLyjw",
+        "link": "plink_1UOKq1C1bWq01lTKiGGuatsk",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-10-08"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/cNi5kC6aw4vr83Y0pk9k41f",
+      "photos": [
+        "carousel/vintage-multicolor-chaps-polo/01.jpg",
+        "carousel/vintage-multicolor-chaps-polo/02.jpg",
+        "carousel/vintage-multicolor-chaps-polo/03.jpg",
+        "carousel/vintage-multicolor-chaps-polo/04.jpg"
+      ],
+      "_photosPulled": "2026-10-08"
+    },
+    {
+      "id": "stock-vintage-country-club-of-virginia-sweater",
+      "file": "vintage-country-club-of-virginia-sweater.jpg",
+      "name": "Vintage Country Club of Virginia Sweater",
+      "brand": "Oxford Golf",
+      "year": "—",
+      "category": "Knitwear",
+      "garment": "sweater",
+      "size": "See photos",
+      "condition": "Pre-owned",
+      "price": 29.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "Heavy Cotton V-Neck Sweater with the Iconic CCV on the left chest. Measurements: 29\" Length",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "29 in",
+        "Chest": "28 in",
+        "Sleeve": "25 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-10-08",
+      "_source": "stripe:prod_VP8qLgAurexUIk",
+      "description": [
+        "Heavy Cotton V-Neck Sweater with the Iconic CCV on the left chest. Measurements: 29\" Length",
+        "28\" Chest",
+        "25\" Sleeve"
+      ],
+      "_stripe": {
+        "product": "prod_VP8qLgAurexUIk",
+        "price": "price_1UOKYsC1bWq01lTKOHxQZcE0",
+        "link": "plink_1UOKq1C1bWq01lTKrbC7RXYt",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-10-08"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/7sY3cu2Yk4vresmgoi9k41g",
+      "photos": [
+        "carousel/vintage-country-club-of-virginia-sweater/01.jpg",
+        "carousel/vintage-country-club-of-virginia-sweater/02.jpg",
+        "carousel/vintage-country-club-of-virginia-sweater/03.jpg"
+      ],
+      "_photosPulled": "2026-10-08"
+    },
+    {
+      "id": "stock-peter-millar-x-scotty-cameron-polo",
+      "file": "peter-millar-x-scotty-cameron-polo.jpg",
+      "name": "Peter Millar x Scotty Cameron Polo",
+      "brand": "Peter Millar",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "XL",
+      "condition": "Pre-owned",
+      "price": 99.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "Play like a sponsored tour player with this overbranded Peter Millar piece. Scotty Cameron embroidery on collar, chest, and sleeves. Measurements: 31\" Length 25\" Chest",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "31 in",
+        "Chest": "25 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-10-08",
+      "_source": "stripe:prod_VOuelV8YfUjEC2",
+      "description": [
+        "Play like a sponsored tour player with this overbranded Peter Millar piece. Scotty Cameron embroidery on collar, chest, and sleeves. Measurements: 31\" Length 25\" Chest"
+      ],
+      "_stripe": {
+        "product": "prod_VOuelV8YfUjEC2",
+        "price": "price_1UOKYiC1bWq01lTK5nv1vWeo",
+        "link": "plink_1UOKq1C1bWq01lTKVm50s3HG",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-10-08"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/9B614mbuQaTP5VQ8VQ9k41h",
+      "photos": [
+        "carousel/peter-millar-x-scotty-cameron-polo/01.jpg",
+        "carousel/peter-millar-x-scotty-cameron-polo/02.jpg",
+        "carousel/peter-millar-x-scotty-cameron-polo/03.jpg",
+        "carousel/peter-millar-x-scotty-cameron-polo/04.jpg",
+        "carousel/peter-millar-x-scotty-cameron-polo/05.jpg",
+        "carousel/peter-millar-x-scotty-cameron-polo/06.jpg",
+        "carousel/peter-millar-x-scotty-cameron-polo/07.jpg"
+      ],
+      "_photosPulled": "2026-10-08"
+    },
+    {
+      "id": "stock-vintage-tpc-windbreaker",
+      "file": "vintage-tpc-windbreaker.jpg",
+      "name": "Vintage TPC Windbreaker",
+      "brand": "Unattributed",
+      "year": "—",
+      "category": "Outerwear",
+      "garment": "windshirt",
+      "size": "See photos",
+      "condition": "Pre-owned",
+      "price": 49.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "Lightweight but sturdy windbreaker with a retractable hood and mesh lining. TPC branding embroidered on left chest. Measurements: 27\" Pit to Pit",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Pit To Pit": "27 in",
+        "Sleeve Length": "30 in",
+        "Length": "31 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-10-08",
+      "_source": "stripe:prod_VOuZOiE7bMl3x8",
+      "description": [
+        "Lightweight but sturdy windbreaker with a retractable hood and mesh lining. TPC branding embroidered on left chest. Measurements: 27\" Pit to Pit",
+        "30\" Sleeve Length",
+        "31\" Length"
+      ],
+      "_stripe": {
+        "product": "prod_VOuZOiE7bMl3x8",
+        "price": "price_1UOKYdC1bWq01lTKDZ0osKnf",
+        "link": "plink_1UOKq2C1bWq01lTKlClHCsQP",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-10-08"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/9B64gy1Ug5zvac67RM9k41i",
+      "photos": [
+        "carousel/vintage-tpc-windbreaker/01.jpg",
+        "carousel/vintage-tpc-windbreaker/02.jpg",
+        "carousel/vintage-tpc-windbreaker/03.jpg",
+        "carousel/vintage-tpc-windbreaker/04.jpg"
+      ],
+      "_photosPulled": "2026-10-08"
     }
   ]
 }

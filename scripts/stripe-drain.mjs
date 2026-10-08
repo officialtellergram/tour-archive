@@ -117,7 +117,9 @@ const BRANDS = ['Nike', 'Peter Millar', 'Ralph Lauren', 'FootJoy', 'Titleist', '
   'Under Armour', 'Antigua', 'Gear for Sports', 'Champion', 'Lacoste', 'Munsingwear', 'Pringle', 'Lyle & Scott'];
 const brandOf = (hay) => BRANDS.find((b) => new RegExp(`\\b${b.replace(/[&]/g, '\\&')}\\b`, 'i').test(hay)) || 'Unattributed';
 
-const SIZE_RX = /\bsize\s*:?\s*(XS|S|M|L|XL|XXL|2XL|3XL)\b/i;
+const SIZE_RX = /\b(?:tagged\s+)?size\s*:?\s*(XS|S|M|L|XL|XXL|2XL|3XL|small|medium|large|x-large|xx-large)\b/i;
+const SIZE_WORDS = { small: 'S', medium: 'M', large: 'L', 'x-large': 'XL', 'xx-large': 'XXL' };
+const ONE_SIZE_RX = /\bone\s+size\b/i;
 const MEAS_RX = /^\s*measurements?\s*:?\s*(.+)$/i;
 
 /**
@@ -155,8 +157,16 @@ function segments(text) {
   const out = [];
   for (const seg of raw) {
     const prev = out[out.length - 1];
-    if (prev && /^measurements?\s*:?/i.test(prev) && /^[\d.]+\s*["”″]?\s*[A-Za-z]/.test(seg)) {
-      out[out.length - 1] = `${prev} - ${seg}`;
+    // A continuation is anything carrying an inch-marked number: Henry's
+    // shapes so far are `26" Length - 24" Pit to Pit`, `30" Length 23" Chest`
+    // and (8 Oct 2026) `29" / Length 20" Chest`, where the piece after the
+    // slash starts with the label.
+    if (prev && /^measurements?\s*:?/i.test(prev) && /[\d.]+\s*["”″]/.test(seg)) {
+      // `29" / Length 20" Chest`: the previous piece ended on a bare number
+      // and this one opens with its label, so join with a space, not a dash,
+      // and the pair-walker reads 29" Length, 20" Chest.
+      const bareNumber = /[\d.]+\s*["”″]?\s*$/.test(prev) && /^[A-Za-z]/.test(seg);
+      out[out.length - 1] = bareNumber ? `${prev} ${seg}` : `${prev} - ${seg}`;
       continue;
     }
     out.push(seg);
@@ -171,11 +181,11 @@ function scaffold(p, file, photos) {
   let measurements = {};
   const paras = [];
   for (const l of lines) {
-    const s = l.match(SIZE_RX);
+    const s = l.match(SIZE_RX) || (ONE_SIZE_RX.test(l) ? [l, 'One size'] : null);
     const m = l.match(MEAS_RX);
     if (m) { measurements = { ...measurements, ...parseMeasurements(m[1]) }; continue; }
     if (s) {
-      size = s[1].toUpperCase();
+      size = SIZE_WORDS[s[1].toLowerCase()] || (s[1] === 'One size' ? s[1] : s[1].toUpperCase());
       const rest = l.replace(SIZE_RX, '').replace(/^\s*[,;:-]\s*/, '').trim();
       if (rest.length >= 4) paras.push(rest);   // "100% cotton" survives, "Size XL" alone does not
       continue;
