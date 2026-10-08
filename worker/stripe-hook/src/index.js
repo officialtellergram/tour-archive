@@ -58,8 +58,54 @@ async function verified(rawBody, header, secret) {
   return sigs.some((s) => sameHex(s, expected));
 }
 
+/**
+ * eBay "marketplace account deletion" notifications. eBay requires every
+ * production keyset to subscribe to these or it disables the keyset. Two
+ * calls arrive here:
+ *   GET  ?challenge_code=…   eBay checking the endpoint is ours: answer with
+ *                            SHA-256(challengeCode + verificationToken + endpointURL)
+ *                            as hex, in JSON. The URL in the hash is the one
+ *                            registered in the portal, character for character.
+ *   POST { notification… }   a user asked eBay to delete their account. We
+ *                            hold no eBay user data (orders are read live from
+ *                            the API, nothing is stored), so there is nothing
+ *                            to erase; eBay only needs a 200 within a few
+ *                            seconds. The event is logged.
+ * Secret: EBAY_VERIFICATION_TOKEN (32–80 chars, the same value entered in
+ * the portal next to this URL).
+ */
+const EBAY_DELETION_PATH = '/ebay/account-deletion';
+
+async function ebayAccountDeletion(request, env) {
+  if (!env.EBAY_VERIFICATION_TOKEN) return text('EBAY_VERIFICATION_TOKEN is not set', 500);
+  const url = new URL(request.url);
+  if (request.method === 'GET') {
+    const code = url.searchParams.get('challenge_code');
+    if (!code) return text('missing challenge_code', 400);
+    const endpoint = `${url.origin}${url.pathname}`;
+    const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(code + env.EBAY_VERIFICATION_TOKEN + endpoint));
+    return new Response(JSON.stringify({ challengeResponse: hex(digest) }), { status: 200, headers: { 'content-type': 'application/json' } });
+  }
+  if (request.method === 'POST') {
+    let body = null;
+    try {
+      body = await request.json();
+    } catch {
+      return text('bad json', 400);
+    }
+    const topic = body?.metadata?.topic || 'unknown';
+    const id = body?.notification?.notificationId || '-';
+    console.log(`ebay notification ${topic} ${id}: acknowledged, nothing stored for eBay users`);
+    return text('ok');
+  }
+  return text('method not allowed', 405);
+}
+
 export default {
   async fetch(request, env) {
+    const { pathname } = new URL(request.url);
+    if (pathname === EBAY_DELETION_PATH) return ebayAccountDeletion(request, env);
+    if (pathname !== '/') return text('not found', 404);
     if (request.method === 'GET') return text('tour archive stripe hook: ok');
     if (request.method !== 'POST') return text('method not allowed', 405);
 
