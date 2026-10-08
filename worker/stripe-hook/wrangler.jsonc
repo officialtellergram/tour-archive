@@ -1,9 +1,13 @@
 {
-  // Stripe → GitHub trigger for the Stripe sync. See src/index.js.
-  // Deploy: cd worker/stripe-hook && npx wrangler deploy
+  // Stripe → GitHub trigger for the Stripe sync, plus the eBay endpoints
+  // (account-deletion notices, the one-time seller sign-in, the token broker).
+  // See src/index.js. Deploy: cd worker/stripe-hook && npx wrangler deploy
   "name": "tour-archive-stripe-hook",
   "main": "src/index.js",
   "compatibility_date": "2026-09-15",
   "workers_dev": true,
-  "observability": { "enabled": true }
+  "observability": { "enabled": true },
+  // eBay's long-lived refresh token and the cached access token live here,
+  // never in the repo and never on GitHub.
+  "kv_namespaces": [{ "binding": "EBAY", "id": "502d798722dd4be2b9fa437d06fd1a27" }]
 }

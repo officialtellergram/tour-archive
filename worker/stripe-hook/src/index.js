@@ -101,10 +101,113 @@ async function ebayAccountDeletion(request, env) {
   return text('method not allowed', 405);
 }
 
+/**
+ * eBay seller sign-in and token broker.
+ *
+ * The API acts as the Tour Archive eBay account, which needs the account
+ * holder's one-time consent. /ebay/oauth/start sends them to eBay; eBay
+ * sends them back to /ebay/oauth/callback (the "auth accepted URL" of the
+ * RuName) with a code; the code is swapped for a refresh token (18 months)
+ * that is kept in KV and never leaves Cloudflare. The sync job then asks
+ * /ebay/token, with the shared EBAY_SYNC_SECRET, for a short-lived access
+ * token (2 h, cached in KV). Secrets: EBAY_CLIENT_ID (App ID),
+ * EBAY_CLIENT_SECRET (Cert ID), EBAY_RUNAME (the redirect URL name),
+ * EBAY_SYNC_SECRET.
+ */
+const EBAY_AUTH = 'https://auth.ebay.com/oauth2/authorize';
+const EBAY_TOKEN = 'https://api.ebay.com/identity/v1/oauth2/token';
+const EBAY_SCOPES = [
+  'https://api.ebay.com/oauth/api_scope/sell.inventory',
+  'https://api.ebay.com/oauth/api_scope/sell.fulfillment',
+  'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+];
+const KV_REFRESH = 'ebay:refresh';
+const KV_ACCESS = 'ebay:access';
+
+const page = (title, body, status = 200) => new Response(
+  `<!doctype html><meta charset="utf-8"><title>${title}</title><body style="font:16px/1.5 Georgia,serif;max-width:40rem;margin:4rem auto;padding:0 1rem;color:#1d1b16;background:#f4f0e6"><h1 style="font-weight:400">${title}</h1>${body}</body>`,
+  { status, headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' } }
+);
+
+/** HMAC of a timestamp with the sync secret: the OAuth `state`, no storage needed. */
+async function stateFor(ts, env) {
+  const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(env.EBAY_SYNC_SECRET), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  return `${ts}.${hex(await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(`ebay-oauth:${ts}`))).slice(0, 32)}`;
+}
+async function stateOk(state, env) {
+  const ts = Number(String(state || '').split('.')[0]);
+  if (!ts || Math.abs(Date.now() - ts) > 15 * 60 * 1000) return false;
+  return sameHex(await stateFor(ts, env), String(state));
+}
+
+async function ebayTokenCall(env, params) {
+  const basic = btoa(`${env.EBAY_CLIENT_ID}:${env.EBAY_CLIENT_SECRET}`);
+  const res = await fetch(EBAY_TOKEN, {
+    method: 'POST',
+    headers: { authorization: `Basic ${basic}`, 'content-type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams(params).toString(),
+  });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(`${res.status} ${json.error || ''} ${json.error_description || ''}`.trim());
+  return json;
+}
+
+async function ebayOAuthStart(request, env) {
+  const missing = ['EBAY_CLIENT_ID', 'EBAY_CLIENT_SECRET', 'EBAY_RUNAME', 'EBAY_SYNC_SECRET'].filter((k) => !env[k]);
+  if (missing.length) return page('Not ready', `<p>Missing Worker secrets: ${missing.join(', ')}.</p>`, 500);
+  const u = new URL(EBAY_AUTH);
+  u.searchParams.set('client_id', env.EBAY_CLIENT_ID);
+  u.searchParams.set('redirect_uri', env.EBAY_RUNAME);
+  u.searchParams.set('response_type', 'code');
+  u.searchParams.set('scope', EBAY_SCOPES.join(' '));
+  u.searchParams.set('state', await stateFor(Date.now(), env));
+  return Response.redirect(u.toString(), 302);
+}
+
+async function ebayOAuthCallback(request, env) {
+  const url = new URL(request.url);
+  if (!(await stateOk(url.searchParams.get('state'), env))) return page('Sign-in link expired', '<p>Start again from the sign-in link; it is valid for fifteen minutes.</p>', 400);
+  const code = url.searchParams.get('code');
+  if (!code) return page('No code', '<p>eBay sent no authorisation code. If you declined, nothing was changed.</p>', 400);
+  try {
+    const t = await ebayTokenCall(env, { grant_type: 'authorization_code', code, redirect_uri: env.EBAY_RUNAME });
+    if (!t.refresh_token) throw new Error('no refresh token in the reply');
+    await env.EBAY.put(KV_REFRESH, JSON.stringify({ token: t.refresh_token, expiresAt: Date.now() + (t.refresh_token_expires_in || 0) * 1000, since: new Date().toISOString() }));
+    await env.EBAY.delete(KV_ACCESS);
+    const months = Math.round((t.refresh_token_expires_in || 0) / 2592000);
+    return page('eBay connected', `<p>Tour Archive can now read orders and manage listings on this eBay account.</p><p>This consent lasts about ${months} months; the site will say when it needs renewing.</p><p>You can close this tab.</p>`);
+  } catch (err) {
+    console.log(`ebay oauth exchange failed: ${err.message}`);
+    return page('Sign-in failed', `<p>eBay refused the code exchange: ${String(err.message).replace(/</g, '&lt;')}</p>`, 502);
+  }
+}
+
+/** GET /ebay/token — Authorization: Bearer <EBAY_SYNC_SECRET> → { access_token, expires_at }. */
+async function ebayToken(request, env) {
+  const auth = request.headers.get('authorization') || '';
+  if (!env.EBAY_SYNC_SECRET || auth !== `Bearer ${env.EBAY_SYNC_SECRET}`) return text('unauthorised', 401);
+  const cached = await env.EBAY.get(KV_ACCESS, 'json');
+  if (cached && cached.expires_at - Date.now() > 5 * 60 * 1000) return Response.json(cached);
+  const stored = await env.EBAY.get(KV_REFRESH, 'json');
+  if (!stored) return text('eBay is not connected: open /ebay/oauth/start as the account holder', 409);
+  try {
+    const t = await ebayTokenCall(env, { grant_type: 'refresh_token', refresh_token: stored.token, scope: EBAY_SCOPES.join(' ') });
+    const out = { access_token: t.access_token, expires_at: Date.now() + (t.expires_in || 7200) * 1000, refresh_expires_at: stored.expiresAt };
+    await env.EBAY.put(KV_ACCESS, JSON.stringify(out), { expirationTtl: t.expires_in || 7200 });
+    return Response.json(out);
+  } catch (err) {
+    console.log(`ebay refresh failed: ${err.message}`);
+    return text(`refresh failed: ${err.message}`, 502);
+  }
+}
+
 export default {
   async fetch(request, env) {
     const { pathname } = new URL(request.url);
     if (pathname === EBAY_DELETION_PATH) return ebayAccountDeletion(request, env);
+    if (pathname === '/ebay/oauth/start') return ebayOAuthStart(request, env);
+    if (pathname === '/ebay/oauth/callback') return ebayOAuthCallback(request, env);
+    if (pathname === '/ebay/token') return ebayToken(request, env);
     if (pathname !== '/') return text('not found', 404);
     if (request.method === 'GET') return text('tour archive stripe hook: ok');
     if (request.method !== 'POST') return text('method not allowed', 405);
