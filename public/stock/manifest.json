@@ -61,7 +61,7 @@
         "Vintage": "Yes"
       },
       "_specsPulled": "2026-08-12",
-      "_ebayUrl": "https://www.ebay.com/itm/407115489714",
+      "_ebayUrl": "https://www.ebay.com/itm/377555830559",
       "_stripe": {
         "product": "prod_VEm5b1ps14FHaz",
         "price": "price_1ULsvQC1bWq01lTKFeW1L6Yc",
@@ -70,6 +70,12 @@
         "mode": "live",
         "minted": "2026-09-11",
         "repriced": "2026-10-02"
+      },
+      "_ebay": {
+        "itemId": "377555830559",
+        "sku": "TA_GS_04",
+        "price": 54.99,
+        "listedAt": "2026-10-09"
       }
     },
     {
@@ -192,7 +198,7 @@
         "Material": "Cotton"
       },
       "_specsPulled": "2026-08-12",
-      "_ebayUrl": "https://www.ebay.com/itm/407115514561",
+      "_ebayUrl": "https://www.ebay.com/itm/377555830575",
       "_stripe": {
         "product": "prod_VEm5w9lXUrVi1D",
         "price": "price_1ULsuMC1bWq01lTKYgiDPLZP",
@@ -201,6 +207,12 @@
         "mode": "live",
         "minted": "2026-09-11",
         "repriced": "2026-10-02"
+      },
+      "_ebay": {
+        "itemId": "377555830575",
+        "sku": "TA_GS_05",
+        "price": 82.49,
+        "listedAt": "2026-10-09"
       }
     },
     {
@@ -259,7 +271,7 @@
         "Shirt Length": "28 in"
       },
       "_specsPulled": "2026-08-12",
-      "_ebayUrl": "https://www.ebay.com/itm/407115434329",
+      "_ebayUrl": "https://www.ebay.com/itm/377555830588",
       "_stripe": {
         "product": "prod_VEm5ITuVaIqiBt",
         "price": "price_1ULstZC1bWq01lTKTk5LEFnO",
@@ -268,6 +280,12 @@
         "mode": "live",
         "minted": "2026-09-11",
         "repriced": "2026-10-02"
+      },
+      "_ebay": {
+        "itemId": "377555830588",
+        "sku": "TA_GS_02",
+        "price": 27.49,
+        "listedAt": "2026-10-09"
       }
     },
     {
@@ -327,7 +345,7 @@
         "Performance/Activity": "Golf"
       },
       "_specsPulled": "2026-08-12",
-      "_ebayUrl": "https://www.ebay.com/itm/407131442352",
+      "_ebayUrl": "https://www.ebay.com/itm/377555830593",
       "_stripe": {
         "product": "prod_VEm5udCe0F3yII",
         "price": "price_1ULssXC1bWq01lTKsTFp5MfH",
@@ -336,6 +354,12 @@
         "mode": "live",
         "minted": "2026-09-11",
         "repriced": "2026-10-02"
+      },
+      "_ebay": {
+        "itemId": "377555830593",
+        "sku": "TA_GS_10",
+        "price": 49.49,
+        "listedAt": "2026-10-09"
       }
     },
     {
@@ -387,7 +411,7 @@
         "Team": "Kentucky Wildcats"
       },
       "_specsPulled": "2026-08-12",
-      "_ebayUrl": "https://www.ebay.com/itm/407115420034",
+      "_ebayUrl": "https://www.ebay.com/itm/377555830640",
       "_stripe": {
         "product": "prod_VEm5O9zeaTV3VF",
         "price": "price_1ULsreC1bWq01lTKz30guxot",
@@ -396,6 +420,12 @@
         "mode": "live",
         "minted": "2026-09-11",
         "repriced": "2026-10-02"
+      },
+      "_ebay": {
+        "itemId": "377555830640",
+        "sku": "TA_GS_01",
+        "price": 27.49,
+        "listedAt": "2026-10-09"
       }
     },
     {
@@ -452,7 +482,7 @@
         "Shirt Length": "27 in"
       },
       "_specsPulled": "2026-08-12",
-      "_ebayUrl": "https://www.ebay.com/itm/407115464142",
+      "_ebayUrl": "https://www.ebay.com/itm/377555830687",
       "_stripe": {
         "product": "prod_VEm5FKvlg8pMTF",
         "price": "price_1ULsqjC1bWq01lTKVtMz2I2E",
@@ -461,6 +491,12 @@
         "mode": "live",
         "minted": "2026-09-11",
         "repriced": "2026-10-02"
+      },
+      "_ebay": {
+        "itemId": "377555830687",
+        "sku": "TA_GS_03",
+        "price": 21.99,
+        "listedAt": "2026-10-09"
       }
     },
     {
@@ -573,7 +609,7 @@
         "Shirt Length": "29 in"
       },
       "_specsPulled": "2026-08-12",
-      "_ebayUrl": "https://www.ebay.com/itm/407131400410",
+      "_ebayUrl": "https://www.ebay.com/itm/377555830792",
       "_stripe": {
         "product": "prod_VEm5XzffQKwFc1",
         "price": "price_1ULspjC1bWq01lTKue1445P6",
@@ -582,6 +618,12 @@
         "mode": "live",
         "minted": "2026-09-11",
         "repriced": "2026-10-02"
+      },
+      "_ebay": {
+        "itemId": "377555830792",
+        "sku": "TS_GA_08",
+        "price": 49.49,
+        "listedAt": "2026-10-09"
       }
     },
     {
@@ -639,7 +681,7 @@
         "Performance/Activity": "Golf"
       },
       "_specsPulled": "2026-08-12",
-      "_ebayUrl": "https://www.ebay.com/itm/407131336432",
+      "_ebayUrl": "https://www.ebay.com/itm/377555830860",
       "_stripe": {
         "product": "prod_VEm5CTgNEkaQTb",
         "price": "price_1ULsorC1bWq01lTKhaPP0KH3",
@@ -648,6 +690,12 @@
         "mode": "live",
         "minted": "2026-09-11",
         "repriced": "2026-10-02"
+      },
+      "_ebay": {
+        "itemId": "377555830860",
+        "sku": "TA_GS_06",
+        "price": 21.99,
+        "listedAt": "2026-10-09"
       }
     },
     {
@@ -704,7 +752,7 @@
         "Vintage": "Yes"
       },
       "_specsPulled": "2026-08-12",
-      "_ebayUrl": "https://www.ebay.com/itm/407131472633",
+      "_ebayUrl": "https://www.ebay.com/itm/377555830934",
       "_stripe": {
         "product": "prod_VEm5dfYMiM9CDY",
         "price": "price_1ULsn4C1bWq01lTKnxWRbNWw",
@@ -713,6 +761,12 @@
         "mode": "live",
         "minted": "2026-09-11",
         "repriced": "2026-10-02"
+      },
+      "_ebay": {
+        "itemId": "377555830934",
+        "sku": "TA_GS_12",
+        "price": 32.99,
+        "listedAt": "2026-10-09"
       }
     },
     {
@@ -769,7 +823,7 @@
         "Style": "Quarter zip"
       },
       "_specsPulled": "2026-08-12",
-      "_ebayUrl": "https://www.ebay.com/itm/407131493486",
+      "_ebayUrl": "https://www.ebay.com/itm/377555831011",
       "_stripe": {
         "product": "prod_VEm5d4MHIzWBtC",
         "price": "price_1ULslBC1bWq01lTKUDNjMFhB",
@@ -778,6 +832,12 @@
         "mode": "live",
         "minted": "2026-09-11",
         "repriced": "2026-10-02"
+      },
+      "_ebay": {
+        "itemId": "377555831011",
+        "sku": "TA_GS_13",
+        "price": 126.49,
+        "listedAt": "2026-10-09"
       }
     },
     {
@@ -832,7 +892,7 @@
       },
       "_specsPulled": "2026-08-18",
       "file": "tasmanian-devil-golf-polo.jpg",
-      "_ebayUrl": "https://www.ebay.com/itm/407152116404",
+      "_ebayUrl": "https://www.ebay.com/itm/377555831089",
       "_stripe": {
         "product": "prod_VEm5PAiZWqjPsJ",
         "price": "price_1ULsk6C1bWq01lTKqSVlNpnl",
@@ -841,6 +901,12 @@
         "mode": "live",
         "minted": "2026-09-11",
         "repriced": "2026-10-02"
+      },
+      "_ebay": {
+        "itemId": "377555831089",
+        "sku": "stock-tasmanian-devil-golf-polo",
+        "price": 21.99,
+        "listedAt": "2026-10-09"
       }
     },
     {
@@ -894,7 +960,7 @@
       },
       "_specsPulled": "2026-08-18",
       "file": "wild-dunes-multicolor-polo.jpg",
-      "_ebayUrl": "https://www.ebay.com/itm/407152092797",
+      "_ebayUrl": "https://www.ebay.com/itm/377555831151",
       "_stripe": {
         "product": "prod_VEm5mx1fHLz3QU",
         "price": "price_1ULsj6C1bWq01lTK432Gda8c",
@@ -903,6 +969,12 @@
         "mode": "live",
         "minted": "2026-09-11",
         "repriced": "2026-10-02"
+      },
+      "_ebay": {
+        "itemId": "377555831151",
+        "sku": "stock-wild-dunes-multicolor-polo",
+        "price": 27.49,
+        "listedAt": "2026-10-09"
       }
     },
     {
