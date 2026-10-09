@@ -153,12 +153,14 @@ jobs:
           rm -f notify.log
 
       - name: Probe the Stripe key's permissions
+        continue-on-error: true # a probe or a test must not page the team
         if: ${{ inputs.probe_stripe }}
         env:
           EBAY_SYNC_SECRET: ${{ secrets.EBAY_SYNC_SECRET }}
         run: node scripts/ebay-to-stripe.mjs --probe
 
       - name: Send a test sale notice
+        continue-on-error: true # a probe or a test must not page the team
         if: ${{ inputs.test_mail }}
         env:
           SALE_MAIL_USER: ${{ secrets.SALE_MAIL_USER }}
