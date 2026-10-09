@@ -2129,7 +2129,7 @@
       },
       "_specsPulled": "2026-08-24",
       "file": "peter-millar-east-lake-quarter-zip.jpg",
-      "_ebayUrl": "https://www.ebay.com/itm/407167043098",
+      "_ebayUrl": "https://www.ebay.com/itm/377555835285",
       "_stripe": {
         "product": "prod_VEm5esDKyGoO09",
         "price": "price_1ULsItC1bWq01lTKvhyPVw1r",
@@ -2138,6 +2138,12 @@
         "mode": "live",
         "minted": "2026-09-11",
         "repriced": "2026-10-02"
+      },
+      "_ebay": {
+        "itemId": "377555835285",
+        "sku": "TA_TC26_02",
+        "price": 82.49,
+        "listedAt": "2026-10-09"
       }
     },
     {
@@ -2252,7 +2258,7 @@
       },
       "_specsPulled": "2026-08-24",
       "file": "1988-tc-pebble-beach-snapback.jpg",
-      "_ebayUrl": "https://www.ebay.com/itm/407167033141",
+      "_ebayUrl": "https://www.ebay.com/itm/377555835328",
       "_stripe": {
         "product": "prod_VEm6gzrSxYCZ7x",
         "price": "price_1ULsEOC1bWq01lTKQSLHZ7Iq",
@@ -2261,6 +2267,12 @@
         "mode": "live",
         "minted": "2026-09-11",
         "repriced": "2026-10-02"
+      },
+      "_ebay": {
+        "itemId": "377555835328",
+        "sku": "TA_TC26_09",
+        "price": 38.49,
+        "listedAt": "2026-10-09"
       }
     },
     {
@@ -2312,7 +2324,7 @@
       },
       "_specsPulled": "2026-08-24",
       "file": "2002-tc-magazine-fan-guide.jpg",
-      "_ebayUrl": "https://www.ebay.com/itm/407167037794",
+      "_ebayUrl": "https://www.ebay.com/itm/377555835360",
       "_stripe": {
         "product": "prod_VEm6ssbDrBgUN6",
         "price": "price_1ULsBdC1bWq01lTKmHsLKMOn",
@@ -2321,6 +2333,12 @@
         "mode": "live",
         "minted": "2026-09-11",
         "repriced": "2026-10-02"
+      },
+      "_ebay": {
+        "itemId": "377555835360",
+        "sku": "TA_TC26_07",
+        "price": 27.49,
+        "listedAt": "2026-10-09"
       }
     },
     {
@@ -2374,7 +2392,7 @@
       },
       "_specsPulled": "2026-08-24",
       "file": "tc-east-lake-bag-towel.jpg",
-      "_ebayUrl": "https://www.ebay.com/itm/407167036923",
+      "_ebayUrl": "https://www.ebay.com/itm/377555835381",
       "_stripe": {
         "product": "prod_VEm6sRAXrbJjiV",
         "price": "price_1ULs8PC1bWq01lTKrPkdYAHJ",
@@ -2383,6 +2401,12 @@
         "mode": "live",
         "minted": "2026-09-11",
         "repriced": "2026-10-02"
+      },
+      "_ebay": {
+        "itemId": "377555835381",
+        "sku": "TA_TC26_08",
+        "price": 30.79,
+        "listedAt": "2026-10-09"
       }
     },
     {
@@ -2441,7 +2465,7 @@
       },
       "_specsPulled": "2026-08-24",
       "file": "tc-navy-golf-vest.jpg",
-      "_ebayUrl": "https://www.ebay.com/itm/407167039666",
+      "_ebayUrl": "https://www.ebay.com/itm/377555835398",
       "_stripe": {
         "product": "prod_VEm6OGqARB5n8S",
         "price": "price_1ULs7TC1bWq01lTK4TnUmCjZ",
@@ -2450,6 +2474,12 @@
         "mode": "live",
         "minted": "2026-09-11",
         "repriced": "2026-10-02"
+      },
+      "_ebay": {
+        "itemId": "377555835398",
+        "sku": "TA_TC26_05",
+        "price": 32.99,
+        "listedAt": "2026-10-09"
       }
     },
     {
@@ -2627,7 +2657,7 @@
       },
       "_specsPulled": "2026-09-03",
       "file": "peter-millar-scotty-cameron-quarter-zip.jpg",
-      "_ebayUrl": "https://www.ebay.com/itm/407190587802",
+      "_ebayUrl": "https://www.ebay.com/itm/377555835416",
       "_stripe": {
         "product": "prod_VEm611OaJiUt8f",
         "price": "price_1ULs4JC1bWq01lTKNgnDPxrv",
@@ -2636,6 +2666,12 @@
         "mode": "live",
         "minted": "2026-09-11",
         "repriced": "2026-10-02"
+      },
+      "_ebay": {
+        "itemId": "377555835416",
+        "sku": "stock-peter-millar-scotty-cameron-quarter-zip",
+        "price": 126.49,
+        "listedAt": "2026-10-09"
       }
     },
     {
@@ -2695,7 +2731,7 @@
       },
       "_specsPulled": "2026-09-03",
       "file": "taylormade-knit-vest.jpg",
-      "_ebayUrl": "https://www.ebay.com/itm/407190588878",
+      "_ebayUrl": "https://www.ebay.com/itm/377555835428",
       "_stripe": {
         "product": "prod_VEm6dmvgIEhjRt",
         "price": "price_1UM985C1bWq01lTKIjx18Aul",
@@ -2704,6 +2740,12 @@
         "mode": "live",
         "minted": "2026-09-11",
         "repriced": "2026-10-02"
+      },
+      "_ebay": {
+        "itemId": "377555835428",
+        "sku": "stock-taylormade-knit-vest",
+        "price": 159.49,
+        "listedAt": "2026-10-09"
       }
     },
     {
@@ -2755,7 +2797,14 @@
         "carousel/presidents-cup-usa-cashmere-sweater/02.jpg",
         "carousel/presidents-cup-usa-cashmere-sweater/03.jpg"
       ],
-      "_photosPulled": "2026-09-21"
+      "_photosPulled": "2026-09-21",
+      "_ebay": {
+        "itemId": "377555835451",
+        "sku": "stock-presidents-cup-usa-cashmere-sweater",
+        "price": 109.99,
+        "listedAt": "2026-10-09"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377555835451"
     },
     {
       "id": "stock-tiger-woods-presidents-cup-polo",
@@ -2859,7 +2908,14 @@
         "carousel/vintage-presidents-cup-tee-shirt/04.jpg",
         "carousel/vintage-presidents-cup-tee-shirt/05.jpg"
       ],
-      "_photosPulled": "2026-09-21"
+      "_photosPulled": "2026-09-21",
+      "_ebay": {
+        "itemId": "377555835470",
+        "sku": "stock-vintage-presidents-cup-tee-shirt",
+        "price": 54.99,
+        "listedAt": "2026-10-09"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377555835470"
     },
     {
       "id": "stock-presidents-cup-robert-trent-jones-gc-polo",
@@ -2910,7 +2966,14 @@
         "carousel/presidents-cup-robert-trent-jones-gc-polo/03.jpg",
         "carousel/presidents-cup-robert-trent-jones-gc-polo/04.jpg"
       ],
-      "_photosPulled": "2026-09-21"
+      "_photosPulled": "2026-09-21",
+      "_ebay": {
+        "itemId": "377555835487",
+        "sku": "stock-presidents-cup-robert-trent-jones-gc-polo",
+        "price": 49.49,
+        "listedAt": "2026-10-09"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377555835487"
     },
     {
       "id": "stock-vintage-medinah-country-club-knit-polo",
@@ -2960,7 +3023,14 @@
         "carousel/vintage-medinah-country-club-knit-polo/01.jpg",
         "carousel/vintage-medinah-country-club-knit-polo/02.jpg"
       ],
-      "_photosPulled": "2026-09-21"
+      "_photosPulled": "2026-09-21",
+      "_ebay": {
+        "itemId": "377555835505",
+        "sku": "stock-vintage-medinah-country-club-knit-polo",
+        "price": 38.49,
+        "listedAt": "2026-10-09"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377555835505"
     },
     {
       "id": "stock-vintage-taylormade-retro-logo-polo",
@@ -3008,7 +3078,14 @@
         "carousel/vintage-taylormade-retro-logo-polo/03.jpg",
         "carousel/vintage-taylormade-retro-logo-polo/04.jpg"
       ],
-      "_photosPulled": "2026-10-01"
+      "_photosPulled": "2026-10-01",
+      "_ebay": {
+        "itemId": "377555835522",
+        "sku": "stock-vintage-taylormade-retro-logo-polo",
+        "price": 109.99,
+        "listedAt": "2026-10-09"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377555835522"
     },
     {
       "id": "stock-1990s-titleist-coach-jacket",
