@@ -1364,7 +1364,7 @@
       },
       "_specsPulled": "2026-08-20",
       "file": "shinnecock-hills-polo.jpg",
-      "_ebayUrl": "https://www.ebay.com/itm/377555832313",
+      "_ebayUrl": "https://www.ebay.com/itm/Shinnecock-Hills-Polo-by-Donald-Ross-Size-L-/377557411620",
       "_stripe": {
         "product": "prod_VEm5pbeIp9CAn3",
         "price": "price_1ULsctC1bWq01lTKKQBypgO9",
@@ -1375,13 +1375,14 @@
         "repriced": "2026-10-02"
       },
       "_ebay": {
-        "itemId": "377555832313",
+        "itemId": "377557411620",
         "sku": "stock-shinnecock-hills-polo",
         "price": 49.49,
         "listedAt": "2026-10-09",
         "pictures": "sq1",
         "soldOrder": "13-15268-91524",
-        "soldAt": "2026-10-09"
+        "soldAt": "2026-10-09",
+        "seen": "2026-10-09"
       },
       "sold": true,
       "_saleNotified": "2026-10-09"
