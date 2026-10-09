@@ -31,6 +31,10 @@ on:
         description: 'Send a test sale notice to SALE_EMAILS instead of syncing'
         type: boolean
         default: false
+      probe_stripe:
+        description: 'Prove the Stripe key can create customers and invoices'
+        type: boolean
+        default: false
 
 permissions:
   contents: write # commit the repaired manifest
@@ -147,6 +151,12 @@ jobs:
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
           rm -f notify.log
+
+      - name: Probe the Stripe key's permissions
+        if: ${{ inputs.probe_stripe }}
+        env:
+          EBAY_SYNC_SECRET: ${{ secrets.EBAY_SYNC_SECRET }}
+        run: node scripts/ebay-to-stripe.mjs --probe
 
       - name: Send a test sale notice
         if: ${{ inputs.test_mail }}

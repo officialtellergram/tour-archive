@@ -111,6 +111,22 @@ async function invoiceFor(e, order) {
   return { id: paid.id, total: paid.total, number: paid.number, when };
 }
 
+// --probe: prove the key's write permissions with a throwaway customer and
+// a draft invoice, both deleted again; nothing is left in the account.
+if (process.argv.includes('--probe')) {
+  try {
+    const c = await stripe('POST', 'customers', { name: 'permission probe', 'metadata[probe]': 'true' });
+    const inv = await stripe('POST', 'invoices', { customer: c.id, collection_method: 'send_invoice', days_until_due: '1', auto_advance: 'false', 'metadata[probe]': 'true' });
+    await stripe('DELETE', `invoices/${inv.id}`);
+    await stripe('DELETE', `customers/${c.id}`);
+    console.log(`${C.green}   ✔ key can create customers and invoices (probe objects deleted)${C.off}`);
+  } catch (err) {
+    console.log(`${C.red}   ✖ key probe: ${err.message}${C.off}`);
+    process.exitCode = 1;
+  }
+  process.exit();
+}
+
 const manifest = JSON.parse(readFileSync(MANIFEST, 'utf8'));
 const save = () => writeFileSync(MANIFEST, JSON.stringify(manifest, null, 2) + '\n', 'utf8');
 console.log(`\n${C.dim}── Tour Archive · eBay sales → Stripe invoices (${WRITE ? 'WRITE' : 'report'}) ──${C.off}`);
