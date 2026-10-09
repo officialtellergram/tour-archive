@@ -139,7 +139,8 @@
       },
       "_specsPulled": "2026-08-12",
       "sold": true,
-      "_ebayUrl": "https://www.ebay.com/itm/407131456833"
+      "_ebayUrl": "https://www.ebay.com/itm/407131456833",
+      "_saleNotified": "backfill-2026-10-09"
     },
     {
       "id": "stock-peter-millar-club-quarter-zip-navy",
@@ -290,7 +291,8 @@
         "soldOrder": "14-15264-56618",
         "soldAt": "2026-10-09"
       },
-      "sold": true
+      "sold": true,
+      "_saleNotified": "backfill-2026-10-09"
     },
     {
       "id": "stock-sun-faded-golf-pullover",
@@ -1045,7 +1047,8 @@
       "_specsPulled": "2026-08-20",
       "file": "callaway-retro-logo-polo.jpg",
       "sold": true,
-      "_ebayUrl": "https://www.ebay.com/itm/407157486865"
+      "_ebayUrl": "https://www.ebay.com/itm/407157486865",
+      "_saleNotified": "backfill-2026-10-09"
     },
     {
       "id": "stock-taylormade-navy-sweater",
@@ -1241,7 +1244,8 @@
       "_specsPulled": "2026-08-20",
       "file": "houndstooth-cotton-golf-polo.jpg",
       "sold": true,
-      "_ebayUrl": "https://www.ebay.com/itm/407157532548"
+      "_ebayUrl": "https://www.ebay.com/itm/407157532548",
+      "_saleNotified": "backfill-2026-10-09"
     },
     {
       "id": "stock-peter-millar-quarter-zip-navy",
@@ -1432,7 +1436,8 @@
       "_specsPulled": "2026-08-20",
       "file": "izod-abstract-golf-polo.jpg",
       "sold": true,
-      "_ebayUrl": "https://www.ebay.com/itm/407154584789"
+      "_ebayUrl": "https://www.ebay.com/itm/407154584789",
+      "_saleNotified": "backfill-2026-10-09"
     },
     {
       "id": "stock-cross-creek-polo",
@@ -2228,7 +2233,8 @@
       "_specsPulled": "2026-08-24",
       "file": "izod-club-tc-polo.jpg",
       "sold": true,
-      "_ebayUrl": "https://www.ebay.com/itm/407167040754"
+      "_ebayUrl": "https://www.ebay.com/itm/407167040754",
+      "_saleNotified": "backfill-2026-10-09"
     },
     {
       "id": "stock-1988-tc-pebble-beach-snapback",
@@ -2564,7 +2570,8 @@
       "_specsPulled": "2026-09-03",
       "file": "footjoy-titleist-polo.jpg",
       "sold": true,
-      "_ebayUrl": "https://www.ebay.com/itm/407190587074"
+      "_ebayUrl": "https://www.ebay.com/itm/407190587074",
+      "_saleNotified": "backfill-2026-10-09"
     },
     {
       "id": "stock-polo-golf-pinehurst-shirt",
@@ -2628,7 +2635,8 @@
         "minted": "2026-09-11",
         "soldSession": "cs_live_a1fpoS6hSCXhaCVoAm35sHg8pe8etydSw6pz3j88E3zFRZciZ3qLbXsHxH"
       },
-      "sold": true
+      "sold": true,
+      "_saleNotified": "backfill-2026-10-09"
     },
     {
       "id": "stock-peter-millar-scotty-cameron-quarter-zip",
@@ -2889,7 +2897,8 @@
         "carousel/tiger-woods-presidents-cup-polo/05.jpg"
       ],
       "_photosPulled": "2026-09-21",
-      "sold": true
+      "sold": true,
+      "_saleNotified": "backfill-2026-10-09"
     },
     {
       "id": "stock-vintage-presidents-cup-tee-shirt",
@@ -3169,7 +3178,8 @@
         "carousel/1990s-titleist-coach-jacket/03.jpg"
       ],
       "_photosPulled": "2026-10-01",
-      "sold": true
+      "sold": true,
+      "_saleNotified": "backfill-2026-10-09"
     },
     {
       "id": "stock-black-cotton-ralph-lauren-cardigan",
@@ -3326,7 +3336,8 @@
         "carousel/peter-millar-country-club-of-virginia-polo/04.jpg"
       ],
       "_photosPulled": "2026-10-08",
-      "sold": true
+      "sold": true,
+      "_saleNotified": "backfill-2026-10-09"
     },
     {
       "id": "stock-taylormade-richmond-cc-snapback",
@@ -3439,7 +3450,8 @@
         "soldAt": "2026-10-09"
       },
       "_ebayUrl": "https://www.ebay.com/itm/377555836137",
-      "sold": true
+      "sold": true,
+      "_saleNotified": "backfill-2026-10-09"
     },
     {
       "id": "stock-vintage-multicolor-chaps-polo",
@@ -3620,7 +3632,8 @@
         "soldAt": "2026-10-09"
       },
       "_ebayUrl": "https://www.ebay.com/itm/377555836212",
-      "sold": true
+      "sold": true,
+      "_saleNotified": "backfill-2026-10-09"
     },
     {
       "id": "stock-vintage-tpc-windbreaker",

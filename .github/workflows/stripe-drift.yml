@@ -102,6 +102,28 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
           rm -f ebay.log
 
+      # One sale notice per sold piece, either channel, to the team: buyer,
+      # address, ship-by. Sent from the Tour Archive Gmail with an App
+      # Password; the piece is stamped so it is never announced twice.
+      - name: Notify the team of sales
+        if: steps.key.outputs.present == 'true'
+        continue-on-error: true
+        env:
+          EBAY_SYNC_SECRET: ${{ secrets.EBAY_SYNC_SECRET }}
+          SALE_MAIL_USER: ${{ secrets.SALE_MAIL_USER }}
+          SALE_MAIL_PASS: ${{ secrets.SALE_MAIL_PASS }}
+          SALE_EMAILS: ${{ vars.SALE_EMAILS }}
+        run: |
+          set -o pipefail
+          node scripts/notify-sales.mjs --write | tee notify.log
+          {
+            echo '### Sale notices'
+            echo '```'
+            sed 's/\x1b\[[0-9;]*m//g' notify.log | tail -12
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          rm -f notify.log
+
       - name: Repair drifted links
         if: steps.key.outputs.present == 'true'
         run: |
@@ -134,3 +156,11 @@ jobs:
           # A push made with the workflow token does not start other workflows;
           # a manual dispatch does. The deploy runs its usual gates.
           gh workflow run "Deploy to GitHub Pages" --ref main
+
+      - name: Tell the team the sync failed
+        if: failure()
+        env:
+          SALE_MAIL_USER: ${{ secrets.SALE_MAIL_USER }}
+          SALE_MAIL_PASS: ${{ secrets.SALE_MAIL_PASS }}
+          SALE_EMAILS: ${{ vars.SALE_EMAILS }}
+        run: node scripts/notify-failure.mjs

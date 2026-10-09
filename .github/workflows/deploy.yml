@@ -100,3 +100,14 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+      # A red run emails the team (scripts/notify-failure.mjs) instead of
+      # waiting in the Actions tab: on 9 Oct 2026 a day of failed deploys
+      # left sold pieces for sale and nobody knew.
+      - name: Tell the team the deploy failed
+        if: failure()
+        env:
+          SALE_MAIL_USER: ${{ secrets.SALE_MAIL_USER }}
+          SALE_MAIL_PASS: ${{ secrets.SALE_MAIL_PASS }}
+          SALE_EMAILS: ${{ vars.SALE_EMAILS }}
+        run: node scripts/notify-failure.mjs
