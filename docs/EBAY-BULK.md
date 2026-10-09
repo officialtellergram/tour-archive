@@ -12,6 +12,10 @@ catalogue takes a few runs. `EBAY_LISTING_ENABLED` must be `true` for the
 job to create listings; set it to `false` to stop, and the sync still
 closes out sales and prices both ways.
 
+The first picture of every listing is a square version of the hero made
+for eBay's square gallery tile (the garment's outline, the wall continued
+around it, nothing cropped); the portrait photographs follow it.
+
 A piece that eBay refuses (a missing specific such as Size, Material or
 Outer Shell Material) is reported in the run summary each time and lists
 itself as soon as the record has the fact. Nothing needs re-running.
