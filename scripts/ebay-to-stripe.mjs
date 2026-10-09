@@ -94,8 +94,7 @@ async function invoiceFor(e, order) {
   const when = Math.floor(new Date(order.creationDate).getTime() / 1000);
   const inv = await stripe('POST', 'invoices', {
     customer,
-    collection_method: 'send_invoice',
-    days_until_due: '1',
+    collection_method: 'charge_automatically', // paid out of band at once; nothing is ever sent or charged
     auto_advance: 'false',
     pending_invoice_items_behavior: 'exclude',
     description: `eBay order ${order.orderId} — ${e.name}`,
@@ -116,9 +115,12 @@ async function invoiceFor(e, order) {
 if (process.argv.includes('--probe')) {
   try {
     const c = await stripe('POST', 'customers', { name: 'permission probe', 'metadata[probe]': 'true' });
-    const inv = await stripe('POST', 'invoices', { customer: c.id, collection_method: 'send_invoice', days_until_due: '1', auto_advance: 'false', 'metadata[probe]': 'true' });
-    await stripe('DELETE', `invoices/${inv.id}`);
-    await stripe('DELETE', `customers/${c.id}`);
+    try {
+      const inv = await stripe('POST', 'invoices', { customer: c.id, collection_method: 'charge_automatically', auto_advance: 'false', 'metadata[probe]': 'true' });
+      await stripe('DELETE', `invoices/${inv.id}`);
+    } finally {
+      await stripe('DELETE', `customers/${c.id}`);
+    }
     console.log(`${C.green}   ✔ key can create customers and invoices (probe objects deleted)${C.off}`);
   } catch (err) {
     console.log(`${C.red}   ✖ key probe: ${err.message}${C.off}`);
