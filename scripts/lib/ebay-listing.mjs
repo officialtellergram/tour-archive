@@ -101,13 +101,21 @@ export function descriptionOf(e) {
   ].filter(Boolean).join('');
 }
 
-/** Public JPEG URLs, hero first. A .webp frame points at the JPEG twin the build writes to dist/ebay/. */
+/**
+ * Public JPEG URLs. First the square hero the build writes to
+ * dist/ebay/<slug>/hero-sq.jpg (eBay's gallery tile is square; a portrait
+ * gets grey bars), then every frame in order — the portrait hero included,
+ * so the listing's own gallery still has the full photograph. A .webp frame
+ * points at the JPEG twin under dist/ebay/.
+ */
+export const PICTURE_SET = 'sq1'; // bump when the set changes; the sync re-sends pictures whose ledger differs
 export function picturesOf(e) {
   const slug = e.id.replace(/^stock-/, '');
   const frames = Array.isArray(e.photos) && e.photos.length ? e.photos : [e.file];
-  return frames.slice(0, MAX_PICS).map((p) => (/\.webp$/i.test(p)
+  const rest = frames.slice(0, MAX_PICS - 1).map((p) => (/\.webp$/i.test(p)
     ? `${ORIGIN}/ebay/${slug}/${p.split('/').pop().replace(/\.webp$/i, '.jpg')}`
     : `${ORIGIN}/stock/${p}`));
+  return [`${ORIGIN}/ebay/${slug}/hero-sq.jpg`, ...rest];
 }
 
 /** Item specifics as name → value, with the catalogue filling what the record lacks. */

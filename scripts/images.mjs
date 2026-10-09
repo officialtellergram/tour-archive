@@ -68,6 +68,35 @@ try {
 
 if (sharp) await run();
 
+/* ---- 3. square heroes for eBay's gallery ---- */
+// dist/ebay/<slug>/hero-sq.jpg for every top-level stock hero (not the
+// carousel frames): the garment's outline made square, wall-coloured padding,
+// never a crop. scripts/lib/ebay-listing.mjs puts it first in each listing.
+if (sharp && !CHECK_ONLY && existsSync(join(DIST, 'index.html'))) {
+  const { squareHero } = await import('./lib/square-hero.mjs');
+  const heroes = readdirSync(join(PUBLIC, 'stock')).filter((f) => /\.jpe?g$/i.test(f));
+  let made = 0;
+  let fallback = 0;
+  const t0 = Date.now();
+  for (const f of heroes) {
+    const slug = f.replace(/\.jpe?g$/i, '');
+    const out = join(DIST, 'ebay', slug, 'hero-sq.jpg');
+    const src = join(PUBLIC, 'stock', f);
+    if (existsSync(out) && statSync(out).mtimeMs >= statSync(src).mtimeMs) continue;
+    try {
+      mkdirSync(dirname(out), { recursive: true });
+      const r = await squareHero(src, out);
+      made += 1;
+      if (!r.plausible) fallback += 1;
+    } catch (err) {
+      console.log(`${C.red}   ✖ square hero ${f}: ${err.message}${C.off}`);
+      process.exitCode = 1;
+    }
+  }
+  console.log(`${C.dim}   square heroes: ${made} written (${fallback} padded whole, outline not found) · ${heroes.length - made} up to date · ${((Date.now() - t0) / 1000).toFixed(1)} s${C.off}`);
+}
+
+
 async function run() {
   console.log(`\n${C.dim}── Tour Archive · WebP siblings${CHECK_ONLY ? ' (check only)' : ''} ──${C.off}`);
 

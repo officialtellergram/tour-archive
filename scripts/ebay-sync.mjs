@@ -31,7 +31,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { TERMS, categoryOf, conditionId, conditionNote, descriptionOf, listable, picturesOf, skuOf, specificsOf, titleOf } from './lib/ebay-listing.mjs';
+import { ORIGIN, PICTURE_SET, TERMS, categoryOf, conditionId, conditionNote, descriptionOf, listable, picturesOf, skuOf, specificsOf, titleOf } from './lib/ebay-listing.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const MANIFEST = join(ROOT, 'public', 'stock', 'manifest.json');
@@ -285,6 +285,15 @@ try {
     }
     const price = ebayPrice(e);
     const call = WRITE ? 'AddFixedPriceItem' : 'VerifyAddFixedPriceItem';
+    if (WRITE) {
+      // eBay fetches the pictures as it lists; the square hero exists only
+      // once the site has deployed, so a piece waits for its first picture.
+      const first = await fetch(picturesOf(e)[0], { method: 'HEAD' }).catch(() => null);
+      if (!first?.ok) {
+        console.log(`${C.dim}   · ${e.id}: pictures not published yet, next run${C.off}`);
+        continue;
+      }
+    }
     try {
       const { xml, warnings } = await trading(token, call, listingXml(e, price));
       listed += 1;
@@ -307,6 +316,38 @@ try {
     }
   }
   if (held.length) console.log(`${C.dim}   · drop hold (${DROP_DELAY_DAYS} d): ${held.join('; ')}${C.off}`);
+
+  // 6. pictures: a live listing whose picture set is older than PICTURE_SET
+  //    gets the current set (the square hero first) by ReviseFixedPriceItem —
+  //    only once the first URL answers 200, i.e. after the site has deployed.
+  let pictured = 0;
+  for (const e of manifest.items) {
+    const id = e._ebay?.itemId;
+    if (!id || e.sold || e.retired || !activeIds.has(id) || e._ebay.pictures === PICTURE_SET) continue;
+    const urls = picturesOf(e);
+    const head = await fetch(urls[0], { method: 'HEAD' }).catch(() => null);
+    if (!head?.ok) {
+      console.log(`${C.dim}   · ${e.id}: new pictures not published yet (${urls[0].replace(ORIGIN, '')} ${head ? head.status : 'unreachable'})${C.off}`);
+      continue;
+    }
+    if (!WRITE) {
+      console.log(`${C.yellow}   ⚠ ${e.id} — would send picture set ${PICTURE_SET} (${urls.length} pictures)${C.off}`);
+      continue;
+    }
+    try {
+      const pics = urls.map((u) => `<PictureURL>${xmlEsc(u)}</PictureURL>`).join('');
+      await trading(token, 'ReviseFixedPriceItem', `<Item><ItemID>${xmlEsc(id)}</ItemID><PictureDetails>${pics}</PictureDetails></Item>`);
+      e._ebay.pictures = PICTURE_SET;
+      save();
+      changes += 1;
+      pictured += 1;
+      console.log(`${C.green}   ✔ ${e.id} — pictures updated (${urls.length})${C.off}`);
+    } catch (err) {
+      failures += 1;
+      console.log(`${C.red}   ✖ ${e.id} — ${err.message}${C.off}`);
+    }
+  }
+  if (pictured) console.log(`${C.dim}   ${pictured} listing(s) given the ${PICTURE_SET} picture set${C.off}`);
 } catch (err) {
   failures += 1;
   console.log(`${C.red}✖ ${err.message}${C.off}`);

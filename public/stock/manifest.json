@@ -3584,7 +3584,7 @@
       "year": "—",
       "category": "Outerwear",
       "garment": "windshirt",
-      "size": "See photos",
+      "size": "XL",
       "condition": "Pre-owned",
       "price": 49.99,
       "colorway": [
@@ -3628,7 +3628,8 @@
       ],
       "_photosPulled": "2026-10-08",
       "specifics": {
-        "Outer Shell Material": "Polyester"
+        "Outer Shell Material": "Polyester",
+        "Size": "XL"
       }
     }
   ]
