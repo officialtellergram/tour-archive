@@ -26,6 +26,11 @@ on:
     # minutes late under load.
     - cron: '7-57/10 * * * *'
   workflow_dispatch:
+    inputs:
+      test_mail:
+        description: 'Send a test sale notice to SALE_EMAILS instead of syncing'
+        type: boolean
+        default: false
 
 permissions:
   contents: write # commit the repaired manifest
@@ -123,6 +128,14 @@ jobs:
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
           rm -f notify.log
+
+      - name: Send a test sale notice
+        if: ${{ inputs.test_mail }}
+        env:
+          SALE_MAIL_USER: ${{ secrets.SALE_MAIL_USER }}
+          SALE_MAIL_PASS: ${{ secrets.SALE_MAIL_PASS }}
+          SALE_EMAILS: ${{ vars.SALE_EMAILS }}
+        run: node scripts/notify-sales.mjs --test
 
       - name: Repair drifted links
         if: steps.key.outputs.present == 'true'
