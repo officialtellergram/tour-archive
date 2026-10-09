@@ -1382,11 +1382,12 @@
         "pictures": "sq1",
         "seen": "2026-10-09",
         "cancelledOrder": "13-15268-91524",
-        "cancelledAt": "2026-10-09"
+        "cancelledAt": "2026-10-09",
+        "soldOrder": "06-15282-35373",
+        "soldAt": "2026-10-09"
       },
-      "sold": false,
-      "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/4gM28q2Yk5zvfwq2xs9k40U"
+      "sold": true,
+      "_saleNotified": "2026-10-09"
     },
     {
       "id": "stock-izod-abstract-golf-polo",
