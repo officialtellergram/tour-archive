@@ -57,10 +57,16 @@ catalogue (new pieces in, sold pieces out). The converted photographs under
 `public/ebay/` must be pushed to the site before uploading, or eBay cannot
 fetch them.
 
-## What is NOT automatic yet
+## What happens after the upload, by itself
 
-A piece that sells on the site is still listed on eBay until someone ends
-the listing, and a piece that sells on eBay still shows for sale on the site
-until someone marks it. Until eBay developer access is granted, end the eBay
-listing the moment a site sale comes in, and tell Karen when an eBay sale
-happens.
+Once the listings are live, the same job that watches Stripe watches eBay
+(every ten minutes, and the moment anything sells on the site):
+
+- A piece that sells on eBay is marked sold on the site within minutes and
+  its site checkout closes.
+- A piece that sells on the site has its eBay listing ended within seconds.
+- If a price changes in Stripe, the eBay price follows.
+
+The join is the `CustomLabel` column: it must stay the catalogue number the
+file put there. A listing whose label was changed by hand is reported as
+"not in the catalogue" and left alone.

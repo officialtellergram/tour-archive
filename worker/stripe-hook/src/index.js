@@ -166,7 +166,13 @@ async function ebayOAuthStart(request, env) {
 
 async function ebayOAuthCallback(request, env) {
   const url = new URL(request.url);
-  if (!(await stateOk(url.searchParams.get('state'), env))) return page('Sign-in link expired', '<p>Start again from the sign-in link; it is valid for fifteen minutes.</p>', 400);
+  const state = url.searchParams.get('state');
+  if (!(await stateOk(state, env))) {
+    const ts = Number(String(state || '').split('.')[0]);
+    const why = !state ? 'eBay sent no state value back' : !ts ? 'the state value was not one this site issued' : `the sign-in link was ${Math.round(Math.abs(Date.now() - ts) / 60000)} minutes old`;
+    console.log(`ebay oauth state rejected: ${why}; params=${[...url.searchParams.keys()].join(',')}`);
+    return page('Sign-in did not complete', `<p>Reason: ${why}.</p><p><a href="/ebay/oauth/start">Start the sign-in again</a> — the link is valid for fifteen minutes from when it opens.</p>`, 400);
+  }
   const code = url.searchParams.get('code');
   if (!code) return page('No code', '<p>eBay sent no authorisation code. If you declined, nothing was changed.</p>', 400);
   try {

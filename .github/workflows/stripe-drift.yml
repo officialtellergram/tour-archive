@@ -77,6 +77,25 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
           rm -f sold.log
 
+      # eBay, both directions: an eBay sale marks the piece sold here and
+      # closes its Stripe link; a piece sold here ends its eBay listing; eBay
+      # prices follow the catalogue. Tokens come from the Worker's broker.
+      - name: Sync eBay
+        if: steps.key.outputs.present == 'true'
+        continue-on-error: true
+        env:
+          EBAY_SYNC_SECRET: ${{ secrets.EBAY_SYNC_SECRET }}
+        run: |
+          set -o pipefail
+          node scripts/ebay-sync.mjs --write | tee ebay.log
+          {
+            echo '### eBay sync'
+            echo '```'
+            sed 's/\x1b\[[0-9;]*m//g' ebay.log | tail -24
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          rm -f ebay.log
+
       - name: Repair drifted links
         if: steps.key.outputs.present == 'true'
         run: |

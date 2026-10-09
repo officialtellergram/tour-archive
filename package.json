@@ -12,6 +12,7 @@
     "sold:stripe": "node scripts/stripe-sold.mjs",
     "drift": "node scripts/stripe-drift.mjs",
     "ebay:csv": "node scripts/ebay-csv.mjs",
+    "ebay:sync": "node scripts/ebay-sync.mjs",
     "build": "vite build",
     "build:pages": "vite build && node scripts/images.mjs && node scripts/snapshot.mjs && node scripts/prerender.mjs",
     "images": "node scripts/images.mjs",
