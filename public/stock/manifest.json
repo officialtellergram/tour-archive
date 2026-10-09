@@ -3179,7 +3179,14 @@
         "carousel/black-cotton-ralph-lauren-cardigan/02.jpg",
         "carousel/black-cotton-ralph-lauren-cardigan/03.jpg"
       ],
-      "_photosPulled": "2026-10-01"
+      "_photosPulled": "2026-10-01",
+      "_ebay": {
+        "itemId": "377555836051",
+        "sku": "stock-black-cotton-ralph-lauren-cardigan",
+        "price": 27.49,
+        "listedAt": "2026-10-09"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377555836051"
     },
     {
       "id": "stock-vintage-grand-slam-golf-polo",
@@ -3227,7 +3234,14 @@
         "carousel/vintage-grand-slam-golf-polo/03.jpg",
         "carousel/vintage-grand-slam-golf-polo/04.jpg"
       ],
-      "_photosPulled": "2026-10-01"
+      "_photosPulled": "2026-10-01",
+      "_ebay": {
+        "itemId": "377555836078",
+        "sku": "stock-vintage-grand-slam-golf-polo",
+        "price": 27.49,
+        "listedAt": "2026-10-09"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377555836078"
     },
     {
       "id": "stock-peter-millar-country-club-of-virginia-polo",
@@ -3318,7 +3332,14 @@
         "carousel/taylormade-richmond-cc-snapback/02.jpg",
         "carousel/taylormade-richmond-cc-snapback/03.jpg"
       ],
-      "_photosPulled": "2026-10-08"
+      "_photosPulled": "2026-10-08",
+      "_ebay": {
+        "itemId": "377555836100",
+        "sku": "stock-taylormade-richmond-cc-snapback",
+        "price": 27.49,
+        "listedAt": "2026-10-09"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377555836100"
     },
     {
       "id": "stock-vintage-patterned-haggar-polo",
@@ -3369,7 +3390,14 @@
         "carousel/vintage-patterned-haggar-polo/04.jpg",
         "carousel/vintage-patterned-haggar-polo/05.jpg"
       ],
-      "_photosPulled": "2026-10-08"
+      "_photosPulled": "2026-10-08",
+      "_ebay": {
+        "itemId": "377555836137",
+        "sku": "stock-vintage-patterned-haggar-polo",
+        "price": 27.49,
+        "listedAt": "2026-10-09"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377555836137"
     },
     {
       "id": "stock-vintage-multicolor-chaps-polo",
@@ -3419,7 +3447,14 @@
         "carousel/vintage-multicolor-chaps-polo/03.jpg",
         "carousel/vintage-multicolor-chaps-polo/04.jpg"
       ],
-      "_photosPulled": "2026-10-08"
+      "_photosPulled": "2026-10-08",
+      "_ebay": {
+        "itemId": "377555836159",
+        "sku": "stock-vintage-multicolor-chaps-polo",
+        "price": 49.49,
+        "listedAt": "2026-10-09"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377555836159"
     },
     {
       "id": "stock-vintage-country-club-of-virginia-sweater",
@@ -3473,7 +3508,14 @@
       "_photosPulled": "2026-10-08",
       "specifics": {
         "Size": "L"
-      }
+      },
+      "_ebay": {
+        "itemId": "377555836191",
+        "sku": "stock-vintage-country-club-of-virginia-sweater",
+        "price": 32.99,
+        "listedAt": "2026-10-09"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377555836191"
     },
     {
       "id": "stock-peter-millar-x-scotty-cameron-polo",
@@ -3525,7 +3567,14 @@
         "carousel/peter-millar-x-scotty-cameron-polo/06.jpg",
         "carousel/peter-millar-x-scotty-cameron-polo/07.jpg"
       ],
-      "_photosPulled": "2026-10-08"
+      "_photosPulled": "2026-10-08",
+      "_ebay": {
+        "itemId": "377555836212",
+        "sku": "stock-peter-millar-x-scotty-cameron-polo",
+        "price": 109.99,
+        "listedAt": "2026-10-09"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377555836212"
     },
     {
       "id": "stock-vintage-tpc-windbreaker",
