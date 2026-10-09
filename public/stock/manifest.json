@@ -1380,12 +1380,13 @@
         "price": 49.49,
         "listedAt": "2026-10-09",
         "pictures": "sq1",
-        "soldOrder": "13-15268-91524",
-        "soldAt": "2026-10-09",
-        "seen": "2026-10-09"
+        "seen": "2026-10-09",
+        "cancelledOrder": "13-15268-91524",
+        "cancelledAt": "2026-10-09"
       },
-      "sold": true,
-      "_saleNotified": "2026-10-09"
+      "sold": false,
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/4gM28q2Yk5zvfwq2xs9k40U"
     },
     {
       "id": "stock-izod-abstract-golf-polo",

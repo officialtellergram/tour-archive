@@ -103,7 +103,7 @@ async function activeListings(token) {
   return found;
 }
 
-async function paidOrders(token) {
+async function allOrdersOf(token) {
   const orders = [];
   let url = `${FULFILMENT}?limit=200`;
   while (url) {
@@ -113,18 +113,21 @@ async function paidOrders(token) {
     orders.push(...(j.orders || []));
     url = j.next || null;
   }
-  return orders.filter((o) => ['PAID', 'PARTIALLY_REFUNDED'].includes(o.orderPaymentStatus));
+  return orders;
 }
 
-async function closeStripeLink(linkId) {
-  if (!env.STRIPE_SECRET_KEY || !linkId) return 'no key';
+async function stripeLink(linkId, active) {
+  if (!env.STRIPE_SECRET_KEY || !linkId) return { error: 'no key' };
   const r = await fetch(`https://api.stripe.com/v1/payment_links/${linkId}`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${env.STRIPE_SECRET_KEY}`, 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: 'active=false',
+    body: `active=${active}`,
   });
-  return r.ok ? 'closed' : `stripe ${r.status}`;
+  const j = await r.json().catch(() => ({}));
+  return r.ok ? { url: j.url } : { error: `stripe ${r.status} ${j.error?.message || ''}`.trim() };
 }
+const closeStripeLink = async (id) => { const r = await stripeLink(id, 'false'); return r.url ? 'closed' : r.error; };
+const reopenStripeLink = (id) => stripeLink(id, 'true');
 
 /** The AddFixedPriceItem / VerifyAddFixedPriceItem body for a piece. */
 function listingXml(e, price) {
@@ -204,8 +207,35 @@ try {
   for (const l of listings.filter((x) => !bySku.has(x.sku))) console.log(`${C.yellow}   ⚠ eBay ${l.itemId} "${l.title.slice(0, 50)}" SKU "${l.sku}" is not in the catalogue${C.off}`);
   const activeIds = new Set(listings.map((l) => l.itemId));
 
-  // 2. sold on eBay
-  for (const o of await paidOrders(token)) {
+  // 2. sold on eBay — and cancelled on eBay. An order cancelled after the
+  //    sync marked its piece sold (buyer's request, approved in Seller Hub,
+  //    piece relisted) is reversed: the piece is for sale again here, its
+  //    Stripe link reactivated, and it may be announced again if it sells.
+  const allOrders = await allOrdersOf(token);
+  for (const o of allOrders.filter((x) => x.cancelStatus?.cancelState === 'CANCELED' || x.orderPaymentStatus === 'FULLY_REFUNDED')) {
+    for (const li of o.lineItems || []) {
+      const e = bySku.get(li.sku);
+      if (!e || !e.sold || e._ebay?.soldOrder !== o.orderId) continue;
+      console.log(`${C.yellow}   ↺ ${e.id} — eBay order ${o.orderId} was CANCELLED (${o.cancelStatus?.cancelRequests?.[0]?.cancelReason || o.orderPaymentStatus}); for sale again${C.off}`);
+      if (!WRITE) continue;
+      e.sold = false;
+      e._ebay = { ...e._ebay, cancelledOrder: o.orderId, cancelledAt: today };
+      delete e._ebay.soldOrder;
+      delete e._ebay.soldAt;
+      delete e._saleNotified;
+      if (e._stripe?.link) {
+        const r = await reopenStripeLink(e._stripe.link);
+        if (r.url) {
+          e.channel = 'stripe';
+          e.listingUrl = r.url;
+        }
+        console.log(`${C.dim}       stripe link ${r.url ? 'reactivated' : r.error}${C.off}`);
+      }
+      save();
+      changes += 1;
+    }
+  }
+  for (const o of allOrders.filter((x) => ['PAID', 'PARTIALLY_REFUNDED'].includes(x.orderPaymentStatus) && x.cancelStatus?.cancelState !== 'CANCELED')) {
     for (const li of o.lineItems || []) {
       const e = bySku.get(li.sku);
       if (!e || e.sold) continue;
