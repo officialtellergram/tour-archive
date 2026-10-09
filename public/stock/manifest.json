@@ -238,8 +238,6 @@
         "Checkout completes with Stripe"
       ],
       "measurements": {},
-      "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/8x28wOeH23rnac66NI9k40I",
       "_ingested": "2026-08-02",
       "file": "ryder-cup-print-polo.jpg",
       "_source": "own listing photo, i.ebayimg.com",
@@ -288,8 +286,11 @@
         "sku": "TA_GS_02",
         "price": 27.49,
         "listedAt": "2026-10-09",
-        "pictures": "sq1"
-      }
+        "pictures": "sq1",
+        "soldOrder": "14-15264-56618",
+        "soldAt": "2026-10-09"
+      },
+      "sold": true
     },
     {
       "id": "stock-sun-faded-golf-pullover",
@@ -3678,7 +3679,8 @@
         "itemId": "377555879911",
         "sku": "stock-vintage-tpc-windbreaker",
         "price": 54.99,
-        "listedAt": "2026-10-09"
+        "listedAt": "2026-10-09",
+        "pictures": "sq1"
       },
       "_ebayUrl": "https://www.ebay.com/itm/377555879911"
     }
