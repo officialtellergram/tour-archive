@@ -16,7 +16,10 @@ export function sendMail({ user, pass, to, subject, text, from = user }) {
     let buf = '';
     const steps = [];
     const expect = (code, line) => new Promise((res, rej) => steps.push({ code, line, res, rej }));
-    const fail = (err) => { try { sock.destroy(); } catch { /* closed */ } reject(err); };
+    const fail = (err) => { clearTimeout(timer); try { sock.destroy(); } catch { /* closed */ } reject(err); };
+    // Never let a silent server hold the sync job: 25 s for the whole exchange.
+    const timer = setTimeout(() => fail(new Error(`SMTP timed out waiting after "${steps[0]?.line || 'connect'}"; buffered: ${buf.trim().slice(0, 120)}`)), 25_000);
+    sock.on('close', () => { if (steps.length) fail(new Error(`SMTP connection closed waiting after "${steps[0].line}"; buffered: ${buf.trim().slice(0, 120)}`)); });
     sock.setEncoding('utf8');
     sock.on('error', fail);
     sock.on('data', (chunk) => {
@@ -57,6 +60,7 @@ export function sendMail({ user, pass, to, subject, text, from = user }) {
       await send('DATA', 354);
       await send(message, 250);
       await send('QUIT', 221);
+      clearTimeout(timer);
       sock.end();
       resolve(rcpts);
     })().catch(fail);
