@@ -24,10 +24,14 @@ export function sendMail({ user, pass, to, subject, text, from = user }) {
     sock.on('error', fail);
     sock.on('data', (chunk) => {
       buf += chunk;
-      // a reply is complete when its last line reads "250 " not "250-"
-      let m;
-      while ((m = buf.match(/^([\s\S]*?\r\n)(?=\d{3} |$)/)) && /\d{3} [^\r\n]*\r\n$/.test(m[1])) {
-        const reply = m[1];
+      // A reply is lines of "250-…" ending with one "250 …" (space, not
+      // hyphen). Walk complete lines; the final line closes the reply.
+      for (;;) {
+        const lines = buf.split('\r\n');
+        lines.pop(); // whatever follows the last CRLF is not a complete line yet
+        const end = lines.findIndex((l) => /^\d{3} /.test(l));
+        if (end < 0) break;
+        const reply = lines.slice(0, end + 1).join('\r\n') + '\r\n';
         buf = buf.slice(reply.length);
         const step = steps.shift();
         if (!step) break;
