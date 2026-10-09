@@ -3040,17 +3040,17 @@
         "link": "plink_1UOKpzC1bWq01lTKCq0JI4KA",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-10-08"
+        "minted": "2026-10-08",
+        "soldSession": "cs_live_a1M3S7rR270xWzqbuifr1QINHcQy6npZ6tKumCLktp2QthLAoH1ghpRnOd"
       },
-      "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/7sY4gy8iEe610Bw9ZU9k41c",
       "photos": [
         "carousel/peter-millar-country-club-of-virginia-polo/01.jpg",
         "carousel/peter-millar-country-club-of-virginia-polo/02.jpg",
         "carousel/peter-millar-country-club-of-virginia-polo/03.jpg",
         "carousel/peter-millar-country-club-of-virginia-polo/04.jpg"
       ],
-      "_photosPulled": "2026-10-08"
+      "_photosPulled": "2026-10-08",
+      "sold": true
     },
     {
       "id": "stock-taylormade-richmond-cc-snapback",
