@@ -9,5 +9,9 @@
   "observability": { "enabled": true },
   // eBay's long-lived refresh token and the cached access token live here,
   // never in the repo and never on GitHub.
-  "kv_namespaces": [{ "binding": "EBAY", "id": "502d798722dd4be2b9fa437d06fd1a27" }]
+  "kv_namespaces": [{ "binding": "EBAY", "id": "502d798722dd4be2b9fa437d06fd1a27" }],
+  // Cloudflare's cron is dependable where GitHub's is not (GitHub fired a
+  // ten-minute schedule four times in a day): every ten minutes the Worker
+  // starts the sync job, so an eBay sale reaches the site without a webhook.
+  "triggers": { "crons": ["*/10 * * * *"] }
 }

@@ -383,7 +383,10 @@ check('sold and retired pieces keep their record but offer no checkout', () => {
     // and keeps its _source and, once sold, the paying session.
     const drained = typeof e._source === 'string' && e._source.startsWith('stripe:');
     assert(e._ebayUrl || drained, `${e.id} lost its provenance — neither an _ebayUrl nor a stripe: _source remains`);
-    if (drained && e.sold) assert(e._stripe?.soldSession, `${e.id} is sold with no Stripe session on record`);
+    // Proof of sale is the paying channel's record: a Stripe Checkout
+    // Session, or (from 9 Oct 2026) an eBay order. The first eBay sales of
+    // Stripe-born pieces failed this gate and froze the site for a day.
+    if (drained && e.sold) assert(e._stripe?.soldSession || e._ebay?.soldOrder, `${e.id} is sold with neither a Stripe session nor an eBay order on record`);
     assert(e.file, `${e.id} lost its photograph`);
   }
 });

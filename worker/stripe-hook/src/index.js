@@ -225,7 +225,31 @@ async function ebayAppToken(request, env) {
   }
 }
 
+/** Start the sync job on GitHub. Shared by the Stripe webhook and the cron. */
+async function dispatchSync(env, why) {
+  if (!env.GITHUB_TOKEN) return { ok: false, status: 500, text: 'GITHUB_TOKEN is not set' };
+  const res = await fetch(`https://api.github.com/repos/${REPO}/actions/workflows/${WORKFLOW}/dispatches`, {
+    method: 'POST',
+    headers: {
+      authorization: `Bearer ${env.GITHUB_TOKEN}`,
+      accept: 'application/vnd.github+json',
+      'x-github-api-version': '2022-11-28',
+      'user-agent': 'tour-archive-stripe-hook',
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify({ ref: 'main' }),
+  });
+  const text = res.ok ? '' : (await res.text()).slice(0, 200);
+  console.log(res.ok ? `dispatched (${why})` : `dispatch failed (${why}): ${res.status} ${text}`);
+  return { ok: res.ok, status: res.status, text };
+}
+
 export default {
+  /** Cloudflare cron (wrangler.jsonc triggers): the dependable ten-minute tick. */
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(dispatchSync(env, `cron ${event.cron}`));
+  },
+
   async fetch(request, env) {
     const { pathname } = new URL(request.url);
     if (pathname === EBAY_DELETION_PATH) return ebayAccountDeletion(request, env);
