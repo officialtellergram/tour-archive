@@ -1086,7 +1086,7 @@
       },
       "_specsPulled": "2026-08-20",
       "file": "taylormade-navy-sweater.jpg",
-      "_ebayUrl": "https://www.ebay.com/itm/407157573688",
+      "_ebayUrl": "https://www.ebay.com/itm/377555832286",
       "_stripe": {
         "product": "prod_VEm5ljZSDyN8wN",
         "price": "price_1ULsiEC1bWq01lTKeIgCGV4r",
@@ -1095,6 +1095,12 @@
         "mode": "live",
         "minted": "2026-09-11",
         "repriced": "2026-10-02"
+      },
+      "_ebay": {
+        "itemId": "377555832286",
+        "sku": "stock-taylormade-navy-sweater",
+        "price": 137.49,
+        "listedAt": "2026-10-09"
       }
     },
     {
@@ -1150,7 +1156,7 @@
       },
       "_specsPulled": "2026-08-20",
       "file": "tpc-sawgrass-polo.jpg",
-      "_ebayUrl": "https://www.ebay.com/itm/407157494692",
+      "_ebayUrl": "https://www.ebay.com/itm/377555832302",
       "_stripe": {
         "product": "prod_VEm5YKUSasCvux",
         "price": "price_1ULsh1C1bWq01lTKOJuuoVJe",
@@ -1159,6 +1165,12 @@
         "mode": "live",
         "minted": "2026-09-11",
         "repriced": "2026-10-02"
+      },
+      "_ebay": {
+        "itemId": "377555832302",
+        "sku": "stock-tpc-sawgrass-polo",
+        "price": 21.99,
+        "listedAt": "2026-10-09"
       }
     },
     {
@@ -1335,7 +1347,7 @@
       },
       "_specsPulled": "2026-08-20",
       "file": "shinnecock-hills-polo.jpg",
-      "_ebayUrl": "https://www.ebay.com/itm/407157470232",
+      "_ebayUrl": "https://www.ebay.com/itm/377555832313",
       "_stripe": {
         "product": "prod_VEm5pbeIp9CAn3",
         "price": "price_1ULsctC1bWq01lTKKQBypgO9",
@@ -1344,6 +1356,12 @@
         "mode": "live",
         "minted": "2026-09-11",
         "repriced": "2026-10-02"
+      },
+      "_ebay": {
+        "itemId": "377555832313",
+        "sku": "stock-shinnecock-hills-polo",
+        "price": 49.49,
+        "listedAt": "2026-10-09"
       }
     },
     {
@@ -1453,7 +1471,7 @@
       },
       "_specsPulled": "2026-08-20",
       "file": "cross-creek-polo.jpg",
-      "_ebayUrl": "https://www.ebay.com/itm/407157525971",
+      "_ebayUrl": "https://www.ebay.com/itm/377555832333",
       "_stripe": {
         "product": "prod_VEm5eWeDsppdXj",
         "price": "price_1ULsbUC1bWq01lTK1iTXwVMH",
@@ -1462,6 +1480,12 @@
         "mode": "live",
         "minted": "2026-09-11",
         "repriced": "2026-10-02"
+      },
+      "_ebay": {
+        "itemId": "377555832333",
+        "sku": "stock-cross-creek-polo",
+        "price": 21.99,
+        "listedAt": "2026-10-09"
       }
     },
     {
@@ -1521,7 +1545,7 @@
       },
       "_specsPulled": "2026-08-20",
       "file": "boones-trace-national-polo.jpg",
-      "_ebayUrl": "https://www.ebay.com/itm/407157461976",
+      "_ebayUrl": "https://www.ebay.com/itm/377555832346",
       "_stripe": {
         "product": "prod_VEm5UeQIeX9R9N",
         "price": "price_1ULsaCC1bWq01lTKqGyZT1g3",
@@ -1530,6 +1554,12 @@
         "mode": "live",
         "minted": "2026-09-11",
         "repriced": "2026-10-02"
+      },
+      "_ebay": {
+        "itemId": "377555832346",
+        "sku": "stock-boones-trace-national-polo",
+        "price": 27.49,
+        "listedAt": "2026-10-09"
       }
     },
     {
@@ -1585,7 +1615,7 @@
       },
       "_specsPulled": "2026-08-20",
       "file": "peter-millar-hermitage-polo-teal.jpg",
-      "_ebayUrl": "https://www.ebay.com/itm/407154712484",
+      "_ebayUrl": "https://www.ebay.com/itm/377555832373",
       "_stripe": {
         "product": "prod_VEm5LXJqqu9Buc",
         "price": "price_1ULsZ7C1bWq01lTKCADRm1G4",
@@ -1594,6 +1624,12 @@
         "mode": "live",
         "minted": "2026-09-11",
         "repriced": "2026-10-02"
+      },
+      "_ebay": {
+        "itemId": "377555832373",
+        "sku": "stock-peter-millar-hermitage-polo-teal",
+        "price": 54.99,
+        "listedAt": "2026-10-09"
       }
     },
     {
@@ -1650,7 +1686,7 @@
       },
       "_specsPulled": "2026-08-20",
       "file": "pga-national-honda-classic-polo.jpg",
-      "_ebayUrl": "https://www.ebay.com/itm/407154740942",
+      "_ebayUrl": "https://www.ebay.com/itm/377555832388",
       "_stripe": {
         "product": "prod_VEm50VbyuyohCO",
         "price": "price_1ULsVCC1bWq01lTKyAhNm1uK",
@@ -1659,6 +1695,12 @@
         "mode": "live",
         "minted": "2026-09-11",
         "repriced": "2026-10-02"
+      },
+      "_ebay": {
+        "itemId": "377555832388",
+        "sku": "stock-pga-national-honda-classic-polo",
+        "price": 27.49,
+        "listedAt": "2026-10-09"
       }
     },
     {
@@ -1714,7 +1756,7 @@
       },
       "_specsPulled": "2026-08-20",
       "file": "peter-millar-hermitage-polo-navy.jpg",
-      "_ebayUrl": "https://www.ebay.com/itm/407154728451",
+      "_ebayUrl": "https://www.ebay.com/itm/377555832408",
       "_stripe": {
         "product": "prod_VEm5eyr7GznbaP",
         "price": "price_1ULsW1C1bWq01lTKo0NH8Vmk",
@@ -1723,6 +1765,12 @@
         "mode": "live",
         "minted": "2026-09-11",
         "repriced": "2026-10-02"
+      },
+      "_ebay": {
+        "itemId": "377555832408",
+        "sku": "stock-peter-millar-hermitage-polo-navy",
+        "price": 54.99,
+        "listedAt": "2026-10-09"
       }
     },
     {
@@ -1780,7 +1828,7 @@
       },
       "_specsPulled": "2026-08-20",
       "file": "all-over-print-golf-sweater.jpg",
-      "_ebayUrl": "https://www.ebay.com/itm/407154689365",
+      "_ebayUrl": "https://www.ebay.com/itm/377555832421",
       "_stripe": {
         "product": "prod_VEm5Vz6OpRW3Z9",
         "price": "price_1ULsTcC1bWq01lTKweADIF2N",
@@ -1789,6 +1837,12 @@
         "mode": "live",
         "minted": "2026-09-11",
         "repriced": "2026-10-02"
+      },
+      "_ebay": {
+        "itemId": "377555832421",
+        "sku": "stock-all-over-print-golf-sweater",
+        "price": 82.49,
+        "listedAt": "2026-10-09"
       }
     },
     {
@@ -1851,7 +1905,7 @@
       },
       "_specsPulled": "2026-08-24",
       "file": "pinehurst-tc-reverse-weave.jpg",
-      "_ebayUrl": "https://www.ebay.com/itm/407167043654",
+      "_ebayUrl": "https://www.ebay.com/itm/377555832433",
       "_stripe": {
         "product": "prod_VEm5m6JgQIOxpB",
         "price": "price_1ULsRlC1bWq01lTKYCfjjVNP",
@@ -1860,6 +1914,12 @@
         "mode": "live",
         "minted": "2026-09-11",
         "repriced": "2026-10-02"
+      },
+      "_ebay": {
+        "itemId": "377555832433",
+        "sku": "TA_TC26_03",
+        "price": 82.49,
+        "listedAt": "2026-10-09"
       }
     },
     {
@@ -1921,7 +1981,7 @@
       },
       "_specsPulled": "2026-08-24",
       "file": "slazenger-pga-tc-polo.jpg",
-      "_ebayUrl": "https://www.ebay.com/itm/407167042454",
+      "_ebayUrl": "https://www.ebay.com/itm/377555832444",
       "_stripe": {
         "product": "prod_VEm5AWkOwPela1",
         "price": "price_1ULsOJC1bWq01lTKmKSneUtf",
@@ -1930,6 +1990,12 @@
         "mode": "live",
         "minted": "2026-09-11",
         "repriced": "2026-10-02"
+      },
+      "_ebay": {
+        "itemId": "377555832444",
+        "sku": "TA_TC26_01",
+        "price": 71.49,
+        "listedAt": "2026-10-09"
       }
     },
     {
@@ -1986,7 +2052,7 @@
       },
       "_specsPulled": "2026-08-24",
       "file": "southern-hills-tc-hat.jpg",
-      "_ebayUrl": "https://www.ebay.com/itm/407167036049",
+      "_ebayUrl": "https://www.ebay.com/itm/377555832462",
       "_stripe": {
         "product": "prod_VEm5PVtzLt7vy0",
         "price": "price_1ULsKtC1bWq01lTKeWCnZp9v",
@@ -1995,6 +2061,12 @@
         "mode": "live",
         "minted": "2026-09-11",
         "repriced": "2026-10-02"
+      },
+      "_ebay": {
+        "itemId": "377555832462",
+        "sku": "TA_TC26_06",
+        "price": 49.49,
+        "listedAt": "2026-10-09"
       }
     },
     {
