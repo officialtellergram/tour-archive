@@ -1383,7 +1383,8 @@
         "soldOrder": "13-15268-91524",
         "soldAt": "2026-10-09"
       },
-      "sold": true
+      "sold": true,
+      "_saleNotified": "2026-10-09"
     },
     {
       "id": "stock-izod-abstract-golf-polo",
