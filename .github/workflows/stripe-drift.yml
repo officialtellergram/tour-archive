@@ -85,6 +85,12 @@ jobs:
         continue-on-error: true
         env:
           EBAY_SYNC_SECRET: ${{ secrets.EBAY_SYNC_SECRET }}
+          # Repository variables (Settings → Secrets and variables → Variables):
+          # the eBay price above the site's (0.10 = +10 %), the days a drop
+          # stays site-only, and the switch that lets the job create listings.
+          EBAY_PRICE_MARKUP: ${{ vars.EBAY_PRICE_MARKUP }}
+          EBAY_DROP_DELAY_DAYS: ${{ vars.EBAY_DROP_DELAY_DAYS }}
+          EBAY_LISTING_ENABLED: ${{ vars.EBAY_LISTING_ENABLED }}
         run: |
           set -o pipefail
           node scripts/ebay-sync.mjs --write | tee ebay.log

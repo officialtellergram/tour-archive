@@ -207,10 +207,29 @@ async function ebayToken(request, env) {
   }
 }
 
+/** GET /ebay/app-token — an application token (client credentials) for the
+ *  read-only catalogue APIs such as Taxonomy, which refuse a user token. */
+const KV_APP = 'ebay:app';
+async function ebayAppToken(request, env) {
+  const auth = request.headers.get('authorization') || '';
+  if (!env.EBAY_SYNC_SECRET || auth !== `Bearer ${env.EBAY_SYNC_SECRET}`) return text('unauthorised', 401);
+  const cached = await env.EBAY.get(KV_APP, 'json');
+  if (cached && cached.expires_at - Date.now() > 5 * 60 * 1000) return Response.json(cached);
+  try {
+    const t = await ebayTokenCall(env, { grant_type: 'client_credentials', scope: 'https://api.ebay.com/oauth/api_scope' });
+    const out = { access_token: t.access_token, expires_at: Date.now() + (t.expires_in || 7200) * 1000 };
+    await env.EBAY.put(KV_APP, JSON.stringify(out), { expirationTtl: t.expires_in || 7200 });
+    return Response.json(out);
+  } catch (err) {
+    return text(`app token failed: ${err.message}`, 502);
+  }
+}
+
 export default {
   async fetch(request, env) {
     const { pathname } = new URL(request.url);
     if (pathname === EBAY_DELETION_PATH) return ebayAccountDeletion(request, env);
+    if (pathname === '/ebay/app-token') return ebayAppToken(request, env);
     if (pathname === '/ebay/oauth/start') return ebayOAuthStart(request, env);
     if (pathname === '/ebay/oauth/callback') return ebayOAuthCallback(request, env);
     if (pathname === '/ebay/token') return ebayToken(request, env);

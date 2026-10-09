@@ -1,4 +1,25 @@
-# eBay bulk upload — how to list the archive in one go
+# eBay — listing the archive
+
+## Listing by API (the normal way, from October 2026)
+
+The same job that watches Stripe lists each live piece on eBay by itself:
+title, description, photographs, specifics and terms composed from the
+catalogue record, at the site price plus the eBay markup (a repository
+variable, `EBAY_PRICE_MARKUP`, 0.10 = ten percent). Pieces from a drop are
+held site-only for `EBAY_DROP_DELAY_DAYS` (14) after the drop opens; general
+stock lists at once. At most 12 listings are created per run, so a full
+catalogue takes a few runs. `EBAY_LISTING_ENABLED` must be `true` for the
+job to create listings; set it to `false` to stop, and the sync still
+closes out sales and prices both ways.
+
+A piece that eBay refuses (a missing specific such as Size, Material or
+Outer Shell Material) is reported in the run summary each time and lists
+itself as soon as the record has the fact. Nothing needs re-running.
+
+`npm run ebay:sync` prints what the job would do, with every listing
+verified by eBay but not created.
+
+## Bulk upload CSV (the manual fallback)
 
 The file `ebay-bulk-upload.csv` holds every piece that is for sale on the site
 right now, one row each, in the format eBay's Seller Hub uploads. Sold and
