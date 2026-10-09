@@ -2224,7 +2224,9 @@
         "Product": "Club",
         "Sport": "Golf",
         "Brand": "Pga Tour",
-        "Event/Tournament": "Tour Championship"
+        "Event/Tournament": "Tour Championship",
+        "Material": "Terry Cloth",
+        "Type": "Bag Towel"
       },
       "_specsPulled": "2026-08-24",
       "file": "tc-east-lake-bag-towel.jpg",
@@ -3206,7 +3208,7 @@
       "year": "—",
       "category": "Knitwear",
       "garment": "sweater",
-      "size": "See photos",
+      "size": "L",
       "condition": "Pre-owned",
       "price": 29.99,
       "colorway": [
@@ -3247,7 +3249,10 @@
         "carousel/vintage-country-club-of-virginia-sweater/02.jpg",
         "carousel/vintage-country-club-of-virginia-sweater/03.jpg"
       ],
-      "_photosPulled": "2026-10-08"
+      "_photosPulled": "2026-10-08",
+      "specifics": {
+        "Size": "L"
+      }
     },
     {
       "id": "stock-peter-millar-x-scotty-cameron-polo",
@@ -3351,7 +3356,10 @@
         "carousel/vintage-tpc-windbreaker/03.jpg",
         "carousel/vintage-tpc-windbreaker/04.jpg"
       ],
-      "_photosPulled": "2026-10-08"
+      "_photosPulled": "2026-10-08",
+      "specifics": {
+        "Outer Shell Material": "Polyester"
+      }
     }
   ]
 }
