@@ -289,7 +289,8 @@
         "listedAt": "2026-10-09",
         "pictures": "sq1",
         "soldOrder": "14-15264-56618",
-        "soldAt": "2026-10-09"
+        "soldAt": "2026-10-09",
+        "stripeInvoice": "in_1UOikmC1bWq01lTKOS1qlvY3"
       },
       "sold": true,
       "_saleNotified": "backfill-2026-10-09"
@@ -1384,7 +1385,8 @@
         "cancelledOrder": "13-15268-91524",
         "cancelledAt": "2026-10-09",
         "soldOrder": "06-15282-35373",
-        "soldAt": "2026-10-09"
+        "soldAt": "2026-10-09",
+        "stripeInvoice": "in_1UOiksC1bWq01lTKR91nsq58"
       },
       "sold": true,
       "_saleNotified": "2026-10-09"
@@ -3452,7 +3454,8 @@
         "listedAt": "2026-10-09",
         "pictures": "sq1",
         "soldOrder": "25-15246-21106",
-        "soldAt": "2026-10-09"
+        "soldAt": "2026-10-09",
+        "stripeInvoice": "in_1UOikwC1bWq01lTKqqehIXrl"
       },
       "_ebayUrl": "https://www.ebay.com/itm/377555836137",
       "sold": true,
@@ -3634,7 +3637,8 @@
         "listedAt": "2026-10-09",
         "pictures": "sq1",
         "soldOrder": "10-15272-86159",
-        "soldAt": "2026-10-09"
+        "soldAt": "2026-10-09",
+        "stripeInvoice": "in_1UOil1C1bWq01lTKwVFQiV9C"
       },
       "_ebayUrl": "https://www.ebay.com/itm/377555836212",
       "sold": true,

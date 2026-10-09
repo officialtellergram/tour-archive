@@ -107,6 +107,25 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
           rm -f ebay.log
 
+      # eBay sales into Stripe as invoices paid out of band (both channels in
+      # Stripe's invoice views and Sigma); a cancellation after invoicing gets
+      # a full credit note. Needs Customers/Invoices/Credit notes write on the key.
+      - name: Log eBay sales in Stripe
+        if: steps.key.outputs.present == 'true'
+        continue-on-error: true
+        env:
+          EBAY_SYNC_SECRET: ${{ secrets.EBAY_SYNC_SECRET }}
+        run: |
+          set -o pipefail
+          node scripts/ebay-to-stripe.mjs --write | tee invoices.log
+          {
+            echo '### eBay sales → Stripe'
+            echo '```'
+            sed 's/\[[0-9;]*m//g' invoices.log | tail -12
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          rm -f invoices.log
+
       # One sale notice per sold piece, either channel, to the team: buyer,
       # address, ship-by. Sent from the Tour Archive Gmail with an App
       # Password; the piece is stamped so it is never announced twice.
