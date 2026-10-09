@@ -121,7 +121,7 @@ jobs:
           {
             echo '### eBay sales → Stripe'
             echo '```'
-            sed 's/\[[0-9;]*m//g' invoices.log | tail -12
+            sed 's/\x1b\[[0-9;]*m//g' invoices.log | tail -12
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
           rm -f invoices.log
