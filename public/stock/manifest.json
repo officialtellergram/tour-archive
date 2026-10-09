@@ -3599,8 +3599,6 @@
         "mode": "live",
         "minted": "2026-10-08"
       },
-      "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/9B614mbuQaTP5VQ8VQ9k41h",
       "photos": [
         "carousel/peter-millar-x-scotty-cameron-polo/01.jpg",
         "carousel/peter-millar-x-scotty-cameron-polo/02.jpg",
@@ -3616,9 +3614,12 @@
         "sku": "stock-peter-millar-x-scotty-cameron-polo",
         "price": 109.99,
         "listedAt": "2026-10-09",
-        "pictures": "sq1"
+        "pictures": "sq1",
+        "soldOrder": "10-15272-86159",
+        "soldAt": "2026-10-09"
       },
-      "_ebayUrl": "https://www.ebay.com/itm/377555836212"
+      "_ebayUrl": "https://www.ebay.com/itm/377555836212",
+      "sold": true
     },
     {
       "id": "stock-vintage-tpc-windbreaker",
