@@ -12,6 +12,13 @@ catalogue takes a few runs. `EBAY_LISTING_ENABLED` must be `true` for the
 job to create listings; set it to `false` to stop, and the sync still
 closes out sales and prices both ways.
 
+Nothing is listed twice. The catalogue record remembers each piece's eBay
+listing; when eBay's list of active listings leaves one out, the job asks
+eBay about that listing by itself and relists only one that eBay confirms
+ended without a sale. If eBay says the listing is still active, the list
+was short and no listing is created that run. Should two active listings
+ever share a SKU, the job ends the newer one (and says so in the summary).
+
 The first picture of every listing is a square version of the hero made
 for eBay's square gallery tile (the garment's outline, the wall continued
 around it, nothing cropped); the portrait photographs follow it.

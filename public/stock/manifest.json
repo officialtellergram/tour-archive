@@ -74,10 +74,13 @@
       "_ebay": {
         "itemId": "377555830559",
         "sku": "TA_GS_04",
-        "price": 54.99,
+        "price": 0,
         "listedAt": "2026-10-11",
         "pictures": "sq1",
-        "seen": "2026-10-12"
+        "seen": "2026-10-12",
+        "duplicateEnded": [
+          "377563031247"
+        ]
       }
     },
     {
@@ -214,10 +217,13 @@
       "_ebay": {
         "itemId": "377555830575",
         "sku": "TA_GS_05",
-        "price": 82.49,
+        "price": 0,
         "listedAt": "2026-10-11",
         "pictures": "sq1",
-        "seen": "2026-10-12"
+        "seen": "2026-10-12",
+        "duplicateEnded": [
+          "377563031339"
+        ]
       }
     },
     {
@@ -367,10 +373,13 @@
       "_ebay": {
         "itemId": "377555830593",
         "sku": "TA_GS_10",
-        "price": 49.49,
+        "price": 0,
         "listedAt": "2026-10-11",
         "pictures": "sq1",
-        "seen": "2026-10-12"
+        "seen": "2026-10-12",
+        "duplicateEnded": [
+          "377563031463"
+        ]
       }
     },
     {
@@ -435,10 +444,13 @@
       "_ebay": {
         "itemId": "377555830640",
         "sku": "TA_GS_01",
-        "price": 27.49,
+        "price": 0,
         "listedAt": "2026-10-11",
         "pictures": "sq1",
-        "seen": "2026-10-12"
+        "seen": "2026-10-12",
+        "duplicateEnded": [
+          "377563031573"
+        ]
       }
     },
     {
@@ -508,10 +520,13 @@
       "_ebay": {
         "itemId": "377555830687",
         "sku": "TA_GS_03",
-        "price": 21.99,
+        "price": 0,
         "listedAt": "2026-10-11",
         "pictures": "sq1",
-        "seen": "2026-10-12"
+        "seen": "2026-10-12",
+        "duplicateEnded": [
+          "377563031685"
+        ]
       }
     },
     {
@@ -637,10 +652,13 @@
       "_ebay": {
         "itemId": "377555830792",
         "sku": "TS_GA_08",
-        "price": 49.49,
+        "price": 0,
         "listedAt": "2026-10-11",
         "pictures": "sq1",
-        "seen": "2026-10-12"
+        "seen": "2026-10-12",
+        "duplicateEnded": [
+          "377563031803"
+        ]
       }
     },
     {
@@ -711,10 +729,13 @@
       "_ebay": {
         "itemId": "377555830860",
         "sku": "TA_GS_06",
-        "price": 21.99,
+        "price": 0,
         "listedAt": "2026-10-11",
         "pictures": "sq1",
-        "seen": "2026-10-12"
+        "seen": "2026-10-12",
+        "duplicateEnded": [
+          "377563031866"
+        ]
       }
     },
     {
@@ -784,10 +805,13 @@
       "_ebay": {
         "itemId": "377555830934",
         "sku": "TA_GS_12",
-        "price": 32.99,
+        "price": 0,
         "listedAt": "2026-10-11",
         "pictures": "sq1",
-        "seen": "2026-10-12"
+        "seen": "2026-10-12",
+        "duplicateEnded": [
+          "377563031939"
+        ]
       }
     },
     {
@@ -857,10 +881,13 @@
       "_ebay": {
         "itemId": "377555831011",
         "sku": "TA_GS_13",
-        "price": 126.49,
+        "price": 0,
         "listedAt": "2026-10-11",
         "pictures": "sq1",
-        "seen": "2026-10-12"
+        "seen": "2026-10-12",
+        "duplicateEnded": [
+          "377563032004"
+        ]
       }
     },
     {
@@ -928,10 +955,13 @@
       "_ebay": {
         "itemId": "377555831089",
         "sku": "stock-tasmanian-devil-golf-polo",
-        "price": 21.99,
+        "price": 0,
         "listedAt": "2026-10-11",
         "pictures": "sq1",
-        "seen": "2026-10-12"
+        "seen": "2026-10-12",
+        "duplicateEnded": [
+          "377563032100"
+        ]
       }
     },
     {
@@ -998,10 +1028,13 @@
       "_ebay": {
         "itemId": "377555831151",
         "sku": "stock-wild-dunes-multicolor-polo",
-        "price": 27.49,
+        "price": 0,
         "listedAt": "2026-10-11",
         "pictures": "sq1",
-        "seen": "2026-10-12"
+        "seen": "2026-10-12",
+        "duplicateEnded": [
+          "377563032181"
+        ]
       }
     },
     {
@@ -1127,10 +1160,13 @@
       "_ebay": {
         "itemId": "377555832286",
         "sku": "stock-taylormade-navy-sweater",
-        "price": 137.49,
+        "price": 0,
         "listedAt": "2026-10-11",
         "pictures": "sq1",
-        "seen": "2026-10-12"
+        "seen": "2026-10-12",
+        "duplicateEnded": [
+          "377563032243"
+        ]
       }
     },
     {

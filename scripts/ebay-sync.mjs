@@ -11,13 +11,20 @@
  * One run, in order:
  *   1. MAP        GetMyeBaySelling → every active eBay listing by SKU (the
  *                 manifest sku, else the id) → _ebay ledger: itemId, url, price.
+ *                 Two active listings for one SKU: the ledger's (else the
+ *                 older) stays, the rest are ended. A ledgered listing missing
+ *                 from the answer is checked with GetItem; if eBay says it is
+ *                 still active, the answer was short and step 5 is skipped.
+ *                 (11 Oct 2026: one empty answer produced twelve duplicates.)
  *   2. SOLD ON    Fulfillment getOrders → a PAID order for a piece's SKU marks
  *      EBAY       it sold here, removes its checkout, deactivates its Stripe link.
  *   3. SOLD HERE  a piece sold or retired here still live on eBay → EndFixedPriceItem.
  *   4. PRICE      eBay price ≠ catalogue price × (1 + EBAY_PRICE_MARKUP) → ReviseFixedPriceItem.
  *   5. LIST       a live piece with no eBay listing, past its drop hold, not
  *                 marked _ebay.skip → AddFixedPriceItem (VerifyAddFixedPriceItem
- *                 in report mode). At most LIST_PER_RUN per run.
+ *                 in report mode). At most LIST_PER_RUN per run. A piece whose
+ *                 ledgered listing eBay confirmed ended without a sale counts
+ *                 as having none; anything else ledgered is never listed again.
  *
  * Drop hold: a piece in a collection with an event gets listed only
  * EBAY_DROP_DELAY_DAYS (default 14) after the drop opens; general stock lists
@@ -96,7 +103,7 @@ async function activeListings(token) {
       `<ActiveList><Include>true</Include><Pagination><EntriesPerPage>200</EntriesPerPage><PageNumber>${page}</PageNumber></Pagination></ActiveList><DetailLevel>ReturnAll</DetailLevel>`);
     const list = xml.split('<ActiveList>')[1]?.split('</ActiveList>')[0] || '';
     for (const item of blocks(list, 'Item')) {
-      found.push({ itemId: pick(item, 'ItemID'), sku: pick(item, 'SKU'), title: pick(item, 'Title'), price: Number(pick(item, 'CurrentPrice')), url: pick(item, 'ViewItemURL') });
+      found.push({ itemId: pick(item, 'ItemID'), sku: pick(item, 'SKU'), title: pick(item, 'Title'), price: Number(pick(item, 'CurrentPrice')), url: pick(item, 'ViewItemURL'), start: pick(item, 'StartTime') });
     }
     if (page >= Number(pick(list, 'TotalNumberOfPages') || 1)) break;
   }
@@ -189,7 +196,31 @@ try {
   if (daysLeft < 30) console.log(`${C.yellow}   ⚠ eBay consent expires in ${daysLeft} day(s) — the account holder must sign in again at /ebay/oauth/start${C.off}`);
 
   // 1. map
-  const listings = await activeListings(token);
+  let listings = await activeListings(token);
+  // Twins: two active listings for one piece can only come from a listing
+  // made twice (11 Oct 2026: eBay once answered the active list with zero
+  // rows and twelve pieces were listed again). The ledger's listing stays —
+  // failing that, the older one — and the rest are ended here and now.
+  const twins = new Map();
+  for (const l of listings) if (l.sku) twins.set(l.sku, [...(twins.get(l.sku) || []), l]);
+  for (const [sku, arr] of twins) {
+    if (arr.length < 2) continue;
+    const e = bySku.get(sku);
+    const keep = arr.find((l) => l.itemId === e?._ebay?.itemId) || [...arr].sort((a, b) => a.start.localeCompare(b.start))[0];
+    for (const d of arr.filter((l) => l !== keep)) {
+      console.log(`${C.yellow}   ⚠ ${sku}: listed twice — ${WRITE ? 'ending' : 'would end'} ${d.itemId} (${d.start.slice(0, 10)}), keeping ${keep.itemId}${C.off}`);
+      if (!WRITE) continue;
+      try {
+        await trading(token, 'EndFixedPriceItem', `<ItemID>${xmlEsc(d.itemId)}</ItemID><EndingReason>NotAvailable</EndingReason>`, ['1047']);
+        listings = listings.filter((l) => l !== d);
+        if (e?._ebay) e._ebay.duplicateEnded = [...(e._ebay.duplicateEnded || []), d.itemId];
+      } catch (err) {
+        console.log(`${C.red}   ✖ ${sku}: could not end the twin ${d.itemId}: ${err.message}${C.off}`);
+        failures += 1;
+      }
+    }
+  }
+  const activeIds = new Set(listings.map((l) => l.itemId));
   let matched = 0;
   for (const l of listings) {
     const e = bySku.get(l.sku);
@@ -204,8 +235,44 @@ try {
     }
   }
   console.log(`${C.dim}   ${listings.length} active eBay listing(s) · ${matched} matched to the catalogue · ${listings.length - matched} unknown SKU(s)${C.off}`);
+  // Trust check. The ledger remembers every live piece's listing; a ledgered
+  // listing missing from eBay's answer is asked about by itself (GetItem).
+  // Only one eBay confirms ended without a sale may be listed again. If eBay
+  // says it is still active, the active list was short and nothing new is
+  // listed this run — a short answer must never read as "nothing is listed".
+  const endedUnsold = new Set();
+  let mapSuspect = false;
+  for (const e of manifest.items.filter((x) => x._ebay?.itemId && !x.sold && !x.retired && !activeIds.has(x._ebay.itemId))) {
+    const id = e._ebay.itemId;
+    let status = 'unknown';
+    let sold = 0;
+    try {
+      const { xml } = await trading(token, 'GetItem', `<ItemID>${xmlEsc(id)}</ItemID><OutputSelector>Item.SellingStatus.ListingStatus</OutputSelector><OutputSelector>Item.SellingStatus.QuantitySold</OutputSelector>`);
+      status = pick(xml, 'ListingStatus') || 'unknown';
+      sold = Number(pick(xml, 'QuantitySold') || 0);
+    } catch (err) {
+      mapSuspect = true;
+      console.log(`${C.yellow}   ⚠ ${e.id}: listing ${id} is not in the active list and GetItem failed (${err.message.slice(0, 90)})${C.off}`);
+      continue;
+    }
+    if (status === 'Active') {
+      mapSuspect = true;
+      console.log(`${C.yellow}   ⚠ ${e.id}: listing ${id} is active on eBay but missing from the active list${C.off}`);
+      continue;
+    }
+    if (status !== 'Completed' && status !== 'Ended') {
+      console.log(`${C.yellow}   ⚠ ${e.id}: listing ${id} is "${status}" on eBay; left alone${C.off}`);
+      continue;
+    }
+    if (sold > 0 && !e._ebay.cancelledOrder) {
+      console.log(`${C.yellow}   ⚠ ${e.id}: listing ${id} ended with a sale the order sweep has not recorded; left alone${C.off}`);
+      continue;
+    }
+    endedUnsold.add(id);
+    console.log(`${C.dim}   · ${e.id}: listing ${id} ended on eBay without a sale; may be listed again${C.off}`);
+  }
+  if (mapSuspect) console.log(`${C.yellow}   ⚠ eBay's active list looks incomplete (${listings.length} rows); no listing will be created this run${C.off}`);
   for (const l of listings.filter((x) => !bySku.has(x.sku))) console.log(`${C.yellow}   ⚠ eBay ${l.itemId} "${l.title.slice(0, 50)}" SKU "${l.sku}" is not in the catalogue${C.off}`);
-  const activeIds = new Set(listings.map((l) => l.itemId));
 
   // 2. sold on eBay — and cancelled on eBay. An order cancelled after the
   //    sync marked its piece sold (buyer's request, approved in Seller Hub,
@@ -297,8 +364,10 @@ try {
   const held = [];
   for (const e of manifest.items) {
     if (WRITE && !LISTING_ON) break;
+    if (mapSuspect) break;
     if (e._ebay?.itemId && activeIds.has(e._ebay.itemId)) continue;
     if (e._ebay?.skip) continue;
+    if (e._ebay?.itemId && !e.sold && !e.retired && !endedUnsold.has(e._ebay.itemId)) continue;
     const ok = listable(e);
     if (!ok.ok) {
       if (ok.why !== 'not for sale') console.log(`${C.dim}   · ${e.id}: not listed — ${ok.why}${C.off}`);
