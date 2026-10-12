@@ -36,7 +36,7 @@ export function collectionsIndex() {
           <p class="lede" data-hero-cta>
             Every piece we buy is placed into the championship era it came from. ${
               fc && ev
-                ? `${fc.drop} ${ev.phase === 'past' ? 'ran' : 'runs'} ${dateRange(ev)} at ${fc.place}`
+                ? `${fc.drop} ${ev.phase === 'past' || ev.phase === 'featured' ? 'ran' : 'runs'} ${dateRange(ev)} at ${fc.place}`
                 : 'Each drop opens tournament week'
             }, and Basic Stock — the open shelf — is listed continuously as pieces are
             photographed.

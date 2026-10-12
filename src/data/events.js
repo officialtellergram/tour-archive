@@ -26,6 +26,10 @@ export const events = [
     /** Two weeks after the trophy. Editorial — when we stop fronting the
         landing with it; the pieces stay on sale after. */
     dropCloses: '2026-10-11',
+    /** Keep fronting the landing with the drop after its window shuts
+        (Karen, 12 Oct 2026). Move or remove this date to let the page roll
+        over to the off-season look. */
+    featureUntil: '2026-11-30',
   },
   {
     id: 'tour-championship-2026',
@@ -60,6 +64,9 @@ export function eventPhase(event, now = Date.now()) {
   if (now < opens) return 'upcoming';
   if (now <= ends + day) return 'live';
   if (now <= closes) return 'closing';
+  // 'featured': the window is shut but the drop still leads the landing —
+  // an editorial choice on the record, not a date the calendar decides.
+  if (event.featureUntil && now <= parse(event.featureUntil)) return 'featured';
   return 'past';
 }
 
@@ -73,6 +80,7 @@ export function featuredEvent(now = Date.now()) {
   return (
     phased.find((e) => e.phase === 'live') ||
     phased.find((e) => e.phase === 'closing') ||
+    phased.find((e) => e.phase === 'featured') ||
     phased
       .filter((e) => e.phase === 'upcoming')
       .sort((a, b) => parse(a.starts) - parse(b.starts))[0] ||

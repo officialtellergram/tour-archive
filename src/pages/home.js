@@ -55,6 +55,9 @@ function eventStatus(event) {
       return { chip: 'Now open', line: 'Tournament week. The drop is open — one of each, while it lasts.' };
     case 'closing':
       return { chip: 'Final days', line: 'The trophy is handed over; the drop closes shortly.' };
+    case 'featured':
+      // Weeks after the trophy: still the drop, still one of one, no clock.
+      return { chip: 'Drop No. 02', line: 'The championship is played. The drop stays open — one of each, while it lasts.' };
     case 'past':
       // The drop's WINDOW is shut; its pieces are still one-of-one stock and
       // still buyable, so this must never read as "the shop is closed".
@@ -83,7 +86,7 @@ export function home() {
 
   /* The drop pane LEADS the page while its window is open (live/closing);
      outside the window the shop leads and the drop trails as a preview. */
-  const dropFirst = !!ev && (ev.phase === 'live' || ev.phase === 'closing');
+  const dropFirst = !!ev && (ev.phase === 'live' || ev.phase === 'closing' || ev.phase === 'featured');
 
   /*
    * OFF SEASON. featuredEvent() never returns null — it falls back to the
