@@ -14,12 +14,18 @@ closes out sales and prices both ways.
 
 ## Sales report and fees
 
-`npm run ebay:report` writes `Desktop\Tour Archive\ebay-sales-report.csv`:
-one row per eBay order with Seller Hub's "Payment" panel reproduced by API —
+`npm run sales:report` writes `Desktop\Tour Archive\sales-report.csv`: every
+sold piece from either channel, one row each, the same columns — channel,
 what the buyer paid (subtotal, shipping, sales tax, order total), selling
-costs (transaction fees, shipping label), earnings, funds status, whether
-it shipped or was cancelled and refunded, and the Stripe invoice number.
-Orders come from the Fulfillment API, fees and labels from the Finances API.
+costs (transaction fees, shipping label), earnings, funds status, status,
+refund, buyer, the order or payment reference and the Stripe invoice. It is
+a left join from the catalogue, so a sale with no channel record (the old
+eBay account, before the automations) still appears with its site price and
+the flat $8 shipping and blanks elsewhere. eBay rows reproduce Seller Hub's
+"Payment" panel by API (Fulfillment order + Finances API); Stripe rows come
+from the paid Checkout Session and its balance transaction (Stripe's fee,
+net), with no label column because postage for site sales is not in Stripe.
+`npm run ebay:report` is the eBay-only cut (`ebay-sales-report.csv`).
 
 The same figures sit on each eBay sale's Stripe invoice as metadata
 (`ebay_subtotal`, `ebay_shipping_charged`, `ebay_sales_tax`,
