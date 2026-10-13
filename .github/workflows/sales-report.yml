@@ -3,12 +3,14 @@ name: Sales report
 # The sales report (scripts/sales-report.mjs) into the team's Google Drive
 # folder, with no PC involved. The Cloudflare Worker's cron starts this job
 # (worker/stripe-hook: Mondays for the all-time report, the 1st for last
-# month's statement); it can also be started by hand with a month.
+# month's statement); it can also be started by hand with a month. The CSV
+# is handed to the Worker's report store, and the Apps Script in the team's
+# Drive files it within the hour.
 #
 # Secrets: STRIPE_DRIFT_KEY (Checkout Sessions, Payment Intents, Charges and
 # Balance transactions: read, for the Stripe rows' fee and net), EBAY_SYNC_SECRET
-# (the Worker's broker: eBay tokens and the Google token), SALE_MAIL_* for the
-# failure alert. Variables: DRIVE_FOLDER_ID (optional), SALE_EMAILS.
+# (the Worker's eBay token broker), REPORT_SECRET (the report store),
+# SALE_MAIL_* for the failure alert. Variables: SALE_EMAILS.
 
 on:
   workflow_dispatch:
@@ -66,11 +68,12 @@ jobs:
           path: out/report.csv
           retention-days: 90
 
-      - name: Put it in Google Drive
+      # The Apps Script in the team's Drive collects it from the Worker within
+      # the hour and files it in Transaction Invoices.
+      - name: Hand it to the Worker for Drive
         env:
-          EBAY_SYNC_SECRET: ${{ secrets.EBAY_SYNC_SECRET }}
-          DRIVE_FOLDER_ID: ${{ vars.DRIVE_FOLDER_ID }}
-        run: node scripts/drive-upload.mjs out/report.csv "${{ steps.report.outputs.name }}"
+          REPORT_SECRET: ${{ secrets.REPORT_SECRET }}
+        run: node scripts/report-publish.mjs out/report.csv "${{ steps.report.outputs.name }}"
 
       - name: Tell the team the report failed
         if: failure()

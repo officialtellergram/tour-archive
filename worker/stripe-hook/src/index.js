@@ -16,8 +16,8 @@
  *
  * The cron (wrangler.jsonc) also starts the sales report job on GitHub —
  * Mondays the all-time report, the 1st of the month last month's statement
- * — and /google/* holds the Google sign-in whose token lets that job put
- * the CSV in the team's Drive folder (GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET).
+ * — and /report/* is the hand-off: the job PUTs the CSV here, the Apps
+ * Script in the team's Drive GETs it and files it (REPORT_SECRET).
  */
 
 const REPO = 'officialtellergram/tour-archive';
@@ -234,77 +234,48 @@ async function ebayAppToken(request, env) {
   }
 }
 
-// ── Google: the one-time sign-in and the token broker, for the Drive upload
-//    in sales-report.yml. Same shape as eBay's: the refresh token lives in
-//    KV, never on GitHub; the job gets a short-lived access token.
-const GOOGLE_AUTH = 'https://accounts.google.com/o/oauth2/v2/auth';
-const GOOGLE_TOKEN = 'https://oauth2.googleapis.com/token';
-const GOOGLE_SCOPE = 'https://www.googleapis.com/auth/drive'; // the existing folder, not only app-made files
-const KV_G_REFRESH = 'google:refresh';
-const KV_G_ACCESS = 'google:access';
-const googleRedirect = (request) => `${new URL(request.url).origin}/google/oauth/callback`;
+// ── Report store: the sales report job on GitHub PUTs its CSV here; the
+//    Apps Script in Karen's Drive GETs it on its own timer and writes it
+//    into the Transaction Invoices folder. No Google credentials anywhere.
+//    Bearer REPORT_SECRET on every call (a narrow secret: it can only read
+//    and write reports, never touch eBay or Stripe).
+const KV_REPORT = 'report:'; // + file name → { csv, updated }
 
-async function googleTokenCall(env, params) {
-  const res = await fetch(GOOGLE_TOKEN, {
-    method: 'POST',
-    headers: { 'content-type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({ client_id: env.GOOGLE_CLIENT_ID, client_secret: env.GOOGLE_CLIENT_SECRET, ...params }).toString(),
-  });
-  const json = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(`${res.status} ${json.error || ''} ${json.error_description || ''}`.trim());
-  return json;
-}
-
-async function googleOAuthStart(request, env) {
-  const missing = ['GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET', 'EBAY_SYNC_SECRET'].filter((k) => !env[k]);
-  if (missing.length) return page('Not ready', `<p>Missing Worker secrets: ${missing.join(', ')}.</p>`, 500);
-  const u = new URL(GOOGLE_AUTH);
-  u.searchParams.set('client_id', env.GOOGLE_CLIENT_ID);
-  u.searchParams.set('redirect_uri', googleRedirect(request));
-  u.searchParams.set('response_type', 'code');
-  u.searchParams.set('scope', GOOGLE_SCOPE);
-  u.searchParams.set('access_type', 'offline'); // a refresh token
-  u.searchParams.set('prompt', 'consent'); // …every time, not only the first
-  u.searchParams.set('state', await stateFor(Date.now(), env));
-  return Response.redirect(u.toString(), 302);
-}
-
-async function googleOAuthCallback(request, env) {
-  const url = new URL(request.url);
-  if (!(await stateOk(url.searchParams.get('state'), env))) {
-    return page('Sign-in did not complete', '<p>The sign-in link was not one this site issued, or it was more than fifteen minutes old.</p><p><a href="/google/oauth/start">Start again</a>.</p>', 400);
-  }
-  const code = url.searchParams.get('code');
-  if (!code) return page('No code', `<p>Google sent no authorisation code${url.searchParams.get('error') ? ` (${url.searchParams.get('error')})` : ''}. If you declined, nothing was changed.</p>`, 400);
-  try {
-    const t = await googleTokenCall(env, { grant_type: 'authorization_code', code, redirect_uri: googleRedirect(request) });
-    if (!t.refresh_token) throw new Error('no refresh token in the reply');
-    await env.EBAY.put(KV_G_REFRESH, JSON.stringify({ token: t.refresh_token, since: new Date().toISOString() }));
-    await env.EBAY.delete(KV_G_ACCESS);
-    return page('Google Drive connected', '<p>The sales report job can now put its CSV in the Transaction Invoices folder.</p><p>This lasts until you revoke it at myaccount.google.com/permissions (or, if the OAuth app is still in "Testing", seven days — publish it to make the sign-in permanent).</p><p>You can close this tab.</p>');
-  } catch (err) {
-    console.log(`google oauth exchange failed: ${err.message}`);
-    return page('Sign-in failed', `<p>Google refused the code exchange: ${String(err.message).replace(/</g, '&lt;')}</p>`, 502);
-  }
-}
-
-/** GET /google/token — Authorization: Bearer <EBAY_SYNC_SECRET> → { access_token, expires_at }. */
-async function googleToken(request, env) {
+function reportAuth(request, env) {
   const auth = request.headers.get('authorization') || '';
-  if (!env.EBAY_SYNC_SECRET || auth !== `Bearer ${env.EBAY_SYNC_SECRET}`) return text('unauthorised', 401);
-  const cached = await env.EBAY.get(KV_G_ACCESS, 'json');
-  if (cached && cached.expires_at - Date.now() > 5 * 60 * 1000) return Response.json(cached);
-  const stored = await env.EBAY.get(KV_G_REFRESH, 'json');
-  if (!stored) return text('Google is not connected: open /google/oauth/start as the Drive owner', 409);
-  try {
-    const t = await googleTokenCall(env, { grant_type: 'refresh_token', refresh_token: stored.token });
-    const out = { access_token: t.access_token, expires_at: Date.now() + (t.expires_in || 3600) * 1000 };
-    await env.EBAY.put(KV_G_ACCESS, JSON.stringify(out), { expirationTtl: t.expires_in || 3600 });
-    return Response.json(out);
-  } catch (err) {
-    console.log(`google refresh failed: ${err.message}`);
-    return text(`refresh failed: ${err.message}`, 502);
+  return !!env.REPORT_SECRET && auth === `Bearer ${env.REPORT_SECRET}`;
+}
+const reportName = (pathname) => {
+  const name = decodeURIComponent(pathname.slice('/report/'.length));
+  return /^[a-z0-9][a-z0-9._-]{0,80}\.csv$/i.test(name) ? name : '';
+};
+
+async function reportRoute(request, env) {
+  if (!reportAuth(request, env)) return text('unauthorised', 401);
+  const { pathname } = new URL(request.url);
+  if (pathname === '/report' || pathname === '/report/') {
+    // the index: every stored report and when it was last written
+    const list = await env.EBAY.list({ prefix: KV_REPORT });
+    const files = [];
+    for (const k of list.keys) files.push({ name: k.name.slice(KV_REPORT.length), updated: k.metadata?.updated || '' });
+    return Response.json({ files });
   }
+  const name = reportName(pathname);
+  if (!name) return text('bad name', 400);
+  if (request.method === 'PUT') {
+    const csv = await request.text();
+    if (!csv || csv.length > 5_000_000) return text('empty or too large', 400);
+    const updated = new Date().toISOString();
+    await env.EBAY.put(KV_REPORT + name, csv, { metadata: { updated } });
+    console.log(`report stored: ${name} (${csv.length} bytes)`);
+    return Response.json({ name, updated, bytes: csv.length });
+  }
+  if (request.method === 'GET') {
+    const got = await env.EBAY.getWithMetadata(KV_REPORT + name);
+    if (!got.value) return text('no such report', 404);
+    return new Response(got.value, { headers: { 'content-type': 'text/csv; charset=utf-8', 'x-updated': got.metadata?.updated || '', 'cache-control': 'no-store' } });
+  }
+  return text('method not allowed', 405);
 }
 
 /** Start a job on GitHub. Shared by the Stripe webhook and the cron. */
@@ -343,9 +314,7 @@ export default {
     if (pathname === '/ebay/oauth/start') return ebayOAuthStart(request, env);
     if (pathname === '/ebay/oauth/callback') return ebayOAuthCallback(request, env);
     if (pathname === '/ebay/token') return ebayToken(request, env);
-    if (pathname === '/google/oauth/start') return googleOAuthStart(request, env);
-    if (pathname === '/google/oauth/callback') return googleOAuthCallback(request, env);
-    if (pathname === '/google/token') return googleToken(request, env);
+    if (pathname === '/report' || pathname.startsWith('/report/')) return reportRoute(request, env);
     if (pathname !== '/') return text('not found', 404);
     if (request.method === 'GET') return text('tour archive stripe hook: ok');
     if (request.method !== 'POST') return text('method not allowed', 405);

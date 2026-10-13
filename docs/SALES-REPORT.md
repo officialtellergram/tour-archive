@@ -26,47 +26,42 @@ npm run ebay:report                   the eBay-only cut, on the Desktop
 Run by hand, the file lands in `G:\My Drive\Finance\Transaction Invoices`
 when Drive for Desktop is mounted, else in `Desktop\Tour Archive`.
 
-## Without a PC: the Worker's clock and GitHub
+## Without a PC: Worker clock → GitHub → Worker store → Apps Script → Drive
 
-`.github/workflows/sales-report.yml` builds the report on GitHub and puts it
-in the Drive folder with `scripts/drive-upload.mjs` (a file of the same name
-is replaced in place, so its link stays). The Cloudflare Worker's cron starts
-it: Mondays 13:00 UTC for the all-time report, the 1st at 13:05 UTC for last
-month's statement. It can also be started by hand: Actions → Sales report →
-Run workflow, with a month or blank. A copy of each CSV stays with the run
-for 90 days, and a failure emails the team.
+`.github/workflows/sales-report.yml` builds the report on GitHub. The
+Cloudflare Worker's cron starts it: Mondays 13:00 UTC for the all-time
+report, the 1st at 13:05 UTC for last month's statement; it can also be
+started by hand (Actions → Sales report → Run workflow, with a month or
+blank). A copy of each CSV stays with the run for 90 days; a failure emails
+the team.
 
-The upload runs as Karen's Google account, through the Worker, the same way
-eBay is wired: the Worker keeps the refresh token in KV and gives the job a
-short-lived access token at `/google/token`. One-time setup:
+The job hands the CSV to the Worker's report store (`PUT /report/<name>`,
+Bearer `REPORT_SECRET`, a narrow secret that can only read and write
+reports). An Apps Script in Karen's Google account checks the store once an
+hour (`GET /report`, then `GET /report/<name>`) and writes anything new into
+the Transaction Invoices folder, replacing a same-named file in place so its
+link and version history stay. No Google credentials or Cloud Console: the
+script runs as Karen with Google's own one-click permission.
 
-1. **Google Cloud console** (console.cloud.google.com), any project:
-   *APIs & Services → Library → Google Drive API → Enable.*
-2. *APIs & Services → OAuth consent screen*: External, app name "Tour
-   Archive", your email as support and developer contact. Add scope
-   `https://www.googleapis.com/auth/drive`. Add your own Google account as a
-   test user. Then **publish the app** (Publishing status → In production;
-   leave it unverified — Google shows a warning screen once, and you click
-   through as the owner). While an app is still "Testing", Google expires
-   the sign-in after seven days.
-3. *APIs & Services → Credentials → Create credentials → OAuth client ID*:
-   Web application, authorised redirect URI exactly
-   `https://tour-archive-stripe-hook.officialtellergram.workers.dev/google/oauth/callback`.
-   Copy the client ID and client secret.
-4. In the repo: `cd worker/stripe-hook`, then
-   `npx wrangler secret put GOOGLE_CLIENT_ID` and
-   `npx wrangler secret put GOOGLE_CLIENT_SECRET`, pasting each.
-5. Open `https://tour-archive-stripe-hook.officialtellergram.workers.dev/google/oauth/start`
-   signed in as the Drive owner and allow. The page says "Google Drive
-   connected".
-6. Optional: set the repository variable `DRIVE_FOLDER_ID` to the folder's id
-   (the last part of its URL in Drive). Without it, the job uses the first
-   folder in the Drive called "Transaction Invoices".
+One-time setup of the script, in Karen's Google account:
+
+1. script.google.com → New project. Paste `scripts/apps-script/sales-report-sync.gs`
+   over the default `Code.gs`. Save (name it "Tour Archive sales report").
+2. Project Settings (the gear) → Script Properties → Add: `REPORT_SECRET` =
+   the report secret (the `REPORT_SECRET` line in the repo's `.env`).
+   Optional: `FOLDER_ID` = the folder's id, the last part of its URL in
+   Drive; without it the first folder called "Transaction Invoices" is used.
+3. Editor → pick `installTrigger` → Run. Google asks once for Drive and
+   "connect to an external service"; allow. That installs the hourly check.
+4. Pick `syncReports` → Run, to collect whatever is already on the Worker.
+
+`resetSeen` makes the next run rewrite every report; `installTrigger` again
+replaces the trigger. Executions (the clock icon) shows each hourly run.
 
 The Stripe rows need the job's restricted key (`STRIPE_DRIFT_KEY`) to read
 Checkout Sessions, Payment Intents, Charges and Balance transactions; with
 less, the Stripe rows fall back to the site price and the flat shipping and
 the run says so.
 
-Once the GitHub route is proven, the two Windows scheduled tasks on Karen's
-PC (`scripts/sales-report-schedule.ps1 -Remove`) are no longer needed.
+Once this route is proven, the two Windows scheduled tasks on Karen's PC
+(`scripts/sales-report-schedule.ps1 -Remove`) are no longer needed.
