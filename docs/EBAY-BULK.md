@@ -12,6 +12,26 @@ catalogue takes a few runs. `EBAY_LISTING_ENABLED` must be `true` for the
 job to create listings; set it to `false` to stop, and the sync still
 closes out sales and prices both ways.
 
+## Sales report and fees
+
+`npm run ebay:report` writes `Desktop\Tour Archive\ebay-sales-report.csv`:
+one row per eBay order with Seller Hub's "Payment" panel reproduced by API —
+what the buyer paid (subtotal, shipping, sales tax, order total), selling
+costs (transaction fees, shipping label), earnings, funds status, whether
+it shipped or was cancelled and refunded, and the Stripe invoice number.
+Orders come from the Fulfillment API, fees and labels from the Finances API.
+
+The same figures sit on each eBay sale's Stripe invoice as metadata
+(`ebay_subtotal`, `ebay_shipping_charged`, `ebay_sales_tax`,
+`ebay_order_total`, `ebay_fees`, `ebay_shipping_label`, `ebay_earnings`,
+`ebay_funds_status`), refreshed by the ten-minute job as the label is bought
+and the funds move from on-hold to paid out. A Stripe invoice export, or
+Sigma, then shows price, fees and net for both channels. The grey
+"Canceled" row under each out-of-band payment in Stripe's Payments list is
+Stripe's own bookkeeping (finalizing an invoice opens a payment intent;
+paying out of band cancels it); it moves no money. Filter Payments to
+Succeeded before exporting, or export from Invoices.
+
 Nothing is listed twice. The catalogue record remembers each piece's eBay
 listing; when eBay's list of active listings leaves one out, the job asks
 eBay about that listing by itself and relists only one that eBay confirms

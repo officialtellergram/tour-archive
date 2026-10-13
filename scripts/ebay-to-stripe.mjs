@@ -15,12 +15,19 @@
  * full amount, also out of band, so the record nets to zero and the history
  * stays. Runs after the eBay sync in stripe-drift.yml. Never runs git.
  *
+ * Each invoice also carries Seller Hub's "Payment" panel as metadata
+ * (ebay_subtotal, ebay_shipping_charged, ebay_sales_tax, ebay_order_total,
+ * ebay_fees, ebay_shipping_label, ebay_earnings, ebay_funds_status) from the
+ * Finances API, refreshed every run until the funds are paid out, so a
+ * Stripe invoice export shows price, fees and net for both channels.
+ *
  * Stripe key needs: Customers write, Invoices write, Credit notes write
  * (plus what the sync already has). eBay: EBAY_SYNC_SECRET for the order.
  */
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { breakdown, financeByOrder, metadataOf } from './lib/ebay-finance.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const MANIFEST = join(ROOT, 'public', 'stock', 'manifest.json');
@@ -86,8 +93,24 @@ async function customerFor(order) {
   return (await stripe('POST', 'customers', body)).id;
 }
 
+let financeCache = null;
+async function finance() {
+  if (!financeCache) {
+    if (!ebayToken) ebayToken = (await (await fetch(BROKER, { headers: { authorization: `Bearer ${env.EBAY_SYNC_SECRET}` } })).json()).access_token;
+    financeCache = await financeByOrder(ebayToken);
+  }
+  return financeCache;
+}
+
+/** The panel's figures for an order, as Stripe metadata fields. */
+async function financeMetadata(order) {
+  const b = breakdown(order, (await finance()).get(order.orderId));
+  return { fields: metadataOf(b), stamp: `${b.fees}|${b.label}|${b.earnings}|${b.fundsStatus}` };
+}
+
 async function invoiceFor(e, order) {
   const customer = await customerFor(order);
+  const fin = await financeMetadata(order);
   const li = order.lineItems?.find((x) => x.sku === (e.sku || e.id)) || order.lineItems?.[0] || {};
   const item = cents(li.lineItemCost?.value ?? e.price);
   const ship = cents(li.deliveryCost?.shippingCost?.value ?? order.pricingSummary?.deliveryCost?.value ?? 0);
@@ -102,12 +125,13 @@ async function invoiceFor(e, order) {
     'metadata[ebay_order]': order.orderId,
     'metadata[ta_id]': e.id,
     'metadata[sold_at]': order.creationDate.slice(0, 10),
+    ...fin.fields,
   });
   await stripe('POST', 'invoiceitems', { customer, invoice: inv.id, amount: String(item), currency: 'usd', description: e.name, 'metadata[ta_id]': e.id });
   if (ship > 0) await stripe('POST', 'invoiceitems', { customer, invoice: inv.id, amount: String(ship), currency: 'usd', description: 'Shipping (eBay)' });
   await stripe('POST', `invoices/${inv.id}/finalize`);
   const paid = await stripe('POST', `invoices/${inv.id}/pay`, { paid_out_of_band: 'true' });
-  return { id: paid.id, total: paid.total, number: paid.number, when };
+  return { id: paid.id, total: paid.total, number: paid.number, when, stamp: fin.stamp };
 }
 
 // --probe: prove the key's write permissions with a throwaway customer and
@@ -144,6 +168,7 @@ for (const e of manifest.items.filter((x) => x.sold && x._ebay?.soldOrder && !x.
     if (!WRITE) continue;
     const inv = await invoiceFor(e, order);
     e._ebay.stripeInvoice = inv.id;
+    e._ebay.finance = inv.stamp;
     save();
     changes += 1;
     console.log(`${C.green}   ✔ ${inv.number || inv.id} paid out of band, $${(inv.total / 100).toFixed(2)}${C.off}`);
@@ -164,6 +189,28 @@ for (const e of manifest.items.filter((x) => x._ebay?.cancelledOrder && x._ebay?
     save();
     changes += 1;
     console.log(`${C.green}   ✔ credit note ${cn.number || cn.id}${C.off}`);
+  } catch (err) {
+    failures += 1;
+    console.log(`${C.red}   ✖ ${e.id}: ${err.message}${C.off}`);
+  }
+}
+
+// the panel's figures, kept current: fees are known at the sale, the
+// shipping label arrives when Henry buys it, the funds status moves from
+// on-hold to paid out. Metadata stays editable after finalization. The
+// ledger's _ebay.finance stamp means nothing is re-sent when nothing moved.
+for (const e of manifest.items.filter((x) => x._ebay?.stripeInvoice && (x._ebay.soldOrder || x._ebay.cancelledOrder))) {
+  try {
+    const orderId = e._ebay.soldOrder || e._ebay.cancelledOrder;
+    const order = await ebayOrder(orderId);
+    const fin = await financeMetadata(order);
+    if (e._ebay.finance === fin.stamp) continue;
+    console.log(`${C.yellow}   ${WRITE ? '' : 'would stamp: '}${e.id} — fees $${fin.fields['metadata[ebay_fees]']}, label $${fin.fields['metadata[ebay_shipping_label]']}, earnings $${fin.fields['metadata[ebay_earnings]']} (${fin.fields['metadata[ebay_funds_status]']})${C.off}`);
+    if (!WRITE) continue;
+    await stripe('POST', `invoices/${e._ebay.stripeInvoice}`, fin.fields);
+    e._ebay.finance = fin.stamp;
+    save();
+    changes += 1;
   } catch (err) {
     failures += 1;
     console.log(`${C.red}   ✖ ${e.id}: ${err.message}${C.off}`);

@@ -15,6 +15,7 @@
     "ebay:sync": "node scripts/ebay-sync.mjs",
     "sales:notify": "node scripts/notify-sales.mjs",
     "ebay:invoices": "node scripts/ebay-to-stripe.mjs",
+    "ebay:report": "node scripts/ebay-report.mjs",
     "build": "vite build",
     "build:pages": "vite build && node scripts/images.mjs && node scripts/snapshot.mjs && node scripts/prerender.mjs",
     "images": "node scripts/images.mjs",
