@@ -38,17 +38,36 @@ const FULFILMENT = 'https://api.ebay.com/sell/fulfillment/v1/order';
 const C = process.stdout.isTTY ? { red: '\x1b[31m', yellow: '\x1b[33m', dim: '\x1b[2m', off: '\x1b[0m' } : { red: '', yellow: '', dim: '', off: '' };
 const EBAY_ONLY = process.argv.includes('--ebay');
 const FLAT_SHIPPING = 8;
-// --month=YYYY-MM  one month's statement: that month's rows, a TOTAL line
-//                  for the month and a CUMULATIVE line for everything up to
-//                  its last day. --month=previous is the month just ended
-//                  (what the first-of-the-month task runs).
+// A period statement instead of the all-time report: that period's rows, a
+// TOTAL line for the period and a CUMULATIVE line for everything up to its
+// last day.
+//   --month=YYYY-MM      one calendar month        --month=previous  the month just ended
+//   --week=YYYY-MM-DD    Monday to Sunday from     --week=previous   the week just ended
+//                        that Monday                                 (Monday to Sunday)
+const dayISO = (d) => d.toISOString().slice(0, 10);
+const addDays = (iso, n) => { const d = new Date(`${iso}T00:00:00Z`); d.setUTCDate(d.getUTCDate() + n); return dayISO(d); };
 const monthArg = (process.argv.find((a) => a.startsWith('--month=')) || '').slice(8);
-const MONTH = monthArg === 'previous'
-  ? (() => { const d = new Date(); d.setUTCDate(1); d.setUTCMonth(d.getUTCMonth() - 1); return d.toISOString().slice(0, 7); })()
-  : /^\d{4}-\d{2}$/.test(monthArg) ? monthArg : '';
-if (monthArg && !MONTH) {
-  console.log(`${C.red}✖ --month wants YYYY-MM or "previous"${C.off}`);
-  process.exit(1);
+const weekArg = (process.argv.find((a) => a.startsWith('--week=')) || '').slice(7);
+let PERIOD = null; // { label, from, to, suffix }
+if (monthArg) {
+  const m = monthArg === 'previous'
+    ? (() => { const d = new Date(); d.setUTCDate(1); d.setUTCMonth(d.getUTCMonth() - 1); return d.toISOString().slice(0, 7); })()
+    : /^\d{4}-\d{2}$/.test(monthArg) ? monthArg : '';
+  if (!m) { console.log(`${C.red}✖ --month wants YYYY-MM or "previous"${C.off}`); process.exit(1); }
+  const last = new Date(`${m}-01T00:00:00Z`); last.setUTCMonth(last.getUTCMonth() + 1); last.setUTCDate(0);
+  PERIOD = { label: m, from: `${m}-01`, to: dayISO(last), suffix: `-${m}` };
+} else if (weekArg) {
+  let monday = '';
+  if (weekArg === 'previous') {
+    const today = new Date(); const dow = (today.getUTCDay() + 6) % 7; // Monday = 0
+    monday = addDays(dayISO(today), -dow - 7);
+  } else if (/^\d{4}-\d{2}-\d{2}$/.test(weekArg)) {
+    const dow = (new Date(`${weekArg}T00:00:00Z`).getUTCDay() + 6) % 7;
+    monday = addDays(weekArg, -dow); // any day in the week → its Monday
+  }
+  if (!monday) { console.log(`${C.red}✖ --week wants YYYY-MM-DD or "previous"${C.off}`); process.exit(1); }
+  const sunday = addDays(monday, 6);
+  PERIOD = { label: `week ${monday} to ${sunday}`, from: monday, to: sunday, suffix: `-week-${monday}` };
 }
 // The combined report lands in the shared Drive folder the team reads
 // (Drive for Desktop, G:); the eBay-only cut stays on the Desktop. Either
@@ -56,7 +75,7 @@ if (monthArg && !MONTH) {
 const DRIVE = 'G:/My Drive/Finance/Transaction Invoices';
 const DESK = 'C:/Users/Karen Plankton/Desktop/Tour Archive';
 const OUT = process.argv.slice(2).find((a) => !a.startsWith('--'))
-  || (EBAY_ONLY ? `${DESK}/ebay-sales-report.csv` : `${existsSync(DRIVE) ? DRIVE : DESK}/sales-report${MONTH ? `-${MONTH}` : ''}.csv`);
+  || (EBAY_ONLY ? `${DESK}/ebay-sales-report.csv` : `${existsSync(DRIVE) ? DRIVE : DESK}/sales-report${PERIOD ? PERIOD.suffix : ''}.csv`);
 
 const envFile = join(ROOT, '.env');
 const env = {
@@ -218,11 +237,11 @@ const totalRow = (label, set) => {
 };
 let out = rows;
 const extra = [];
-if (MONTH) {
+if (PERIOD) {
   const undated = rows.filter((r) => !r.date);
-  out = rows.filter((r) => r.date.startsWith(MONTH));
-  extra.push(totalRow(`TOTAL ${MONTH}`, out), totalRow(`CUMULATIVE to ${MONTH}`, rows.filter((r) => r.date && r.date.slice(0, 7) <= MONTH)));
-  if (undated.length) console.log(`${C.yellow}   ⚠ ${undated.length} sale(s) with no date (before the automations) are outside any month and left out of both lines${C.off}`);
+  out = rows.filter((r) => r.date >= PERIOD.from && r.date <= PERIOD.to);
+  extra.push(totalRow(`TOTAL ${PERIOD.label}`, out), totalRow(`CUMULATIVE to ${PERIOD.to}`, rows.filter((r) => r.date && r.date <= PERIOD.to)));
+  if (undated.length) console.log(`${C.yellow}   ⚠ ${undated.length} sale(s) with no date (before the automations) are outside any period and left out of both lines${C.off}`);
 }
 
 const head = ['channel', 'date', 'piece', 'id', 'site_price', 'subtotal', 'shipping_charged', 'sales_tax', 'order_total', 'transaction_fees', 'shipping_label', 'earnings', 'funds_status', 'status', 'refunded', 'buyer', 'reference', 'stripe_invoice'];
@@ -237,12 +256,12 @@ try {
   if (err.code !== 'EBUSY' && err.code !== 'EPERM') throw err;
 }
 
-console.log(`\n${C.dim}── Tour Archive · ${EBAY_ONLY ? 'eBay sales' : 'sales'} report${MONTH ? ` · ${MONTH}` : ''} · ${new Date().toISOString().slice(0, 16).replace('T', ' ')} UTC ──${C.off}`);
+console.log(`\n${C.dim}── Tour Archive · ${EBAY_ONLY ? 'eBay sales' : 'sales'} report${PERIOD ? ` · ${PERIOD.label}` : ''} · ${new Date().toISOString().slice(0, 16).replace('T', ' ')} UTC ──${C.off}`);
 const pad = (s, n) => String(s).padEnd(n).slice(0, n);
 const col = (s) => String(s).padStart(8);
 console.log(`${C.dim}   ${pad('channel', 22)} ${pad('date', 10)} ${pad('piece', 34)} ${col('subtotal')} ${col('ship')} ${col('tax')} ${col('total')} ${col('fees')} ${col('label')} ${col('earned')}  status${C.off}`);
 for (const r of [...out, ...extra]) console.log(`   ${pad(r.channel, 22)} ${pad(r.date || '—', 10)} ${pad(r.piece, 34)} ${col(r.subtotal)} ${col(r.shipping)} ${col(r.salesTax)} ${col(r.orderTotal)} ${col(r.fees)} ${col(r.label)} ${col(r.earnings)}  ${r.status}`);
-if (!MONTH) {
+if (!PERIOD) {
   const t = totalRow('all time', rows);
   console.log(`${C.dim}   ${t.piece} kept · subtotal $${t.subtotal} · fees $${t.fees} · labels $${t.label} · earnings $${t.earnings} (blank cells count as 0)${C.off}`);
 }

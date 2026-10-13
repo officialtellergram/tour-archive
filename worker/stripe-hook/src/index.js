@@ -15,7 +15,8 @@
  *   GITHUB_TOKEN           fine-grained token, this repo only, Actions: write
  *
  * The cron (wrangler.jsonc) also starts the sales report job on GitHub —
- * Mondays the all-time report, the 1st of the month last month's statement
+ * Mondays last week's Monday–Sunday statement (plus a refresh of the
+ * all-time file), the 1st of the month last month's statement
  * — and /report/* is the hand-off: the job PUTs the CSV here, the Apps
  * Script in the team's Drive GETs it and files it (REPORT_SECRET).
  */
@@ -302,8 +303,8 @@ export default {
   /** Cloudflare cron (wrangler.jsonc triggers): the ten-minute sync tick,
       the Monday report, the first-of-the-month statement. */
   async scheduled(event, env, ctx) {
-    if (event.cron === CRON_WEEKLY) ctx.waitUntil(dispatch(env, 'weekly report', REPORT_WORKFLOW, { month: '' }));
-    else if (event.cron === CRON_MONTHLY) ctx.waitUntil(dispatch(env, 'monthly statement', REPORT_WORKFLOW, { month: 'previous' }));
+    if (event.cron === CRON_WEEKLY) ctx.waitUntil(dispatch(env, 'weekly statement', REPORT_WORKFLOW, { period: 'week' }));
+    else if (event.cron === CRON_MONTHLY) ctx.waitUntil(dispatch(env, 'monthly statement', REPORT_WORKFLOW, { period: 'month' }));
     else ctx.waitUntil(dispatchSync(env, `cron ${event.cron}`));
   },
 

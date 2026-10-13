@@ -20,6 +20,8 @@ npm run sales:report                  all time → sales-report.csv
 npm run sales:report -- --month=2026-10        one month → sales-report-2026-10.csv,
                                                with TOTAL and CUMULATIVE lines
 npm run sales:report -- --month=previous       the month just ended
+npm run sales:report -- --week=previous        last Monday to Sunday → sales-report-week-YYYY-MM-DD.csv
+npm run sales:report -- --week=2026-10-09      the Monday–Sunday week holding that date
 npm run ebay:report                   the eBay-only cut, on the Desktop
 ```
 
@@ -29,10 +31,11 @@ when Drive for Desktop is mounted, else in `Desktop\Tour Archive`.
 ## Without a PC: Worker clock → GitHub → Worker store → Apps Script → Drive
 
 `.github/workflows/sales-report.yml` builds the report on GitHub. The
-Cloudflare Worker's cron starts it: Mondays 13:00 UTC for the all-time
-report, the 1st at 13:05 UTC for last month's statement; it can also be
-started by hand (Actions → Sales report → Run workflow, with a month or
-blank). A copy of each CSV stays with the run for 90 days; a failure emails
+Cloudflare Worker's cron starts it: Mondays 13:00 UTC for last week's
+Monday–Sunday statement (that run also refreshes the all-time
+`sales-report.csv`), the 1st at 13:05 UTC for last month's statement; it
+can also be started by hand (Actions → Sales report → Run workflow, period =
+`week`, `month`, `YYYY-MM`, a date, or blank for the all-time report). A copy of each CSV stays with the run for 90 days; a failure emails
 the team.
 
 The job hands the CSV to the Worker's report store (`PUT /report/<name>`,

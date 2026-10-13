@@ -15,8 +15,8 @@ name: Sales report
 on:
   workflow_dispatch:
     inputs:
-      month:
-        description: 'A month, YYYY-MM, or "previous" for last month; empty = the all-time report'
+      period:
+        description: '"week" = last Monday–Sunday (plus a refresh of the all-time file); "month" = last month; YYYY-MM = that month; a date = its Monday–Sunday week; empty = the all-time report only'
         type: string
         default: ''
 
@@ -41,22 +41,23 @@ jobs:
         env:
           STRIPE_SECRET_KEY: ${{ secrets.STRIPE_DRIFT_KEY }}
           EBAY_SYNC_SECRET: ${{ secrets.EBAY_SYNC_SECRET }}
-          MONTH: ${{ inputs.month }}
+          PERIOD: ${{ inputs.period }}
         run: |
           set -o pipefail
           mkdir -p out
-          # "previous" → the month just ended, as YYYY-MM (the script resolves
-          # it the same way; the name in Drive is built here).
-          if [ "$MONTH" = "previous" ]; then
-            MONTH=$(date -u -d "$(date -u +%Y-%m-01) -1 month" +%Y-%m)
-          fi
-          if [ -n "$MONTH" ]; then
-            node scripts/sales-report.mjs out/report.csv --month="$MONTH" | tee report.log
-          else
-            node scripts/sales-report.mjs out/report.csv | tee report.log
-          fi
-          # the file name in Drive: sales-report.csv, or sales-report-YYYY-MM.csv
-          NAME="sales-report${MONTH:+-$MONTH}.csv"
+          # The period words resolve here so the file name in Drive is known:
+          #   month → YYYY-MM of the month just ended
+          #   week  → the Monday of the week just ended (Monday–Sunday)
+          #   a date → the Monday of its week
+          case "$PERIOD" in
+            month) ARG="--month=$(date -u -d "$(date -u +%Y-%m-01) -1 month" +%Y-%m)"; NAME="sales-report-${ARG#--month=}.csv" ;;
+            week)  MON=$(date -u -d "$(date -u +%Y-%m-%d) -$(( ($(date -u +%u) - 1) % 7 + 7 )) days" +%Y-%m-%d); ARG="--week=$MON"; NAME="sales-report-week-$MON.csv" ;;
+            ????-??)    ARG="--month=$PERIOD"; NAME="sales-report-$PERIOD.csv" ;;
+            ????-??-??) MON=$(date -u -d "$PERIOD -$(( ($(date -u -d "$PERIOD" +%u) - 1) % 7 )) days" +%Y-%m-%d); ARG="--week=$MON"; NAME="sales-report-week-$MON.csv" ;;
+            "")    ARG=""; NAME="sales-report.csv" ;;
+            *)     echo "period must be week, month, YYYY-MM, YYYY-MM-DD or empty"; exit 1 ;;
+          esac
+          node scripts/sales-report.mjs out/report.csv $ARG | tee report.log
           echo "name=$NAME" >> "$GITHUB_OUTPUT"
           {
             echo "### Sales report → $NAME"
@@ -64,12 +65,17 @@ jobs:
             tail -30 report.log
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
+          # The Monday run also refreshes the all-time file.
+          if [ "$PERIOD" = "week" ]; then
+            node scripts/sales-report.mjs out/all-time.csv | tail -3
+            echo "alltime=true" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Keep a copy with the run
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.report.outputs.name }}
-          path: out/report.csv
+          path: out/*.csv
           retention-days: 90
 
       # The Apps Script in the team's Drive collects it from the Worker within
@@ -77,7 +83,11 @@ jobs:
       - name: Hand it to the Worker for Drive
         env:
           REPORT_SECRET: ${{ secrets.REPORT_SECRET }}
-        run: node scripts/report-publish.mjs out/report.csv "${{ steps.report.outputs.name }}"
+        run: |
+          node scripts/report-publish.mjs out/report.csv "${{ steps.report.outputs.name }}"
+          if [ "${{ steps.report.outputs.alltime }}" = "true" ]; then
+            node scripts/report-publish.mjs out/all-time.csv sales-report.csv
+          fi
 
       - name: Tell the team the report failed
         if: failure()
