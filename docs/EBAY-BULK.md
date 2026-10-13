@@ -29,6 +29,18 @@ from the paid Checkout Session and its balance transaction (Stripe's fee,
 net), with no label column because postage for site sales is not in Stripe.
 `npm run ebay:report` is the eBay-only cut (`ebay-sales-report.csv`).
 
+`--month=YYYY-MM` (or `--month=previous`) writes one month's statement
+instead, `sales-report-YYYY-MM.csv`: that month's rows, then a TOTAL line for
+the month and a CUMULATIVE line for everything up to its last day. Sales with
+no date (the old eBay account) are outside any month and are left out of both.
+
+Two Windows scheduled tasks on Karen's PC keep the Drive folder current
+(`scripts\sales-report-schedule.ps1` registers them; `-Remove` takes them
+off): the weekly all-time report every Monday at 09:00, and on the 1st of
+each month at 09:05 the statement for the month just ended. A run missed
+while the PC was off starts when it is next on. Each run appends to
+`Desktop\Tour Archive\sales-report.log`.
+
 The same figures sit on each eBay sale's Stripe invoice as metadata
 (`ebay_subtotal`, `ebay_shipping_charged`, `ebay_sales_tax`,
 `ebay_order_total`, `ebay_fees`, `ebay_shipping_label`, `ebay_earnings`,

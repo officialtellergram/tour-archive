@@ -34,16 +34,29 @@ const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const MANIFEST = join(ROOT, 'public', 'stock', 'manifest.json');
 const BROKER = 'https://tour-archive-stripe-hook.officialtellergram.workers.dev/ebay/token';
 const FULFILMENT = 'https://api.ebay.com/sell/fulfillment/v1/order';
-const C = { red: '\x1b[31m', yellow: '\x1b[33m', dim: '\x1b[2m', off: '\x1b[0m' };
+// Colour on a terminal only; the scheduled runs append to a log file.
+const C = process.stdout.isTTY ? { red: '\x1b[31m', yellow: '\x1b[33m', dim: '\x1b[2m', off: '\x1b[0m' } : { red: '', yellow: '', dim: '', off: '' };
 const EBAY_ONLY = process.argv.includes('--ebay');
 const FLAT_SHIPPING = 8;
+// --month=YYYY-MM  one month's statement: that month's rows, a TOTAL line
+//                  for the month and a CUMULATIVE line for everything up to
+//                  its last day. --month=previous is the month just ended
+//                  (what the first-of-the-month task runs).
+const monthArg = (process.argv.find((a) => a.startsWith('--month=')) || '').slice(8);
+const MONTH = monthArg === 'previous'
+  ? (() => { const d = new Date(); d.setUTCDate(1); d.setUTCMonth(d.getUTCMonth() - 1); return d.toISOString().slice(0, 7); })()
+  : /^\d{4}-\d{2}$/.test(monthArg) ? monthArg : '';
+if (monthArg && !MONTH) {
+  console.log(`${C.red}✖ --month wants YYYY-MM or "previous"${C.off}`);
+  process.exit(1);
+}
 // The combined report lands in the shared Drive folder the team reads
 // (Drive for Desktop, G:); the eBay-only cut stays on the Desktop. Either
 // falls back to the Desktop when Drive is not mounted.
 const DRIVE = 'G:/My Drive/Finance/Transaction Invoices';
 const DESK = 'C:/Users/Karen Plankton/Desktop/Tour Archive';
 const OUT = process.argv.slice(2).find((a) => !a.startsWith('--'))
-  || (EBAY_ONLY ? `${DESK}/ebay-sales-report.csv` : `${existsSync(DRIVE) ? DRIVE : DESK}/sales-report.csv`);
+  || (EBAY_ONLY ? `${DESK}/ebay-sales-report.csv` : `${existsSync(DRIVE) ? DRIVE : DESK}/sales-report${MONTH ? `-${MONTH}` : ''}.csv`);
 
 const envFile = join(ROOT, '.env');
 const env = {
@@ -192,23 +205,46 @@ for (const o of orders.values()) {
 }
 rows.sort((a, b) => (a.date || '9999').localeCompare(b.date || '9999') || a.piece.localeCompare(b.piece));
 
+// Totals count kept sales only (not cancelled, not refunded); blank cells are 0.
+const MONEY = ['subtotal', 'shipping', 'salesTax', 'orderTotal', 'fees', 'label', 'earnings', 'refunded'];
+const isKept = (r) => !['cancelled', 'refunded'].includes(r.status);
+const totalRow = (label, set) => {
+  const kept = set.filter(isKept);
+  const t = Object.fromEntries(Object.keys(rows[0] || { channel: 1 }).map((k) => [k, '']));
+  t.channel = label;
+  t.piece = `${kept.length} sale(s)`;
+  for (const k of MONEY) t[k] = kept.reduce((s, r) => s + Number(r[k] || 0), 0).toFixed(2);
+  return t;
+};
+let out = rows;
+const extra = [];
+if (MONTH) {
+  const undated = rows.filter((r) => !r.date);
+  out = rows.filter((r) => r.date.startsWith(MONTH));
+  extra.push(totalRow(`TOTAL ${MONTH}`, out), totalRow(`CUMULATIVE to ${MONTH}`, rows.filter((r) => r.date && r.date.slice(0, 7) <= MONTH)));
+  if (undated.length) console.log(`${C.yellow}   ⚠ ${undated.length} sale(s) with no date (before the automations) are outside any month and left out of both lines${C.off}`);
+}
+
 const head = ['channel', 'date', 'piece', 'id', 'site_price', 'subtotal', 'shipping_charged', 'sales_tax', 'order_total', 'transaction_fees', 'shipping_label', 'earnings', 'funds_status', 'status', 'refunded', 'buyer', 'reference', 'stripe_invoice'];
 const csv = (v) => (/[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : String(v));
 let written = true;
 try {
-  writeFileSync(OUT, [head.join(','), ...rows.map((r) => Object.values(r).map(csv).join(','))].join('\r\n') + '\r\n', 'utf8');
+  const lines = [head.join(','), ...out.map((r) => Object.values(r).map(csv).join(','))];
+  if (extra.length) lines.push('', ...extra.map((r) => Object.values(r).map(csv).join(',')));
+  writeFileSync(OUT, lines.join('\r\n') + '\r\n', 'utf8');
 } catch (err) {
   written = false;
   if (err.code !== 'EBUSY' && err.code !== 'EPERM') throw err;
 }
 
-console.log(`\n${C.dim}── Tour Archive · ${EBAY_ONLY ? 'eBay sales' : 'sales'} report ──${C.off}`);
+console.log(`\n${C.dim}── Tour Archive · ${EBAY_ONLY ? 'eBay sales' : 'sales'} report${MONTH ? ` · ${MONTH}` : ''} · ${new Date().toISOString().slice(0, 16).replace('T', ' ')} UTC ──${C.off}`);
 const pad = (s, n) => String(s).padEnd(n).slice(0, n);
 const col = (s) => String(s).padStart(8);
-console.log(`${C.dim}   ${pad('channel', 18)} ${pad('date', 10)} ${pad('piece', 34)} ${col('subtotal')} ${col('ship')} ${col('tax')} ${col('total')} ${col('fees')} ${col('label')} ${col('earned')}  status${C.off}`);
-for (const r of rows) console.log(`   ${pad(r.channel, 18)} ${pad(r.date || '—', 10)} ${pad(r.piece, 34)} ${col(r.subtotal)} ${col(r.shipping)} ${col(r.salesTax)} ${col(r.orderTotal)} ${col(r.fees)} ${col(r.label)} ${col(r.earnings)}  ${r.status}`);
-const kept = rows.filter((r) => !['cancelled', 'refunded'].includes(r.status));
-const sum = (k) => kept.reduce((s, r) => s + Number(r[k] || 0), 0).toFixed(2);
-console.log(`${C.dim}   ${kept.length} sale(s) kept · subtotal $${sum('subtotal')} · fees $${sum('fees')} · labels $${sum('label')} · earnings $${sum('earnings')} (blank cells count as 0)${C.off}`);
+console.log(`${C.dim}   ${pad('channel', 22)} ${pad('date', 10)} ${pad('piece', 34)} ${col('subtotal')} ${col('ship')} ${col('tax')} ${col('total')} ${col('fees')} ${col('label')} ${col('earned')}  status${C.off}`);
+for (const r of [...out, ...extra]) console.log(`   ${pad(r.channel, 22)} ${pad(r.date || '—', 10)} ${pad(r.piece, 34)} ${col(r.subtotal)} ${col(r.shipping)} ${col(r.salesTax)} ${col(r.orderTotal)} ${col(r.fees)} ${col(r.label)} ${col(r.earnings)}  ${r.status}`);
+if (!MONTH) {
+  const t = totalRow('all time', rows);
+  console.log(`${C.dim}   ${t.piece} kept · subtotal $${t.subtotal} · fees $${t.fees} · labels $${t.label} · earnings $${t.earnings} (blank cells count as 0)${C.off}`);
+}
 if (written) console.log(`${C.dim}   → ${OUT}${C.off}`);
 else console.log(`${C.yellow}   ⚠ ${OUT} is open in another program (Excel?) — close it and run again to refresh the file${C.off}`);
