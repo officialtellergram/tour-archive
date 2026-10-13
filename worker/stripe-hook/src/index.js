@@ -13,10 +13,19 @@
  * event's type. Secrets (wrangler secret put):
  *   STRIPE_WEBHOOK_SECRET  the endpoint's signing secret (whsec_…)
  *   GITHUB_TOKEN           fine-grained token, this repo only, Actions: write
+ *
+ * The cron (wrangler.jsonc) also starts the sales report job on GitHub —
+ * Mondays the all-time report, the 1st of the month last month's statement
+ * — and /google/* holds the Google sign-in whose token lets that job put
+ * the CSV in the team's Drive folder (GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET).
  */
 
 const REPO = 'officialtellergram/tour-archive';
 const WORKFLOW = 'stripe-drift.yml';
+const REPORT_WORKFLOW = 'sales-report.yml';
+// Cloudflare cron runs in UTC: 13:00 UTC is 09:00 in New York (08:00 in winter).
+const CRON_WEEKLY = '0 13 * * 1';
+const CRON_MONTHLY = '5 13 1 * *';
 const TOLERANCE_S = 300; // reject a signed payload older than five minutes (replay)
 
 /** Events that can change what the site should show. */
@@ -225,10 +234,83 @@ async function ebayAppToken(request, env) {
   }
 }
 
-/** Start the sync job on GitHub. Shared by the Stripe webhook and the cron. */
-async function dispatchSync(env, why) {
+// ── Google: the one-time sign-in and the token broker, for the Drive upload
+//    in sales-report.yml. Same shape as eBay's: the refresh token lives in
+//    KV, never on GitHub; the job gets a short-lived access token.
+const GOOGLE_AUTH = 'https://accounts.google.com/o/oauth2/v2/auth';
+const GOOGLE_TOKEN = 'https://oauth2.googleapis.com/token';
+const GOOGLE_SCOPE = 'https://www.googleapis.com/auth/drive'; // the existing folder, not only app-made files
+const KV_G_REFRESH = 'google:refresh';
+const KV_G_ACCESS = 'google:access';
+const googleRedirect = (request) => `${new URL(request.url).origin}/google/oauth/callback`;
+
+async function googleTokenCall(env, params) {
+  const res = await fetch(GOOGLE_TOKEN, {
+    method: 'POST',
+    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({ client_id: env.GOOGLE_CLIENT_ID, client_secret: env.GOOGLE_CLIENT_SECRET, ...params }).toString(),
+  });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(`${res.status} ${json.error || ''} ${json.error_description || ''}`.trim());
+  return json;
+}
+
+async function googleOAuthStart(request, env) {
+  const missing = ['GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET', 'EBAY_SYNC_SECRET'].filter((k) => !env[k]);
+  if (missing.length) return page('Not ready', `<p>Missing Worker secrets: ${missing.join(', ')}.</p>`, 500);
+  const u = new URL(GOOGLE_AUTH);
+  u.searchParams.set('client_id', env.GOOGLE_CLIENT_ID);
+  u.searchParams.set('redirect_uri', googleRedirect(request));
+  u.searchParams.set('response_type', 'code');
+  u.searchParams.set('scope', GOOGLE_SCOPE);
+  u.searchParams.set('access_type', 'offline'); // a refresh token
+  u.searchParams.set('prompt', 'consent'); // …every time, not only the first
+  u.searchParams.set('state', await stateFor(Date.now(), env));
+  return Response.redirect(u.toString(), 302);
+}
+
+async function googleOAuthCallback(request, env) {
+  const url = new URL(request.url);
+  if (!(await stateOk(url.searchParams.get('state'), env))) {
+    return page('Sign-in did not complete', '<p>The sign-in link was not one this site issued, or it was more than fifteen minutes old.</p><p><a href="/google/oauth/start">Start again</a>.</p>', 400);
+  }
+  const code = url.searchParams.get('code');
+  if (!code) return page('No code', `<p>Google sent no authorisation code${url.searchParams.get('error') ? ` (${url.searchParams.get('error')})` : ''}. If you declined, nothing was changed.</p>`, 400);
+  try {
+    const t = await googleTokenCall(env, { grant_type: 'authorization_code', code, redirect_uri: googleRedirect(request) });
+    if (!t.refresh_token) throw new Error('no refresh token in the reply');
+    await env.EBAY.put(KV_G_REFRESH, JSON.stringify({ token: t.refresh_token, since: new Date().toISOString() }));
+    await env.EBAY.delete(KV_G_ACCESS);
+    return page('Google Drive connected', '<p>The sales report job can now put its CSV in the Transaction Invoices folder.</p><p>This lasts until you revoke it at myaccount.google.com/permissions (or, if the OAuth app is still in "Testing", seven days — publish it to make the sign-in permanent).</p><p>You can close this tab.</p>');
+  } catch (err) {
+    console.log(`google oauth exchange failed: ${err.message}`);
+    return page('Sign-in failed', `<p>Google refused the code exchange: ${String(err.message).replace(/</g, '&lt;')}</p>`, 502);
+  }
+}
+
+/** GET /google/token — Authorization: Bearer <EBAY_SYNC_SECRET> → { access_token, expires_at }. */
+async function googleToken(request, env) {
+  const auth = request.headers.get('authorization') || '';
+  if (!env.EBAY_SYNC_SECRET || auth !== `Bearer ${env.EBAY_SYNC_SECRET}`) return text('unauthorised', 401);
+  const cached = await env.EBAY.get(KV_G_ACCESS, 'json');
+  if (cached && cached.expires_at - Date.now() > 5 * 60 * 1000) return Response.json(cached);
+  const stored = await env.EBAY.get(KV_G_REFRESH, 'json');
+  if (!stored) return text('Google is not connected: open /google/oauth/start as the Drive owner', 409);
+  try {
+    const t = await googleTokenCall(env, { grant_type: 'refresh_token', refresh_token: stored.token });
+    const out = { access_token: t.access_token, expires_at: Date.now() + (t.expires_in || 3600) * 1000 };
+    await env.EBAY.put(KV_G_ACCESS, JSON.stringify(out), { expirationTtl: t.expires_in || 3600 });
+    return Response.json(out);
+  } catch (err) {
+    console.log(`google refresh failed: ${err.message}`);
+    return text(`refresh failed: ${err.message}`, 502);
+  }
+}
+
+/** Start a job on GitHub. Shared by the Stripe webhook and the cron. */
+async function dispatch(env, why, workflow = WORKFLOW, inputs) {
   if (!env.GITHUB_TOKEN) return { ok: false, status: 500, text: 'GITHUB_TOKEN is not set' };
-  const res = await fetch(`https://api.github.com/repos/${REPO}/actions/workflows/${WORKFLOW}/dispatches`, {
+  const res = await fetch(`https://api.github.com/repos/${REPO}/actions/workflows/${workflow}/dispatches`, {
     method: 'POST',
     headers: {
       authorization: `Bearer ${env.GITHUB_TOKEN}`,
@@ -237,17 +319,21 @@ async function dispatchSync(env, why) {
       'user-agent': 'tour-archive-stripe-hook',
       'content-type': 'application/json',
     },
-    body: JSON.stringify({ ref: 'main' }),
+    body: JSON.stringify(inputs ? { ref: 'main', inputs } : { ref: 'main' }),
   });
   const text = res.ok ? '' : (await res.text()).slice(0, 200);
-  console.log(res.ok ? `dispatched (${why})` : `dispatch failed (${why}): ${res.status} ${text}`);
+  console.log(res.ok ? `dispatched ${workflow} (${why})` : `dispatch ${workflow} failed (${why}): ${res.status} ${text}`);
   return { ok: res.ok, status: res.status, text };
 }
+const dispatchSync = (env, why) => dispatch(env, why);
 
 export default {
-  /** Cloudflare cron (wrangler.jsonc triggers): the dependable ten-minute tick. */
+  /** Cloudflare cron (wrangler.jsonc triggers): the ten-minute sync tick,
+      the Monday report, the first-of-the-month statement. */
   async scheduled(event, env, ctx) {
-    ctx.waitUntil(dispatchSync(env, `cron ${event.cron}`));
+    if (event.cron === CRON_WEEKLY) ctx.waitUntil(dispatch(env, 'weekly report', REPORT_WORKFLOW, { month: '' }));
+    else if (event.cron === CRON_MONTHLY) ctx.waitUntil(dispatch(env, 'monthly statement', REPORT_WORKFLOW, { month: 'previous' }));
+    else ctx.waitUntil(dispatchSync(env, `cron ${event.cron}`));
   },
 
   async fetch(request, env) {
@@ -257,6 +343,9 @@ export default {
     if (pathname === '/ebay/oauth/start') return ebayOAuthStart(request, env);
     if (pathname === '/ebay/oauth/callback') return ebayOAuthCallback(request, env);
     if (pathname === '/ebay/token') return ebayToken(request, env);
+    if (pathname === '/google/oauth/start') return googleOAuthStart(request, env);
+    if (pathname === '/google/oauth/callback') return googleOAuthCallback(request, env);
+    if (pathname === '/google/token') return googleToken(request, env);
     if (pathname !== '/') return text('not found', 404);
     if (request.method === 'GET') return text('tour archive stripe hook: ok');
     if (request.method !== 'POST') return text('method not allowed', 405);

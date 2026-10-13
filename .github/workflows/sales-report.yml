@@ -1,0 +1,81 @@
+name: Sales report
+
+# The sales report (scripts/sales-report.mjs) into the team's Google Drive
+# folder, with no PC involved. The Cloudflare Worker's cron starts this job
+# (worker/stripe-hook: Mondays for the all-time report, the 1st for last
+# month's statement); it can also be started by hand with a month.
+#
+# Secrets: STRIPE_DRIFT_KEY (Checkout Sessions, Payment Intents, Charges and
+# Balance transactions: read, for the Stripe rows' fee and net), EBAY_SYNC_SECRET
+# (the Worker's broker: eBay tokens and the Google token), SALE_MAIL_* for the
+# failure alert. Variables: DRIVE_FOLDER_ID (optional), SALE_EMAILS.
+
+on:
+  workflow_dispatch:
+    inputs:
+      month:
+        description: 'A month, YYYY-MM, or "previous" for last month; empty = the all-time report'
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sales-report
+  cancel-in-progress: false
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build the report
+        id: report
+        env:
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_DRIFT_KEY }}
+          EBAY_SYNC_SECRET: ${{ secrets.EBAY_SYNC_SECRET }}
+          MONTH: ${{ inputs.month }}
+        run: |
+          set -o pipefail
+          mkdir -p out
+          if [ -n "$MONTH" ]; then
+            node scripts/sales-report.mjs out/report.csv --month="$MONTH" | tee report.log
+          else
+            node scripts/sales-report.mjs out/report.csv | tee report.log
+          fi
+          # the file name in Drive: sales-report.csv, or sales-report-YYYY-MM.csv
+          NAME=$(grep -oE 'sales-report(-[0-9]{4}-[0-9]{2})?\.csv' report.log | head -1)
+          [ -n "$NAME" ] || NAME="sales-report${MONTH:+-$MONTH}.csv"
+          echo "name=$NAME" >> "$GITHUB_OUTPUT"
+          {
+            echo "### Sales report → $NAME"
+            echo '```'
+            tail -30 report.log
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Keep a copy with the run
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.report.outputs.name }}
+          path: out/report.csv
+          retention-days: 90
+
+      - name: Put it in Google Drive
+        env:
+          EBAY_SYNC_SECRET: ${{ secrets.EBAY_SYNC_SECRET }}
+          DRIVE_FOLDER_ID: ${{ vars.DRIVE_FOLDER_ID }}
+        run: node scripts/drive-upload.mjs out/report.csv "${{ steps.report.outputs.name }}"
+
+      - name: Tell the team the report failed
+        if: failure()
+        env:
+          SALE_MAIL_USER: ${{ secrets.SALE_MAIL_USER }}
+          SALE_MAIL_PASS: ${{ secrets.SALE_MAIL_PASS }}
+          SALE_EMAILS: ${{ vars.SALE_EMAILS }}
+        run: node scripts/notify-failure.mjs
