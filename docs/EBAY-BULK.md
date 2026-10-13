@@ -14,7 +14,9 @@ closes out sales and prices both ways.
 
 ## Sales report and fees
 
-`npm run sales:report` writes `Desktop\Tour Archive\sales-report.csv`: every
+`npm run sales:report` writes `sales-report.csv` into the shared Drive folder
+`My Drive\Finance\Transaction Invoices` (Desktop\Tour Archive when Drive is
+not mounted): every
 sold piece from either channel, one row each, the same columns — channel,
 what the buyer paid (subtotal, shipping, sales tax, order total), selling
 costs (transaction fees, shipping label), earnings, funds status, status,

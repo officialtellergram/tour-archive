@@ -4,7 +4,8 @@
  *   node scripts/sales-report.mjs                    print the table, write the CSV
  *   node scripts/sales-report.mjs --ebay             eBay orders only (the Seller Hub panel)
  *   node scripts/sales-report.mjs path/to/out.csv    another file
- *     default out: Desktop/Tour Archive/sales-report.csv (--ebay: ebay-sales-report.csv)
+ *     default out: G:/My Drive/Finance/Transaction Invoices/sales-report.csv (Drive)
+ *                  --ebay: Desktop/Tour Archive/ebay-sales-report.csv
  *
  * A LEFT JOIN from the catalogue: every piece marked sold is a row, whether
  * or not a channel record exists for it. The channel record fills the money
@@ -36,7 +37,13 @@ const FULFILMENT = 'https://api.ebay.com/sell/fulfillment/v1/order';
 const C = { red: '\x1b[31m', yellow: '\x1b[33m', dim: '\x1b[2m', off: '\x1b[0m' };
 const EBAY_ONLY = process.argv.includes('--ebay');
 const FLAT_SHIPPING = 8;
-const OUT = process.argv.slice(2).find((a) => !a.startsWith('--')) || `C:/Users/Karen Plankton/Desktop/Tour Archive/${EBAY_ONLY ? 'ebay-sales-report.csv' : 'sales-report.csv'}`;
+// The combined report lands in the shared Drive folder the team reads
+// (Drive for Desktop, G:); the eBay-only cut stays on the Desktop. Either
+// falls back to the Desktop when Drive is not mounted.
+const DRIVE = 'G:/My Drive/Finance/Transaction Invoices';
+const DESK = 'C:/Users/Karen Plankton/Desktop/Tour Archive';
+const OUT = process.argv.slice(2).find((a) => !a.startsWith('--'))
+  || (EBAY_ONLY ? `${DESK}/ebay-sales-report.csv` : `${existsSync(DRIVE) ? DRIVE : DESK}/sales-report.csv`);
 
 const envFile = join(ROOT, '.env');
 const env = {
