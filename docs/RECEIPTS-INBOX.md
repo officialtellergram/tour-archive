@@ -30,9 +30,12 @@ How a row is filled:
   and year only is dated the 1st and says so in Notes; a name with no date
   takes the folder's month. A name holding several dates is one receipt for
   several items: one row, Notes says "split the rows".
-- **Cost / Amount** is the largest dollar figure the reader finds in the
-  screenshot (the transaction total; the smaller overlaid figures are item
-  splits, listed in Found). The reading is Drive's own OCR of the image.
+- **Cost / Amount** comes from the dollar figures the reader finds in the
+  screenshot (Drive's own OCR). When some figures add up exactly to another
+  one, that one is the total: the team writes item prices over the
+  screenshot, and a corrected total beats the bank's crossed-out one.
+  Otherwise the largest figure. Every figure read is listed in Found, and
+  Notes says how the total was chosen.
 - **Category**: Inventory rows use Shep's keyword rules (q-zip, sweater,
   towel, polo, …, else Other); expense rows take the folder's category
   (Cleaning/Restoration, Marketing/Advertising, Tech/Equipment).

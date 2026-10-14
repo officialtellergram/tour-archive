@@ -126,7 +126,7 @@ function rowFor_(file, path, route) {
   var date = parsed.date || folderMonth || file.getDateCreated();
   var notes = [];
   if (read.error) notes.push(read.error);
-  if (read.amounts.length > 1) notes.push(read.amounts.length + ' amounts on this receipt; check the split');
+  if (read.amounts.length > 1) notes.push(read.amounts.length + ' figures on this receipt (' + read.how + '); check the split');
   if (parsed.several) notes.push('several items on one receipt; split the rows');
   if (parsed.dayUnknown) notes.push('name gives month and year only; day set to the 1st');
   if (!parsed.date) notes.push('date taken from the ' + (folderMonth ? 'folder' : 'file') + ', not the name');
@@ -156,12 +156,14 @@ function parseName(name, defaultYear) {
   var year = defaultYear || new Date().getFullYear();
   var date = null;
   var dayUnknown = false;
-  var m = base.match(/(?:^|\s)(\d{1,2})\s+(\d{1,2})\s+(\d{2})(?=\s|$|[,&])/); // M D YY
+  // Drive names carry slashes ("9/17/26"); Windows shows the same names
+  // with spaces ("9 17 26"). Both are read.
+  var m = base.match(/(?:^|\s)(\d{1,2})[\s/]+(\d{1,2})[\s/]+(\d{2})(?=\s|$|[,&])/); // M D YY
   if (m) {
     date = new Date(2000 + Number(m[3]), Number(m[1]) - 1, Number(m[2]));
     base = (base.slice(0, m.index) + base.slice(m.index + m[0].length)).trim();
   } else {
-    m = base.match(/(?:^|\s)(\d{1,2})\s+(\d{1,2})$/); // two numbers at the end
+    m = base.match(/(?:^|\s)(\d{1,2})[\s/]+(\d{1,2})$/); // two numbers at the end
     if (m) {
       var a = Number(m[1]);
       var b = Number(m[2]);
@@ -174,7 +176,7 @@ function parseName(name, defaultYear) {
       if (date) base = base.slice(0, m.index).trim();
     }
   }
-  var more = /(?:^|\s)\d{1,2}\s+\d{1,2}\s+\d{2}(?=\s|$|[,&])/.test(base); // other dates still in the name
+  var more = /(?:^|\s)\d{1,2}[\s/]+\d{1,2}[\s/]+\d{2}(?=\s|$|[,&])/.test(base); // other dates still in the name
   base = base.replace(/\s*[,&]\s*$/, '').replace(/\s{2,}/g, ' ').trim();
   return { description: base, date: date, dayUnknown: dayUnknown, several: more };
 }
@@ -224,15 +226,45 @@ function readAmounts_(file) {
   return amountsIn(text);
 }
 
-/** "$11.00 … $5.50 PM polo x2" → amounts [11, 5.5], total 11 (the largest). */
+/**
+ * The dollar figures in the text, and which one is the total.
+ *   "$11.00 … $5.50 PM polo x2"            → [11, 5.5], total 11
+ *   "$24.00 (struck) $18 … -$7 … -$4 … -$7" → [24, 18, 7, 4, 7], total 18:
+ * when some of the figures add up exactly to another one, that one is the
+ * total (the team writes the item prices over the screenshot; a corrected
+ * total beats the bank's crossed-out one). Otherwise the largest figure.
+ * Whole dollars count ("$18"), with or without cents.
+ */
 function amountsIn(text) {
   var found = [];
-  var re = /\$\s?(\d{1,3}(?:,\d{3})*(?:\.\d{2})|\d+\.\d{2})/g;
+  var re = /\$\s?(\d{1,3}(?:,\d{3})+(?:\.\d{2})?|\d+(?:\.\d{2})?)/g;
   var m;
   while ((m = re.exec(text)) !== null) found.push(Number(m[1].replace(/,/g, '')));
-  var uniq = found.filter(function (v, i) { return found.indexOf(v) === i; });
-  var total = uniq.length ? Math.max.apply(null, uniq) : null;
-  return { amounts: uniq, total: total, text: text, error: uniq.length ? '' : 'no dollar amount found; open the receipt' };
+  if (!found.length) return { amounts: [], total: null, how: '', text: text, error: 'no dollar amount found; open the receipt' };
+  var total = Math.max.apply(null, found);
+  var how = 'largest figure';
+  var best = 0;
+  for (var i = 0; i < found.length; i++) {
+    var others = found.slice(0, i).concat(found.slice(i + 1));
+    var parts = sumsTo_(others, found[i]);
+    if (parts && parts.length >= 2 && parts.length > best) { total = found[i]; best = parts.length; how = parts.length + ' item prices add up to it'; }
+  }
+  return { amounts: found, total: total, how: how, text: text, error: '' };
+}
+
+/** The subset of `nums` (to the cent) that adds up to `target`, or null. Small lists only. */
+function sumsTo_(nums, target) {
+  var c = nums.map(function (n) { return Math.round(n * 100); });
+  var t = Math.round(target * 100);
+  var n = Math.min(c.length, 12);
+  var bestSet = null;
+  for (var mask = 1; mask < (1 << n); mask++) {
+    var s = 0;
+    var set = [];
+    for (var i = 0; i < n; i++) if (mask & (1 << i)) { s += c[i]; set.push(nums[i]); }
+    if (s === t && (!bestSet || set.length > bestSet.length)) bestSet = set;
+  }
+  return bestSet;
 }
 
 /* ── the inbox spreadsheet ──────────────────────────────────────────── */
