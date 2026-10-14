@@ -47,6 +47,33 @@ How a row is filled:
 Nothing is written into the P&L. Shep reads a row against the receipt link,
 pastes it, ticks Done.
 
+## What a receipt needs (for the team)
+
+The minimum for a row that pastes with nothing to fix:
+
+1. **File name = description, then the date**: `Titleist Black Sweater 9/14/26`.
+   The description is what Shep's sheet will say, so write it as the item
+   should read. Put one of his category words in it where it fits (q-zip,
+   sweater, towel, polo, pullover, hat, magazine, cards, vest, t-shirt,
+   pants, shorts); anything else files as Other.
+2. **One item per receipt** when you can. For one transaction covering
+   several items, name them all (`Kinloch Q-Zip, PM Shorts, & PM Cashmere
+   9/17/26`) and write each item's price on the image with a dollar sign so
+   they add up exactly to the total; the row comes in with the total and a
+   note to split it.
+3. **The image shows the total with a dollar sign**, `$18` or `$18.00`, and
+   nothing else in dollars that could be mistaken for it. Crop the
+   screenshot to the transaction; account balances or other transactions in
+   the frame become extra figures Shep has to sort out. If the bank's total
+   is not the real cost, cross it out and write the right one with a dollar
+   sign.
+4. **JPEG, PNG or PDF**, not HEIC. On an iPhone: Settings → Camera →
+   Formats → Most Compatible.
+5. **The right folder**: `Purchase Receipts/Inventory/<month>` for stock,
+   `Cleaning Repair`, `Marketing` or `Tech` for expenses. The folder decides
+   the tab and the expense category, and its year covers a name with no year.
+6. **Uploaded from your own Google account**, so Founder fills itself.
+
 ## Setup, once (Karen's Google account)
 
 1. script.google.com → New project. Paste `receipts-inbox.gs` over `Code.gs`,
