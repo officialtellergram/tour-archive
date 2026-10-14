@@ -19,7 +19,9 @@
  *   2. SOLD ON    Fulfillment getOrders → a PAID order for a piece's SKU marks
  *      EBAY       it sold here, removes its checkout, deactivates its Stripe link.
  *   3. SOLD HERE  a piece sold or retired here still live on eBay → EndFixedPriceItem.
- *   4. PRICE      eBay price ≠ catalogue price × (1 + EBAY_PRICE_MARKUP) → ReviseFixedPriceItem.
+ *   4. PRICE      eBay price ≠ ebayPrice(site price) → ReviseFixedPriceItem.
+ *                 ebayPrice: (P + A) / 0.864, up to the next .99, where A is
+ *                 $0.40 when P is over $10, else $0.30 (Karen + Shep, 14 Oct 2026).
  *   5. LIST       a live piece with no eBay listing, past its drop hold, not
  *                 marked _ebay.skip → AddFixedPriceItem (VerifyAddFixedPriceItem
  *                 in report mode). At most LIST_PER_RUN per run. A piece whose
@@ -54,9 +56,8 @@ const env = {
   ...(existsSync(envFile)
     ? Object.fromEntries(readFileSync(envFile, 'utf8').split(/\r?\n/).filter((l) => l.includes('=') && !l.startsWith('#')).map((l) => [l.slice(0, l.indexOf('=')).trim(), l.slice(l.indexOf('=') + 1).trim()]))
     : {}),
-  ...Object.fromEntries(['EBAY_SYNC_SECRET', 'STRIPE_SECRET_KEY', 'EBAY_PRICE_MARKUP', 'EBAY_DROP_DELAY_DAYS'].filter((k) => process.env[k]).map((k) => [k, process.env[k]])),
+  ...Object.fromEntries(['EBAY_SYNC_SECRET', 'STRIPE_SECRET_KEY', 'EBAY_DROP_DELAY_DAYS'].filter((k) => process.env[k]).map((k) => [k, process.env[k]])),
 };
-const MARKUP = Number(env.EBAY_PRICE_MARKUP || 0);
 const DROP_DELAY_DAYS = Number(env.EBAY_DROP_DELAY_DAYS || 14);
 if (!env.EBAY_SYNC_SECRET) {
   console.log(`${C.red}✖ EBAY_SYNC_SECRET missing${C.off}`);
@@ -183,10 +184,25 @@ function listableFrom(e) {
 const manifest = JSON.parse(readFileSync(MANIFEST, 'utf8'));
 const save = () => writeFileSync(MANIFEST, JSON.stringify(manifest, null, 2) + '\n', 'utf8');
 const bySku = new Map(manifest.items.map((e) => [skuOf(e), e]));
-const ebayPrice = (e) => Math.round(Number(e.price) * (1 + MARKUP) * 100) / 100;
+/**
+ * The eBay price from the site price (Karen and Shep, 14 Oct 2026):
+ *   E = (P + A) / 0.864, rounded UP to the next .99
+ *   A = $0.40 when P is more than $10, else $0.30 (eBay's fixed per-order fee)
+ *   0.864 = what is left after eBay's 13.6 % final value fee
+ * e.g. P 24.99 → 29.39 → 29.99 · P 9.00 → 10.76 → 10.99 · P 14.00 → 16.67 → 16.99
+ * Worked in cents so 0.1 + 0.2 never bites.
+ */
+export const ebayPrice = (e) => {
+  const p = Math.round(Number(e.price) * 100);
+  const a = p > 1000 ? 40 : 30;
+  const raw = Math.ceil((p + a) / 0.864);
+  let dollars = Math.floor(raw / 100);
+  if (dollars * 100 + 99 < raw) dollars += 1; // above x.99 already → next x.99
+  return (dollars * 100 + 99) / 100;
+};
 const today = new Date().toISOString().slice(0, 10);
 
-console.log(`\n${C.dim}── Tour Archive · eBay sync (${WRITE ? 'WRITE' : 'report'}${MARKUP ? ` · markup ${Math.round(MARKUP * 100)}%` : ''} · drops held ${DROP_DELAY_DAYS} d) ──${C.off}`);
+console.log(`\n${C.dim}── Tour Archive · eBay sync (${WRITE ? 'WRITE' : 'report'} · price (P + fee) ÷ 0.864 → .99 · drops held ${DROP_DELAY_DAYS} d) ──${C.off}`);
 let changes = 0;
 let failures = 0;
 try {

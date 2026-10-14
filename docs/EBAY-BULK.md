@@ -4,8 +4,11 @@
 
 The same job that watches Stripe lists each live piece on eBay by itself:
 title, description, photographs, specifics and terms composed from the
-catalogue record, at the site price plus the eBay markup (a repository
-variable, `EBAY_PRICE_MARKUP`, 0.10 = ten percent). Pieces from a drop are
+catalogue record, at the eBay price worked from the site price P:
+(P + A) ÷ 0.864, rounded up to the next .99, where A is $0.40 when P is
+over $10 and $0.30 otherwise (eBay's fixed per-order fee; 0.864 is what is
+left after its 13.6 % final value fee — Karen and Shep, 14 Oct 2026; the rule
+is `ebayPrice` in `scripts/ebay-sync.mjs`). Pieces from a drop are
 held site-only for `EBAY_DROP_DELAY_DAYS` (14) after the drop opens; general
 stock lists at once. At most 12 listings are created per run, so a full
 catalogue takes a few runs. `EBAY_LISTING_ENABLED` must be `true` for the
