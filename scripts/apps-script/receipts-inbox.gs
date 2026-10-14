@@ -299,8 +299,6 @@ function tab_(ss, name, head) {
     sh.appendRow(head);
     sh.getRange(1, 1, 1, head.length).setFontWeight('bold');
     sh.setFrozenRows(1);
-    var doneCol = head.indexOf('Done') + 1;
-    sh.getRange(2, doneCol, 1000, 1).insertCheckboxes();
     var dateCols = [head.indexOf('Date Purchased') + 1, head.indexOf('Date') + 1, head.indexOf('Added') + 1];
     dateCols.forEach(function (c) { if (c > 0) sh.getRange(2, c, 1000, 1).setNumberFormat('yyyy-mm-dd'); });
     var money = ['Cost', 'Selling Price', 'Selling Fees', 'Amount'].map(function (h) { return head.indexOf(h) + 1; });
@@ -317,6 +315,8 @@ function appendRow_(ss, tabName, row) {
   var head = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
   var link = head.indexOf('Receipt') + 1;
   if (link > 0) sh.getRange(r, link).setFormula('=HYPERLINK("' + row[link - 1] + '","open")');
+  var done = head.indexOf('Done') + 1;
+  if (done > 0) sh.getRange(r, done).insertCheckboxes(); // one box per real row
 }
 
 /** My Drive/Finance/<name> */
@@ -340,15 +340,31 @@ function installTrigger() {
   console.log('hourly check installed; inbox: ' + SpreadsheetApp.openById(PropertiesService.getScriptProperties().getProperty('INBOX_ID')).getUrl());
 }
 
-/** Removes every row whose Done box is ticked, on both tabs. */
+/** Removes every row whose Done box is ticked, and any empty row, on both tabs. One read, one write per tab. */
 function clearDone() {
   var ss = inbox_(PropertiesService.getScriptProperties());
   ['Inventory', 'Expenses'].forEach(function (name) {
     var sh = ss.getSheetByName(name);
-    var head = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
-    var done = head.indexOf('Done') + 1;
     var last = sh.getLastRow();
-    for (var r = last; r >= 2; r--) if (sh.getRange(r, done).getValue() === true) sh.deleteRow(r);
+    if (last < 2) return;
+    var width = sh.getLastColumn();
+    var head = sh.getRange(1, 1, 1, width).getValues()[0];
+    var done = head.indexOf('Done');
+    var desc = Math.max(head.indexOf('Item Description'), head.indexOf('Description'));
+    var rows = sh.getRange(2, 1, last - 1, width).getValues();
+    var formulas = sh.getRange(2, 1, last - 1, width).getFormulas();
+    var keep = [];
+    for (var i = 0; i < rows.length; i++) {
+      if (rows[i][done] === true) continue; // pasted into the P&L
+      if (String(rows[i][desc]) === '') continue; // an empty row
+      keep.push(formulas[i].map(function (f, c) { return f || rows[i][c]; }));
+    }
+    sh.getRange(2, 1, last - 1, width).clear({ contentsOnly: true }).clearDataValidations();
+    if (keep.length) {
+      sh.getRange(2, 1, keep.length, width).setValues(keep);
+      sh.getRange(2, done + 1, keep.length, 1).insertCheckboxes();
+    }
+    console.log(name + ': ' + (rows.length - keep.length) + ' row(s) removed, ' + keep.length + ' kept');
   });
 }
 
