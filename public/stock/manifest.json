@@ -3759,6 +3759,258 @@
         "pictures": "sq1"
       },
       "_ebayUrl": "https://www.ebay.com/itm/377555879911"
+    },
+    {
+      "id": "stock-abstract-grand-slam-golf-polo",
+      "file": "abstract-grand-slam-golf-polo.jpg",
+      "name": "Abstract Grand Slam Golf Polo",
+      "brand": "Unattributed",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "XL",
+      "condition": "Pre-owned",
+      "price": 34.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "Paisley print combined with Golfing artwork on this crazy all-over-print vintage polo. Penguin logo on the left sleeve.",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "30 in",
+        "Chest": "25 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-10-15",
+      "_source": "stripe:prod_VR3wacY4VK7LBY",
+      "description": [
+        "Paisley print combined with Golfing artwork on this crazy all-over-print vintage polo. Penguin logo on the left sleeve."
+      ],
+      "_stripe": {
+        "product": "prod_VR3wacY4VK7LBY",
+        "price": "price_1UQqvfC1bWq01lTKFQvP2qgL",
+        "link": "plink_1UQrAYC1bWq01lTK8VuJQ7ma",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-10-15"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/dRm14mbuQge9cke3Bw9k41j",
+      "photos": [
+        "carousel/abstract-grand-slam-golf-polo/01.jpg",
+        "carousel/abstract-grand-slam-golf-polo/02.jpg",
+        "carousel/abstract-grand-slam-golf-polo/03.jpg",
+        "carousel/abstract-grand-slam-golf-polo/04.jpg",
+        "carousel/abstract-grand-slam-golf-polo/05.jpg"
+      ],
+      "_photosPulled": "2026-10-15",
+      "_sizeSource": "neck label, IMG_1905 (Grand Slam tag reads XL)"
+    },
+    {
+      "id": "stock-seminole-gc-gingham-polo",
+      "file": "seminole-gc-gingham-polo.jpg",
+      "name": "Seminole GC Gingham Polo",
+      "brand": "Unattributed",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "2XL",
+      "condition": "Pre-owned",
+      "price": 49.99,
+      "colorway": [
+        "#A8C0D6",
+        "#7A9BB8",
+        "#3D5A72"
+      ],
+      "colorName": "Powder Blue",
+      "story": "Cool blue Gingham print with the Iconic Seminole GC icon on the left chest. Donald Ross design.",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "33 in",
+        "Chest": "28 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-10-15",
+      "_source": "stripe:prod_VR3qbv3uiOklzc",
+      "description": [
+        "Cool blue Gingham print with the Iconic Seminole GC icon on the left chest. Donald Ross design."
+      ],
+      "_stripe": {
+        "product": "prod_VR3qbv3uiOklzc",
+        "price": "price_1UQqvbC1bWq01lTKAuH2l17B",
+        "link": "plink_1UQrAYC1bWq01lTK6BjvuFTp",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-10-15"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/28E14mbuQ4vrdoib3Y9k41k",
+      "photos": [
+        "carousel/seminole-gc-gingham-polo/01.jpg",
+        "carousel/seminole-gc-gingham-polo/02.jpg",
+        "carousel/seminole-gc-gingham-polo/03.jpg"
+      ],
+      "_photosPulled": "2026-10-15"
+    },
+    {
+      "id": "stock-willow-oaks-cc-reverse-weave",
+      "file": "willow-oaks-cc-reverse-weave.jpg",
+      "name": "Willow Oaks CC Reverse Weave",
+      "brand": "Unattributed",
+      "year": "—",
+      "category": "Knitwear",
+      "garment": "sweater",
+      "size": "XL",
+      "condition": "Pre-owned",
+      "price": 34.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "Vintage and Partially Distressed piece from a beautiful club on the banks of the James River.",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "30 in",
+        "Chest": "26 in",
+        "Sleeves": "27 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-10-15",
+      "_source": "stripe:prod_VR3imicyEIZX3C",
+      "description": [
+        "Vintage and Partially Distressed piece from a beautiful club on the banks of the James River."
+      ],
+      "_stripe": {
+        "product": "prod_VR3imicyEIZX3C",
+        "price": "price_1UQqvXC1bWq01lTKmzxWfUVR",
+        "link": "plink_1UQrAZC1bWq01lTKGXbVjNub",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-10-15"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/3cIdR86aw7HD4RMc829k41l",
+      "photos": [
+        "carousel/willow-oaks-cc-reverse-weave/01.jpg",
+        "carousel/willow-oaks-cc-reverse-weave/02.jpg",
+        "carousel/willow-oaks-cc-reverse-weave/03.jpg",
+        "carousel/willow-oaks-cc-reverse-weave/04.jpg"
+      ],
+      "_photosPulled": "2026-10-15"
+    },
+    {
+      "id": "stock-peter-millar-x-pebble-beach-cashmere-sweater",
+      "file": "peter-millar-x-pebble-beach-cashmere-sweater.jpg",
+      "name": "Peter Millar x Pebble Beach Cashmere Sweater",
+      "brand": "Peter Millar",
+      "year": "—",
+      "category": "Knitwear",
+      "garment": "sweater",
+      "size": "L",
+      "condition": "Pre-owned",
+      "price": 99.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "100% Cashmere sweater sporting a 1980s Pebble Beach patch on the left chest. Unique piece you won't find anywhere else.",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "26 in",
+        "Chest": "24 in",
+        "Sleeves": "27 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-10-15",
+      "_source": "stripe:prod_VR3bjiKS6OVOWY",
+      "description": [
+        "100% Cashmere sweater sporting a 1980s Pebble Beach patch on the left chest. Unique piece you won't find anywhere else."
+      ],
+      "_stripe": {
+        "product": "prod_VR3bjiKS6OVOWY",
+        "price": "price_1UQqvRC1bWq01lTKPuUnYgiW",
+        "link": "plink_1UQrAZC1bWq01lTKEr6VzfTm",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-10-15"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/3cIcN42YkaTP0Bwc829k41m",
+      "photos": [
+        "carousel/peter-millar-x-pebble-beach-cashmere-sweater/01.jpg",
+        "carousel/peter-millar-x-pebble-beach-cashmere-sweater/02.jpg",
+        "carousel/peter-millar-x-pebble-beach-cashmere-sweater/03.jpg",
+        "carousel/peter-millar-x-pebble-beach-cashmere-sweater/04.jpg"
+      ],
+      "_photosPulled": "2026-10-15",
+      "material": "Cashmere"
+    },
+    {
+      "id": "stock-vintage-titleist-logo-sweater",
+      "file": "vintage-titleist-logo-sweater.jpg",
+      "name": "Vintage Titleist Logo Sweater",
+      "brand": "Titleist",
+      "year": "—",
+      "category": "Knitwear",
+      "garment": "sweater",
+      "size": "XL",
+      "condition": "Pre-owned",
+      "price": 79.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "Beautiful retro Titleist knit with subtle pattern across the garment. Made in Scotland.",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "30 in",
+        "Chest": "24 in",
+        "Sleeves": "27 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-10-15",
+      "_source": "stripe:prod_VR3U2BE2jGan6L",
+      "description": [
+        "Beautiful retro Titleist knit with subtle pattern across the garment. Made in Scotland."
+      ],
+      "_stripe": {
+        "product": "prod_VR3U2BE2jGan6L",
+        "price": "price_1UQqvLC1bWq01lTKBUZ59kMi",
+        "link": "plink_1UQrAZC1bWq01lTK3IwdVL1H",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-10-15"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/8x2eVc0Qce61gAu5JE9k41n",
+      "photos": [
+        "carousel/vintage-titleist-logo-sweater/01.jpg",
+        "carousel/vintage-titleist-logo-sweater/02.jpg",
+        "carousel/vintage-titleist-logo-sweater/03.jpg",
+        "carousel/vintage-titleist-logo-sweater/04.jpg",
+        "carousel/vintage-titleist-logo-sweater/05.jpg",
+        "carousel/vintage-titleist-logo-sweater/06.jpg"
+      ],
+      "_photosPulled": "2026-10-15"
     }
   ]
 }

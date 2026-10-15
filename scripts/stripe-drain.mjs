@@ -153,7 +153,11 @@ function parseMeasurements(line) {
  * ("Measurements: 26\" Length - 24\" Pit to Pit" is one field, not three).
  */
 function segments(text) {
-  const raw = String(text || '').split(/\r?\n|\s\/\s|\s[-–—]\s/).map((l) => l.replace(/</g, '').trim()).filter(Boolean);
+  // (15 Oct 2026) Henry now runs "Measurements:" on from the sentence before
+  // it — `Made in Scotland. Measurements: 30" Length / 24" Chest` — so a
+  // mid-line "Measurements:" is cut onto its own segment first.
+  const cut = String(text || '').replace(/([^\n])\s+(?=measurements?\s*:)/gi, '$1\n');
+  const raw = cut.split(/\r?\n|\s\/\s|\s[-–—]\s/).map((l) => l.replace(/</g, '').trim()).filter(Boolean);
   const out = [];
   for (const seg of raw) {
     const prev = out[out.length - 1];
