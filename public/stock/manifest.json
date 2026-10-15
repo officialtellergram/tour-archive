@@ -3809,7 +3809,14 @@
         "carousel/abstract-grand-slam-golf-polo/05.jpg"
       ],
       "_photosPulled": "2026-10-15",
-      "_sizeSource": "neck label, IMG_1905 (Grand Slam tag reads XL)"
+      "_sizeSource": "neck label, IMG_1905 (Grand Slam tag reads XL)",
+      "_ebay": {
+        "itemId": "377572921218",
+        "sku": "stock-abstract-grand-slam-golf-polo",
+        "price": 40.99,
+        "listedAt": "2026-10-15"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377572921218"
     },
     {
       "id": "stock-seminole-gc-gingham-polo",
@@ -3857,7 +3864,14 @@
         "carousel/seminole-gc-gingham-polo/02.jpg",
         "carousel/seminole-gc-gingham-polo/03.jpg"
       ],
-      "_photosPulled": "2026-10-15"
+      "_photosPulled": "2026-10-15",
+      "_ebay": {
+        "itemId": "377572921244",
+        "sku": "stock-seminole-gc-gingham-polo",
+        "price": 58.99,
+        "listedAt": "2026-10-15"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377572921244"
     },
     {
       "id": "stock-willow-oaks-cc-reverse-weave",
@@ -3907,7 +3921,14 @@
         "carousel/willow-oaks-cc-reverse-weave/03.jpg",
         "carousel/willow-oaks-cc-reverse-weave/04.jpg"
       ],
-      "_photosPulled": "2026-10-15"
+      "_photosPulled": "2026-10-15",
+      "_ebay": {
+        "itemId": "377572921283",
+        "sku": "stock-willow-oaks-cc-reverse-weave",
+        "price": 40.99,
+        "listedAt": "2026-10-15"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377572921283"
     },
     {
       "id": "stock-peter-millar-x-pebble-beach-cashmere-sweater",
@@ -3958,7 +3979,14 @@
         "carousel/peter-millar-x-pebble-beach-cashmere-sweater/04.jpg"
       ],
       "_photosPulled": "2026-10-15",
-      "material": "Cashmere"
+      "material": "Cashmere",
+      "_ebay": {
+        "itemId": "377572921324",
+        "sku": "stock-peter-millar-x-pebble-beach-cashmere-sweater",
+        "price": 116.99,
+        "listedAt": "2026-10-15"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377572921324"
     },
     {
       "id": "stock-vintage-titleist-logo-sweater",
@@ -4010,7 +4038,14 @@
         "carousel/vintage-titleist-logo-sweater/05.jpg",
         "carousel/vintage-titleist-logo-sweater/06.jpg"
       ],
-      "_photosPulled": "2026-10-15"
+      "_photosPulled": "2026-10-15",
+      "_ebay": {
+        "itemId": "377572921359",
+        "sku": "stock-vintage-titleist-logo-sweater",
+        "price": 93.99,
+        "listedAt": "2026-10-15"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377572921359"
     }
   ]
 }
