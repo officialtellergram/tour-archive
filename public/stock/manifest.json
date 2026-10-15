@@ -3971,10 +3971,9 @@
         "link": "plink_1UQrAZC1bWq01lTKEr6VzfTm",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-10-15"
+        "minted": "2026-10-15",
+        "soldSession": "cs_live_a1jm76To8m6C9qqXpvTCEKBcOdBdvP8NVFVrwBmXFVMfmtp1Ow1IFH0yjI"
       },
-      "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/3cIcN42YkaTP0Bwc829k41m",
       "photos": [
         "carousel/peter-millar-x-pebble-beach-cashmere-sweater/01.jpg",
         "carousel/peter-millar-x-pebble-beach-cashmere-sweater/02.jpg",
@@ -3988,9 +3987,12 @@
         "sku": "stock-peter-millar-x-pebble-beach-cashmere-sweater",
         "price": 116.99,
         "listedAt": "2026-10-15",
-        "pictures": "sq1"
+        "pictures": "sq1",
+        "endedAt": "2026-10-15"
       },
-      "_ebayUrl": "https://www.ebay.com/itm/377572921324"
+      "_ebayUrl": "https://www.ebay.com/itm/377572921324",
+      "sold": true,
+      "_saleNotified": "2026-10-15"
     },
     {
       "id": "stock-vintage-titleist-logo-sweater",
