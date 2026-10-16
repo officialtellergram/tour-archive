@@ -8,6 +8,7 @@ import {
   launchCollections,
   daysUntil,
   dateRange,
+  soldLast,
 } from '../data/store.js';
 import { productCard, collectionTile, marquee, sectionHead, sizeAttrs } from '../components/ui.js';
 
@@ -76,13 +77,13 @@ export function home() {
   const featured = featuredCollection();
   // Sold pieces STAY on the page, marked — the record of demand is the point.
   // Counts still speak to availability.
-  const stock = items();
+  const stock = soldLast(items());
   const available = stock.filter(isAvailable);
 
   const ev = featured?.event;
   const coll = featured?.collection;
   const status = ev ? eventStatus(ev) : null;
-  const drop = coll ? itemsIn(coll.id) : [];
+  const drop = coll ? soldLast(itemsIn(coll.id)) : [];
 
   /* The drop pane LEADS the page while its window is open (live/closing);
      outside the window the shop leads and the drop trails as a preview. */

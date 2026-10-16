@@ -7,6 +7,7 @@ import {
   getCollection,
   featuredEvent,
   dateRange,
+  soldLast,
 } from '../data/store.js';
 import { collectionTile, productCard, breadcrumb, sectionHead, marquee } from '../components/ui.js';
 
@@ -104,7 +105,7 @@ export function collectionDetail({ id }) {
   const c = getCollection(id);
   if (!c) return missingCollection(id);
 
-  const stock = itemsIn(c.id);
+  const stock = soldLast(itemsIn(c.id));
   const live = stock.filter(isAvailable).length;
   // With two launch collections visible, prev === next — one cross-link, not
   // two arrows to the same page. Deep-linked research files cross-link to the drop.

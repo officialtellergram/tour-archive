@@ -148,6 +148,10 @@ export const itemsIn = (collectionId) =>
   state.items.filter((i) => i.collection === collectionId);
 
 export const isAvailable = (item) => !item.sold && !item.upcoming;
+/** The same list with sold pieces moved to the end, each group keeping its
+    order (Karen, 16 Oct 2026: sold work sits respectfully at the bottom of
+    a collection or the archive, never ahead of what can still be bought). */
+export const soldLast = (list) => [...list.filter((i) => !i.sold), ...list.filter((i) => i.sold)];
 export const itemStatus = (item) =>
   item.sold ? 'Sold' : item.upcoming ? 'Reserved for the drop' : 'Available — 1 of 1';
 

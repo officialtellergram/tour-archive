@@ -12,6 +12,7 @@ import {
   eraOf,
   isAvailable,
   getCollection,
+  soldLast,
 } from '../data/store.js';
 import { productCard, breadcrumb, marquee } from '../components/ui.js';
 import { initGridStagger } from '../lib/motion.js';
@@ -48,7 +49,7 @@ function applyFilters(state) {
   if (state.sort === 'price-desc') out = [...out].sort((a, b) => b.price - a.price);
   if (state.sort === 'year-asc') out = [...out].sort((a, b) => Number(a.year) - Number(b.year));
   if (state.sort === 'year-desc') out = [...out].sort((a, b) => Number(b.year) - Number(a.year));
-  return out;
+  return soldLast(out); // whatever the sort, sold pieces close the list
 }
 
 function chip(group, value, label, active) {
