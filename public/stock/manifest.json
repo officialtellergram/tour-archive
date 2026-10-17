@@ -1436,7 +1436,7 @@
         "soldOrder": "06-15282-35373",
         "soldAt": "2026-10-09",
         "stripeInvoice": "in_1UOiksC1bWq01lTKR91nsq58",
-        "finance": "8.62|6.56|42.31|FUNDS_ON_HOLD"
+        "finance": "8.62|6.56|42.31|FUNDS_PROCESSING"
       },
       "sold": true,
       "_saleNotified": "2026-10-09"
