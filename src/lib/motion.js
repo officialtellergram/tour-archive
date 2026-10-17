@@ -244,31 +244,57 @@ export function initReveals(root = document) {
     nodes.forEach((n) => n.classList.add('is-in'));
     return;
   }
+  const showNow = (el) => {
+    el.style.opacity = '1';
+    el.style.transform = 'none';
+    el.classList.add('is-in');
+  };
+  const reveal = (el) => {
+    if (el.classList.contains('is-in') || el.dataset.revealing) return;
+    el.dataset.revealing = '1';
+    const delay = Number(el.dataset.revealDelay || 0);
+    // 0.5s / 14px: content is fully in within the 400ms Doherty window
+    // plus one beat — the rest state (26px→14px) lives in app.css too.
+    animate(
+      el,
+      { opacity: [0, 1], transform: ['translateY(14px)', 'translateY(0px)'] },
+      { duration: 0.5, delay, ease: EASE }
+    ).finished.then(() => el.classList.add('is-in'));
+  };
+  // Safety net. The choreographed trigger below wants 15 % of a node inside
+  // the viewport less a 12 % band at the bottom; a short heading that comes
+  // to rest inside that band (page bottom, a fast thumb) never qualifies
+  // and would stay invisible. So: any node that has been on screen at all
+  // for 900 ms and is still hidden is shown; a node already scrolled past is
+  // shown at once. (17 Oct 2026: the deploy's reveal gate caught one
+  // section head at opacity 0 on a 390x844 viewport.)
+  const timers = new WeakMap();
+  const net = typeof IntersectionObserver === 'function'
+    ? new IntersectionObserver((entries) => {
+        for (const e of entries) {
+          const el = e.target;
+          if (el.classList.contains('is-in')) { net.unobserve(el); continue; }
+          if (e.boundingClientRect.bottom < 0) { showNow(el); net.unobserve(el); continue; }
+          if (e.isIntersecting) {
+            if (!timers.has(el)) timers.set(el, setTimeout(() => { if (!el.classList.contains('is-in')) reveal(el); net.unobserve(el); }, 900));
+          } else if (timers.has(el)) {
+            clearTimeout(timers.get(el));
+            timers.delete(el);
+          }
+        }
+      }, { threshold: 0 })
+    : null;
   nodes.forEach((n) => {
     // Already scrolled past when the observer registers (a fast thumb, or a
     // page that mounted under the intro plate): show it now. An observer
     // registered below a node reports "not intersecting" and would leave it
     // invisible until the visitor scrolled back up.
     if (n.getBoundingClientRect().bottom < 0) {
-      n.style.opacity = '1';
-      n.style.transform = 'none';
-      n.classList.add('is-in');
+      showNow(n);
       return;
     }
-    inView(
-      n,
-      (el) => {
-        const delay = Number(el.dataset.revealDelay || 0);
-        // 0.5s / 14px: content is fully in within the 400ms Doherty window
-        // plus one beat — the rest state (26px→14px) lives in app.css too.
-        animate(
-          el,
-          { opacity: [0, 1], transform: ['translateY(14px)', 'translateY(0px)'] },
-          { duration: 0.5, delay, ease: EASE }
-        ).finished.then(() => el.classList.add('is-in'));
-      },
-      { margin: '0px 0px -12% 0px', amount: 0.15 }
-    );
+    inView(n, reveal, { margin: '0px 0px -12% 0px', amount: 0.15 });
+    if (net) net.observe(n);
   });
 }
 

@@ -233,7 +233,11 @@ try {
         if (o < 0.9) {
           const cls = typeof el.className === 'string' && el.className.trim()
             ? '.' + el.className.trim().split(/\\s+/)[0] : '';
-          stuck.push(el.tagName.toLowerCase() + cls + '@' + o.toFixed(2));
+          // which one, and where it sits: the text it holds and its top edge
+          // relative to the viewport (page is scrolled to the bottom here)
+          const r = el.getBoundingClientRect();
+          const text = (el.textContent || '').trim().replace(/\\s+/g, ' ').slice(0, 40);
+          stuck.push(el.tagName.toLowerCase() + cls + '@' + o.toFixed(2) + ' "' + text + '" top=' + Math.round(r.top) + '/' + innerHeight + ' h=' + Math.round(r.height));
         }
       }
       return JSON.stringify({ owned: owned.length, stuck: stuck.slice(0, 8), stuckCount: stuck.length });
