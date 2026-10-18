@@ -3690,7 +3690,7 @@
         "soldOrder": "10-15272-86159",
         "soldAt": "2026-10-09",
         "stripeInvoice": "in_1UOil1C1bWq01lTKwVFQiV9C",
-        "finance": "17.61|7.9|92.48|FUNDS_ON_HOLD"
+        "finance": "17.61|7.9|92.48|FUNDS_AVAILABLE_FOR_PAYOUT"
       },
       "_ebayUrl": "https://www.ebay.com/itm/377555836212",
       "sold": true,
