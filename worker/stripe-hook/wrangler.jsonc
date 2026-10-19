@@ -13,8 +13,10 @@
   // Cloudflare's cron is dependable where GitHub's is not (GitHub fired a
   // ten-minute schedule four times in a day): every ten minutes the Worker
   // starts the sync job, so an eBay sale reaches the site without a webhook.
-  // Plus the sales report job: Mondays 13:00 UTC (the all-time report) and
-  // the 1st at 13:05 UTC (last month's statement). src/index.js tells them
-  // apart by the cron string, so these must match CRON_WEEKLY / CRON_MONTHLY.
-  "triggers": { "crons": ["*/10 * * * *", "0 13 * * 1", "5 13 1 * *"] }
+  // Plus the sales report job: Mondays 13:00 UTC (last week's statement +
+  // the all-time file) and the 1st at 13:05 UTC (last month's statement).
+  // src/index.js tells them apart by the cron string, so these must match
+  // CRON_WEEKLY / CRON_MONTHLY. Day of week is spelled out: Cloudflare counts
+  // weekdays from Sunday = 1, so "* * 1" fired on Sunday 18 Oct 2026.
+  "triggers": { "crons": ["*/10 * * * *", "0 13 * * MON", "5 13 1 * *"] }
 }

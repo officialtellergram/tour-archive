@@ -25,7 +25,7 @@ const REPO = 'officialtellergram/tour-archive';
 const WORKFLOW = 'stripe-drift.yml';
 const REPORT_WORKFLOW = 'sales-report.yml';
 // Cloudflare cron runs in UTC: 13:00 UTC is 09:00 in New York (08:00 in winter).
-const CRON_WEEKLY = '0 13 * * 1';
+const CRON_WEEKLY = '0 13 * * MON'; // spelled out: Cloudflare's numeric weekdays start at Sunday = 1
 const CRON_MONTHLY = '5 13 1 * *';
 const TOLERANCE_S = 300; // reject a signed payload older than five minutes (replay)
 
