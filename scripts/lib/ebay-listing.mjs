@@ -102,20 +102,19 @@ export function descriptionOf(e) {
 }
 
 /**
- * Public JPEG URLs. First the square hero the build writes to
- * dist/ebay/<slug>/hero-sq.jpg (eBay's gallery tile is square; a portrait
- * gets grey bars), then every frame in order — the portrait hero included,
- * so the listing's own gallery still has the full photograph. A .webp frame
- * points at the JPEG twin under dist/ebay/.
+ * Public JPEG URLs: the photographs exactly as the site shows them, the hero
+ * first, then the carousel frames (the build writes a JPEG twin of each
+ * WebP frame under dist/ebay/<slug>/). Nothing is cropped, padded or
+ * squared — Karen and the team, 19 Oct 2026: "just use the raw pictures".
  */
-export const PICTURE_SET = 'sq1'; // bump when the set changes; the sync re-sends pictures whose ledger differs
+export const PICTURE_SET = 'raw1'; // bump when the set changes; the sync re-sends pictures whose ledger differs
 export function picturesOf(e) {
   const slug = e.id.replace(/^stock-/, '');
   const frames = Array.isArray(e.photos) && e.photos.length ? e.photos : [e.file];
-  const rest = frames.slice(0, MAX_PICS - 1).map((p) => (/\.webp$/i.test(p)
+  const rest = frames.slice(0, MAX_PICS).map((p) => (/\.webp$/i.test(p)
     ? `${ORIGIN}/ebay/${slug}/${p.split('/').pop().replace(/\.webp$/i, '.jpg')}`
     : `${ORIGIN}/stock/${p}`));
-  return [`${ORIGIN}/ebay/${slug}/hero-sq.jpg`, ...rest];
+  return rest;
 }
 
 /** Item specifics as name → value, with the catalogue filling what the record lacks. */

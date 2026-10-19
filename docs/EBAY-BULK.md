@@ -62,9 +62,10 @@ ended without a sale. If eBay says the listing is still active, the list
 was short and no listing is created that run. Should two active listings
 ever share a SKU, the job ends the newer one (and says so in the summary).
 
-The first picture of every listing is a square version of the hero made
-for eBay's square gallery tile (the garment's outline, the wall continued
-around it, nothing cropped); the portrait photographs follow it.
+The pictures on a listing are the photographs exactly as the site shows
+them, the hero first and the carousel frames after it, nothing cropped,
+padded or squared (the earlier square gallery hero with a blurred border was
+dropped on 19 Oct 2026 at the team's request).
 
 A piece that eBay refuses (a missing specific such as Size, Material or
 Outer Shell Material) is reported in the run summary each time and lists

@@ -401,8 +401,8 @@ try {
     const price = ebayPrice(e);
     const call = WRITE ? 'AddFixedPriceItem' : 'VerifyAddFixedPriceItem';
     if (WRITE) {
-      // eBay fetches the pictures as it lists; the square hero exists only
-      // once the site has deployed, so a piece waits for its first picture.
+      // eBay fetches the pictures as it lists; a new piece's photographs are
+      // public only once the site has deployed, so it waits for its first.
       const first = await fetch(picturesOf(e)[0], { method: 'HEAD' }).catch(() => null);
       if (!first?.ok) {
         console.log(`${C.dim}   · ${e.id}: pictures not published yet, next run${C.off}`);
@@ -433,8 +433,8 @@ try {
   if (held.length) console.log(`${C.dim}   · drop hold (${DROP_DELAY_DAYS} d): ${held.join('; ')}${C.off}`);
 
   // 6. pictures: a live listing whose picture set is older than PICTURE_SET
-  //    gets the current set (the square hero first) by ReviseFixedPriceItem —
-  //    only once the first URL answers 200, i.e. after the site has deployed.
+  //    gets the current set (the raw photographs, hero first) by
+  //    ReviseFixedPriceItem — only once the first URL answers 200.
   let pictured = 0;
   for (const e of manifest.items) {
     const id = e._ebay?.itemId;
