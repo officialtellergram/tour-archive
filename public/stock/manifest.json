@@ -1436,7 +1436,7 @@
         "soldOrder": "06-15282-35373",
         "soldAt": "2026-10-09",
         "stripeInvoice": "in_1UOiksC1bWq01lTKR91nsq58",
-        "finance": "8.62|6.56|42.31|FUNDS_AVAILABLE_FOR_PAYOUT"
+        "finance": "8.62|6.56|42.31|PAYOUT"
       },
       "sold": true,
       "_saleNotified": "2026-10-09"
@@ -3690,7 +3690,7 @@
         "soldOrder": "10-15272-86159",
         "soldAt": "2026-10-09",
         "stripeInvoice": "in_1UOil1C1bWq01lTKwVFQiV9C",
-        "finance": "17.61|7.9|92.48|FUNDS_AVAILABLE_FOR_PAYOUT"
+        "finance": "17.61|7.9|92.48|PAYOUT"
       },
       "_ebayUrl": "https://www.ebay.com/itm/377555836212",
       "sold": true,
