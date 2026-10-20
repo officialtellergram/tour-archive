@@ -53,9 +53,12 @@ Pieces the team is keeping back for a future drop stay out of the public
 catalogue but can still be sold to someone who sees them at the stall. The
 "sandbox" for these is Stripe itself:
 
-- Henry lists the piece in Stripe as usual (live mode, photo, price) and
-  adds a metadata field **`held` = `true`** (Products → the product → Edit
-  → Additional options → Metadata). Or starts the name with `HOLD:`.
+- Henry lists the piece in Stripe as usual — the normal live account, not
+  Stripe's Sandbox (test mode), where a real tap could never match — with
+  photo and price, and marks it held in any one of three ways: a line in
+  the **Description** reading just `HELD` (easiest, it is the field he is
+  already typing in); the name starting with `HOLD:`; or a metadata field
+  `held` = `true` under More options.
 - The drain leaves it alone: it never reaches the site, the archive, the
   sitemap or eBay.
 - The stall sheet lists it, shaded HELD, with the words to type.
