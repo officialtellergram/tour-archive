@@ -3506,7 +3506,7 @@
         "soldOrder": "25-15246-21106",
         "soldAt": "2026-10-09",
         "stripeInvoice": "in_1UOikwC1bWq01lTKqqehIXrl",
-        "finance": "5.53|9.02|20.94|FUNDS_AVAILABLE_FOR_PAYOUT"
+        "finance": "5.53|9.02|20.94|PAYOUT"
       },
       "_ebayUrl": "https://www.ebay.com/itm/377555836137",
       "sold": true,
