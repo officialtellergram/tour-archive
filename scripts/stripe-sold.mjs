@@ -11,6 +11,17 @@
  * sold signal; this sweep then deactivates the link explicitly so the
  * public page state is deterministic (and shows its inactive_message).
  *
+ * IN PERSON (from the 25 Oct 2026 stall): a Tap to Pay charge taken in the
+ * Stripe Dashboard app is just an amount — no link, no session. The sweep
+ * lists card-present charges and matches each to a live piece by the
+ * Description typed in the app (the piece's name), falling back to the
+ * price when exactly one live piece has it. A match is marked sold the
+ * same way; a charge that fits no piece, or several, is recorded as
+ * unmatched for the team's notice (notify-sales.mjs) rather than guessed.
+ * A matched charge refunded later reopens its piece. Ledger: manifest
+ * _inPerson[chargeId]. --simulate "<description>" <amount> tries the
+ * matcher offline.
+ *
  * Modes:  --dry   report only
  *         (none)  write sold flags locally — no git, per the house rule
  *                 that scheduled tasks never commit
@@ -141,6 +152,122 @@ if (sold.length && !DRY) {
     } catch (err) {
       say(`${C.yellow}   ⚠ could not deactivate ${e._stripe.link}: ${err.message}${C.off}`);
     }
+  }
+}
+
+/* ---------------- 3b. in person: Tap to Pay charges from the Dashboard app ---------------- */
+
+const SIM = (() => {
+  const i = args.indexOf('--simulate');
+  return i >= 0 ? { description: args[i + 1] || '', amount: Math.round(Number(args[i + 2] || 0) * 100) } : null;
+})();
+const norm = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+
+/** The live piece a card-present charge was for, or why none. */
+function matchPiece(ch, live) {
+  const d = norm(ch.description);
+  if (d.length >= 4) {
+    const hits = live.filter((e) => {
+      const name = norm(e.name);
+      const id = norm(e.id.replace(/^stock-/, ''));
+      const sku = norm(e.sku);
+      return (name && (d.includes(name) || name.includes(d))) || (id && d.includes(id)) || (sku && sku.length >= 4 && d.includes(sku));
+    });
+    if (hits.length === 1) return { piece: hits[0], how: 'by description' };
+    if (hits.length > 1) return { piece: null, why: `the description fits ${hits.length} pieces (${hits.map((e) => e.id).join(', ')})` };
+  }
+  const byPrice = live.filter((e) => Math.round(Number(e.price) * 100) === ch.amount);
+  if (byPrice.length === 1) return { piece: byPrice[0], how: d ? 'by price (the description named no piece)' : 'by price (no description)' };
+  return { piece: null, why: byPrice.length ? `${byPrice.length} live pieces have this price and the description names none` : 'no live piece has this price and the description names none' };
+}
+
+const live = () => manifest.items.filter((e) => !e.sold && !e.retired && e._stripe?.link && e._stripe.mode === MODE);
+
+if (SIM) {
+  const fake = { id: 'ch_simulated', amount: SIM.amount, description: SIM.description };
+  const m = matchPiece(fake, live());
+  say(m.piece
+    ? `${C.green}   ✔ simulate "${SIM.description}" $${(SIM.amount / 100).toFixed(2)} → ${m.piece.id} (${m.how})${C.off}`
+    : `${C.yellow}   ⚠ simulate "${SIM.description}" $${(SIM.amount / 100).toFixed(2)} → unmatched: ${m.why}${C.off}`);
+} else {
+  const charges = [];
+  try {
+    const since = Math.floor(Date.now() / 1000) - 45 * 86400;
+    let after = '';
+    for (;;) {
+      const page = await stripe('GET', `/v1/charges?limit=100&created[gte]=${since}${after ? `&starting_after=${after}` : ''}`);
+      for (const ch of page.data) {
+        if (ch.status === 'succeeded' && ch.payment_method_details?.type === 'card_present' && (ch.livemode ? 'live' : 'test') === MODE) charges.push(ch);
+      }
+      if (!page.has_more || !page.data.length) break;
+      after = page.data[page.data.length - 1].id;
+    }
+  } catch (err) {
+    say(`${C.yellow}   ⚠ in-person charges not read — ${err.message}${C.off}`);
+  }
+  const ledger = (manifest._inPerson = manifest._inPerson || {});
+  let changed = 0;
+  for (const ch of charges.sort((a, b) => a.created - b.created)) {
+    const amount = `$${(ch.amount / 100).toFixed(2)}`;
+    const known = ledger[ch.id];
+    const refunded = ch.refunded || (ch.amount_refunded || 0) >= ch.amount;
+    if (known) {
+      if (known.status === 'matched' && refunded) {
+        // The buyer was refunded: the piece is for sale again, as after an eBay cancellation.
+        const target = manifest.items.find((x) => x.id === known.piece);
+        say(`${C.yellow}   ↩ ${known.piece} — in-person charge ${ch.id} refunded; ${DRY ? 'would reopen' : 'reopening'} the piece${C.off}`);
+        if (DRY || !target) continue;
+        target.sold = false;
+        delete target._stripe.soldCharge;
+        delete target._stripe.soldAt;
+        delete target._stripe.soldAmount;
+        delete target._stripe.soldInPerson;
+        delete target._saleNotified;
+        try {
+          const link = await stripe('POST', `/v1/payment_links/${target._stripe.link}`, { active: 'true' });
+          target.channel = 'stripe';
+          target.listingUrl = link.url;
+        } catch (err) {
+          say(`${C.yellow}   ⚠ could not reactivate ${target._stripe.link}: ${err.message}${C.off}`);
+        }
+        known.status = 'refunded';
+        known.refundedAt = new Date().toISOString().slice(0, 10);
+        changed += 1;
+      }
+      continue;
+    }
+    if (refunded) { ledger[ch.id] = { status: 'refunded-before-seen', amount: ch.amount / 100, description: ch.description || '', at: new Date(ch.created * 1000).toISOString() }; changed += 1; continue; }
+    const m = matchPiece(ch, live());
+    if (m.piece) {
+      say(`${C.green}   ✔ ${m.piece.id} — SOLD IN PERSON (${amount}, Tap to Pay, ${m.how}; ${ch.id})${C.off}`);
+      if (DRY) continue;
+      const target = m.piece;
+      target.sold = true;
+      delete target.channel;
+      delete target.listingUrl;
+      target._stripe.soldCharge = ch.id;
+      target._stripe.soldAt = new Date(ch.created * 1000).toISOString().slice(0, 10);
+      target._stripe.soldAmount = ch.amount / 100;
+      target._stripe.soldInPerson = true;
+      ledger[ch.id] = { status: 'matched', piece: target.id, how: m.how, amount: ch.amount / 100, description: ch.description || '', at: new Date(ch.created * 1000).toISOString() };
+      changed += 1;
+      try {
+        await stripe('POST', `/v1/payment_links/${target._stripe.link}`, { active: 'false' });
+        say(`${C.dim}   deactivated ${target._stripe.link}${C.off}`);
+      } catch (err) {
+        say(`${C.yellow}   ⚠ could not deactivate ${target._stripe.link}: ${err.message}${C.off}`);
+      }
+    } else {
+      say(`${C.yellow}   ⚠ in-person charge ${ch.id} (${amount}, "${ch.description || ''}") matches no piece — ${m.why}; the team will be asked${C.off}`);
+      if (DRY) continue;
+      ledger[ch.id] = { status: 'unmatched', why: m.why, amount: ch.amount / 100, description: ch.description || '', at: new Date(ch.created * 1000).toISOString() };
+      changed += 1;
+    }
+  }
+  if (charges.length) say(`${C.dim}   ${charges.length} in-person charge(s) on record · ${changed} change(s)${C.off}`);
+  if (changed && !DRY) {
+    writeFileSync(MANIFEST, JSON.stringify(manifest, null, 2) + '\n', 'utf8');
+    say(`${C.green}✔ wrote the in-person ledger${C.off}`);
   }
 }
 

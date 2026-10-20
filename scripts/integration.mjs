@@ -386,7 +386,7 @@ check('sold and retired pieces keep their record but offer no checkout', () => {
     // Proof of sale is the paying channel's record: a Stripe Checkout
     // Session, or (from 9 Oct 2026) an eBay order. The first eBay sales of
     // Stripe-born pieces failed this gate and froze the site for a day.
-    if (drained && e.sold) assert(e._stripe?.soldSession || e._ebay?.soldOrder, `${e.id} is sold with neither a Stripe session nor an eBay order on record`);
+    if (drained && e.sold) assert(e._stripe?.soldSession || e._stripe?.soldCharge || e._ebay?.soldOrder, `${e.id} is sold with neither a Stripe session, an in-person charge nor an eBay order on record`);
     assert(e.file, `${e.id} lost its photograph`);
   }
 });

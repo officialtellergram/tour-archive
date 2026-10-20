@@ -181,6 +181,32 @@ async function stripeRow(e) {
   };
 }
 
+// ── In person: a Tap to Pay charge from the Dashboard app (no shipping, no label)
+async function inPersonRow(e) {
+  const base = {
+    channel: 'in-person', date: e._stripe.soldAt || '', piece: e.name, id: e.id,
+    sitePrice: Number(e.price).toFixed(2), subtotal: Number(e._stripe.soldAmount ?? e.price).toFixed(2), shipping: '0.00',
+    salesTax: '', orderTotal: '', fees: '', label: '', earnings: '', funds: '', status: 'paid', refunded: '', buyer: '',
+    reference: e._stripe.soldCharge, stripeInvoice: '',
+  };
+  if (!env.STRIPE_SECRET_KEY) return base;
+  const r = await fetch(`https://api.stripe.com/v1/charges/${e._stripe.soldCharge}?expand[]=balance_transaction`, { headers: { Authorization: `Bearer ${env.STRIPE_SECRET_KEY}` } });
+  const c = await r.json();
+  if (!r.ok) { console.log(`${C.yellow}   ⚠ ${e.id}: ${c.error?.message || r.status}${C.off}`); return base; }
+  const bt = c.balance_transaction;
+  const refunded = c.amount_refunded || 0;
+  return {
+    ...base,
+    date: new Date(c.created * 1000).toISOString().slice(0, 10),
+    subtotal: money(c.amount), salesTax: '0.00', orderTotal: money(c.amount),
+    fees: money(bt ? bt.fee : 0), earnings: money((bt ? bt.net : c.amount) - refunded),
+    funds: bt ? (bt.status === 'available' ? 'PAID_OUT' : 'PENDING') : '',
+    status: refunded >= c.amount ? 'refunded' : 'paid', refunded: money(refunded),
+    buyer: [c.billing_details?.name, c.receipt_email].filter(Boolean).join(' '),
+    reference: c.payment_intent || c.id,
+  };
+}
+
 // ── the join: every sold piece is a row
 const manifest = JSON.parse(readFileSync(MANIFEST, 'utf8'));
 const rows = [];
@@ -189,6 +215,9 @@ for (const e of manifest.items.filter((x) => x.sold)) {
   if (e._ebay?.soldOrder && orders.has(e._ebay.soldOrder)) {
     rows.push(ebayRow(e, orders.get(e._ebay.soldOrder)));
     usedOrders.add(e._ebay.soldOrder);
+  } else if (e._stripe?.soldCharge) {
+    if (EBAY_ONLY) continue;
+    rows.push(await inPersonRow(e));
   } else if (e._stripe?.soldSession) {
     if (EBAY_ONLY) continue;
     rows.push(await stripeRow(e));
