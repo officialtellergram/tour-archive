@@ -4054,5 +4054,15 @@
       },
       "_ebayUrl": "https://www.ebay.com/itm/377572921359"
     }
-  ]
+  ],
+  "_inPerson": {
+    "ch_3USf2VC1bWq01lTK15UsL0lv": {
+      "status": "unmatched",
+      "why": "no live piece has this price and the description names none",
+      "amount": 1,
+      "description": "Test",
+      "at": "2026-10-20T15:33:30.000Z",
+      "notified": "2026-10-20"
+    }
+  }
 }
