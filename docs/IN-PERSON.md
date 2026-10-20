@@ -15,6 +15,58 @@ ended, the team gets a notice, and the sale is in the report and in Stripe.
 - Install the Stripe Dashboard app and sign in once at home, not at the
   stall.
 
+## The checklist
+
+**The night before**
+1. `npm run stall:sheet` and print it: every piece that can be sold, the
+   exact words to type, size, list price, a tick box, a space for the amount
+   charged. Held pieces are shaded.
+2. Every seller has the Stripe Dashboard app, is signed in, has done one
+   Tap to Pay (a refunded dollar is fine), and has the sheet.
+3. The pieces at the stall are the pieces on the sheet. Anything else stays
+   in the car.
+
+**Each sale**
+1. Find the piece on the sheet.
+2. Stripe app → + → Charge a card or send an invoice → the amount.
+3. Description: the words from the sheet's third column, exactly.
+4. Tap to Pay. Receipt if they want one.
+5. Tick the row and write the amount charged.
+
+**During the day, every hour or so**
+- The team inbox should hold one "Sold in person: …" per tick. A "not
+  matched" email means a description went wrong: note which piece on the
+  sheet and tell Karen; the piece is still live until she marks it.
+- The site (tourarchive.us/archive) shows sold pieces at the bottom; what
+  you ticked should be there within ten minutes.
+
+**End of day**
+- Ticks on the sheet = "Sold in person" emails = Payments in the Stripe app
+  for the day. Three numbers, one answer.
+- Any held piece that sold: its Stripe product is archived by the sync; tell
+  Henry so he does not look for it when the drop is built.
+- Refund anything taken by mistake from the app; the piece reopens by itself.
+
+## Held pieces: saved for a drop, sellable in person
+
+Pieces the team is keeping back for a future drop stay out of the public
+catalogue but can still be sold to someone who sees them at the stall. The
+"sandbox" for these is Stripe itself:
+
+- Henry lists the piece in Stripe as usual (live mode, photo, price) and
+  adds a metadata field **`held` = `true`** (Products → the product → Edit
+  → Additional options → Metadata). Or starts the name with `HOLD:`.
+- The drain leaves it alone: it never reaches the site, the archive, the
+  sitemap or eBay.
+- The stall sheet lists it, shaded HELD, with the words to type.
+- Sold at the stall, the sync records it in its in-person ledger, emails
+  "Sold in person (held piece): …", archives the Stripe product so it cannot
+  be drained into the drop later, and puts it in the sales report as
+  `in-person (held)`. Refunded, the product comes back.
+- When the drop is built, Henry removes the `held` metadata (or the `HOLD:`
+  prefix) and the next drain brings the piece in with its photographs like
+  any other.
+
 ## At the stall, each sale
 
 1. Open the Stripe Dashboard app, tap **+**, choose **Charge a card or send

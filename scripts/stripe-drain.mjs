@@ -102,7 +102,12 @@ const products = [];
 
 const manifest = JSON.parse(readFileSync(MANIFEST, 'utf8'));
 const known = new Set(manifest.items.map((e) => e._stripe?.product).filter(Boolean));
-const fresh = products.filter((p) => !p.metadata?.ta_id && !known.has(p.id));
+// Held for a future drop (metadata held = true, or a name starting "HOLD:"):
+// kept off the site and eBay; sellable only in person (stripe-sold.mjs).
+const isHeld = (p) => /^(true|yes|1)$/i.test(String(p.metadata?.held || '')) || /^\s*\[?hold\]?\s*[:\-–]/i.test(p.name);
+const heldOut = products.filter((p) => !p.metadata?.ta_id && isHeld(p));
+if (heldOut.length) console.log(`${C.dim}   ${heldOut.length} held for a drop, kept off the site: ${heldOut.map((p) => p.name).join(' · ')}${C.off}`);
+const fresh = products.filter((p) => !p.metadata?.ta_id && !known.has(p.id) && !isHeld(p));
 console.log(`${C.dim}   ${products.length} active product(s) · ${fresh.length} not yet drained${C.off}`);
 
 /* ---------------- 2. scaffolding ---------------- */

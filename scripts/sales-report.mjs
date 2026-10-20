@@ -245,6 +245,14 @@ for (const e of manifest.items.filter((x) => x.sold)) {
     });
   }
 }
+// held pieces sold at a stall: no catalogue entry, only the in-person ledger
+for (const [id, v] of Object.entries(manifest._inPerson || {})) {
+  if (v.status !== 'matched-held' && !(v.status === 'refunded' && v.product)) continue;
+  if (EBAY_ONLY) continue;
+  const row = await inPersonRow({ name: `${v.name} (held)`, id: `held:${v.product}`, price: v.listPrice || v.amount, _stripe: { soldCharge: id, soldAt: v.at.slice(0, 10), soldAmount: v.amount } });
+  row.channel = 'in-person (held)';
+  rows.push(row);
+}
 // eBay orders with no sold piece behind them (cancelled, then sold again)
 const bySku = new Map(manifest.items.map((e) => [e.sku || e.id, e]));
 for (const o of orders.values()) {

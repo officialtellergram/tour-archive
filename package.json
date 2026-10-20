@@ -17,6 +17,7 @@
     "ebay:invoices": "node scripts/ebay-to-stripe.mjs",
     "ebay:report": "node scripts/sales-report.mjs --ebay",
     "sales:report": "node scripts/sales-report.mjs",
+    "stall:sheet": "node scripts/stall-sheet.mjs",
     "build": "vite build",
     "build:pages": "vite build && node scripts/images.mjs && node scripts/snapshot.mjs && node scripts/prerender.mjs",
     "images": "node scripts/images.mjs",

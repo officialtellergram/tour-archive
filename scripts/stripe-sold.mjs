@@ -183,9 +183,36 @@ function matchPiece(ch, live) {
 
 const live = () => manifest.items.filter((e) => !e.sold && !e.retired && e._stripe?.link && e._stripe.mode === MODE);
 
+/**
+ * HELD pieces: Stripe products Henry marks with metadata held = true (or a
+ * name starting "HOLD:"). They are kept off the site and eBay for a future
+ * drop (the drain skips them) but can be sold at a stall, so they join the
+ * matcher as candidates. A held sale archives the product in Stripe and is
+ * recorded only in the _inPerson ledger — there is no catalogue entry to
+ * mark. Read fresh each run; the stall sheet lists them.
+ */
+const isHeld = (p) => /^(true|yes|1)$/i.test(String(p.metadata?.held || '')) || /^\s*\[?hold\]?\s*[:\-–]/i.test(p.name);
+const cleanName = (n) => n.replace(/^\s*\[?hold\]?\s*[:\-–]\s*/i, '').trim();
+async function heldPieces() {
+  const out = [];
+  let after = '';
+  for (;;) {
+    const page = await stripe('GET', `/v1/products?active=true&limit=100&expand[]=data.default_price${after ? `&starting_after=${after}` : ''}`);
+    for (const p of page.data) {
+      if (!isHeld(p) || (p.livemode ? 'live' : 'test') !== MODE) continue;
+      out.push({ held: true, id: `held:${p.id}`, product: p.id, name: cleanName(p.name), sku: p.metadata?.sku || '', price: (p.default_price?.unit_amount || 0) / 100 });
+    }
+    if (!page.has_more || !page.data.length) break;
+    after = page.data[page.data.length - 1].id;
+  }
+  return out;
+}
+
 if (SIM) {
   const fake = { id: 'ch_simulated', amount: SIM.amount, description: SIM.description };
-  const m = matchPiece(fake, live());
+  let held = [];
+  try { held = await heldPieces(); } catch (err) { say(`${C.yellow}   ⚠ held pieces not read — ${err.message}${C.off}`); }
+  const m = matchPiece(fake, [...live(), ...held]);
   say(m.piece
     ? `${C.green}   ✔ simulate "${SIM.description}" $${(SIM.amount / 100).toFixed(2)} → ${m.piece.id} (${m.how})${C.off}`
     : `${C.yellow}   ⚠ simulate "${SIM.description}" $${(SIM.amount / 100).toFixed(2)} → unmatched: ${m.why}${C.off}`);
@@ -207,11 +234,25 @@ if (SIM) {
   }
   const ledger = (manifest._inPerson = manifest._inPerson || {});
   let changed = 0;
+  let held = [];
+  if (charges.length) {
+    try { held = await heldPieces(); } catch (err) { say(`${C.yellow}   ⚠ held pieces not read — ${err.message}${C.off}`); }
+  }
   for (const ch of charges.sort((a, b) => a.created - b.created)) {
     const amount = `$${(ch.amount / 100).toFixed(2)}`;
     const known = ledger[ch.id];
     const refunded = ch.refunded || (ch.amount_refunded || 0) >= ch.amount;
     if (known) {
+      if (known.status === 'matched-held' && refunded) {
+        // A held piece refunded: back into the held pen (the product is active again in Stripe).
+        say(`${C.yellow}   ↩ held "${known.name}" — in-person charge ${ch.id} refunded; ${DRY ? 'would restore' : 'restoring'} the Stripe product${C.off}`);
+        if (DRY) continue;
+        try { await stripe('POST', `/v1/products/${known.product}`, { active: 'true' }); } catch (err) { say(`${C.yellow}   ⚠ could not restore ${known.product}: ${err.message}${C.off}`); }
+        known.status = 'refunded';
+        known.refundedAt = new Date().toISOString().slice(0, 10);
+        changed += 1;
+        continue;
+      }
       if (known.status === 'matched' && refunded) {
         // The buyer was refunded: the piece is for sale again, as after an eBay cancellation.
         const target = manifest.items.find((x) => x.id === known.piece);
@@ -237,7 +278,22 @@ if (SIM) {
       continue;
     }
     if (refunded) { ledger[ch.id] = { status: 'refunded-before-seen', amount: ch.amount / 100, description: ch.description || '', at: new Date(ch.created * 1000).toISOString() }; changed += 1; continue; }
-    const m = matchPiece(ch, live());
+    const m = matchPiece(ch, [...live(), ...held]);
+    if (m.piece && m.piece.held) {
+      // A held piece sold early at the stall: no catalogue entry to mark, so
+      // the ledger is the record and the product leaves Stripe's active list.
+      say(`${C.green}   ✔ held "${m.piece.name}" — SOLD IN PERSON (${amount}, Tap to Pay, ${m.how}; ${ch.id})${C.off}`);
+      if (DRY) continue;
+      ledger[ch.id] = { status: 'matched-held', product: m.piece.product, name: m.piece.name, sku: m.piece.sku, listPrice: m.piece.price, how: m.how, amount: ch.amount / 100, description: ch.description || '', at: new Date(ch.created * 1000).toISOString() };
+      changed += 1;
+      try {
+        await stripe('POST', `/v1/products/${m.piece.product}`, { active: 'false', 'metadata[ta_sold_in_person]': ch.id });
+        say(`${C.dim}   archived Stripe product ${m.piece.product}${C.off}`);
+      } catch (err) {
+        say(`${C.yellow}   ⚠ could not archive ${m.piece.product}: ${err.message}${C.off}`);
+      }
+      continue;
+    }
     if (m.piece) {
       say(`${C.green}   ✔ ${m.piece.id} — SOLD IN PERSON (${amount}, Tap to Pay, ${m.how}; ${ch.id})${C.off}`);
       if (DRY) continue;

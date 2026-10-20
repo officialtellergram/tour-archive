@@ -172,6 +172,36 @@ try {
         console.log(`${C.red}   ✖ ${e.id}: ${err.message}${C.off}`);
       }
     }
+    // Held pieces sold early at the stall live only in the ledger.
+    const heldSold = Object.entries(manifest._inPerson || {}).filter(([, v]) => v.status === 'matched-held' && !v.notified);
+    for (const [id, v] of heldSold) {
+      const d = await chargeDetails(id);
+      const subject = `Sold in person (held piece): ${v.name} — ${money(v.amount)}`;
+      const text = [
+        `${v.name} — a piece held back for a future drop — sold in person at the stall (Tap to Pay).`,
+        '',
+        `Paid: ${money(v.amount)}${v.listPrice && v.listPrice !== v.amount ? ` (list price ${money(v.listPrice)})` : ''}${d.card ? ` · ${d.card}` : ''}`,
+        v.sku ? `Catalogue: ${v.sku}` : '',
+        v.description ? `Description typed at the stall: "${v.description}"` : '',
+        d.when ? `When: ${d.when.toUTCString()}` : '',
+        d.buyer || d.email ? `Buyer: ${[d.buyer, d.email].filter(Boolean).join(' · ')}` : '',
+        '',
+        'Handed over at the stall; nothing to ship. The Stripe product has been archived so it will not be drained into the drop.',
+        '',
+        `Payment: ${d.link || `https://dashboard.stripe.com/payments/${id}`}`,
+        `Product: https://dashboard.stripe.com/products/${v.product}`,
+      ].filter((l) => l !== '').join('\n');
+      if (!WRITE || !ready) { console.log(`${C.yellow}   · ${subject}${C.off}`); continue; }
+      try {
+        await sendMail({ user: env.SALE_MAIL_USER, pass: env.SALE_MAIL_PASS, to: env.SALE_EMAILS, subject, text });
+        v.notified = new Date().toISOString().slice(0, 10);
+        save();
+        console.log(`${C.green}   ✔ ${subject}${C.off}`);
+      } catch (err) {
+        failures += 1;
+        console.log(`${C.red}   ✖ ${id}: ${err.message}${C.off}`);
+      }
+    }
     // In-person payments the sweep could not tie to a piece: the team is
     // asked once, so the catalogue can be put right by hand.
     const open = Object.entries(manifest._inPerson || {}).filter(([, v]) => v.status === 'unmatched' && !v.notified);
