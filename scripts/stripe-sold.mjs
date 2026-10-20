@@ -191,7 +191,9 @@ const live = () => manifest.items.filter((e) => !e.sold && !e.retired && e._stri
  * recorded only in the _inPerson ledger — there is no catalogue entry to
  * mark. Read fresh each run; the stall sheet lists them.
  */
-const isHeld = (p) => /^(true|yes|1)$/i.test(String(p.metadata?.held || '')) || /^\s*\[?hold\]?\s*[:\-–]/i.test(p.name);
+// Held = metadata held=true, a name starting "HOLD:", or a line in the
+// description reading just "HELD" (the field Henry is already typing in).
+const isHeld = (p) => /^(true|yes|1)$/i.test(String(p.metadata?.held || '')) || /^\s*\[?hold\]?\s*[:\-–]/i.test(p.name) || /(^|\n)\s*\[?held\]?\s*:?\s*(\r?\n|$)/i.test(String(p.description || ''));
 const cleanName = (n) => n.replace(/^\s*\[?hold\]?\s*[:\-–]\s*/i, '').trim();
 async function heldPieces() {
   const out = [];

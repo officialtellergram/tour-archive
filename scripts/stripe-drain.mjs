@@ -104,7 +104,7 @@ const manifest = JSON.parse(readFileSync(MANIFEST, 'utf8'));
 const known = new Set(manifest.items.map((e) => e._stripe?.product).filter(Boolean));
 // Held for a future drop (metadata held = true, or a name starting "HOLD:"):
 // kept off the site and eBay; sellable only in person (stripe-sold.mjs).
-const isHeld = (p) => /^(true|yes|1)$/i.test(String(p.metadata?.held || '')) || /^\s*\[?hold\]?\s*[:\-–]/i.test(p.name);
+const isHeld = (p) => /^(true|yes|1)$/i.test(String(p.metadata?.held || '')) || /^\s*\[?hold\]?\s*[:\-–]/i.test(p.name) || /(^|\n)\s*\[?held\]?\s*:?\s*(\r?\n|$)/i.test(String(p.description || ''));
 const heldOut = products.filter((p) => !p.metadata?.ta_id && isHeld(p));
 if (heldOut.length) console.log(`${C.dim}   ${heldOut.length} held for a drop, kept off the site: ${heldOut.map((p) => p.name).join(' · ')}${C.off}`);
 const fresh = products.filter((p) => !p.metadata?.ta_id && !known.has(p.id) && !isHeld(p));
@@ -162,7 +162,9 @@ function segments(text) {
   // it — `Made in Scotland. Measurements: 30" Length / 24" Chest` — so a
   // mid-line "Measurements:" is cut onto its own segment first.
   const cut = String(text || '').replace(/([^\n])\s+(?=measurements?\s*:)/gi, '$1\n');
-  const raw = cut.split(/\r?\n|\s\/\s|\s[-–—]\s/).map((l) => l.replace(/</g, '').trim()).filter(Boolean);
+  const raw = cut.split(/\r?\n|\s\/\s|\s[-–—]\s/).map((l) => l.replace(/</g, '').trim()).filter(Boolean)
+    // a "HELD" line left from the piece's time in the held pen is not copy
+    .filter((l) => !/^\[?held\]?\s*:?$/i.test(l));
   const out = [];
   for (const seg of raw) {
     const prev = out[out.length - 1];

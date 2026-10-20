@@ -35,7 +35,7 @@ const rows = manifest.items
   .map((e) => ({ held: false, name: e.name, sku: e.sku || '', size: e.size || '', price: Number(e.price), where: e.collection === 'basic-stock' ? 'shop' : e.collection }));
 
 // held pieces live only in Stripe
-const isHeld = (p) => /^(true|yes|1)$/i.test(String(p.metadata?.held || '')) || /^\s*\[?hold\]?\s*[:\-–]/i.test(p.name);
+const isHeld = (p) => /^(true|yes|1)$/i.test(String(p.metadata?.held || '')) || /^\s*\[?hold\]?\s*[:\-–]/i.test(p.name) || /(^|\n)\s*\[?held\]?\s*:?\s*(\r?\n|$)/i.test(String(p.description || ''));
 const cleanName = (n) => n.replace(/^\s*\[?hold\]?\s*[:\-–]\s*/i, '').trim();
 if (env.STRIPE_SECRET_KEY) {
   let after = '';
