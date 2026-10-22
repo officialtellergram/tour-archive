@@ -103,12 +103,23 @@ const products = [];
 
 const manifest = JSON.parse(readFileSync(MANIFEST, 'utf8'));
 const known = new Set(manifest.items.map((e) => e._stripe?.product).filter(Boolean));
+// --heroes=<json>: { "<product id>": "<local photo>" } — a hero taken from a
+// Drive shot for a product that has no photograph in Stripe (22 Oct 2026:
+// six pieces re-entered from the Sandbox, whose test-mode files are
+// private). The product's own images, when it has any, still win.
+const HEROES_FILE = (args.find((a) => a.startsWith('--heroes=')) || '').slice(9);
+const HEROES = HEROES_FILE ? JSON.parse(readFileSync(HEROES_FILE, 'utf8')) : {};
+for (const p of products) if (!p.images?.length && HEROES[p.id]) p.images = [HEROES[p.id]];
+// --drain-held: bring held products in after all (the hold is lifted: the
+// metadata is cleared on the product as it is drained).
+const DRAIN_HELD = args.includes('--drain-held');
 // Held for a future drop (metadata held = true, or a name starting "HOLD:"):
 // kept off the site and eBay; sellable only in person (stripe-sold.mjs).
 const isHeld = (p) => /^(true|yes|1)$/i.test(String(p.metadata?.held || '')) || /^\s*\[?hold\]?\s*[:\-–]/i.test(p.name) || /(^|\n)\s*\[?held\]?\s*:?\s*(\r?\n|$)/i.test(String(p.description || ''));
 const heldOut = products.filter((p) => !p.metadata?.ta_id && isHeld(p));
-if (heldOut.length) console.log(`${C.dim}   ${heldOut.length} held for a drop, kept off the site: ${heldOut.map((p) => p.name).join(' · ')}${C.off}`);
-const fresh = products.filter((p) => !p.metadata?.ta_id && !known.has(p.id) && !isHeld(p));
+if (heldOut.length && !DRAIN_HELD) console.log(`${C.dim}   ${heldOut.length} held for a drop, kept off the site: ${heldOut.map((p) => p.name).join(' · ')}${C.off}`);
+if (heldOut.length && DRAIN_HELD) console.log(`${C.yellow}   --drain-held: ${heldOut.length} held piece(s) will be brought in and their hold lifted${C.off}`);
+const fresh = products.filter((p) => !p.metadata?.ta_id && !known.has(p.id) && (DRAIN_HELD || !isHeld(p)));
 console.log(`${C.dim}   ${products.length} active product(s) · ${fresh.length} not yet drained${C.off}`);
 
 /* ---------------- 2. scaffolding ---------------- */
@@ -244,6 +255,10 @@ const tmp = join(tmpdir(), `drain-${process.pid}`);
 mkdirSync(tmp, { recursive: true });
 
 async function fetchTo(url, dst) {
+  if (!/^https?:/i.test(url)) { // a local file (a Drive shot given with --heroes)
+    writeFileSync(dst, readFileSync(url));
+    return;
+  }
   const res = await fetch(url);
   if (!res.ok) throw new Error(`${res.status} fetching ${url}`);
   writeFileSync(dst, Buffer.from(await res.arrayBuffer()));
@@ -362,6 +377,7 @@ for (const p of fresh) {
       'metadata[ta_id]': `stock-${slug}`,
       'metadata[ta_drained]': new Date().toISOString().slice(0, 10),
       'metadata[sku]': sku,
+      ...(isHeld(p) ? { 'metadata[held]': '' } : {}), // the hold is lifted: it is on the site now
     });
     console.log(`${C.dim}      catalogue number ${sku}${C.off}`);
     drained.push(p.name);

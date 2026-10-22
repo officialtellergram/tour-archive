@@ -4093,6 +4093,315 @@
       },
       "_ebayUrl": "https://www.ebay.com/itm/377572921359",
       "sku": "TA_GS_47"
+    },
+    {
+      "id": "stock-heavy-ralph-lauren-knit-xl",
+      "sku": "TA_GS_49",
+      "file": "heavy-ralph-lauren-knit-xl.jpg",
+      "name": "Heavy Ralph Lauren Knit - XL",
+      "brand": "Ralph Lauren",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "XL",
+      "condition": "Pre-owned",
+      "price": 49.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "Beautiful heavy cotton Polo Knit in faded Orchid. Perfect for wandering around the clubhouse during the fall. Small tear on the back of the collar pictured.",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "27 in",
+        "Chest": "24 in",
+        "Sleeves": "28 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-10-22",
+      "_source": "stripe:prod_VU5al87s7Cb05o",
+      "description": [
+        "Beautiful heavy cotton Polo Knit in faded Orchid. Perfect for wandering around the clubhouse during the fall. Small tear on the back of the collar pictured."
+      ],
+      "_stripe": {
+        "product": "prod_VU5al87s7Cb05o",
+        "price": "price_1UTUH1C1bWq01lTKYSRFVnkV",
+        "link": "plink_1UTUIYC1bWq01lTKKFmKcWTO",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-10-22"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/5kQcN4eH24vrac69ZU9k41o",
+      "_sizeSource": "name",
+      "photos": [
+        "carousel/heavy-ralph-lauren-knit-xl/01.jpg",
+        "carousel/heavy-ralph-lauren-knit-xl/02.jpg",
+        "carousel/heavy-ralph-lauren-knit-xl/03.jpg",
+        "carousel/heavy-ralph-lauren-knit-xl/04.jpg",
+        "carousel/heavy-ralph-lauren-knit-xl/05.jpg"
+      ],
+      "_photosPulled": "2026-10-22"
+    },
+    {
+      "id": "stock-japan-exclusive-taylormade-knit-size-l",
+      "sku": "TA_GS_50",
+      "file": "japan-exclusive-taylormade-knit-size-l.jpg",
+      "name": "Japan Exclusive Taylormade Knit - Size L",
+      "brand": "TaylorMade",
+      "year": "—",
+      "category": "Knitwear",
+      "garment": "sweater",
+      "size": "L",
+      "condition": "Pre-owned",
+      "price": 299.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "Extremely Rare vintage Taylormade sweater. Sold exclusively in Japan. Marked as \"LL\" Japanese sizing but fits more like a large. Only one of these on the internet.",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "25 in",
+        "Chest": "25 in",
+        "Sleeve": "29 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-10-22",
+      "_source": "stripe:prod_VU5qk8WS2rK2b1",
+      "description": [
+        "Extremely Rare vintage Taylormade sweater. Sold exclusively in Japan. Marked as \"LL\" Japanese sizing but fits more like a large. Only one of these on the internet."
+      ],
+      "_stripe": {
+        "product": "prod_VU5qk8WS2rK2b1",
+        "price": "price_1UTUGyC1bWq01lTKtk1z1tWS",
+        "link": "plink_1UTUIYC1bWq01lTKXSkWqDNj",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-10-22"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/8x23cu7eA6Dz4RM9ZU9k41p",
+      "_sizeSource": "name (Japanese LL, fits L per Henry)",
+      "photos": [
+        "carousel/japan-exclusive-taylormade-knit-size-l/01.jpg",
+        "carousel/japan-exclusive-taylormade-knit-size-l/02.jpg",
+        "carousel/japan-exclusive-taylormade-knit-size-l/03.jpg",
+        "carousel/japan-exclusive-taylormade-knit-size-l/04.jpg",
+        "carousel/japan-exclusive-taylormade-knit-size-l/05.jpg"
+      ],
+      "_photosPulled": "2026-10-22"
+    },
+    {
+      "id": "stock-vintage-silver-club-sweatshirt-by-sdi",
+      "sku": "TA_GS_51",
+      "file": "vintage-silver-club-sweatshirt-by-sdi.jpg",
+      "name": "Vintage Silver Club Sweatshirt by SDI",
+      "brand": "Unattributed",
+      "year": "—",
+      "category": "Knitwear",
+      "garment": "sweater",
+      "size": "See photos",
+      "condition": "Pre-owned",
+      "price": 49.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "Beautiful Sun-Fade on this vintage Patchwork piece. Heavy cotton construction.",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "29 in",
+        "Chest": "26 in",
+        "Sleeves": "26 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-10-22",
+      "_source": "stripe:prod_VU5wwx6LEFMRhF",
+      "description": [
+        "Beautiful Sun-Fade on this vintage Patchwork piece. Heavy cotton construction."
+      ],
+      "_stripe": {
+        "product": "prod_VU5wwx6LEFMRhF",
+        "price": "price_1UTUGvC1bWq01lTKwbN8wb07",
+        "link": "plink_1UTUIZC1bWq01lTKTRrAP2A7",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-10-22"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/6oUcN41UgaTPfwq5JE9k41q",
+      "photos": [
+        "carousel/vintage-silver-club-sweatshirt-by-sdi/01.jpg",
+        "carousel/vintage-silver-club-sweatshirt-by-sdi/02.jpg",
+        "carousel/vintage-silver-club-sweatshirt-by-sdi/03.jpg",
+        "carousel/vintage-silver-club-sweatshirt-by-sdi/04.jpg",
+        "carousel/vintage-silver-club-sweatshirt-by-sdi/05.jpg",
+        "carousel/vintage-silver-club-sweatshirt-by-sdi/06.jpg"
+      ],
+      "_photosPulled": "2026-10-22"
+    },
+    {
+      "id": "stock-vintage-masters-polo",
+      "sku": "TA_GS_52",
+      "file": "vintage-masters-polo.jpg",
+      "name": "Vintage Masters Polo",
+      "brand": "Unattributed",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "See photos",
+      "condition": "Pre-owned",
+      "price": 24.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "Nicely faded Masters polo with unique logo coloration. The shirt features embroidery on the left sleeve.",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "31 in",
+        "Chest": "24 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-10-22",
+      "_source": "stripe:prod_VU5zpQMLeSGqDO",
+      "description": [
+        "Nicely faded Masters polo with unique logo coloration. The shirt features embroidery on the left sleeve."
+      ],
+      "_stripe": {
+        "product": "prod_VU5zpQMLeSGqDO",
+        "price": "price_1UTUGsC1bWq01lTKSV0QwY2r",
+        "link": "plink_1UTUIZC1bWq01lTK34IlQQJQ",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-10-22"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/3cI5kC56s9PL83Y6NI9k41r",
+      "photos": [
+        "carousel/vintage-masters-polo/01.jpg",
+        "carousel/vintage-masters-polo/02.jpg",
+        "carousel/vintage-masters-polo/03.jpg"
+      ],
+      "_photosPulled": "2026-10-22"
+    },
+    {
+      "id": "stock-peter-millar-sahalee-cc-polo",
+      "sku": "TA_GS_53",
+      "file": "peter-millar-sahalee-cc-polo.jpg",
+      "name": "Peter Millar Sahalee CC Polo",
+      "brand": "Peter Millar",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "XL",
+      "condition": "Pre-owned",
+      "price": 54.99,
+      "colorway": [
+        "#9AA3A0",
+        "#767E77",
+        "#3F4643"
+      ],
+      "colorName": "Fog Grey",
+      "story": "PM Summer Comfort with the iconic Sahalee Totem logo embroidered in Grey on the Left chest. The course is a gem of the pacific northwest.",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "30 in",
+        "Chest": "26 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-10-22",
+      "_source": "stripe:prod_VU66BHfNVesnC8",
+      "description": [
+        "PM Summer Comfort with the iconic Sahalee Totem logo embroidered in Grey on the Left chest. The course is a gem of the pacific northwest."
+      ],
+      "_stripe": {
+        "product": "prod_VU66BHfNVesnC8",
+        "price": "price_1UTUGpC1bWq01lTKWHVz0KJy",
+        "link": "plink_1UTUIZC1bWq01lTK8ZnGRF8L",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-10-22"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/7sY00i6awbXT1FA0pk9k41s",
+      "_sizeSource": "neck label, IMG_2070",
+      "photos": [
+        "carousel/peter-millar-sahalee-cc-polo/01.jpg",
+        "carousel/peter-millar-sahalee-cc-polo/02.jpg",
+        "carousel/peter-millar-sahalee-cc-polo/03.jpg",
+        "carousel/peter-millar-sahalee-cc-polo/04.jpg"
+      ],
+      "_photosPulled": "2026-10-22"
+    },
+    {
+      "id": "stock-vintage-greenbrier-resort-polo",
+      "sku": "TA_GS_54",
+      "file": "vintage-greenbrier-resort-polo.jpg",
+      "name": "Vintage Greenbrier Resort Polo",
+      "brand": "Unattributed",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "See photos",
+      "condition": "Pre-owned",
+      "price": 30.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "Beautifully faded Greenbriar polo on a heavy cotton shirt. The resort was favorited by past presidents and rests in the middle of nowhere in West VIrginia.",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "29 in",
+        "Chest": "22 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-10-22",
+      "_source": "stripe:prod_VU69i6ktVvMeWq",
+      "description": [
+        "Beautifully faded Greenbriar polo on a heavy cotton shirt. The resort was favorited by past presidents and rests in the middle of nowhere in West VIrginia."
+      ],
+      "_stripe": {
+        "product": "prod_VU69i6ktVvMeWq",
+        "price": "price_1UTUGdC1bWq01lTKn2SVLbvG",
+        "link": "plink_1UTUIaC1bWq01lTKT5xXFegi",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-10-22"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/fZu7sK0Qc2nj4RMdc69k41t",
+      "photos": [
+        "carousel/vintage-greenbrier-resort-polo/01.jpg",
+        "carousel/vintage-greenbrier-resort-polo/02.jpg",
+        "carousel/vintage-greenbrier-resort-polo/03.jpg",
+        "carousel/vintage-greenbrier-resort-polo/04.jpg"
+      ],
+      "_photosPulled": "2026-10-22"
     }
   ],
   "_inPerson": {
