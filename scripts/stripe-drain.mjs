@@ -293,6 +293,23 @@ if (REFRESH) {
   for (const p of products) {
     const entry = byProduct.get(p.id);
     if (!entry) continue;
+    // a size the first pass did not have: Henry has since written "Size L"
+    // into the Stripe description, and the catalogue still says See photos
+    if (!entry.size || entry.size === 'See photos') {
+      const line = segments(p.description).find((l) => SIZE_RX.test(l) || ONE_SIZE_RX.test(l));
+      const s = line && (line.match(SIZE_RX) || (ONE_SIZE_RX.test(line) ? [line, 'One size'] : null));
+      if (s) {
+        const size = SIZE_WORDS[s[1].toLowerCase()] || (s[1] === 'One size' ? s[1] : s[1].toUpperCase());
+        console.log(`${C.dim}   ${WRITE ? 'sizing' : 'would size'} ${entry.id} — ${size} (from the Stripe description)${C.off}`);
+        if (WRITE) {
+          entry.size = size;
+          entry._sizeSource = 'Stripe description, refreshed ' + new Date().toISOString().slice(0, 10);
+          writeFileSync(MANIFEST, JSON.stringify(manifest, null, 2) + '
+', 'utf8');
+          refreshed += 1;
+        }
+      }
+    }
     // measurements the first pass could not read: re-parse from the product
     // description when the manifest's map is empty and Stripe's copy has one
     if (!Object.keys(entry.measurements || {}).length) {

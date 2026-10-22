@@ -194,7 +194,16 @@ jobs:
           git add public/stock/manifest.json
           git commit -m "Stripe sync: sold pieces marked, drifted links re-minted" \
                      -m "Automatic (stripe-drift.yml). Either a piece sold (marked sold, checkout removed, link closed) or a price was changed in the Stripe Dashboard (the link bound to the archived price replaced, the site's price updated). The run summary says which."
-          git pull --rebase origin main
+          # Someone pushed the manifest while this run was working (22 Oct
+          # 2026: a size fix landed in the same minute). Everything this run
+          # wrote is re-derived from Stripe and eBay on the next tick, so a
+          # conflict is not worth a failure or an alert: stand down and let
+          # the next run redo it on top of theirs.
+          if ! git pull --rebase origin main; then
+            git rebase --abort
+            echo "manifest changed upstream during this run; its changes will be re-derived on the next run" | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
           git push origin HEAD:main
           # A push made with the workflow token does not start other workflows;
           # a manual dispatch does. The deploy runs its usual gates.
