@@ -4145,7 +4145,14 @@
         "carousel/heavy-ralph-lauren-knit-xl/04.jpg",
         "carousel/heavy-ralph-lauren-knit-xl/05.jpg"
       ],
-      "_photosPulled": "2026-10-22"
+      "_photosPulled": "2026-10-22",
+      "_ebay": {
+        "itemId": "377590808447",
+        "sku": "TA_GS_49",
+        "price": 58.99,
+        "listedAt": "2026-10-22"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377590808447"
     },
     {
       "id": "stock-japan-exclusive-taylormade-knit-size-l",
@@ -4198,7 +4205,14 @@
         "carousel/japan-exclusive-taylormade-knit-size-l/04.jpg",
         "carousel/japan-exclusive-taylormade-knit-size-l/05.jpg"
       ],
-      "_photosPulled": "2026-10-22"
+      "_photosPulled": "2026-10-22",
+      "_ebay": {
+        "itemId": "377590808460",
+        "sku": "TA_GS_50",
+        "price": 347.99,
+        "listedAt": "2026-10-22"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377590808460"
     },
     {
       "id": "stock-vintage-silver-club-sweatshirt-by-sdi",
@@ -4351,7 +4365,14 @@
         "carousel/peter-millar-sahalee-cc-polo/03.jpg",
         "carousel/peter-millar-sahalee-cc-polo/04.jpg"
       ],
-      "_photosPulled": "2026-10-22"
+      "_photosPulled": "2026-10-22",
+      "_ebay": {
+        "itemId": "377590808496",
+        "sku": "TA_GS_53",
+        "price": 64.99,
+        "listedAt": "2026-10-22"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377590808496"
     },
     {
       "id": "stock-vintage-greenbrier-resort-polo",
