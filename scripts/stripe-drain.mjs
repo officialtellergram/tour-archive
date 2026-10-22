@@ -304,8 +304,7 @@ if (REFRESH) {
         if (WRITE) {
           entry.size = size;
           entry._sizeSource = 'Stripe description, refreshed ' + new Date().toISOString().slice(0, 10);
-          writeFileSync(MANIFEST, JSON.stringify(manifest, null, 2) + '
-', 'utf8');
+          writeFileSync(MANIFEST, JSON.stringify(manifest, null, 2) + '\n', 'utf8');
           refreshed += 1;
         }
       }
