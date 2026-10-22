@@ -4150,7 +4150,8 @@
         "itemId": "377590808447",
         "sku": "TA_GS_49",
         "price": 58.99,
-        "listedAt": "2026-10-22"
+        "listedAt": "2026-10-22",
+        "pictures": "raw1"
       },
       "_ebayUrl": "https://www.ebay.com/itm/377590808447"
     },
@@ -4210,7 +4211,8 @@
         "itemId": "377590808460",
         "sku": "TA_GS_50",
         "price": 347.99,
-        "listedAt": "2026-10-22"
+        "listedAt": "2026-10-22",
+        "pictures": "raw1"
       },
       "_ebayUrl": "https://www.ebay.com/itm/377590808460"
     },
@@ -4315,7 +4317,14 @@
         "carousel/vintage-masters-polo/03.jpg"
       ],
       "_photosPulled": "2026-10-22",
-      "_sizeSource": "neck label, IMG_1996 (Masters Collection tag reads L)"
+      "_sizeSource": "neck label, IMG_1996 (Masters Collection tag reads L)",
+      "_ebay": {
+        "itemId": "377590820875",
+        "sku": "TA_GS_52",
+        "price": 29.99,
+        "listedAt": "2026-10-22"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377590820875"
     },
     {
       "id": "stock-peter-millar-sahalee-cc-polo",
@@ -4371,7 +4380,8 @@
         "itemId": "377590808496",
         "sku": "TA_GS_53",
         "price": 64.99,
-        "listedAt": "2026-10-22"
+        "listedAt": "2026-10-22",
+        "pictures": "raw1"
       },
       "_ebayUrl": "https://www.ebay.com/itm/377590808496"
     },
