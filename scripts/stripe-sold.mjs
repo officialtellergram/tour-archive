@@ -166,12 +166,15 @@ const norm = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').tr
 /** The live piece a card-present charge was for, or why none. */
 function matchPiece(ch, live) {
   const d = norm(ch.description);
+  const squash = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ''); // "TA_GS_01" and "tags01" are the same number
+  const ds = squash(ch.description);
   if (d.length >= 4) {
     const hits = live.filter((e) => {
       const name = norm(e.name);
       const id = norm(e.id.replace(/^stock-/, ''));
       const sku = norm(e.sku);
-      return (name && (d.includes(name) || name.includes(d))) || (id && d.includes(id)) || (sku && sku.length >= 4 && d.includes(sku));
+      const skus = squash(e.sku);
+      return (name && (d.includes(name) || name.includes(d))) || (id && d.includes(id)) || (sku && sku.length >= 4 && (d.includes(sku) || ds.includes(skus)));
     });
     if (hits.length === 1) return { piece: hits[0], how: 'by description' };
     if (hits.length > 1) return { piece: null, why: `the description fits ${hits.length} pieces (${hits.map((e) => e.id).join(', ')})` };
