@@ -4269,7 +4269,14 @@
         "carousel/vintage-silver-club-sweatshirt-by-sdi/06.jpg"
       ],
       "_photosPulled": "2026-10-22",
-      "_sizeSource": "Stripe description, refreshed 2026-10-22"
+      "_sizeSource": "Stripe description, refreshed 2026-10-22",
+      "_ebay": {
+        "itemId": "377590837954",
+        "sku": "TA_GS_51",
+        "price": 58.99,
+        "listedAt": "2026-10-22"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377590837954"
     },
     {
       "id": "stock-vintage-masters-polo",
@@ -4437,7 +4444,14 @@
         "carousel/vintage-greenbrier-resort-polo/04.jpg"
       ],
       "_photosPulled": "2026-10-22",
-      "_sizeSource": "Stripe description, refreshed 2026-10-22"
+      "_sizeSource": "Stripe description, refreshed 2026-10-22",
+      "_ebay": {
+        "itemId": "377590837971",
+        "sku": "TA_GS_54",
+        "price": 36.99,
+        "listedAt": "2026-10-22"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377590837971"
     }
   ],
   "_inPerson": {
