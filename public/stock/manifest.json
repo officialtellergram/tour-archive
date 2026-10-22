@@ -10,7 +10,7 @@
       "year": "1990s",
       "category": "Outerwear",
       "garment": "windshirt",
-      "size": "See photos",
+      "size": "2XL",
       "condition": "Very Good",
       "price": 49.99,
       "colorway": [
@@ -81,7 +81,8 @@
         "duplicateEnded": [
           "377563031247"
         ]
-      }
+      },
+      "_sizeSource": "Stripe description, refreshed 2026-10-22"
     },
     {
       "id": "stock-masters-peter-millar-quarter-zip-blue",
