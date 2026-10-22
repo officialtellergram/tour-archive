@@ -67,9 +67,21 @@ if (!env.EBAY_SYNC_SECRET) {
 /* ---------------- eBay plumbing ---------------- */
 
 async function accessToken() {
-  const r = await fetch(BROKER, { headers: { authorization: `Bearer ${env.EBAY_SYNC_SECRET}` } });
-  if (!r.ok) throw new Error(`token broker: ${r.status} ${(await r.text()).slice(0, 120)}`);
-  return r.json();
+  // Three tries: on 22 Oct 2026 one run's very first fetch failed on a
+  // network blip and the whole eBay step waited ten minutes for the next
+  // tick, with a sold piece still listed meanwhile.
+  let last;
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      const r = await fetch(BROKER, { headers: { authorization: `Bearer ${env.EBAY_SYNC_SECRET}` } });
+      if (!r.ok) throw new Error(`token broker: ${r.status} ${(await r.text()).slice(0, 120)}`);
+      return await r.json();
+    } catch (err) {
+      last = err;
+      if (attempt < 3) await new Promise((res) => setTimeout(res, 4000 * attempt));
+    }
+  }
+  throw last;
 }
 
 const xmlEsc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
