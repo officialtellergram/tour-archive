@@ -41,6 +41,7 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync, unlinkSync } from '
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
+import { nextSku, usableSku } from './lib/catalogue.mjs';
 import { inferGarment, inferColourway, inferYear } from '../server/normalize.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
@@ -185,7 +186,7 @@ function segments(text) {
   return out;
 }
 
-function scaffold(p, file, photos) {
+function scaffold(p, file, photos, sku) {
   const lines = segments(p.description);
   const hay = `${p.name} ${lines.join(' ')}`;
   let size = 'See photos';
@@ -211,6 +212,7 @@ function scaffold(p, file, photos) {
   const { colorway, colorName } = inferColourway(hay);
   return {
     id: `stock-${slugOf(p.name)}`,
+    sku,
     file,
     name: p.name.trim(),
     brand: brandOf(hay),
@@ -349,14 +351,19 @@ for (const p of fresh) {
         console.log(`${C.dim}      ${f.stdout.trim()}${C.off}`);
       }
     }
+    // catalogue number: Henry's, if he put a well-formed unused one in the
+    // product's metadata sku; otherwise the next in the collection's series
+    const sku = usableSku(manifest, p.metadata?.sku) || nextSku(manifest, COLLECTION);
     // entry, written immediately — a crash after this line loses nothing
-    manifest.items.push(scaffold(p, file, photos));
+    manifest.items.push(scaffold(p, file, photos, sku));
     writeFileSync(MANIFEST, JSON.stringify(manifest, null, 2) + '\n', 'utf8');
-    // stamp: from here the mint owns this product
+    // stamp: from here the mint owns this product, and the number is on it
     await stripe('POST', `/v1/products/${p.id}`, {
       'metadata[ta_id]': `stock-${slug}`,
       'metadata[ta_drained]': new Date().toISOString().slice(0, 10),
+      'metadata[sku]': sku,
     });
+    console.log(`${C.dim}      catalogue number ${sku}${C.off}`);
     drained.push(p.name);
     console.log(`${C.green}   ✔ stock-${slug}${C.off}`);
   } catch (err) {

@@ -183,7 +183,11 @@ function listableFrom(e) {
 
 const manifest = JSON.parse(readFileSync(MANIFEST, 'utf8'));
 const save = () => writeFileSync(MANIFEST, JSON.stringify(manifest, null, 2) + '\n', 'utf8');
-const bySku = new Map(manifest.items.map((e) => [skuOf(e), e]));
+// A listing or order names a piece by SKU. That is the catalogue number
+// today, but a listing made before the piece was numbered carries the id
+// (and the ledger remembers it in _ebay.sku), so all three resolve.
+const bySku = new Map();
+for (const e of manifest.items) for (const k of [e.id, e._ebay?.sku, skuOf(e)]) if (k && !bySku.has(k)) bySku.set(k, e);
 /**
  * The eBay price from the site price (Karen and Shep, 14 Oct 2026):
  *   E = (P + A) / 0.864, rounded UP to the next .99

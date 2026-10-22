@@ -29,7 +29,8 @@ ended, the team gets a notice, and the sale is in the report and in Stripe.
 **Each sale**
 1. Find the piece on the sheet.
 2. Stripe app → + → Charge a card or send an invoice → the amount.
-3. Description: the words from the sheet's third column, exactly.
+3. Description: the piece's catalogue number from its tag (`TA_GS_27`),
+   which is also the sheet's third column. The piece's name works too.
 4. Tap to Pay. Receipt if they want one.
 5. Tick the row and write the amount charged.
 
@@ -46,6 +47,20 @@ ended, the team gets a notice, and the sale is in the report and in Stripe.
 - Any held piece that sold: its Stripe product is archived by the sync; tell
   Henry so he does not look for it when the drop is built.
 - Refund anything taken by mistake from the app; the piece reopens by itself.
+
+## Catalogue numbers and tags
+
+Every piece has a catalogue number: `TA_GS_27` for general stock,
+`TA_TC26_04` for the Tour Championship drop, `TA_PC26_02` for the
+Presidents Cup drop, and so on. It is on the piece's Stripe product as the
+metadata row `sku`, on the stall sheet, and is what the sync matches at a
+sale, so it is the thing to write on the tag.
+
+New pieces get the next number in their series when they are drained, and
+the number is written back to the Stripe product. Henry can also set the
+metadata row `sku` himself when listing (same format, unused number) and
+the drain keeps it. Held pieces are not drained, so for those he sets `sku`
+himself if he wants a number on the tag; otherwise the name does the job.
 
 ## Held pieces: saved for a drop, sellable in person
 

@@ -963,7 +963,8 @@
         "duplicateEnded": [
           "377563032100"
         ]
-      }
+      },
+      "sku": "TA_GS_14"
     },
     {
       "id": "stock-wild-dunes-multicolor-polo",
@@ -1036,7 +1037,8 @@
         "duplicateEnded": [
           "377563032181"
         ]
-      }
+      },
+      "sku": "TA_GS_15"
     },
     {
       "id": "stock-callaway-retro-logo-polo",
@@ -1094,7 +1096,8 @@
       "file": "callaway-retro-logo-polo.jpg",
       "sold": true,
       "_ebayUrl": "https://www.ebay.com/itm/407157486865",
-      "_saleNotified": "backfill-2026-10-09"
+      "_saleNotified": "backfill-2026-10-09",
+      "sku": "TA_GS_18"
     },
     {
       "id": "stock-taylormade-navy-sweater",
@@ -1168,7 +1171,8 @@
         "duplicateEnded": [
           "377563032243"
         ]
-      }
+      },
+      "sku": "TA_GS_27"
     },
     {
       "id": "stock-tpc-sawgrass-polo",
@@ -1239,7 +1243,8 @@
         "price": 23.99,
         "listedAt": "2026-10-09",
         "pictures": "raw1"
-      }
+      },
+      "sku": "TA_GS_28"
     },
     {
       "id": "stock-houndstooth-cotton-golf-polo",
@@ -1295,7 +1300,8 @@
       "file": "houndstooth-cotton-golf-polo.jpg",
       "sold": true,
       "_ebayUrl": "https://www.ebay.com/itm/407157532548",
-      "_saleNotified": "backfill-2026-10-09"
+      "_saleNotified": "backfill-2026-10-09",
+      "sku": "TA_GS_20"
     },
     {
       "id": "stock-peter-millar-quarter-zip-navy",
@@ -1358,7 +1364,8 @@
         "minted": "2026-09-11"
       },
       "retired": true,
-      "_retiredWhy": "product archived in Stripe 2026-10-01"
+      "_retiredWhy": "product archived in Stripe 2026-10-01",
+      "sku": "TA_GS_24"
     },
     {
       "id": "stock-shinnecock-hills-polo",
@@ -1439,7 +1446,8 @@
         "finance": "8.62|6.56|42.31|PAYOUT"
       },
       "sold": true,
-      "_saleNotified": "2026-10-09"
+      "_saleNotified": "2026-10-09",
+      "sku": "TA_GS_26"
     },
     {
       "id": "stock-izod-abstract-golf-polo",
@@ -1494,7 +1502,8 @@
       "file": "izod-abstract-golf-polo.jpg",
       "sold": true,
       "_ebayUrl": "https://www.ebay.com/itm/407154584789",
-      "_saleNotified": "backfill-2026-10-09"
+      "_saleNotified": "backfill-2026-10-09",
+      "sku": "TA_GS_21"
     },
     {
       "id": "stock-cross-creek-polo",
@@ -1565,7 +1574,8 @@
         "price": 23.99,
         "listedAt": "2026-10-09",
         "pictures": "raw1"
-      }
+      },
+      "sku": "TA_GS_19"
     },
     {
       "id": "stock-boones-trace-national-polo",
@@ -1640,7 +1650,8 @@
         "price": 29.99,
         "listedAt": "2026-10-09",
         "pictures": "raw1"
-      }
+      },
+      "sku": "TA_GS_17"
     },
     {
       "id": "stock-peter-millar-hermitage-polo-teal",
@@ -1711,7 +1722,8 @@
         "price": 58.99,
         "listedAt": "2026-10-09",
         "pictures": "raw1"
-      }
+      },
+      "sku": "TA_GS_23"
     },
     {
       "id": "stock-pga-national-honda-classic-polo",
@@ -1783,7 +1795,8 @@
         "price": 29.99,
         "listedAt": "2026-10-09",
         "pictures": "raw1"
-      }
+      },
+      "sku": "TA_GS_25"
     },
     {
       "id": "stock-peter-millar-hermitage-polo-navy",
@@ -1854,7 +1867,8 @@
         "price": 58.99,
         "listedAt": "2026-10-09",
         "pictures": "raw1"
-      }
+      },
+      "sku": "TA_GS_22"
     },
     {
       "id": "stock-all-over-print-golf-sweater",
@@ -1927,7 +1941,8 @@
         "price": 87.99,
         "listedAt": "2026-10-09",
         "pictures": "raw1"
-      }
+      },
+      "sku": "TA_GS_16"
     },
     {
       "id": "stock-pinehurst-tc-reverse-weave",
@@ -2628,7 +2643,8 @@
       "file": "footjoy-titleist-polo.jpg",
       "sold": true,
       "_ebayUrl": "https://www.ebay.com/itm/407190587074",
-      "_saleNotified": "backfill-2026-10-09"
+      "_saleNotified": "backfill-2026-10-09",
+      "sku": "TA_GS_29"
     },
     {
       "id": "stock-polo-golf-pinehurst-shirt",
@@ -2693,7 +2709,8 @@
         "soldSession": "cs_live_a1fpoS6hSCXhaCVoAm35sHg8pe8etydSw6pz3j88E3zFRZciZ3qLbXsHxH"
       },
       "sold": true,
-      "_saleNotified": "backfill-2026-10-09"
+      "_saleNotified": "backfill-2026-10-09",
+      "sku": "TA_GS_30"
     },
     {
       "id": "stock-peter-millar-scotty-cameron-quarter-zip",
@@ -2768,7 +2785,8 @@
         "price": 133.99,
         "listedAt": "2026-10-09",
         "pictures": "raw1"
-      }
+      },
+      "sku": "TA_GS_31"
     },
     {
       "id": "stock-taylormade-knit-vest",
@@ -2843,7 +2861,8 @@
         "price": 168.99,
         "listedAt": "2026-10-09",
         "pictures": "raw1"
-      }
+      },
+      "sku": "TA_GS_32"
     },
     {
       "id": "stock-presidents-cup-usa-cashmere-sweater",
@@ -2902,7 +2921,8 @@
         "listedAt": "2026-10-09",
         "pictures": "raw1"
       },
-      "_ebayUrl": "https://www.ebay.com/itm/377555835451"
+      "_ebayUrl": "https://www.ebay.com/itm/377555835451",
+      "sku": "TA_PC26_02"
     },
     {
       "id": "stock-tiger-woods-presidents-cup-polo",
@@ -2955,7 +2975,8 @@
       ],
       "_photosPulled": "2026-09-21",
       "sold": true,
-      "_saleNotified": "backfill-2026-10-09"
+      "_saleNotified": "backfill-2026-10-09",
+      "sku": "TA_PC26_03"
     },
     {
       "id": "stock-vintage-presidents-cup-tee-shirt",
@@ -3015,7 +3036,8 @@
         "listedAt": "2026-10-09",
         "pictures": "raw1"
       },
-      "_ebayUrl": "https://www.ebay.com/itm/377555835470"
+      "_ebayUrl": "https://www.ebay.com/itm/377555835470",
+      "sku": "TA_PC26_05"
     },
     {
       "id": "stock-presidents-cup-robert-trent-jones-gc-polo",
@@ -3074,7 +3096,8 @@
         "listedAt": "2026-10-09",
         "pictures": "raw1"
       },
-      "_ebayUrl": "https://www.ebay.com/itm/377555835487"
+      "_ebayUrl": "https://www.ebay.com/itm/377555835487",
+      "sku": "TA_PC26_01"
     },
     {
       "id": "stock-vintage-medinah-country-club-knit-polo",
@@ -3132,7 +3155,8 @@
         "listedAt": "2026-10-09",
         "pictures": "raw1"
       },
-      "_ebayUrl": "https://www.ebay.com/itm/377555835505"
+      "_ebayUrl": "https://www.ebay.com/itm/377555835505",
+      "sku": "TA_PC26_04"
     },
     {
       "id": "stock-vintage-taylormade-retro-logo-polo",
@@ -3188,7 +3212,8 @@
         "listedAt": "2026-10-09",
         "pictures": "raw1"
       },
-      "_ebayUrl": "https://www.ebay.com/itm/377555835522"
+      "_ebayUrl": "https://www.ebay.com/itm/377555835522",
+      "sku": "TA_GS_36"
     },
     {
       "id": "stock-1990s-titleist-coach-jacket",
@@ -3236,7 +3261,8 @@
       ],
       "_photosPulled": "2026-10-01",
       "sold": true,
-      "_saleNotified": "backfill-2026-10-09"
+      "_saleNotified": "backfill-2026-10-09",
+      "sku": "TA_GS_33"
     },
     {
       "id": "stock-black-cotton-ralph-lauren-cardigan",
@@ -3291,7 +3317,8 @@
         "listedAt": "2026-10-09",
         "pictures": "raw1"
       },
-      "_ebayUrl": "https://www.ebay.com/itm/377555836051"
+      "_ebayUrl": "https://www.ebay.com/itm/377555836051",
+      "sku": "TA_GS_34"
     },
     {
       "id": "stock-vintage-grand-slam-golf-polo",
@@ -3347,7 +3374,8 @@
         "listedAt": "2026-10-09",
         "pictures": "raw1"
       },
-      "_ebayUrl": "https://www.ebay.com/itm/377555836078"
+      "_ebayUrl": "https://www.ebay.com/itm/377555836078",
+      "sku": "TA_GS_35"
     },
     {
       "id": "stock-peter-millar-country-club-of-virginia-polo",
@@ -3394,7 +3422,8 @@
       ],
       "_photosPulled": "2026-10-08",
       "sold": true,
-      "_saleNotified": "backfill-2026-10-09"
+      "_saleNotified": "backfill-2026-10-09",
+      "sku": "TA_GS_37"
     },
     {
       "id": "stock-taylormade-richmond-cc-snapback",
@@ -3447,7 +3476,8 @@
         "listedAt": "2026-10-09",
         "pictures": "raw1"
       },
-      "_ebayUrl": "https://www.ebay.com/itm/377555836100"
+      "_ebayUrl": "https://www.ebay.com/itm/377555836100",
+      "sku": "TA_GS_39"
     },
     {
       "id": "stock-vintage-patterned-haggar-polo",
@@ -3510,7 +3540,8 @@
       },
       "_ebayUrl": "https://www.ebay.com/itm/377555836137",
       "sold": true,
-      "_saleNotified": "backfill-2026-10-09"
+      "_saleNotified": "backfill-2026-10-09",
+      "sku": "TA_GS_42"
     },
     {
       "id": "stock-vintage-multicolor-chaps-polo",
@@ -3568,7 +3599,8 @@
         "listedAt": "2026-10-09",
         "pictures": "raw1"
       },
-      "_ebayUrl": "https://www.ebay.com/itm/377555836159"
+      "_ebayUrl": "https://www.ebay.com/itm/377555836159",
+      "sku": "TA_GS_41"
     },
     {
       "id": "stock-vintage-country-club-of-virginia-sweater",
@@ -3630,7 +3662,8 @@
         "listedAt": "2026-10-09",
         "pictures": "raw1"
       },
-      "_ebayUrl": "https://www.ebay.com/itm/377555836191"
+      "_ebayUrl": "https://www.ebay.com/itm/377555836191",
+      "sku": "TA_GS_40"
     },
     {
       "id": "stock-peter-millar-x-scotty-cameron-polo",
@@ -3694,7 +3727,8 @@
       },
       "_ebayUrl": "https://www.ebay.com/itm/377555836212",
       "sold": true,
-      "_saleNotified": "backfill-2026-10-09"
+      "_saleNotified": "backfill-2026-10-09",
+      "sku": "TA_GS_38"
     },
     {
       "id": "stock-vintage-tpc-windbreaker",
@@ -3758,7 +3792,8 @@
         "listedAt": "2026-10-09",
         "pictures": "raw1"
       },
-      "_ebayUrl": "https://www.ebay.com/itm/377555879911"
+      "_ebayUrl": "https://www.ebay.com/itm/377555879911",
+      "sku": "TA_GS_43"
     },
     {
       "id": "stock-abstract-grand-slam-golf-polo",
@@ -3817,7 +3852,8 @@
         "listedAt": "2026-10-15",
         "pictures": "raw1"
       },
-      "_ebayUrl": "https://www.ebay.com/itm/377572921218"
+      "_ebayUrl": "https://www.ebay.com/itm/377572921218",
+      "sku": "TA_GS_44"
     },
     {
       "id": "stock-seminole-gc-gingham-polo",
@@ -3873,7 +3909,8 @@
         "listedAt": "2026-10-15",
         "pictures": "raw1"
       },
-      "_ebayUrl": "https://www.ebay.com/itm/377572921244"
+      "_ebayUrl": "https://www.ebay.com/itm/377572921244",
+      "sku": "TA_GS_46"
     },
     {
       "id": "stock-willow-oaks-cc-reverse-weave",
@@ -3931,7 +3968,8 @@
         "listedAt": "2026-10-15",
         "pictures": "raw1"
       },
-      "_ebayUrl": "https://www.ebay.com/itm/377572921283"
+      "_ebayUrl": "https://www.ebay.com/itm/377572921283",
+      "sku": "TA_GS_48"
     },
     {
       "id": "stock-peter-millar-x-pebble-beach-cashmere-sweater",
@@ -3992,7 +4030,8 @@
       },
       "_ebayUrl": "https://www.ebay.com/itm/377572921324",
       "sold": true,
-      "_saleNotified": "2026-10-15"
+      "_saleNotified": "2026-10-15",
+      "sku": "TA_GS_45"
     },
     {
       "id": "stock-vintage-titleist-logo-sweater",
@@ -4052,7 +4091,8 @@
         "listedAt": "2026-10-15",
         "pictures": "raw1"
       },
-      "_ebayUrl": "https://www.ebay.com/itm/377572921359"
+      "_ebayUrl": "https://www.ebay.com/itm/377572921359",
+      "sku": "TA_GS_47"
     }
   ],
   "_inPerson": {
