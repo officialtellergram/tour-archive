@@ -4226,7 +4226,7 @@
       "year": "—",
       "category": "Knitwear",
       "garment": "sweater",
-      "size": "See photos",
+      "size": "XL",
       "condition": "Pre-owned",
       "price": 49.99,
       "colorway": [
@@ -4268,7 +4268,8 @@
         "carousel/vintage-silver-club-sweatshirt-by-sdi/05.jpg",
         "carousel/vintage-silver-club-sweatshirt-by-sdi/06.jpg"
       ],
-      "_photosPulled": "2026-10-22"
+      "_photosPulled": "2026-10-22",
+      "_sizeSource": "Stripe description, refreshed 2026-10-22"
     },
     {
       "id": "stock-vintage-masters-polo",
@@ -4396,7 +4397,7 @@
       "year": "—",
       "category": "Shirting",
       "garment": "polo",
-      "size": "See photos",
+      "size": "L",
       "condition": "Pre-owned",
       "price": 30.99,
       "colorway": [
@@ -4435,7 +4436,8 @@
         "carousel/vintage-greenbrier-resort-polo/03.jpg",
         "carousel/vintage-greenbrier-resort-polo/04.jpg"
       ],
-      "_photosPulled": "2026-10-22"
+      "_photosPulled": "2026-10-22",
+      "_sizeSource": "Stripe description, refreshed 2026-10-22"
     }
   ],
   "_inPerson": {

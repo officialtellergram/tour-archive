@@ -138,6 +138,13 @@ const SIZE_RX = /\b(?:tagged\s+)?size\s*:?\s*(XS|S|M|L|XL|XXL|2XL|3XL|small|medi
 const SIZE_WORDS = { small: 'S', medium: 'M', large: 'L', 'x-large': 'XL', 'xx-large': 'XXL' };
 const ONE_SIZE_RX = /\bone\s+size\b/i;
 const MEAS_RX = /^\s*measurements?\s*:?\s*(.+)$/i;
+// "Vintage Greenbrier Resort Polo - Size L", "Heavy Ralph Lauren Knit - XL":
+// Henry sometimes hangs the size off the end of the product name.
+const NAME_SIZE_RX = /\s[-–—:]\s*(?:size\s*:?\s*)?(XS|S|M|L|XL|XXL|2XL|3XL)\s*$/i;
+const sizeFromName = (name) => {
+  const m = String(name || '').match(NAME_SIZE_RX);
+  return m ? m[1].toUpperCase() : '';
+};
 
 /**
  * "26\" Length - 24\" Pit to Pit"  →  { Length: '26 in', 'Pit to Pit': '24 in' }
@@ -200,7 +207,7 @@ function segments(text) {
 function scaffold(p, file, photos, sku) {
   const lines = segments(p.description);
   const hay = `${p.name} ${lines.join(' ')}`;
-  let size = 'See photos';
+  let size = sizeFromName(p.name) || 'See photos';
   let measurements = {};
   const paras = [];
   for (const l of lines) {
@@ -297,7 +304,7 @@ if (REFRESH) {
     // into the Stripe description, and the catalogue still says See photos
     if (!entry.size || entry.size === 'See photos') {
       const line = segments(p.description).find((l) => SIZE_RX.test(l) || ONE_SIZE_RX.test(l));
-      const s = line && (line.match(SIZE_RX) || (ONE_SIZE_RX.test(line) ? [line, 'One size'] : null));
+      const s = (sizeFromName(p.name) && [p.name, sizeFromName(p.name)]) || (line && (line.match(SIZE_RX) || (ONE_SIZE_RX.test(line) ? [line, 'One size'] : null)));
       if (s) {
         const size = SIZE_WORDS[s[1].toLowerCase()] || (s[1] === 'One size' ? s[1] : s[1].toUpperCase());
         console.log(`${C.dim}   ${WRITE ? 'sizing' : 'would size'} ${entry.id} — ${size} (from the Stripe description)${C.off}`);
