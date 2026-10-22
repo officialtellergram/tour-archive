@@ -29,8 +29,6 @@
       "measurements": {},
       "_ingested": "2026-08-02",
       "_source": "IMG_0371.JPEG",
-      "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/5kQ00idCY5zvac60pk9k40G",
       "photos": [
         "carousel/slazenger-golden-horseshoe-wind-shirt/01.jpg",
         "carousel/slazenger-golden-horseshoe-wind-shirt/02.webp",
@@ -69,7 +67,11 @@
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
         "minted": "2026-09-11",
-        "repriced": "2026-10-02"
+        "repriced": "2026-10-02",
+        "soldCharge": "ch_3UTVKXC1bWq01lTK1WGbzcoH",
+        "soldAt": "2026-10-22",
+        "soldAmount": 49.99,
+        "soldInPerson": true
       },
       "_ebay": {
         "itemId": "377555830559",
@@ -82,7 +84,9 @@
           "377563031247"
         ]
       },
-      "_sizeSource": "Stripe description, refreshed 2026-10-22"
+      "_sizeSource": "Stripe description, refreshed 2026-10-22",
+      "sold": true,
+      "_saleNotified": "2026-10-22"
     },
     {
       "id": "stock-masters-peter-millar-quarter-zip-blue",
@@ -4488,6 +4492,14 @@
       "description": "Charity ",
       "at": "2026-10-22T21:42:51.000Z",
       "notified": "2026-10-22"
+    },
+    "ch_3UTVKXC1bWq01lTK1WGbzcoH": {
+      "status": "matched",
+      "piece": "stock-slazenger-golden-horseshoe-wind-shirt",
+      "how": "by description",
+      "amount": 49.99,
+      "description": "Tags04",
+      "at": "2026-10-22T23:23:34.000Z"
     }
   }
 }
