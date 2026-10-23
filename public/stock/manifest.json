@@ -305,7 +305,7 @@
         "soldOrder": "14-15264-56618",
         "soldAt": "2026-10-09",
         "stripeInvoice": "in_1UOikmC1bWq01lTKOS1qlvY3",
-        "finance": "5.52|8.39|21.58|FUNDS_ON_HOLD"
+        "finance": "5.52|8.39|21.58|FUNDS_PROCESSING"
       },
       "sold": true,
       "_saleNotified": "backfill-2026-10-09"
