@@ -65,6 +65,22 @@ async function stripe(method, path, body) {
 }
 const money = (cents) => (cents / 100).toFixed(2);
 
+/** Every active payment link with its line item, fetched once per run when a repair needs it. */
+let activeLinksCache = null;
+async function activeLinks() {
+  if (activeLinksCache) return activeLinksCache;
+  const out = [];
+  let after = '';
+  for (;;) {
+    const page = await stripe('GET', `payment_links?active=true&limit=100&expand[]=data.line_items${after ? `&starting_after=${after}` : ''}`);
+    out.push(...page.data);
+    if (!page.has_more || !page.data.length) break;
+    after = page.data[page.data.length - 1].id;
+  }
+  activeLinksCache = out;
+  return out;
+}
+
 const manifest = JSON.parse(readFileSync(MANIFEST, 'utf8'));
 const pieces = manifest.items.filter((e) => e._stripe?.product && e._stripe?.link && !e.sold && !e.retired);
 
@@ -134,7 +150,12 @@ for (const e of pieces) {
     if (link.billing_address_collection) body.billing_address_collection = link.billing_address_collection;
     if (link.phone_number_collection?.enabled) body['phone_number_collection[enabled]'] = 'true';
 
-    const fresh = await stripe('POST', 'payment_links', body);
+    // Idempotent: two runs saw the same drift sixteen seconds apart on 23 Oct
+    // 2026 and each minted a link. A live link for this piece on the wanted
+    // price, left by a run whose catalogue write lost a race, is reused.
+    const existing = (await activeLinks()).find((l) => l.id !== link.id && l.metadata?.ta_id === e.id && l.line_items?.data?.[0]?.price?.id === want.id);
+    if (existing) console.log(`${C.dim}       reusing ${existing.id}, already minted on this price${C.off}`);
+    const fresh = existing || await stripe('POST', 'payment_links', body);
     if (link.active) await stripe('POST', `payment_links/${link.id}`, { active: 'false' });
     // Pin the default, so the Dashboard, the next drift report and the site agree.
     if (product.default_price?.id !== want.id) await stripe('POST', `products/${product.id}`, { default_price: want.id });
