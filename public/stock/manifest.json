@@ -4412,7 +4412,7 @@
       "garment": "polo",
       "size": "L",
       "condition": "Pre-owned",
-      "price": 30.99,
+      "price": 29.99,
       "colorway": [
         "#C4BCA6",
         "#A39A82",
@@ -4435,14 +4435,15 @@
       ],
       "_stripe": {
         "product": "prod_VU69i6ktVvMeWq",
-        "price": "price_1UTUGdC1bWq01lTKn2SVLbvG",
-        "link": "plink_1UTUIaC1bWq01lTKT5xXFegi",
+        "price": "price_1UTkf9C1bWq01lTKH7TThPMp",
+        "link": "plink_1UTkfcC1bWq01lTKZRFPxf39",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-10-22"
+        "minted": "2026-10-22",
+        "repriced": "2026-10-23"
       },
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/fZu7sK0Qc2nj4RMdc69k41t",
+      "listingUrl": "https://buy.stripe.com/5kQ9ASdCYbXT4RM1to9k41u",
       "photos": [
         "carousel/vintage-greenbrier-resort-polo/01.jpg",
         "carousel/vintage-greenbrier-resort-polo/02.jpg",
