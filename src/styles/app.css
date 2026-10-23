@@ -1103,11 +1103,21 @@ h3.display {
   align-items: center;
   gap: 0.35em;
 }
-.plate-star {
+/* Scoped above `.plate svg` (the drawn garment, 82 % of the plate) and the
+   card's hover scale, which would otherwise size and move the star. */
+.card .plate .plate-tag--new .plate-star,
+.plate .plate-tag--new .plate-star {
+  display: inline-block;
   width: 9px;
   height: 9px;
+  max-width: none;
   fill: var(--brass);
   flex: none;
+  transform: translateY(-0.5px);
+  transition: none;
+  will-change: auto;
+}
+.card:hover .plate .plate-tag--new .plate-star {
   transform: translateY(-0.5px);
 }
 .plate-tag--soon {
