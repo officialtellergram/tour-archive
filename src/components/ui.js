@@ -78,10 +78,24 @@ export function plateTag(item) {
   // plate (.is-sold ::after). No channel chip — it isn't on the marketplace.
   if (item.sold) return `<span class="plate-sash" aria-label="Sold">Sold</span>`;
   if (item.upcoming) return `<span class="plate-tag plate-tag--soon">Next drop</span>`;
+  // New: a piece added in the last two weeks wears a brass star for that
+  // long (Karen, 23 Oct 2026); the daily rebuild lets the star fall away.
+  if (isNew(item)) return `<span class="plate-tag plate-tag--new" aria-label="New this fortnight">${STAR}New</span>`;
   // Direct stock: checkout is our own Stripe payment page, so the card needs
   // no channel warning — every piece is simply what it says it is.
   // (.plate-tag--channel CSS stays: curate.js still chips marketplace finds.)
   return `<span class="plate-tag">1 of 1</span>`;
+}
+
+const NEW_FOR_DAYS = 14;
+const STAR = '<svg class="plate-star" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M5 .6l1.3 2.8 3.1.4-2.3 2.1.6 3.1L5 7.5 2.3 9l.6-3.1L.6 3.8l3.1-.4z"/></svg>';
+/** Added within the last fortnight and still for sale. `added` is the drain's
+    date stamp, passed through by server/inventory.mjs (the manifest's _ingested). */
+export function isNew(item) {
+  const day = item?.added || item?._ingested;
+  if (!item || item.sold || item.upcoming || !day) return false;
+  const since = new Date(`${day}T00:00:00Z`).getTime();
+  return Number.isFinite(since) && Date.now() - since < NEW_FOR_DAYS * 86400000;
 }
 
 /**

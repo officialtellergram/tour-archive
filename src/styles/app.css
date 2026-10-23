@@ -1094,6 +1094,22 @@ h3.display {
   font-size: 12px;
   padding: 0.65rem 0;
 }
+/* New this fortnight: the parchment chip with a brass star and a brass
+   rule — quieter than the Next-drop chip, louder than 1 of 1. */
+.plate-tag--new {
+  border-color: var(--brass);
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+}
+.plate-star {
+  width: 9px;
+  height: 9px;
+  fill: var(--brass);
+  flex: none;
+  transform: translateY(-0.5px);
+}
 .plate-tag--soon {
   background: var(--brass);
   border-color: var(--brass);

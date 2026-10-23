@@ -104,6 +104,9 @@ export function mapManifestItem(entry) {
     collection: 'basic-stock',
     sold: false,
     upcoming: false,
+    // the day the piece entered the catalogue: the cards wear a "New" star
+    // for a fortnight from it (src/components/ui.js isNew)
+    added: _ingested || null,
     story: '',
     details: [],
     // the cofounder's listing copy, archived by scripts/listing-pull.mjs —
