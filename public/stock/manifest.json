@@ -1830,8 +1830,6 @@
         "Checkout completes with Stripe"
       ],
       "measurements": {},
-      "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/eVqcN42Yk8LH0Bw2xs9k40Z",
       "_ingested": "2026-08-20",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -1870,16 +1868,23 @@
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
         "minted": "2026-09-11",
-        "repriced": "2026-10-02"
+        "repriced": "2026-10-02",
+        "soldCharge": "ch_3UUWngC1bWq01lTK0t2uBMcu",
+        "soldAt": "2026-10-25",
+        "soldAmount": 85,
+        "soldInPerson": true
       },
       "_ebay": {
         "itemId": "377555832408",
         "sku": "stock-peter-millar-hermitage-polo-navy",
         "price": 58.99,
         "listedAt": "2026-10-09",
-        "pictures": "raw1"
+        "pictures": "raw1",
+        "endedAt": "2026-10-25"
       },
-      "sku": "TA_GS_22"
+      "sku": "TA_GS_22",
+      "sold": true,
+      "_saleNotified": "2026-10-25"
     },
     {
       "id": "stock-all-over-print-golf-sweater",
@@ -4548,6 +4553,14 @@
       "description": "Augusta picture ",
       "at": "2026-10-25T17:57:42.000Z",
       "notified": "2026-10-25"
+    },
+    "ch_3UUWngC1bWq01lTK0t2uBMcu": {
+      "status": "matched",
+      "piece": "stock-peter-millar-hermitage-polo-navy",
+      "how": "by description",
+      "amount": 85,
+      "description": "TAGS22 TAGS23 uva belt ",
+      "at": "2026-10-25T19:09:52.000Z"
     }
   }
 }
