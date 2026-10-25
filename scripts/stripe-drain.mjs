@@ -41,7 +41,7 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync, unlinkSync } from '
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
-import { nextSku, usableSku } from './lib/catalogue.mjs';
+import { claimedSku, nextSku, usableSku } from './lib/catalogue.mjs';
 import { inferGarment, inferColourway, inferYear } from '../server/normalize.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
@@ -391,7 +391,7 @@ for (const p of fresh) {
     }
     // catalogue number: Henry's, if he put a well-formed unused one in the
     // product's metadata sku; otherwise the next in the collection's series
-    const sku = usableSku(manifest, p.metadata?.sku) || nextSku(manifest, COLLECTION);
+    const sku = usableSku(manifest, claimedSku(p)) || nextSku(manifest, COLLECTION, products.map(claimedSku).filter(Boolean));
     // entry, written immediately — a crash after this line loses nothing
     manifest.items.push(scaffold(p, file, photos, sku));
     writeFileSync(MANIFEST, JSON.stringify(manifest, null, 2) + '\n', 'utf8');

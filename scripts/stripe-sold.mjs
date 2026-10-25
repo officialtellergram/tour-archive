@@ -205,7 +205,8 @@ async function heldPieces() {
     const page = await stripe('GET', `/v1/products?active=true&limit=100&expand[]=data.default_price${after ? `&starting_after=${after}` : ''}`);
     for (const p of page.data) {
       if (!isHeld(p) || (p.livemode ? 'live' : 'test') !== MODE) continue;
-      out.push({ held: true, id: `held:${p.id}`, product: p.id, name: cleanName(p.name), sku: p.metadata?.sku || '', price: (p.default_price?.unit_amount || 0) / 100 });
+      const skuText = String(p.metadata?.sku || '').match(/\bTA[_\s-]?[A-Z]{2,6}\d{0,2}[_\s-]?\d{2,3}\b/i) || String(p.description || '').match(/\bTA[_\s-]?[A-Z]{2,6}\d{0,2}[_\s-]?\d{2,3}\b/i);
+      out.push({ held: true, id: `held:${p.id}`, product: p.id, name: cleanName(p.name), sku: skuText ? skuText[0].toUpperCase().replace(/[\s-]+/g, '_') : '', price: (p.default_price?.unit_amount || 0) / 100 });
     }
     if (!page.has_more || !page.data.length) break;
     after = page.data[page.data.length - 1].id;

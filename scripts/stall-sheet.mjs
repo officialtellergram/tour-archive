@@ -17,6 +17,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { skuInText } from './lib/catalogue.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const MANIFEST = join(ROOT, 'public', 'stock', 'manifest.json');
@@ -43,7 +44,7 @@ if (env.STRIPE_SECRET_KEY) {
     const r = await fetch(`https://api.stripe.com/v1/products?active=true&limit=100&expand[]=data.default_price${after ? `&starting_after=${after}` : ''}`, { headers: { Authorization: `Bearer ${env.STRIPE_SECRET_KEY}` } });
     const page = await r.json();
     if (!r.ok) { console.log(`${C.yellow}⚠ Stripe: ${page.error?.message || r.status}; held pieces left off${C.off}`); break; }
-    for (const p of page.data) if (isHeld(p)) rows.push({ held: true, name: cleanName(p.name), sku: p.metadata?.sku || '', size: (p.description || '').match(/\bsize\s*:?\s*(XS|S|M|L|XL|XXL|2XL|3XL)\b/i)?.[1]?.toUpperCase() || '', price: (p.default_price?.unit_amount || 0) / 100, where: 'held for a drop' });
+    for (const p of page.data) if (isHeld(p)) rows.push({ held: true, name: cleanName(p.name), sku: skuInText(p.metadata?.sku) || skuInText(p.description), size: (p.description || '').match(/\bsize\s*:?\s*(XS|S|M|L|XL|XXL|2XL|3XL)\b/i)?.[1]?.toUpperCase() || '', price: (p.default_price?.unit_amount || 0) / 100, where: 'held for a drop' });
     if (!page.has_more || !page.data.length) break;
     after = page.data[page.data.length - 1].id;
   }
