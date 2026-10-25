@@ -115,7 +115,8 @@ for (const p of products) if (!p.images?.length && HEROES[p.id]) p.images = [HER
 const DRAIN_HELD = args.includes('--drain-held');
 // Held for a future drop (metadata held = true, or a name starting "HOLD:"):
 // kept off the site and eBay; sellable only in person (stripe-sold.mjs).
-const isHeld = (p) => /^(true|yes|1)$/i.test(String(p.metadata?.held || '')) || /^\s*\[?hold\]?\s*[:\-–]/i.test(p.name) || /(^|\n)\s*\[?held\]?\s*:?\s*(\r?\n|$)/i.test(String(p.description || ''));
+const heldMeta = (p) => Object.entries(p.metadata || {}).some(([k, v]) => k.trim().toLowerCase() === 'held' && /^(true|yes|1)$/i.test(String(v).trim())); // stray spaces happen
+const isHeld = (p) => heldMeta(p) || /^\s*\[?hold\]?\s*[:\-–]/i.test(p.name) || /(^|\n)\s*\[?held\]?\s*:?\s*(\r?\n|$)/i.test(String(p.description || ''));
 const heldOut = products.filter((p) => !p.metadata?.ta_id && isHeld(p));
 if (heldOut.length && !DRAIN_HELD) console.log(`${C.dim}   ${heldOut.length} held for a drop, kept off the site: ${heldOut.map((p) => p.name).join(' · ')}${C.off}`);
 if (heldOut.length && DRAIN_HELD) console.log(`${C.yellow}   --drain-held: ${heldOut.length} held piece(s) will be brought in and their hold lifted${C.off}`);

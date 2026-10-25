@@ -46,7 +46,8 @@ async function products() {
   }
   return out;
 }
-const isHeld = (p) => /^(true|yes|1)$/i.test(String(p.metadata?.held || '')) || /^\s*\[?hold\]?\s*[:\-–]/i.test(p.name) || /(^|\n)\s*\[?held\]?\s*:?\s*(\r?\n|$)/i.test(String(p.description || ''));
+const heldMeta = (p) => Object.entries(p.metadata || {}).some(([k, v]) => k.trim().toLowerCase() === 'held' && /^(true|yes|1)$/i.test(String(v).trim())); // stray spaces happen
+const isHeld = (p) => heldMeta(p) || /^\s*\[?hold\]?\s*[:\-–]/i.test(p.name) || /(^|\n)\s*\[?held\]?\s*:?\s*(\r?\n|$)/i.test(String(p.description || ''));
 
 const manifest = JSON.parse(readFileSync(MANIFEST, 'utf8'));
 console.log(`\n${C.dim}── Tour Archive · catalogue numbers (${HELD ? 'held products on Stripe' : STRIPE ? 'WRITE + Stripe' : WRITE ? 'WRITE' : 'report'}) ──${C.off}`);

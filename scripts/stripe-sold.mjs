@@ -196,7 +196,10 @@ const live = () => manifest.items.filter((e) => !e.sold && !e.retired && e._stri
  */
 // Held = metadata held=true, a name starting "HOLD:", or a line in the
 // description reading just "HELD" (the field Henry is already typing in).
-const isHeld = (p) => /^(true|yes|1)$/i.test(String(p.metadata?.held || '')) || /^\s*\[?hold\]?\s*[:\-–]/i.test(p.name) || /(^|\n)\s*\[?held\]?\s*:?\s*(\r?\n|$)/i.test(String(p.description || ''));
+// Metadata typed by hand may carry a stray space in the key or the value
+// ("held " / "true "): 25 Oct 2026, nine pieces hid behind one.
+const heldMeta = (p) => Object.entries(p.metadata || {}).some(([k, v]) => k.trim().toLowerCase() === 'held' && /^(true|yes|1)$/i.test(String(v).trim()));
+const isHeld = (p) => heldMeta(p) || /^\s*\[?hold\]?\s*[:\-–]/i.test(p.name) || /(^|\n)\s*\[?held\]?\s*:?\s*(\r?\n|$)/i.test(String(p.description || ''));
 const cleanName = (n) => n.replace(/^\s*\[?hold\]?\s*[:\-–]\s*/i, '').trim();
 async function heldPieces() {
   const out = [];
