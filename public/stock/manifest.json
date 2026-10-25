@@ -918,8 +918,6 @@
         "Checkout completes with Stripe"
       ],
       "measurements": {},
-      "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/6oUaEW8iEe613NIgoi9k40Q",
       "_ingested": "2026-08-18",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -957,7 +955,11 @@
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
         "minted": "2026-09-11",
-        "repriced": "2026-10-02"
+        "repriced": "2026-10-02",
+        "soldCharge": "ch_3UUVaNC1bWq01lTK1pUTgJuD",
+        "soldAt": "2026-10-25",
+        "soldAmount": 20,
+        "soldInPerson": true
       },
       "_ebay": {
         "itemId": "377555831089",
@@ -968,9 +970,12 @@
         "seen": "2026-10-12",
         "duplicateEnded": [
           "377563032100"
-        ]
+        ],
+        "endedAt": "2026-10-25"
       },
-      "sku": "TA_GS_14"
+      "sku": "TA_GS_14",
+      "sold": true,
+      "_saleNotified": "2026-10-25"
     },
     {
       "id": "stock-wild-dunes-multicolor-polo",
@@ -4527,6 +4532,22 @@
       "amount": 74.99,
       "description": "Tatc2602",
       "at": "2026-10-25T17:29:57.000Z"
+    },
+    "ch_3UUVaNC1bWq01lTK1pUTgJuD": {
+      "status": "matched",
+      "piece": "stock-tasmanian-devil-golf-polo",
+      "how": "by description",
+      "amount": 20,
+      "description": "TAGS14",
+      "at": "2026-10-25T17:53:04.000Z"
+    },
+    "ch_3UUVfjC1bWq01lTK1gkZsPYC": {
+      "status": "unmatched",
+      "why": "no live piece has this price and the description names none",
+      "amount": 50,
+      "description": "Augusta picture ",
+      "at": "2026-10-25T17:57:42.000Z",
+      "notified": "2026-10-25"
     }
   }
 }
