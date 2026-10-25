@@ -2199,8 +2199,6 @@
       ],
       "measurements": {},
       "collection": "tour-championship-2026",
-      "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/eVq5kC7eA2nj0Bwega9k414",
       "sku": "TA_TC26_02",
       "_ingested": "2026-08-21",
       "_source": "own listing photo, i.ebayimg.com",
@@ -2245,15 +2243,22 @@
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
         "minted": "2026-09-11",
-        "repriced": "2026-10-02"
+        "repriced": "2026-10-02",
+        "soldCharge": "ch_3UUVEnC1bWq01lTK1SSJQmmd",
+        "soldAt": "2026-10-25",
+        "soldAmount": 74.99,
+        "soldInPerson": true
       },
       "_ebay": {
         "itemId": "377555835285",
         "sku": "TA_TC26_02",
         "price": 87.99,
         "listedAt": "2026-10-09",
-        "pictures": "raw1"
-      }
+        "pictures": "raw1",
+        "endedAt": "2026-10-25"
+      },
+      "sold": true,
+      "_saleNotified": "2026-10-25"
     },
     {
       "id": "stock-izod-club-tc-polo",
@@ -4514,6 +4519,14 @@
       "description": "Tags87",
       "at": "2026-10-25T12:46:03.000Z",
       "notified": "2026-10-25"
+    },
+    "ch_3UUVEnC1bWq01lTK1SSJQmmd": {
+      "status": "matched",
+      "piece": "stock-peter-millar-east-lake-quarter-zip",
+      "how": "by description",
+      "amount": 74.99,
+      "description": "Tatc2602",
+      "at": "2026-10-25T17:29:57.000Z"
     }
   }
 }
