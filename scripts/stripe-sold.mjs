@@ -169,12 +169,16 @@ function matchPiece(ch, live) {
   const squash = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ''); // "TA_GS_01" and "tags01" are the same number
   const ds = squash(ch.description);
   if (d.length >= 4) {
+    // A catalogue number matches whole or not at all: "tags107" holds
+    // "tags10" but is not TA_GS_10 (25 Oct 2026, the first three-digit numbers).
+    const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const wholeSku = (sku, skus) => (sku && new RegExp(`(^|[^a-z0-9])${esc(sku)}(?!\\d)`).test(d)) || (skus && new RegExp(`(^|[^a-z0-9])${esc(skus)}(?!\\d)`).test(ds));
     const hits = live.filter((e) => {
       const name = norm(e.name);
       const id = norm(e.id.replace(/^stock-/, ''));
       const sku = norm(e.sku);
       const skus = squash(e.sku);
-      return (name && (d.includes(name) || name.includes(d))) || (id && d.includes(id)) || (sku && sku.length >= 4 && (d.includes(sku) || ds.includes(skus)));
+      return (name && (d.includes(name) || name.includes(d))) || (id && d.includes(id)) || (sku && sku.length >= 4 && wholeSku(sku, skus));
     });
     if (hits.length === 1) return { piece: hits[0], how: 'by description' };
     if (hits.length > 1) return { piece: null, why: `the description fits ${hits.length} pieces (${hits.map((e) => e.id).join(', ')})` };
