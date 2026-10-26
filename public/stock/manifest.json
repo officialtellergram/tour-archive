@@ -1734,10 +1734,12 @@
         "sku": "stock-peter-millar-hermitage-polo-teal",
         "price": 58.99,
         "listedAt": "2026-10-09",
-        "pictures": "raw1"
+        "pictures": "raw1",
+        "endedAt": "2026-10-26"
       },
       "sku": "TA_GS_23",
-      "sold": true
+      "sold": true,
+      "_saleNotified": "2026-10-26"
     },
     {
       "id": "stock-pga-national-honda-classic-polo",
@@ -1886,7 +1888,8 @@
         "endedAt": "2026-10-25"
       },
       "sku": "TA_GS_22",
-      "sold": true
+      "sold": true,
+      "_saleNotified": "2026-10-26"
     },
     {
       "id": "stock-all-over-print-golf-sweater",
