@@ -194,14 +194,19 @@ async function inPersonRow(e) {
   const c = await r.json();
   if (!r.ok) { console.log(`${C.yellow}   ⚠ ${e.id}: ${c.error?.message || r.status}${C.off}`); return base; }
   const bt = c.balance_transaction;
-  const refunded = c.amount_refunded || 0;
+  // A bundle (two numbers on one tap) shares the charge between its pieces:
+  // this row carries the piece's share, and the same share of fee and refund.
+  const share = e._stripe.soldAmount != null && Math.round(e._stripe.soldAmount * 100) !== c.amount ? Math.round(e._stripe.soldAmount * 100) / c.amount : 1;
+  const amount = Math.round(c.amount * share);
+  const fee = Math.round((bt ? bt.fee : 0) * share);
+  const refunded = Math.round((c.amount_refunded || 0) * share);
   return {
     ...base,
     date: new Date(c.created * 1000).toISOString().slice(0, 10),
-    subtotal: money(c.amount), salesTax: '0.00', orderTotal: money(c.amount),
-    fees: money(bt ? bt.fee : 0), earnings: money((bt ? bt.net : c.amount) - refunded),
+    subtotal: money(amount), salesTax: '0.00', orderTotal: money(amount),
+    fees: money(fee), earnings: money(amount - fee - refunded),
     funds: bt ? (bt.status === 'available' ? 'PAID_OUT' : 'PENDING') : '',
-    status: refunded >= c.amount ? 'refunded' : 'paid', refunded: money(refunded),
+    status: refunded >= amount ? 'refunded' : 'paid', refunded: money(refunded),
     buyer: [c.billing_details?.name, c.receipt_email].filter(Boolean).join(' '),
     reference: c.payment_intent || c.id,
   };
@@ -246,10 +251,18 @@ for (const e of manifest.items.filter((x) => x.sold)) {
   }
 }
 // held pieces sold at a stall: no catalogue entry, only the in-person ledger
+// (a held piece inside a bundle is keyed charge#product and names its charge)
 for (const [id, v] of Object.entries(manifest._inPerson || {})) {
-  if (v.status !== 'matched-held' && !(v.status === 'refunded' && v.product)) continue;
   if (EBAY_ONLY) continue;
-  const row = await inPersonRow({ name: `${v.name} (held)`, id: `held:${v.product}`, price: v.listPrice || v.amount, _stripe: { soldCharge: id, soldAt: v.at.slice(0, 10), soldAmount: v.amount } });
+  if (v.status === 'other') {
+    // a stall sale of something not catalogued (a print, a belt), recorded by hand
+    const row = await inPersonRow({ name: `${v.name} (not catalogued)`, id: `other:${id}`, price: v.amount, _stripe: { soldCharge: id, soldAt: v.at.slice(0, 10), soldAmount: v.amount } });
+    row.channel = 'in-person (other)';
+    rows.push(row);
+    continue;
+  }
+  if (v.status !== 'matched-held' && !(v.status === 'refunded' && v.product)) continue;
+  const row = await inPersonRow({ name: `${v.name} (held)`, id: `held:${v.product}`, price: v.listPrice || v.amount, _stripe: { soldCharge: v.charge || id, soldAt: v.at.slice(0, 10), soldAmount: v.amount } });
   row.channel = 'in-person (held)';
   rows.push(row);
 }

@@ -100,10 +100,14 @@ async function ebayDetails(orderId) {
 function compose(e, channel, d) {
   const subject = `Sold: ${e.name} — ${money(e.price)} on ${channel}`;
   if (d.inPerson) {
+    // a bundle shares one tap between its pieces: this notice carries the share
+    const share = e._stripe?.soldAmount != null ? money(e._stripe.soldAmount) : '';
+    const bundled = share && d.paid && share !== d.paid;
+    const paid = bundled ? `${share} (its share of a ${d.paid} bundle)` : d.paid || money(e.price);
     const text = [
       `${e.name} has sold in person (Tap to Pay in the Stripe Dashboard app).`,
       '',
-      `Paid: ${d.paid || money(e.price)}${d.paid && d.paid !== money(e.price) ? ` (list price ${money(e.price)})` : ''}${d.card ? ` · ${d.card}` : ''}`,
+      `Paid: ${paid}${(bundled ? share : d.paid) && (bundled ? share : d.paid) !== money(e.price) ? ` (list price ${money(e.price)})` : ''}${d.card ? ` · ${d.card}` : ''}`,
       `Size: ${e.size || 'see record'}${e.sku ? `   Catalogue: ${e.sku}` : ''}`,
       d.description ? `Description typed at the stall: "${d.description}"` : '',
       d.when ? `When: ${d.when.toUTCString()}` : '',
@@ -116,7 +120,7 @@ function compose(e, channel, d) {
       '',
       'Sent by the Tour Archive sync. The site already shows this piece as sold and its eBay listing is ending.',
     ].filter((l) => l !== '').join('\n');
-    return { subject: `Sold in person: ${e.name} — ${d.paid || money(e.price)}`, text };
+    return { subject: `Sold in person: ${e.name} — ${bundled ? share : d.paid || money(e.price)}`, text };
   }
   const text = [
     `${e.name} has sold on ${channel}.`,
@@ -175,7 +179,7 @@ try {
     // Held pieces sold early at the stall live only in the ledger.
     const heldSold = Object.entries(manifest._inPerson || {}).filter(([, v]) => v.status === 'matched-held' && !v.notified);
     for (const [id, v] of heldSold) {
-      const d = await chargeDetails(id);
+      const d = await chargeDetails(v.charge || id); // a bundled held piece is keyed charge#product
       const subject = `Sold in person (held piece): ${v.name} — ${money(v.amount)}`;
       const text = [
         `${v.name} — a piece held back for a future drop — sold in person at the stall (Tap to Pay).`,
@@ -188,7 +192,7 @@ try {
         '',
         'Handed over at the stall; nothing to ship. The Stripe product has been archived so it will not be drained into the drop.',
         '',
-        `Payment: ${d.link || `https://dashboard.stripe.com/payments/${id}`}`,
+        `Payment: ${d.link || `https://dashboard.stripe.com/payments/${v.charge || id}`}`,
         `Product: https://dashboard.stripe.com/products/${v.product}`,
       ].filter((l) => l !== '').join('\n');
       if (!WRITE || !ready) { console.log(`${C.yellow}   · ${subject}${C.off}`); continue; }

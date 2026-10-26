@@ -161,6 +161,13 @@ const SIM = (() => {
   const i = args.indexOf('--simulate');
   return i >= 0 ? { description: args[i + 1] || '', amount: Math.round(Number(args[i + 2] || 0) * 100) } : null;
 })();
+const OTHER = (() => {
+  const i = args.indexOf('--other');
+  return i >= 0 && args[i + 1] ? { charge: args[i + 1], name: args[i + 2] || 'not catalogued' } : null;
+})();
+const REMATCH = (() => { const i = args.indexOf('--rematch'); return i >= 0 ? args[i + 1] || '' : ''; })();
+/** A charge shared evenly between the pieces of a bundle, in cents; the odd cents go to the first. */
+const shareOf = (cents, n) => { const base = Math.floor(cents / n); return Array.from({ length: n }, (_, i) => base + (i === 0 ? cents - base * n : 0)); };
 const norm = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 
 /** The live piece a card-present charge was for, or why none. */
@@ -172,16 +179,23 @@ function matchPiece(ch, live) {
     // A catalogue number matches whole or not at all: "tags107" holds
     // "tags10" but is not TA_GS_10 (25 Oct 2026, the first three-digit numbers).
     const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const wholeSku = (sku, skus) => (sku && new RegExp(`(^|[^a-z0-9])${esc(sku)}(?!\\d)`).test(d)) || (skus && new RegExp(`(^|[^a-z0-9])${esc(skus)}(?!\\d)`).test(ds));
+    // Squashing "TAGS22 TAGS23" runs the numbers together, so each typed word
+    // is also compared whole: the second number was lost at the stall (25 Oct 2026).
+    const words = d.split(' ');
+    const wholeSku = (sku, skus) => (sku && new RegExp(`(^|[^a-z0-9])${esc(sku)}(?!\\d)`).test(d)) || (skus && (words.includes(skus) || new RegExp(`(^|[^a-z0-9])${esc(skus)}(?!\\d)`).test(ds)));
+    const byNumber = (e) => { const sku = norm(e.sku); return Boolean(sku && sku.length >= 4 && wholeSku(sku, squash(e.sku))); };
     const hits = live.filter((e) => {
       const name = norm(e.name);
       const id = norm(e.id.replace(/^stock-/, ''));
-      const sku = norm(e.sku);
-      const skus = squash(e.sku);
-      return (name && (d.includes(name) || name.includes(d))) || (id && d.includes(id)) || (sku && sku.length >= 4 && wholeSku(sku, skus));
+      return (name && (d.includes(name) || name.includes(d))) || (id && d.includes(id)) || byNumber(e);
     });
     if (hits.length === 1) return { piece: hits[0], how: 'by description' };
-    if (hits.length > 1) return { piece: null, why: `the description fits ${hits.length} pieces (${hits.map((e) => e.id).join(', ')})` };
+    if (hits.length > 1) {
+      // Two or more catalogue numbers typed on one charge are a bundle: every
+      // numbered piece sold at once, the amount shared out evenly between them.
+      if (hits.every(byNumber)) return { pieces: hits, how: 'by description (bundle)' };
+      return { piece: null, why: `the description fits ${hits.length} pieces (${hits.map((e) => e.id).join(', ')})` };
+    }
   }
   const byPrice = live.filter((e) => Math.round(Number(e.price) * 100) === ch.amount);
   if (byPrice.length === 1) return { piece: byPrice[0], how: d ? 'by price (the description named no piece)' : 'by price (no description)' };
@@ -226,9 +240,38 @@ if (SIM) {
   let held = [];
   try { held = await heldPieces(); } catch (err) { say(`${C.yellow}   ⚠ held pieces not read — ${err.message}${C.off}`); }
   const m = matchPiece(fake, [...live(), ...held]);
-  say(m.piece
-    ? `${C.green}   ✔ simulate "${SIM.description}" $${(SIM.amount / 100).toFixed(2)} → ${m.piece.id} (${m.how})${C.off}`
-    : `${C.yellow}   ⚠ simulate "${SIM.description}" $${(SIM.amount / 100).toFixed(2)} → unmatched: ${m.why}${C.off}`);
+  say(m.pieces
+    ? `${C.green}   ✔ simulate "${SIM.description}" $${(SIM.amount / 100).toFixed(2)} → bundle of ${m.pieces.length}: ${m.pieces.map((e) => `${e.id} $${(shareOf(SIM.amount, m.pieces.length)[m.pieces.indexOf(e)] / 100).toFixed(2)}`).join(', ')} (${m.how})${C.off}`
+    : m.piece
+      ? `${C.green}   ✔ simulate "${SIM.description}" $${(SIM.amount / 100).toFixed(2)} → ${m.piece.id} (${m.how})${C.off}`
+      : `${C.yellow}   ⚠ simulate "${SIM.description}" $${(SIM.amount / 100).toFixed(2)} → unmatched: ${m.why}${C.off}`);
+} else if (OTHER) {
+  // A charge the matcher could not place that was a real sale of something not
+  // in the catalogue (a print, a belt): recorded so the report carries it and
+  // the team is not asked again.
+  const ledger = (manifest._inPerson = manifest._inPerson || {});
+  const ch = await stripe('GET', `/v1/charges/${OTHER.charge}`);
+  ledger[ch.id] = { status: 'other', name: OTHER.name, amount: ch.amount / 100, description: ch.description || '', at: new Date(ch.created * 1000).toISOString(), notified: new Date().toISOString().slice(0, 10) };
+  writeFileSync(MANIFEST, JSON.stringify(manifest, null, 2) + '\n', 'utf8');
+  say(`${C.green}   ✔ ${ch.id} $${(ch.amount / 100).toFixed(2)} recorded as a sale of "${OTHER.name}" (not catalogued)${C.off}`);
+} else if (REMATCH) {
+  // Forget what the ledger decided about a charge so the next pass reads it
+  // afresh (after a matcher fix, or a corrected description in Stripe).
+  const ledger = (manifest._inPerson = manifest._inPerson || {});
+  const known = ledger[REMATCH];
+  if (!known) { say(`${C.yellow}   ⚠ ${REMATCH} is not in the ledger${C.off}`); }
+  else {
+    for (const id of [known.piece, ...(known.pieces || [])].filter(Boolean)) {
+      const t = manifest.items.find((x) => x.id === id);
+      if (!t) continue;
+      t.sold = false;
+      for (const k of ['soldCharge', 'soldAt', 'soldAmount', 'soldInPerson']) delete t._stripe[k];
+      delete t._saleNotified;
+    }
+    delete ledger[REMATCH];
+    writeFileSync(MANIFEST, JSON.stringify(manifest, null, 2) + '\n', 'utf8');
+    say(`${C.green}   ✔ ${REMATCH} forgotten; run again to match it afresh${C.off}`);
+  }
 } else {
   const charges = [];
   try {
@@ -267,22 +310,34 @@ if (SIM) {
         continue;
       }
       if (known.status === 'matched' && refunded) {
-        // The buyer was refunded: the piece is for sale again, as after an eBay cancellation.
-        const target = manifest.items.find((x) => x.id === known.piece);
-        say(`${C.yellow}   ↩ ${known.piece} — in-person charge ${ch.id} refunded; ${DRY ? 'would reopen' : 'reopening'} the piece${C.off}`);
-        if (DRY || !target) continue;
-        target.sold = false;
-        delete target._stripe.soldCharge;
-        delete target._stripe.soldAt;
-        delete target._stripe.soldAmount;
-        delete target._stripe.soldInPerson;
-        delete target._saleNotified;
-        try {
-          const link = await stripe('POST', `/v1/payment_links/${target._stripe.link}`, { active: 'true' });
-          target.channel = 'stripe';
-          target.listingUrl = link.url;
-        } catch (err) {
-          say(`${C.yellow}   ⚠ could not reactivate ${target._stripe.link}: ${err.message}${C.off}`);
+        // The buyer was refunded: the piece (every piece of a bundle) is for
+        // sale again, as after an eBay cancellation; a bundled held piece
+        // goes back into the held pen.
+        const ids = known.pieces || [known.piece];
+        say(`${C.yellow}   ↩ ${ids.join(' + ')} — in-person charge ${ch.id} refunded; ${DRY ? 'would reopen' : 'reopening'} the piece(s)${C.off}`);
+        if (DRY) continue;
+        for (const [key, row] of Object.entries(ledger)) {
+          if (!key.startsWith(`${ch.id}#`) || row.status !== 'matched-held') continue;
+          try { await stripe('POST', `/v1/products/${row.product}`, { active: 'true' }); } catch (err) { say(`${C.yellow}   ⚠ could not restore ${row.product}: ${err.message}${C.off}`); }
+          row.status = 'refunded';
+          row.refundedAt = new Date().toISOString().slice(0, 10);
+        }
+        for (const id of ids) {
+          const target = manifest.items.find((x) => x.id === id);
+          if (!target) continue;
+          target.sold = false;
+          delete target._stripe.soldCharge;
+          delete target._stripe.soldAt;
+          delete target._stripe.soldAmount;
+          delete target._stripe.soldInPerson;
+          delete target._saleNotified;
+          try {
+            const link = await stripe('POST', `/v1/payment_links/${target._stripe.link}`, { active: 'true' });
+            target.channel = 'stripe';
+            target.listingUrl = link.url;
+          } catch (err) {
+            say(`${C.yellow}   ⚠ could not reactivate ${target._stripe.link}: ${err.message}${C.off}`);
+          }
         }
         known.status = 'refunded';
         known.refundedAt = new Date().toISOString().slice(0, 10);
@@ -307,25 +362,50 @@ if (SIM) {
       }
       continue;
     }
-    if (m.piece) {
-      say(`${C.green}   ✔ ${m.piece.id} — SOLD IN PERSON (${amount}, Tap to Pay, ${m.how}; ${ch.id})${C.off}`);
+    if (m.piece || m.pieces) {
+      // One piece, or a bundle of several numbered on one charge: each is
+      // marked sold with its share of the amount. A held piece in a bundle
+      // gets its own ledger row (keyed charge#product) so the report and the
+      // notices treat it like any other held sale.
+      const pieces = m.pieces || [m.piece];
+      const shares = shareOf(ch.amount, pieces.length);
+      say(`${C.green}   ✔ ${pieces.map((e) => e.id).join(' + ')} — SOLD IN PERSON (${amount}, Tap to Pay, ${m.how}; ${ch.id})${C.off}`);
       if (DRY) continue;
-      const target = m.piece;
-      target.sold = true;
-      delete target.channel;
-      delete target.listingUrl;
-      target._stripe.soldCharge = ch.id;
-      target._stripe.soldAt = new Date(ch.created * 1000).toISOString().slice(0, 10);
-      target._stripe.soldAmount = ch.amount / 100;
-      target._stripe.soldInPerson = true;
-      ledger[ch.id] = { status: 'matched', piece: target.id, how: m.how, amount: ch.amount / 100, description: ch.description || '', at: new Date(ch.created * 1000).toISOString() };
-      changed += 1;
-      try {
-        await stripe('POST', `/v1/payment_links/${target._stripe.link}`, { active: 'false' });
-        say(`${C.dim}   deactivated ${target._stripe.link}${C.off}`);
-      } catch (err) {
-        say(`${C.yellow}   ⚠ could not deactivate ${target._stripe.link}: ${err.message}${C.off}`);
+      const at = new Date(ch.created * 1000).toISOString();
+      const entry = { status: 'matched', how: m.how, amount: ch.amount / 100, description: ch.description || '', at };
+      if (pieces.length > 1) { entry.bundle = true; entry.pieces = []; entry.shares = {}; }
+      for (const [i, target] of pieces.entries()) {
+        const share = shares[i] / 100;
+        if (target.held) {
+          const key = pieces.length > 1 ? `${ch.id}#${target.product}` : ch.id;
+          ledger[key] = { status: 'matched-held', charge: ch.id, product: target.product, name: target.name, sku: target.sku, listPrice: target.price, how: m.how, amount: share, description: ch.description || '', at };
+          if (entry.pieces) { entry.pieces.push(target.id); entry.shares[target.id] = share; }
+          try {
+            await stripe('POST', `/v1/products/${target.product}`, { active: 'false', 'metadata[ta_sold_in_person]': ch.id });
+            say(`${C.dim}   archived Stripe product ${target.product}${C.off}`);
+          } catch (err) {
+            say(`${C.yellow}   ⚠ could not archive ${target.product}: ${err.message}${C.off}`);
+          }
+          continue;
+        }
+        target.sold = true;
+        delete target.channel;
+        delete target.listingUrl;
+        target._stripe.soldCharge = ch.id;
+        target._stripe.soldAt = at.slice(0, 10);
+        target._stripe.soldAmount = share;
+        target._stripe.soldInPerson = true;
+        if (!entry.piece) entry.piece = target.id;
+        if (entry.pieces) { entry.pieces.push(target.id); entry.shares[target.id] = share; }
+        try {
+          await stripe('POST', `/v1/payment_links/${target._stripe.link}`, { active: 'false' });
+          say(`${C.dim}   deactivated ${target._stripe.link}${C.off}`);
+        } catch (err) {
+          say(`${C.yellow}   ⚠ could not deactivate ${target._stripe.link}: ${err.message}${C.off}`);
+        }
       }
+      if (entry.piece || entry.pieces) { ledger[ch.id] = entry; }
+      changed += 1;
     } else {
       say(`${C.yellow}   ⚠ in-person charge ${ch.id} (${amount}, "${ch.description || ''}") matches no piece — ${m.why}; the team will be asked${C.off}`);
       if (DRY) continue;

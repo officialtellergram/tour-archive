@@ -1685,8 +1685,6 @@
         "Checkout completes with Stripe"
       ],
       "measurements": {},
-      "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/7sY9AS42o0fbfwq4FA9k40X",
       "_ingested": "2026-08-20",
       "_source": "own listing photo, i.ebayimg.com",
       "photos": [
@@ -1725,7 +1723,11 @@
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
         "minted": "2026-09-11",
-        "repriced": "2026-10-02"
+        "repriced": "2026-10-02",
+        "soldCharge": "ch_3UUWngC1bWq01lTK0t2uBMcu",
+        "soldAt": "2026-10-25",
+        "soldAmount": 42.5,
+        "soldInPerson": true
       },
       "_ebay": {
         "itemId": "377555832373",
@@ -1734,7 +1736,8 @@
         "listedAt": "2026-10-09",
         "pictures": "raw1"
       },
-      "sku": "TA_GS_23"
+      "sku": "TA_GS_23",
+      "sold": true
     },
     {
       "id": "stock-pga-national-honda-classic-polo",
@@ -1871,7 +1874,7 @@
         "repriced": "2026-10-02",
         "soldCharge": "ch_3UUWngC1bWq01lTK0t2uBMcu",
         "soldAt": "2026-10-25",
-        "soldAmount": 85,
+        "soldAmount": 42.5,
         "soldInPerson": true
       },
       "_ebay": {
@@ -1883,8 +1886,7 @@
         "endedAt": "2026-10-25"
       },
       "sku": "TA_GS_22",
-      "sold": true,
-      "_saleNotified": "2026-10-25"
+      "sold": true
     },
     {
       "id": "stock-all-over-print-golf-sweater",
@@ -4547,20 +4549,30 @@
       "at": "2026-10-25T17:53:04.000Z"
     },
     "ch_3UUVfjC1bWq01lTK1gkZsPYC": {
-      "status": "unmatched",
-      "why": "no live piece has this price and the description names none",
+      "status": "other",
+      "name": "Augusta picture",
       "amount": 50,
       "description": "Augusta picture ",
       "at": "2026-10-25T17:57:42.000Z",
-      "notified": "2026-10-25"
+      "notified": "2026-10-26"
     },
     "ch_3UUWngC1bWq01lTK0t2uBMcu": {
       "status": "matched",
-      "piece": "stock-peter-millar-hermitage-polo-navy",
-      "how": "by description",
+      "how": "by description (bundle)",
       "amount": 85,
       "description": "TAGS22 TAGS23 uva belt ",
-      "at": "2026-10-25T19:09:52.000Z"
+      "at": "2026-10-25T19:09:52.000Z",
+      "bundle": true,
+      "pieces": [
+        "stock-peter-millar-hermitage-polo-teal",
+        "stock-peter-millar-hermitage-polo-navy"
+      ],
+      "shares": {
+        "stock-peter-millar-hermitage-polo-teal": 42.5,
+        "stock-peter-millar-hermitage-polo-navy": 42.5
+      },
+      "piece": "stock-peter-millar-hermitage-polo-teal",
+      "extras": "UVA belt (not catalogued, no separate price)"
     }
   }
 }
