@@ -100,6 +100,16 @@ catalogue but can still be sold to someone who sees them at the stall. The
 Agreed a different price at the stall? Charge what was agreed; the sync
 records what was paid and keeps the list price beside it.
 
+**Two or more pieces on one tap:** type every number, separated by spaces
+(`TAGS22 TAGS23`). Each piece is marked sold and the amount is shared
+evenly between them on the report. Something that is not in the catalogue
+(a print, a belt) can ride along in the same description, but it is not a
+piece: tell Karen what it was and what it sold for, so it can be recorded.
+Or tap it as its own charge with a plain description (`Augusta picture`),
+which lands as "not matched" and is then recorded by hand:
+
+    node scripts/stripe-sold.mjs --other ch_… "Augusta picture"
+
 ## What happens next, on its own
 
 The sync runs every ten minutes. It reads Tap to Pay charges from Stripe
@@ -111,7 +121,10 @@ ended, team notice sent ("Sold in person: …", with the amount and card).
 A charge it cannot place — nothing typed, a name that fits several pieces,
 a price several pieces share — is **not guessed**. The team gets an email
 ("In-person payment $X not matched to a piece") and the piece stays live
-until Karen marks it by hand. Typing the name avoids this.
+until Karen marks it by hand. Typing the name avoids this. After the
+description is corrected in Stripe (Payments → the payment → edit), or
+the matcher is fixed, `node scripts/stripe-sold.mjs --rematch ch_…`
+forgets the ledger's verdict and the next run reads the charge afresh.
 
 A refund issued later (Dashboard app → Payments → the payment → Refund)
 reopens the piece: for sale again on the site, eBay relisted on the next
