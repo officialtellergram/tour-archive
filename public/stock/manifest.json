@@ -4220,10 +4220,9 @@
         "link": "plink_1UTUIYC1bWq01lTKXSkWqDNj",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-10-22"
+        "minted": "2026-10-22",
+        "soldSession": "cs_live_a1EQ3qxrATQeQqV0iTLQac6LN3SwlD7q2OBvvzjtJElAAJ3KJiIL3e73Ro"
       },
-      "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/8x23cu7eA6Dz4RM9ZU9k41p",
       "_sizeSource": "name (Japanese LL, fits L per Henry)",
       "photos": [
         "carousel/japan-exclusive-taylormade-knit-size-l/01.jpg",
@@ -4238,9 +4237,12 @@
         "sku": "TA_GS_50",
         "price": 347.99,
         "listedAt": "2026-10-22",
-        "pictures": "raw1"
+        "pictures": "raw1",
+        "endedAt": "2026-10-29"
       },
-      "_ebayUrl": "https://www.ebay.com/itm/377590808460"
+      "_ebayUrl": "https://www.ebay.com/itm/377590808460",
+      "sold": true,
+      "_saleNotified": "2026-10-29"
     },
     {
       "id": "stock-vintage-silver-club-sweatshirt-by-sdi",
