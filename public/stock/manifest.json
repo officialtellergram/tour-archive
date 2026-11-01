@@ -4578,6 +4578,18 @@
       },
       "piece": "stock-peter-millar-hermitage-polo-teal",
       "extras": "UVA belt (not catalogued, no separate price)"
+    },
+    "ch_3UX0lSC1bWq01lTK1fBY6aD2": {
+      "status": "matched-held",
+      "product": "prod_VVEgvvp92828bl",
+      "name": "Pink Ralph 1/4 zip",
+      "sku": "TA_GS_59",
+      "listPrice": 44.99,
+      "how": "by description",
+      "amount": 45,
+      "description": "Tags59",
+      "at": "2026-11-01T15:33:55.000Z",
+      "notified": "2026-11-01"
     }
   }
 }
