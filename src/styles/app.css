@@ -2935,3 +2935,138 @@ h3.display {
     width: 72px;
   }
 }
+
+/* ── First-visit offer ───────────────────────────────────────────────
+   A card at the edge, not a wall across the page. Slides in after the
+   intro plate and a pause (or real scrolling), leaves on Close or once
+   the code is on its way. Remembered in localStorage: a visitor who
+   joined never sees it again; one who closed it is left alone a month. */
+.offer {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 9985;
+  width: min(360px, calc(100vw - 2rem));
+  background: var(--card);
+  color: var(--ink);
+  border: 1px solid var(--rule-strong);
+  padding: 1.5rem 1.5rem 1.25rem;
+  box-shadow: 0 18px 40px -24px rgba(22, 21, 15, 0.45);
+  transform: translateY(calc(100% + 2rem));
+  opacity: 0;
+  transition: transform 0.7s var(--ease-out), opacity 0.5s ease;
+}
+.offer.is-in {
+  transform: none;
+  opacity: 1;
+}
+.offer-close {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.75rem;
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  background: none;
+  border: 0;
+  padding: 0.35rem;
+  cursor: pointer;
+}
+.offer-close:hover {
+  color: var(--ink);
+}
+.offer-kicker {
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--brass);
+  margin: 0 0 0.5rem;
+}
+.offer-title {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 1.55rem;
+  line-height: 1.15;
+  margin: 0 0 0.5rem;
+}
+.offer-note {
+  font-family: var(--display);
+  font-size: 1rem;
+  color: var(--ink-soft);
+  margin: 0 0 1rem;
+}
+.offer-form {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--rule-strong);
+}
+.offer-form input[type='email'] {
+  flex: 1;
+  min-width: 0;
+  background: none;
+  border: 0;
+  font-family: var(--display);
+  font-size: 1rem;
+  padding: 0.6rem 0;
+  color: var(--ink);
+}
+.offer-form input::placeholder {
+  color: var(--ink-faint);
+}
+.offer-form button {
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--claret);
+  background: none;
+  border: 0;
+  padding: 0 0 0 1rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.offer-form button[disabled] {
+  color: var(--ink-faint);
+  cursor: default;
+}
+.offer-hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.offer-err {
+  font-family: var(--sans);
+  font-size: 11px;
+  color: var(--claret);
+  margin: 0.5rem 0 0;
+  min-height: 1em;
+}
+.offer-fine {
+  font-family: var(--sans);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  color: var(--ink-faint);
+  margin: 0.9rem 0 0;
+}
+.offer-fine a {
+  color: inherit;
+}
+@media (max-width: 640px) {
+  .offer {
+    right: 1rem;
+    left: 1rem;
+    bottom: 1rem;
+    width: auto;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .offer {
+    transform: none;
+    transition: opacity 0.3s ease;
+  }
+}

@@ -276,6 +276,7 @@ for (const e of queue) {
       'line_items[0][price]': price.id,
       'line_items[0][quantity]': '1',
       'restrictions[completed_sessions][limit]': '1',
+      allow_promotion_codes: 'true', // the welcome code (docs/MAILING-LIST.md)
       'shipping_address_collection[allowed_countries][0]': 'US',
       'shipping_options[0][shipping_rate]': shipRate.id,
       'consent_collection[terms_of_service]': 'required',

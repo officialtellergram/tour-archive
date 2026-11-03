@@ -129,6 +129,7 @@ for (const e of pieces) {
       'line_items[0][price]': want.id,
       'line_items[0][quantity]': '1',
       'restrictions[completed_sessions][limit]': '1',
+      allow_promotion_codes: 'true', // the welcome code (docs/MAILING-LIST.md)
       'metadata[ta_id]': e.id,
       'metadata[ta_repriced_from]': link.id,
     };

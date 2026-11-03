@@ -1,0 +1,42 @@
+name: Welcome mail
+
+# Started by the Worker the moment someone joins the list on the site
+# (POST /subscribe), and also run inside the ten-minute sync as a sweep
+# for anyone missed. Mints a one-use 10% promotion code in Stripe for
+# each new subscriber, emails it, and files mailing-list.csv to Drive
+# through the report store. See docs/MAILING-LIST.md.
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: welcome-mail
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  welcome:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      REPORT_SECRET: ${{ secrets.REPORT_SECRET }}
+      STRIPE_SECRET_KEY: ${{ secrets.STRIPE_DRIFT_KEY }}
+      SALE_MAIL_USER: ${{ secrets.SALE_MAIL_USER }}
+      SALE_MAIL_PASS: ${{ secrets.SALE_MAIL_PASS }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Welcome new subscribers
+        run: |
+          set -o pipefail
+          node scripts/welcome-mail.mjs | tee welcome.log
+          {
+            echo '### Welcome mail'
+            echo '```'
+            sed 's/\x1b\[[0-9;]*m//g' welcome.log | tail -20
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

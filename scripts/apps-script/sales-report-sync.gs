@@ -39,11 +39,13 @@ function syncReports() {
     var res = UrlFetchApp.fetch(WORKER + '/report/' + encodeURIComponent(f.name), { headers: headers, muteHttpExceptions: true });
     if (res.getResponseCode() !== 200) { console.warn('fetch ' + f.name + ': ' + res.getResponseCode()); return; }
     var csv = res.getContentText('UTF-8');
-    var existing = folder.getFilesByName(f.name);
+    // the mailing list is not a finance record: it goes to its own folder
+    var dest = /^mailing-list/i.test(f.name) ? listFolder_() : folder;
+    var existing = dest.getFilesByName(f.name);
     if (existing.hasNext()) {
       existing.next().setContent(csv); // same file, new version
     } else {
-      folder.createFile(f.name, csv, 'text/csv');
+      dest.createFile(f.name, csv, 'text/csv');
     }
     seen[f.name] = f.updated;
     written.push(f.name);
@@ -72,4 +74,10 @@ function installTrigger() {
 /** Forget what has been filed, so the next run rewrites every report. */
 function resetSeen() {
   PropertiesService.getScriptProperties().deleteProperty('SEEN');
+}
+
+/** "Mailing List" at the top of My Drive, made on first use. */
+function listFolder_() {
+  var it = DriveApp.getRootFolder().getFoldersByName('Mailing List');
+  return it.hasNext() ? it.next() : DriveApp.createFolder('Mailing List');
 }

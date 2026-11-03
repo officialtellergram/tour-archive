@@ -37,7 +37,10 @@
     "integration": "node scripts/integration.mjs",
     "deploy:check": "npm run build:pages && node scripts/deploy.mjs",
     "check": "node scripts/audit.mjs && node scripts/smoke.mjs && node scripts/seo-gate.mjs && node scripts/integration.mjs",
-    "check:all": "node scripts/audit.mjs && node scripts/smoke.mjs && node scripts/seo-gate.mjs && node scripts/integration.mjs && node scripts/layout.mjs"
+    "check:all": "node scripts/audit.mjs && node scripts/smoke.mjs && node scripts/seo-gate.mjs && node scripts/integration.mjs && node scripts/layout.mjs",
+    "welcome:mail": "node scripts/welcome-mail.mjs",
+    "promo:setup": "node scripts/promo-setup.mjs",
+    "promo:codes": "node scripts/promo-setup.mjs --codes"
   },
   "devDependencies": {
     "axe-core": "^4.13.0",

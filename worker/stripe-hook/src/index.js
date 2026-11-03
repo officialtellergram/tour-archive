@@ -284,6 +284,96 @@ async function reportRoute(request, env) {
   return text('method not allowed', 405);
 }
 
+// ── Mailing list: the site's signup (footer form, first-visit offer) POSTs
+//    here; the subscriber is stored and the welcome job on GitHub is
+//    started (scripts/welcome-mail.mjs mints their one-use 10% code and
+//    sends it). The list is read and marked up by that job under the
+//    report secret; /unsubscribe is public, guarded by an HMAC of the
+//    address so only the link in the email can use it.
+const KV_SUB = 'sub:'; // + lower-cased email → { email, at, source, page, code, codeAt, expiresAt, welcomed, unsubscribed }
+const WELCOME_WORKFLOW = 'welcome-mail.yml';
+const SITE_ORIGINS = ['https://tourarchive.us', 'https://www.tourarchive.us', 'http://localhost:5173', 'http://localhost:4173'];
+const emailOk = (e) => e.length <= 120 && /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(e);
+
+function corsHeaders(request) {
+  const origin = request.headers.get('origin') || '';
+  if (!SITE_ORIGINS.includes(origin)) return {};
+  return { 'access-control-allow-origin': origin, 'access-control-allow-methods': 'POST, OPTIONS', 'access-control-allow-headers': 'content-type', 'access-control-max-age': '86400', vary: 'origin' };
+}
+
+async function subscribe(request, env, ctx) {
+  const cors = corsHeaders(request);
+  if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
+  if (request.method !== 'POST') return text('method not allowed', 405);
+  if (!cors['access-control-allow-origin']) return text('origin not allowed', 403);
+  let body;
+  try { body = await request.json(); } catch { return Response.json({ ok: false, error: 'bad request' }, { status: 400, headers: cors }); }
+  if (body.company) return Response.json({ ok: true }, { headers: cors }); // honeypot filled: a bot, told nothing
+  const email = String(body.email || '').trim().toLowerCase();
+  if (!emailOk(email)) return Response.json({ ok: false, error: 'email' }, { status: 400, headers: cors });
+  // five signups an hour per address is plenty for a person
+  const ip = request.headers.get('cf-connecting-ip') || 'unknown';
+  const rlKey = `rl:sub:${ip}:${new Date().toISOString().slice(0, 13)}`;
+  const n = Number((await env.EBAY.get(rlKey)) || 0) + 1;
+  await env.EBAY.put(rlKey, String(n), { expirationTtl: 3600 });
+  if (n > 5) return Response.json({ ok: false, error: 'slow down' }, { status: 429, headers: cors });
+  const existing = await env.EBAY.get(KV_SUB + email, 'json');
+  if (existing && !existing.unsubscribed) return Response.json({ ok: true, again: true }, { headers: cors }); // already on the list; no second code
+  const rec = { ...(existing || {}), email, at: new Date().toISOString(), source: String(body.source || 'site').slice(0, 24), page: String(body.page || '').slice(0, 120) };
+  delete rec.unsubscribed;
+  await env.EBAY.put(KV_SUB + email, JSON.stringify(rec), { metadata: { at: rec.at } });
+  console.log(`subscribed: ${email} (${rec.source})`);
+  ctx.waitUntil(dispatch(env, `signup ${email}`, WELCOME_WORKFLOW, {}));
+  return Response.json({ ok: true }, { headers: cors });
+}
+
+async function subscribersRoute(request, env) {
+  if (!reportAuth(request, env)) return text('unauthorised', 401);
+  const { pathname } = new URL(request.url);
+  if (pathname === '/subscribers' || pathname === '/subscribers/') {
+    if (request.method !== 'GET') return text('method not allowed', 405);
+    const subscribers = [];
+    let cursor;
+    do {
+      const page = await env.EBAY.list({ prefix: KV_SUB, cursor });
+      for (const k of page.keys) { const v = await env.EBAY.get(k.name, 'json'); if (v) subscribers.push(v); }
+      cursor = page.list_complete ? undefined : page.cursor;
+    } while (cursor);
+    return Response.json({ subscribers });
+  }
+  const email = decodeURIComponent(pathname.slice('/subscribers/'.length)).toLowerCase();
+  if (!emailOk(email)) return text('bad address', 400);
+  if (request.method !== 'PUT') return text('method not allowed', 405);
+  const existing = await env.EBAY.get(KV_SUB + email, 'json');
+  if (!existing) return text('not on the list', 404);
+  let patch;
+  try { patch = await request.json(); } catch { return text('bad json', 400); }
+  const allowed = ['code', 'codeAt', 'expiresAt', 'welcomed', 'unsubscribed'];
+  for (const k of allowed) if (k in patch) existing[k] = patch[k];
+  await env.EBAY.put(KV_SUB + email, JSON.stringify(existing), { metadata: { at: existing.at } });
+  return Response.json(existing);
+}
+
+async function unsubToken(env, email) {
+  const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(env.REPORT_SECRET), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  const sig = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(email.toLowerCase()));
+  return [...new Uint8Array(sig)].map((b) => b.toString(16).padStart(2, '0')).join('').slice(0, 32);
+}
+async function unsubscribe(request, env) {
+  const url = new URL(request.url);
+  const email = String(url.searchParams.get('e') || '').trim().toLowerCase();
+  const t = String(url.searchParams.get('t') || '');
+  const page = (msg) => new Response(`<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Tour Archive</title><body style="font:18px/1.5 Georgia,serif;color:#16150f;background:#f4f0e6;margin:0;display:grid;place-items:center;min-height:100vh"><p style="max-width:28rem;padding:0 1.5rem;text-align:center">${msg}<br><br><a href="https://tourarchive.us" style="color:#6b2233">tourarchive.us</a></p></body>`, { headers: { 'content-type': 'text/html; charset=utf-8' } });
+  if (!emailOk(email) || !env.REPORT_SECRET || t !== (await unsubToken(env, email))) return page('That link is not valid.');
+  const existing = await env.EBAY.get(KV_SUB + email, 'json');
+  if (existing && !existing.unsubscribed) {
+    existing.unsubscribed = new Date().toISOString();
+    await env.EBAY.put(KV_SUB + email, JSON.stringify(existing), { metadata: { at: existing.at } });
+    console.log(`unsubscribed: ${email}`);
+  }
+  return page('You are off the list. No more mail from us.');
+}
+
 /** Start a job on GitHub. Shared by the Stripe webhook and the cron. */
 async function dispatch(env, why, workflow = WORKFLOW, inputs) {
   if (!env.GITHUB_TOKEN) return { ok: false, status: 500, text: 'GITHUB_TOKEN is not set' };
@@ -313,7 +403,7 @@ export default {
     else ctx.waitUntil(dispatchSync(env, `cron ${event.cron}`));
   },
 
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const { pathname } = new URL(request.url);
     if (pathname === EBAY_DELETION_PATH) return ebayAccountDeletion(request, env);
     if (pathname === '/ebay/app-token') return ebayAppToken(request, env);
@@ -321,6 +411,9 @@ export default {
     if (pathname === '/ebay/oauth/callback') return ebayOAuthCallback(request, env);
     if (pathname === '/ebay/token') return ebayToken(request, env);
     if (pathname === '/report' || pathname.startsWith('/report/')) return reportRoute(request, env);
+    if (pathname === '/subscribe') return subscribe(request, env, ctx);
+    if (pathname === '/subscribers' || pathname.startsWith('/subscribers/')) return subscribersRoute(request, env);
+    if (pathname === '/unsubscribe') return unsubscribe(request, env);
     if (pathname !== '/') return text('not found', 404);
     if (request.method === 'GET') return text('tour archive stripe hook: ok');
     if (request.method !== 'POST') return text('method not allowed', 405);

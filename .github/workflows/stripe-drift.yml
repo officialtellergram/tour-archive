@@ -151,6 +151,27 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
           rm -f notify.log
 
+      # The welcome job (welcome-mail.yml) runs the moment someone joins the
+      # list; this is the sweep for anyone it missed, and it refiles the
+      # mailing list to Drive. Needs Promotion Codes: Write on the key.
+      - name: Welcome new subscribers
+        if: steps.key.outputs.present == 'true'
+        continue-on-error: true
+        env:
+          REPORT_SECRET: ${{ secrets.REPORT_SECRET }}
+          SALE_MAIL_USER: ${{ secrets.SALE_MAIL_USER }}
+          SALE_MAIL_PASS: ${{ secrets.SALE_MAIL_PASS }}
+        run: |
+          set -o pipefail
+          node scripts/welcome-mail.mjs | tee welcome.log
+          {
+            echo '### Welcome mail'
+            echo '```'
+            sed 's/\x1b\[[0-9;]*m//g' welcome.log | tail -8
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          rm -f welcome.log
+
       - name: Probe the Stripe key's permissions
         continue-on-error: true # a probe or a test must not page the team
         if: ${{ inputs.probe_stripe }}

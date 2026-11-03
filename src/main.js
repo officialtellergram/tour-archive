@@ -15,6 +15,7 @@ import {
   playIntro,
 } from './lib/motion.js';
 import { mountChrome, syncNav } from './components/chrome.js';
+import { initOffer } from './components/offer.js';
 import { installErrorBeacon } from './lib/errors.js';
 
 import { home } from './pages/home.js';
@@ -122,6 +123,9 @@ async function boot() {
   initCardCycle();
 
   await start();
+
+  // The first-visit offer waits for the intro plate and a pause of its own.
+  initOffer();
 
   if (import.meta.env?.DEV) {
     const s = storeStatus();

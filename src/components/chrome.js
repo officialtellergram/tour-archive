@@ -5,6 +5,7 @@
 
 import { BRAND, launchCollections, items, isAvailable } from '../data/store.js';
 import { openDrawer, closeDrawer, toast } from '../lib/motion.js';
+import { joinList } from '../lib/list.js';
 import { currentPath, applyBaseToLinks, stripBase, hashHTML } from '../lib/router.js';
 
 const BASE_URL = (import.meta.env?.BASE_URL || '/').replace(/\/*$/, '/');
@@ -197,16 +198,30 @@ export function mountChrome() {
     }
   });
 
-  document.querySelector('[data-signup]')?.addEventListener('submit', (e) => {
+  document.querySelector('[data-signup]')?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const input = e.currentTarget.querySelector('input');
-    // No list backend yet — the drop list lives in the help inbox, so the only
-    // honest signup a static site can offer is a prefilled mail the visitor
-    // sends themselves. Never claim storage that isn't happening.
-    const body = encodeURIComponent(`Please add ${input.value.trim()} to the drop list.`);
-    window.location.href = `mailto:tourarchive.help@gmail.com?subject=${encodeURIComponent('Drop notices')}&body=${body}`;
-    toast('Opening your mail app — send it and you are on the list');
-    input.value = '';
+    const form = e.currentTarget;
+    const input = form.querySelector('input[type="email"]');
+    const button = form.querySelector('button');
+    const email = input.value.trim();
+    // The list lives on the Worker (docs/MAILING-LIST.md); the welcome mail
+    // carries a one-use 10% code. If the Worker cannot be reached, fall back
+    // to the prefilled mail the visitor sends themselves.
+    button.disabled = true;
+    const r = await joinList(email, 'footer');
+    button.disabled = false;
+    if (r.ok) {
+      toast(r.again ? 'You are already on the list' : 'You are on the list — your code is on its way by email');
+      input.value = '';
+    } else if (r.error === 'email') {
+      toast('That address does not look right');
+    } else if (r.error === 'network') {
+      const body = encodeURIComponent(`Please add ${email} to the drop list.`);
+      window.location.href = `mailto:tourarchive.help@gmail.com?subject=${encodeURIComponent('Drop notices')}&body=${body}`;
+      toast('Opening your mail app — send it and you are on the list');
+    } else {
+      toast('Something went wrong — try again in a moment');
+    }
   });
 }
 
