@@ -12,7 +12,12 @@
  * It holds no Stripe API key and reads no customer data: it looks only at the
  * event's type. Secrets (wrangler secret put):
  *   STRIPE_WEBHOOK_SECRET  the endpoint's signing secret (whsec_…)
- *   GITHUB_TOKEN           fine-grained token, this repo only, Actions: write
+ *   GITHUB_TOKEN           fine-grained token, this repo only, Actions: write.
+ *                          EXPIRES 1 Nov 2027 — renew by 25 Oct 2027 with
+ *                          `npx wrangler secret put GITHUB_TOKEN` in this
+ *                          folder. When it lapses GitHub answers 401 and the
+ *                          sync drops to GitHub's own throttled schedule
+ *                          (it happened 1 Nov 2026; nothing else breaks).
  *
  * The cron (wrangler.jsonc) also starts the sales report job on GitHub —
  * Mondays last week's Monday–Sunday statement (plus a refresh of the
