@@ -123,7 +123,7 @@ for (const s of due) {
   try {
     const { code, expiresAt } = s.code ? { code: s.code, expiresAt: s.expiresAt } : await mintCode(s.email);
     if (!s.code) await worker('PUT', `/subscribers/${encodeURIComponent(s.email)}`, JSON.stringify({ code, codeAt: new Date().toISOString(), expiresAt }));
-    await sendMail({ user: env.SALE_MAIL_USER, pass: env.SALE_MAIL_PASS, to: s.email, subject: 'Your 10% at Tour Archive', text: welcomeText(s.email, code, expiresAt), from: `Tour Archive <${env.SALE_MAIL_USER}>` });
+    await sendMail({ user: env.SALE_MAIL_USER, pass: env.SALE_MAIL_PASS, to: s.email, subject: 'Your 10% at Tour Archive', text: welcomeText(s.email, code, expiresAt) });
     await worker('PUT', `/subscribers/${encodeURIComponent(s.email)}`, JSON.stringify({ welcomed: new Date().toISOString() }));
     sent += 1;
     say(`${C.green}   ✔ ${s.email} — ${code}${C.off}`);
