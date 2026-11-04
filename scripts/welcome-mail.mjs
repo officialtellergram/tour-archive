@@ -73,10 +73,14 @@ async function mintCode(email) {
   for (let attempt = 0; attempt < 5; attempt += 1) {
     const code = newCode();
     try {
-      const p = await stripe('POST', 'promotion_codes', {
-        coupon: COUPON, code, max_redemptions: '1', expires_at: String(expires), active: 'true',
+      const body = {
+        code, max_redemptions: '1', expires_at: String(expires), active: 'true',
         'restrictions[first_time_transaction]': 'true', 'metadata[email]': email, 'metadata[ta]': 'welcome',
-      });
+      };
+      // Current API versions take the coupon as promotion[type]=coupon +
+      // promotion[coupon]; older ones as a bare coupon parameter.
+      const p = await stripe('POST', 'promotion_codes', { ...body, 'promotion[type]': 'coupon', 'promotion[coupon]': COUPON })
+        .catch((err) => (/unknown parameter: promotion/i.test(err.message) ? stripe('POST', 'promotion_codes', { ...body, coupon: COUPON }) : Promise.reject(err)));
       return { code: p.code, expiresAt: new Date(expires * 1000).toISOString().slice(0, 10) };
     } catch (err) {
       if (/already exists|already been taken/i.test(err.message)) continue;
