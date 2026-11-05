@@ -102,19 +102,18 @@ export function descriptionOf(e) {
 }
 
 /**
- * Public JPEG URLs: the photographs exactly as the site shows them, the hero
- * first, then the carousel frames (the build writes a JPEG twin of each
- * WebP frame under dist/ebay/<slug>/). Nothing is cropped, padded or
- * squared — Karen and the team, 19 Oct 2026: "just use the raw pictures".
+ * Public JPEG URLs: the carousel frames in order, each as the square crop
+ * the build writes under dist/ebay/sq/ (scripts/images.mjs via
+ * scripts/lib/ebay-square.mjs). eBay's store grid and gallery tiles are
+ * square; the 3:4 photographs sat letterboxed between grey bars. The crop is
+ * a plain one — the photo's full width, slid so the garment is centred —
+ * nothing padded, blurred or painted in (Karen and the team, 19 Oct 2026:
+ * "just use the raw pictures"; Karen, 5 Nov 2026: crop to fill the frame).
  */
-export const PICTURE_SET = 'raw1'; // bump when the set changes; the sync re-sends pictures whose ledger differs
+export const PICTURE_SET = 'sq1'; // bump when the set changes; the sync re-sends pictures whose ledger differs
 export function picturesOf(e) {
-  const slug = e.id.replace(/^stock-/, '');
   const frames = Array.isArray(e.photos) && e.photos.length ? e.photos : [e.file];
-  const rest = frames.slice(0, MAX_PICS).map((p) => (/\.webp$/i.test(p)
-    ? `${ORIGIN}/ebay/${slug}/${p.split('/').pop().replace(/\.webp$/i, '.jpg')}`
-    : `${ORIGIN}/stock/${p}`));
-  return rest;
+  return frames.slice(0, MAX_PICS).map((p) => `${ORIGIN}/ebay/sq/${p.replace(/\.(jpe?g|webp)$/i, '.jpg')}`);
 }
 
 /** Item specifics as name → value, with the catalogue filling what the record lacks. */

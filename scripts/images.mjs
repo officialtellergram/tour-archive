@@ -26,6 +26,7 @@ import { existsSync, mkdirSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { imageSize, BRAND_SIZES, HERO_SIZES, HERO_SIZE, STOCK_SIZE } from '../src/lib/media.js';
+import { squareCrop } from './lib/ebay-square.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const PUBLIC = join(ROOT, 'public');
@@ -54,6 +55,11 @@ const sources = [
   // JPEG/PNG only, so each gets a JPEG twin at dist/ebay/<slug>/NN.jpg for
   // scripts/ebay-csv.mjs to point at. Build output only, never committed.
   ...walk(join(PUBLIC, 'stock', 'carousel'), /\.webp$/i).map((f) => ({ file: f, kind: 'ebay' })),
+  // eBay's tiles are square, so every photograph (hero and carousel frame,
+  // JPEG or WebP) also gets a square crop at dist/ebay/sq/<same path>.jpg
+  // for scripts/lib/ebay-listing.mjs picturesOf() — a plain crop centred on
+  // the garment (scripts/lib/ebay-square.mjs). Build output only.
+  ...walk(join(PUBLIC, 'stock'), /\.(jpe?g|webp)$/i).map((f) => ({ file: f, kind: 'sq' })),
 ];
 
 /* ---------------- sharp ---------------- */
@@ -90,6 +96,7 @@ async function run() {
   }
   let checked = 0;
   for (const { file, kind } of sources) {
+    if (kind === 'sq') continue; // the same files, already checked above
     const rel = posix(relative(PUBLIC, file));
     const m = await meta(rel);
     if (!m) continue;
@@ -126,7 +133,9 @@ async function run() {
           const rel = relative(PUBLIC, file);
           const out = kind === 'ebay'
             ? join(DIST, 'ebay', relative(join(PUBLIC, 'stock', 'carousel'), file)).replace(/\.webp$/i, '.jpg')
-            : join(DIST, rel).replace(/\.jpe?g$/i, '.webp');
+            : kind === 'sq'
+              ? join(DIST, 'ebay', 'sq', relative(join(PUBLIC, 'stock'), file)).replace(/\.(jpe?g|webp)$/i, '.jpg')
+              : join(DIST, rel).replace(/\.jpe?g$/i, '.webp');
           const src = statSync(file);
           jpgBytes += src.size;
           if (existsSync(out) && statSync(out).mtimeMs >= src.mtimeMs) {
@@ -136,10 +145,15 @@ async function run() {
           }
           try {
             mkdirSync(dirname(out), { recursive: true });
-            const info = kind === 'ebay'
-              ? await sharp(file).jpeg({ quality: QUALITY.ebay }).toFile(out)
-              : await sharp(file).webp({ quality: QUALITY[kind], effort: 4 }).toFile(out);
-            webpBytes += info.size;
+            if (kind === 'sq') {
+              await squareCrop(file, out, { quality: QUALITY.ebay });
+              webpBytes += statSync(out).size;
+            } else {
+              const info = kind === 'ebay'
+                ? await sharp(file).jpeg({ quality: QUALITY.ebay }).toFile(out)
+                : await sharp(file).webp({ quality: QUALITY[kind], effort: 4 }).toFile(out);
+              webpBytes += info.size;
+            }
             written += 1;
           } catch (err) {
             errors.push(`${posix(rel)}: ${err.message}`);
