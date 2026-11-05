@@ -4692,17 +4692,18 @@
         "link": "plink_1UYTVpC1bWq01lTKUB2FldLz",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-11-05"
+        "minted": "2026-11-05",
+        "soldSession": "cs_live_b1u8fJ0ZWWq0sMtqbDt3bBOd1cgiBvAAlX6LTodYZ2YtNUH8y0motmxmmR"
       },
-      "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/eVq5kCcyUe61ac66NI9k41z",
       "photos": [
         "carousel/tartan-callaway-jacket/01.jpg",
         "carousel/tartan-callaway-jacket/02.jpg",
         "carousel/tartan-callaway-jacket/03.jpg",
         "carousel/tartan-callaway-jacket/04.jpg"
       ],
-      "_photosPulled": "2026-11-05"
+      "_photosPulled": "2026-11-05",
+      "sold": true,
+      "_saleNotified": "2026-11-05"
     },
     {
       "id": "stock-cotton-callaway-bomber-jacket",
