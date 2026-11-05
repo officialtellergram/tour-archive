@@ -4540,7 +4540,8 @@
         "itemId": "377624266746",
         "sku": "TA_GS_97",
         "price": 75.99,
-        "listedAt": "2026-11-05"
+        "listedAt": "2026-11-05",
+        "pictures": "raw1"
       },
       "_ebayUrl": "https://www.ebay.com/itm/377624266746"
     },
@@ -4596,7 +4597,8 @@
         "itemId": "377624266777",
         "sku": "TA_GS_106",
         "price": 35.99,
-        "listedAt": "2026-11-05"
+        "listedAt": "2026-11-05",
+        "pictures": "raw1"
       },
       "_ebayUrl": "https://www.ebay.com/itm/377624266777"
     },
