@@ -4535,7 +4535,14 @@
         "carousel/vintage-izod-golf-knit/03.jpg",
         "carousel/vintage-izod-golf-knit/04.jpg"
       ],
-      "_photosPulled": "2026-11-05"
+      "_photosPulled": "2026-11-05",
+      "_ebay": {
+        "itemId": "377624266746",
+        "sku": "TA_GS_97",
+        "price": 75.99,
+        "listedAt": "2026-11-05"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377624266746"
     },
     {
       "id": "stock-overbranded-callaway-polo",
@@ -4584,7 +4591,14 @@
         "carousel/overbranded-callaway-polo/03.jpg",
         "carousel/overbranded-callaway-polo/04.jpg"
       ],
-      "_photosPulled": "2026-11-05"
+      "_photosPulled": "2026-11-05",
+      "_ebay": {
+        "itemId": "377624266777",
+        "sku": "TA_GS_106",
+        "price": 35.99,
+        "listedAt": "2026-11-05"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377624266777"
     },
     {
       "id": "stock-vintage-kiskiack-work-coat",
