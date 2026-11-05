@@ -4486,6 +4486,258 @@
         "pictures": "raw1"
       },
       "_ebayUrl": "https://www.ebay.com/itm/377590837971"
+    },
+    {
+      "id": "stock-vintage-izod-golf-knit",
+      "sku": "TA_GS_97",
+      "file": "vintage-izod-golf-knit.jpg",
+      "name": "Vintage Izod Golf Knit",
+      "brand": "Izod",
+      "year": "—",
+      "category": "Knitwear",
+      "garment": "sweater",
+      "size": "XL",
+      "condition": "Pre-owned",
+      "price": 64.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "Beautifully embroidered knit from the 90s. This sweater has a heavy cotton construction. Bleach staining on right sleeve, pictured. .",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "29 in",
+        "Chest": "28 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-11-05",
+      "_source": "stripe:prod_VVGlR59flv68TF",
+      "description": [
+        "Beautifully embroidered knit from the 90s. This sweater has a heavy cotton construction. Bleach staining on right sleeve, pictured. ."
+      ],
+      "_stripe": {
+        "product": "prod_VVGlR59flv68TF",
+        "price": "price_1UUGDsC1bWq01lTKHKNs7U24",
+        "link": "plink_1UYTVoC1bWq01lTK6kkVF8yG",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-11-05"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/eVqaEW42o5zv4RM2xs9k41w",
+      "photos": [
+        "carousel/vintage-izod-golf-knit/01.jpg",
+        "carousel/vintage-izod-golf-knit/02.jpg",
+        "carousel/vintage-izod-golf-knit/03.jpg",
+        "carousel/vintage-izod-golf-knit/04.jpg"
+      ],
+      "_photosPulled": "2026-11-05"
+    },
+    {
+      "id": "stock-overbranded-callaway-polo",
+      "sku": "TA_GS_106",
+      "file": "overbranded-callaway-polo.jpg",
+      "name": "Overbranded Callaway Polo",
+      "brand": "Callaway",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "L",
+      "condition": "Pre-owned",
+      "price": 29.99,
+      "colorway": [
+        "#3A3A36",
+        "#262623",
+        "#141412"
+      ],
+      "colorName": "Black",
+      "story": "Overbranded Callaway Polo in black. Heavy cotton piece. .",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "28 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-11-05",
+      "_source": "stripe:prod_VVGkboUISIfGUG",
+      "description": [
+        "Overbranded Callaway Polo in black. Heavy cotton piece. ."
+      ],
+      "_stripe": {
+        "product": "prod_VVGkboUISIfGUG",
+        "price": "price_1UUGCsC1bWq01lTKOtYyrNYp",
+        "link": "plink_1UYTVoC1bWq01lTKUznRIbTs",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-11-05"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/3cI9AS7eA6Dz6ZUgoi9k41x",
+      "photos": [
+        "carousel/overbranded-callaway-polo/01.jpg",
+        "carousel/overbranded-callaway-polo/02.jpg",
+        "carousel/overbranded-callaway-polo/03.jpg",
+        "carousel/overbranded-callaway-polo/04.jpg"
+      ],
+      "_photosPulled": "2026-11-05"
+    },
+    {
+      "id": "stock-vintage-kiskiack-work-coat",
+      "sku": "TA_GS_76",
+      "file": "vintage-kiskiack-work-coat.jpg",
+      "name": "Vintage Kiskiack Work Coat",
+      "brand": "Unattributed",
+      "year": "—",
+      "category": "Outerwear",
+      "garment": "jacket",
+      "size": "XL",
+      "condition": "Pre-owned",
+      "price": 39.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "Weathered and Beaten Light jacket from a DIFFICULT course in Williamsburg, VA. .",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "28 in",
+        "Chest": "30 in",
+        "Sleeve": "27 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-11-05",
+      "_source": "stripe:prod_VVFUSws6dMochP",
+      "description": [
+        "Weathered and Beaten Light jacket from a DIFFICULT course in Williamsburg, VA. ."
+      ],
+      "_stripe": {
+        "product": "prod_VVFUSws6dMochP",
+        "price": "price_1UUEzUC1bWq01lTKYHztWTDF",
+        "link": "plink_1UYTVoC1bWq01lTKvN1NbBNt",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-11-05"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/dRm4gyaqM9PL3NI7RM9k41y",
+      "photos": [
+        "carousel/vintage-kiskiack-work-coat/01.jpg",
+        "carousel/vintage-kiskiack-work-coat/02.jpg",
+        "carousel/vintage-kiskiack-work-coat/03.jpg",
+        "carousel/vintage-kiskiack-work-coat/04.jpg"
+      ],
+      "_photosPulled": "2026-11-05"
+    },
+    {
+      "id": "stock-tartan-callaway-jacket",
+      "sku": "TA_GS_71",
+      "file": "tartan-callaway-jacket.jpg",
+      "name": "Tartan Callaway Jacket",
+      "brand": "Callaway",
+      "year": "—",
+      "category": "Outerwear",
+      "garment": "jacket",
+      "size": "L",
+      "condition": "Pre-owned",
+      "price": 74.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "A vintage piece, made in Scotland, with accents paying tribute to classic regional patterns. .",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "28 in",
+        "Chest": "26 in",
+        "Sleeves": "27 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-11-05",
+      "_source": "stripe:prod_VVF0ppZWfLIGVk",
+      "description": [
+        "A vintage piece, made in Scotland, with accents paying tribute to classic regional patterns. ."
+      ],
+      "_stripe": {
+        "product": "prod_VVF0ppZWfLIGVk",
+        "price": "price_1UUEWCC1bWq01lTKPnkmbP2h",
+        "link": "plink_1UYTVpC1bWq01lTKUB2FldLz",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-11-05"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/eVq5kCcyUe61ac66NI9k41z",
+      "photos": [
+        "carousel/tartan-callaway-jacket/01.jpg",
+        "carousel/tartan-callaway-jacket/02.jpg",
+        "carousel/tartan-callaway-jacket/03.jpg",
+        "carousel/tartan-callaway-jacket/04.jpg"
+      ],
+      "_photosPulled": "2026-11-05"
+    },
+    {
+      "id": "stock-cotton-callaway-bomber-jacket",
+      "sku": "TA_GS_65",
+      "file": "cotton-callaway-bomber-jacket.jpg",
+      "name": "Cotton Callaway Bomber Jacket",
+      "brand": "Callaway",
+      "year": "—",
+      "category": "Outerwear",
+      "garment": "jacket",
+      "size": "XXL",
+      "condition": "Pre-owned",
+      "price": 74.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "Unique and minimalistic piece from the Callaway Vault. .",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "27 in",
+        "Sleeves": "27 in",
+        "Chest": "30 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-11-05",
+      "_source": "stripe:prod_VVErKBvPvvzXTP",
+      "description": [
+        "Unique and minimalistic piece from the Callaway Vault. ."
+      ],
+      "_stripe": {
+        "product": "prod_VVErKBvPvvzXTP",
+        "price": "price_1UUENPC1bWq01lTKIiLgly1T",
+        "link": "plink_1UYTVpC1bWq01lTKeEKd0uVA",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-11-05"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/5kQbJ08iE6Dz1FA8VQ9k41A",
+      "photos": [
+        "carousel/cotton-callaway-bomber-jacket/01.jpg",
+        "carousel/cotton-callaway-bomber-jacket/02.jpg",
+        "carousel/cotton-callaway-bomber-jacket/03.jpg",
+        "carousel/cotton-callaway-bomber-jacket/04.jpg"
+      ],
+      "_photosPulled": "2026-11-05"
     }
   ],
   "_inPerson": {
