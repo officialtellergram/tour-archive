@@ -4651,7 +4651,10 @@
         "carousel/vintage-kiskiack-work-coat/03.jpg",
         "carousel/vintage-kiskiack-work-coat/04.jpg"
       ],
-      "_photosPulled": "2026-11-05"
+      "_photosPulled": "2026-11-05",
+      "specifics": {
+        "Outer Shell Material": "Polyester"
+      }
     },
     {
       "id": "stock-tartan-callaway-jacket",
@@ -4754,7 +4757,10 @@
         "carousel/cotton-callaway-bomber-jacket/03.jpg",
         "carousel/cotton-callaway-bomber-jacket/04.jpg"
       ],
-      "_photosPulled": "2026-11-05"
+      "_photosPulled": "2026-11-05",
+      "specifics": {
+        "Outer Shell Material": "Polyester"
+      }
     }
   ],
   "_inPerson": {
