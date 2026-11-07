@@ -4582,10 +4582,12 @@
         "link": "plink_1UYTVoC1bWq01lTKUznRIbTs",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-11-05"
+        "minted": "2026-11-05",
+        "soldCharge": "ch_3UYxDsC1bWq01lTK03NbY4rJ",
+        "soldAt": "2026-11-07",
+        "soldAmount": 29.99,
+        "soldInPerson": true
       },
-      "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/3cI9AS7eA6Dz6ZUgoi9k41x",
       "photos": [
         "carousel/overbranded-callaway-polo/01.jpg",
         "carousel/overbranded-callaway-polo/02.jpg",
@@ -4598,9 +4600,12 @@
         "sku": "TA_GS_106",
         "price": 35.99,
         "listedAt": "2026-11-05",
-        "pictures": "sq1"
+        "pictures": "sq1",
+        "endedAt": "2026-11-07"
       },
-      "_ebayUrl": "https://www.ebay.com/itm/377624266777"
+      "_ebayUrl": "https://www.ebay.com/itm/377624266777",
+      "sold": true,
+      "_saleNotified": "2026-11-07"
     },
     {
       "id": "stock-vintage-kiskiack-work-coat",
@@ -4885,6 +4890,14 @@
       "description": "Tags59",
       "at": "2026-11-01T15:33:55.000Z",
       "notified": "2026-11-01"
+    },
+    "ch_3UYxDsC1bWq01lTK03NbY4rJ": {
+      "status": "matched",
+      "how": "by description",
+      "amount": 29.99,
+      "description": "TA_GS_106",
+      "at": "2026-11-07T00:11:16.000Z",
+      "piece": "stock-overbranded-callaway-polo"
     }
   }
 }
