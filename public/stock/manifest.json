@@ -689,8 +689,6 @@
         "Checkout completes with Stripe"
       ],
       "measurements": {},
-      "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/bJe3cu9mIaTP3NI1to9k40N",
       "_ingested": "2026-08-10",
       "file": "nike-ryder-cup-polo-valhalla.jpg",
       "_source": "own listing photo, i.ebayimg.com",
@@ -731,7 +729,8 @@
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
         "minted": "2026-09-11",
-        "repriced": "2026-10-02"
+        "repriced": "2026-10-02",
+        "soldSession": "cs_live_b1kAaAdt8YbTEfiTlNxhl3xCsbvWe60P237NaBkVZGk6voBGImLfkT9asV"
       },
       "_ebay": {
         "itemId": "377555830860",
@@ -742,8 +741,11 @@
         "seen": "2026-10-12",
         "duplicateEnded": [
           "377563031866"
-        ]
-      }
+        ],
+        "endedAt": "2026-11-07"
+      },
+      "sold": true,
+      "_saleNotified": "2026-11-07"
     },
     {
       "id": "stock-nike-tiger-woods-tshirt",
