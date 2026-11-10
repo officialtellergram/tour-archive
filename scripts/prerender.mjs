@@ -331,7 +331,8 @@ async function main() {
         : item.upcoming
           ? 'https://schema.org/PreOrder'
           : 'https://schema.org/InStock';
-      const real = (v) => !['see listing', 'see photos', '—', ''].includes(String(v ?? '').trim().toLowerCase());
+      // A placeholder is not a fact: no brand is sent for a piece the shop has not attributed.
+      const real = (v) => !['see listing', 'see photos', '—', '', 'unattributed', 'unbranded', 'unknown'].includes(String(v ?? '').trim().toLowerCase());
       blocks.push({
         '@context': 'https://schema.org',
         '@type': 'Product',
