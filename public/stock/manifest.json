@@ -3334,8 +3334,6 @@
         "mode": "live",
         "minted": "2026-10-01"
       },
-      "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/8x2eVceH26Dz3NI7RM9k40E",
       "photos": [
         "carousel/black-cotton-ralph-lauren-cardigan/01.jpg",
         "carousel/black-cotton-ralph-lauren-cardigan/02.jpg",
@@ -3347,10 +3345,16 @@
         "sku": "stock-black-cotton-ralph-lauren-cardigan",
         "price": 29.99,
         "listedAt": "2026-10-09",
-        "pictures": "sq1"
+        "pictures": "sq1",
+        "soldOrder": "15-15408-94555",
+        "soldAt": "2026-11-12",
+        "stripeInvoice": "in_1UannQC1bWq01lTK7kY1Lprr",
+        "finance": "5.81|0|32.18|FUNDS_ON_HOLD"
       },
       "_ebayUrl": "https://www.ebay.com/itm/377555836051",
-      "sku": "TA_GS_34"
+      "sku": "TA_GS_34",
+      "sold": true,
+      "_saleNotified": "2026-11-12"
     },
     {
       "id": "stock-vintage-grand-slam-golf-polo",
