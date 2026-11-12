@@ -4788,6 +4788,223 @@
         "pictures": "sq1"
       },
       "_ebayUrl": "https://www.ebay.com/itm/377624474346"
+    },
+    {
+      "id": "stock-rlx-dark-camo-q-zip",
+      "sku": "TA_GS_111",
+      "file": "rlx-dark-camo-q-zip.jpg",
+      "name": "RLX Dark Camo Q-Zip",
+      "brand": "Unattributed",
+      "year": "—",
+      "category": "Knitwear",
+      "garment": "sweater",
+      "size": "M",
+      "condition": "Pre-owned",
+      "price": 29.99,
+      "colorway": [
+        "#25324F",
+        "#1A2338",
+        "#0E1524"
+      ],
+      "colorName": "Navy",
+      "story": "Very subtle navy camo woven into this sleek RLX garment. \"Weekend\" embroidery on the left sleeve and RLX branding all over. .",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "30 in",
+        "Sleeve": "25 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-11-12",
+      "_source": "stripe:prod_VcEuhKbIGhByme",
+      "description": [
+        "Very subtle navy camo woven into this sleek RLX garment. \"Weekend\" embroidery on the left sleeve and RLX branding all over. ."
+      ],
+      "_stripe": {
+        "product": "prod_VcEuhKbIGhByme",
+        "price": "price_1Ub0QMC1bWq01lTK5CHFWjDF",
+        "link": "plink_1Ub19yC1bWq01lTKcaBcZlzK",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-11-12"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/6oU00iaqMge9bgadc69k41B"
+    },
+    {
+      "id": "stock-scotty-cameron-x-peter-millar-navy-polo",
+      "sku": "TA_GS_112",
+      "file": "scotty-cameron-x-peter-millar-navy-polo.jpg",
+      "name": "Scotty Cameron x Peter Millar Navy Polo",
+      "brand": "Peter Millar",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "XL",
+      "condition": "Pre-owned",
+      "price": 99.99,
+      "colorway": [
+        "#25324F",
+        "#1A2338",
+        "#0E1524"
+      ],
+      "colorName": "Navy",
+      "story": "Soft-Cotton build on this beautiful striped offering from Scotty Cameron and PM. Branding all over with the circle T on the collar and crown on the very bottom. Great comfortable piece. .",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "30 in",
+        "Chest": "27 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-11-12",
+      "_source": "stripe:prod_VcErXwFwoNDR4Z",
+      "description": [
+        "Soft-Cotton build on this beautiful striped offering from Scotty Cameron and PM. Branding all over with the circle T on the collar and crown on the very bottom. Great comfortable piece. ."
+      ],
+      "_stripe": {
+        "product": "prod_VcErXwFwoNDR4Z",
+        "price": "price_1Ub0O0C1bWq01lTKk4pxJhEo",
+        "link": "plink_1Ub19zC1bWq01lTKFX1ZUXuE",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-11-12"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/4gMcN4aqMbXTdoi7RM9k41C"
+    },
+    {
+      "id": "stock-keswick-golf-club-striped-polo",
+      "sku": "TA_GS_90",
+      "file": "keswick-golf-club-striped-polo.jpg",
+      "name": "Keswick Golf Club Striped polo",
+      "brand": "Unattributed",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "L",
+      "condition": "Pre-owned",
+      "price": 24.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "Vintage Mercanized Cotton polo sporting the logo of a famed track in rural Virginia. .",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "30 in",
+        "Chest": "24 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-11-12",
+      "_source": "stripe:prod_VVFs5T01TZ7L32",
+      "description": [
+        "Vintage Mercanized Cotton polo sporting the logo of a famed track in rural Virginia. ."
+      ],
+      "_stripe": {
+        "product": "prod_VVFs5T01TZ7L32",
+        "price": "price_1UUFN4C1bWq01lTKHB0teRR6",
+        "link": "plink_1Ub19zC1bWq01lTKhIlQA9Ft",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-11-12"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/fZu00idCY1jf1FA1to9k41D"
+    },
+    {
+      "id": "stock-malbon-cartoon-crewneck",
+      "sku": "TA_GS_68",
+      "file": "malbon-cartoon-crewneck.jpg",
+      "name": "Malbon Cartoon Crewneck",
+      "brand": "Unattributed",
+      "year": "—",
+      "category": "Knitwear",
+      "garment": "sweater",
+      "size": "See photos",
+      "condition": "Pre-owned",
+      "price": 74.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "Heavy Cotton Sweatshirts sporting Malbon's Golf Ball Character on the Full Chest. Sophisticated branding embroidered on the bottom of the garment. Sze L.",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "27 in",
+        "Chest": "24 in",
+        "Sleeve": "26 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-11-12",
+      "_source": "stripe:prod_VVEvT1LEtIW3cW",
+      "description": [
+        "Heavy Cotton Sweatshirts sporting Malbon's Golf Ball Character on the Full Chest. Sophisticated branding embroidered on the bottom of the garment. Sze L."
+      ],
+      "_stripe": {
+        "product": "prod_VVEvT1LEtIW3cW",
+        "price": "price_1UUERmC1bWq01lTKlPEBSLit",
+        "link": "plink_1Ub19zC1bWq01lTKFM6jCtLP",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-11-12"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/9B614mdCYd1X0Bw0pk9k41E"
+    },
+    {
+      "id": "stock-burnt-red-malbon-longsleeve",
+      "sku": "TA_GS_67",
+      "file": "burnt-red-malbon-longsleeve.jpg",
+      "name": "Burnt Red Malbon Longsleeve",
+      "brand": "Unattributed",
+      "year": "—",
+      "category": "Knitwear",
+      "garment": "sweater",
+      "size": "L",
+      "condition": "Pre-owned",
+      "price": 74.99,
+      "colorway": [
+        "#8E2436",
+        "#6A1A28",
+        "#42101A"
+      ],
+      "colorName": "Cardinal",
+      "story": "Beautifully Sun-Faded Malbon piece with their iconic script embroidered on the left chest. .",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "28 in",
+        "Chest": "24 in",
+        "Sleeves": "25 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-11-12",
+      "_source": "stripe:prod_VVEuhvzbkNOCgD",
+      "description": [
+        "Beautifully Sun-Faded Malbon piece with their iconic script embroidered on the left chest. ."
+      ],
+      "_stripe": {
+        "product": "prod_VVEuhvzbkNOCgD",
+        "price": "price_1UUEQVC1bWq01lTKcCYZcMgS",
+        "link": "plink_1Ub1A0C1bWq01lTKlRBdYzyu",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-11-12"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/aFaaEW56sge9ac6b3Y9k41F"
     }
   ],
   "_inPerson": {
