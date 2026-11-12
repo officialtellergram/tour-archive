@@ -4835,7 +4835,8 @@
         "itemId": "377640397049",
         "sku": "TA_GS_111",
         "price": 35.99,
-        "listedAt": "2026-11-12"
+        "listedAt": "2026-11-12",
+        "pictures": "sq1"
       },
       "_ebayUrl": "https://www.ebay.com/itm/377640397049"
     },
@@ -4885,7 +4886,8 @@
         "itemId": "377640397077",
         "sku": "TA_GS_112",
         "price": 116.99,
-        "listedAt": "2026-11-12"
+        "listedAt": "2026-11-12",
+        "pictures": "sq1"
       },
       "_ebayUrl": "https://www.ebay.com/itm/377640397077"
     },
@@ -4935,7 +4937,8 @@
         "itemId": "377640397109",
         "sku": "TA_GS_90",
         "price": 29.99,
-        "listedAt": "2026-11-12"
+        "listedAt": "2026-11-12",
+        "pictures": "sq1"
       },
       "_ebayUrl": "https://www.ebay.com/itm/377640397109"
     },
@@ -5030,7 +5033,8 @@
         "itemId": "377640397158",
         "sku": "TA_GS_67",
         "price": 87.99,
-        "listedAt": "2026-11-12"
+        "listedAt": "2026-11-12",
+        "pictures": "sq1"
       },
       "_ebayUrl": "https://www.ebay.com/itm/377640397158"
     }
