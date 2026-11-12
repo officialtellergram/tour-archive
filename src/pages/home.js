@@ -10,44 +10,30 @@ import {
   dateRange,
   soldLast,
 } from '../data/store.js';
-import { productCard, collectionTile, marquee, sectionHead, sizeAttrs } from '../components/ui.js';
+import { productCard, collectionTile, marquee, sectionHead, sizeAttrs, mediaURL, money, escapeHtml } from '../components/ui.js';
 
 const BASE_URL = (import.meta.env?.BASE_URL || '/').replace(/\/*$/, '/');
 
 /**
- * The landing backdrop plates, in rotation order — three Adobe Stock
- * Standard-licensed derivatives (asset IDs, licence record and the 'never
- * commit a master' rule: docs/tour-championship-2026.md § Licensed imagery).
- * Slide 1 is the only eager plate, the preload target and the reduced-motion
- * static, so the clubhouse leads. Slots are positional: app.css binds one drift
- * keyframe and, for slides 2-3, an object-position hook per nth-of-type slot —
- * reorder here and reorder those. Paths are public/-relative; audit pins each
- * to a file on disk, the 3-count, the ?v stamp (Pages serves public/ unhashed;
- * Cloudflare fronts /hero with a 4 h browser TTL, so a re-encode is a ?v bump
- * and a new image is a new filename), and index.html's preload agreement.
+ * The landing plate rotates the stock itself: every available piece with a
+ * photograph, hanger shots first (a cap or a programme is a poor full-bleed
+ * plate), in manifest order so the prerendered document is stable build to
+ * build. Slide 1 is the only eager plate and the LCP candidate; the rest
+ * defer through data-src and the loader in motion.js (mountPlate). Two is
+ * the floor — under that the rotation is a still — so the pool widens to
+ * sold pieces before it ever runs short. No photography at all (the curated
+ * catalogue standing in for an unreachable inventory API) renders the plate
+ * as the navy ground and the lockup alone: no caption, no controls.
  */
-/* Our own course photography (10 Sep 2026), built by scripts/hero-plates.py
-   from the shared Drive folder. These replace the licensed Adobe plates: the
-   Tour Championship is over, and shooting our own removes the licence
-   surface that forced the 26 Aug swap entirely. Order is the rotation. */
-const HERO_BACKDROPS = [
-  'hero/ocean-hole.jpg?v=1',
-  'hero/links-sky.jpg?v=1',
-  'hero/cloud-over-bunker.jpg?v=1',
-  'hero/sunset-water.jpg?v=1',
-  'hero/cypress-green.jpg?v=1',
-  'hero/golden-hour-fairway.jpg?v=1',
-  'hero/dusk-pond.jpg?v=1',
-  'hero/fairway-mackerel-sky.jpg?v=1',
-  'hero/cloud-and-bridge.jpg?v=1',
-  'hero/low-sun-fairway.jpg?v=1',
-  'hero/flag-and-pond.jpg?v=1',
-  'hero/hillside-clubhouse.jpg?v=1',
-  'hero/dusk-coastline.jpg?v=1',
-  'hero/sun-through-oaks.jpg?v=1',
-  'hero/cart-path-pines.jpg?v=1',
-  'hero/grey-sky-pond.jpg?v=1',
-];
+const PLATE_SKIP = new Set(['cap', 'hat', 'memorabilia', 'accessory', 'bag', 'towel']);
+export function platePieces(stock) {
+  const shot = stock.filter((it) => it.photo);
+  const hanging = shot.filter((it) => !PLATE_SKIP.has(it.garment));
+  const live = hanging.filter(isAvailable);
+  if (live.length >= 2) return live;
+  const anyLive = shot.filter(isAvailable);
+  return anyLive.length >= 2 ? anyLive : shot;
+}
 
 /** Phase-aware status line for the featured event. */
 function eventStatus(event) {
@@ -164,63 +150,73 @@ export function home() {
   </section>`
       : '';
 
-  return `
-  <section class="hero" data-hero>
-    <div class="hero-bg" data-hero-backdrop>
-      ${HERO_BACKDROPS.map((p, i) =>
-        i === 0
-          ? `<img class="hero-slide is-on" src="${BASE_URL}${p}" alt="" aria-hidden="true"${sizeAttrs(p)}
+  const plates = platePieces(stock);
+  const caption = (it) => `
+        <span class="eyebrow plate-cap-eyebrow">Now in the archive</span>
+        <span class="plate-cap-name" data-plate-name>${escapeHtml(it.name)}</span>
+        <span class="plate-cap-meta"><span data-plate-brand>${escapeHtml(it.brand || 'Unattributed')}</span><b data-plate-price>${money(it.price)}</b></span>
+        <span class="plate-cap-view">View the piece</span>`;
+  const slide = (it, i) => {
+    const data = ` data-item="${it.id}" data-name="${escapeHtml(it.name).replace(/"/g, '&quot;')}" data-brand="${escapeHtml(it.brand || 'Unattributed').replace(/"/g, '&quot;')}" data-price="${money(it.price)}"`;
+    return i === 0
+      ? `<img class="hero-slide is-on" src="${mediaURL(it.photo)}" alt="" aria-hidden="true"${sizeAttrs(it.photo)}${data}
               fetchpriority="high" decoding="async" />`
-          : `<img class="hero-slide" data-src="${BASE_URL}${p}" alt="" aria-hidden="true"${sizeAttrs(p)}
-              decoding="async" />`
-      ).join('')}
+      : `<img class="hero-slide" data-src="${mediaURL(it.photo)}" alt="" aria-hidden="true"${sizeAttrs(it.photo)}${data}
+              decoding="async" />`;
+  };
+
+  /* The plate: the stock itself, one piece at a time under a navy wash, the
+     signature still in front (motion.js mountPlate runs the rotation, the
+     caption and the mark; the markup contract is pinned by scripts/smoke.mjs).
+     The signature is the intro plate's own clip, drawn on once per visit —
+     or already landed when the intro has just drawn it. */
+  return `
+  <section class="hero hero--plate" data-hero data-plate>
+    <div class="hero-bg" data-hero-backdrop>
+      ${plates.map(slide).join('')}
     </div>
-    <div class="wrap hero-inner">
-      <img class="hero-logo${eventLed ? (coll?.heroImage ? ' hero-logo--drop' : '') : ' hero-logo--xl'}" src="${BASE_URL}brand/logo.png?v=2"
-        alt="Tour Archive"${sizeAttrs('brand/logo.png')} decoding="async" ${eventLed ? 'data-hero-cta' : 'data-hero-lead'} />
+    <div class="plate-grain" aria-hidden="true"></div>
+    <div class="wrap hero-inner plate-lock">
       ${
         eventLed && coll
-          ? `
-      <p class="eyebrow" data-hero-lead style="color:var(--claret)">
-        <span>${ev.phase === 'live' ? `${coll.drop} · Out Now` : coll.drop}</span>
-      </p>
-      ${
-        coll.heroImage
-          ? `<h1 class="hero-title-wrap" data-hero-cta>
-        <img class="hero-title" src="${BASE_URL}${coll.heroImage}" alt="${coll.heroImageAlt || coll.name}"${sizeAttrs(coll.heroImage)}
-          fetchpriority="high" decoding="async" />
-      </h1>`
-          : `<h1 class="display">
-        <span class="line-mask"><span style="color:var(--navy)">${(coll.heroLines || [coll.name, ''])[0]}</span></span>
-        <span class="line-mask"><span><em>${(coll.heroLines || ['', ''])[1]}</em><span style="color:var(--navy)">.</span></span></span>
-      </h1>`
+          ? `<p class="eyebrow plate-lead" data-hero-lead><span>${coll.drop}${status.chip === coll.drop ? '' : ` · ${status.chip}`}</span></p>`
+          : ''
       }
-      <p class="lede" data-hero-cta style="text-align:center;font-weight:500;color:var(--ink)">
-        ${coll.heroLine}
-      </p>
-      <div class="hero-meta" data-hero-meta>
-        <span>Status <b>${status.chip}</b></span>
-        <span>Venue <b>${coll.place}</b></span>
-      </div>
-      <div style="display:flex;gap:.85rem;flex-wrap:wrap;justify-content:center" data-hero-cta>
-        <a class="btn btn--solid" href="/collections/${coll.id}" data-magnetic>
-          ${ev.phase === 'live' ? `Shop ${coll.drop}` : `Preview ${coll.drop}`}
-        </a>
-        ${ev.phase === 'live' ? '' : `<a class="btn" href="/archive" data-magnetic>In the shop now</a>`}
-      </div>
-      <p class="eyebrow" data-hero-cta style="max-width:52ch;text-align:center;line-height:1.8">
-        ${status.line}
-      </p>`
-          : `
-      <h1 class="display">
-        <span class="line-mask"><span style="color:var(--navy)">Tour <em style="color:var(--claret)">Archive</em>.</span></span>
+      <h1 class="plate-lockup">
+        <span class="plate-word" data-hero-cta>Tour</span>
+        <span class="plate-mark" data-plate-mark role="img" aria-label="Tour Archive signature">
+          <video class="plate-mark-webm" data-plate-webm muted playsinline preload="none" src="${BASE_URL}brand/intro-mark.webm?v=1"></video>
+          <video class="plate-mark-src" data-plate-src muted playsinline preload="none" src="${BASE_URL}brand/intro.mp4?v=2"></video>
+          <canvas class="plate-mark-canvas" data-plate-canvas></canvas>
+          <img class="plate-mark-still" src="${BASE_URL}brand/logo.png?v=2" alt=""${sizeAttrs('brand/logo.png')} loading="lazy" decoding="async" />
+        </span>
+        <span class="plate-word" data-hero-cta>Archive</span>
       </h1>
-      <div style="display:flex;gap:.85rem;flex-wrap:wrap;justify-content:center" data-hero-cta>
-        <a class="btn btn--solid" href="#shop" data-magnetic>See the inventory</a>
-      </div>`
-      }
+      <div class="plate-cta" data-hero-cta>
+        ${
+          eventLed && coll
+            ? `<a href="/collections/${coll.id}">${ev.phase === 'live' ? `Shop ${coll.drop}` : `Preview ${coll.drop}`}</a>
+        <a href="/archive">Shop the archive</a>`
+            : `<a href="/archive">Shop the archive</a>
+        <a href="/sell">Sell to us</a>`
+        }
+      </div>
     </div>
-    <div class="scroll-cue" aria-hidden="true"><i></i>Scroll</div>
+    ${
+      plates.length
+        ? `<div class="wrap plate-foot">
+      <a class="plate-cap" data-plate-cap href="/item/${plates[0].id}">${caption(plates[0])}
+      </a>
+      <div class="plate-ctl">
+        <button type="button" data-plate-prev>Prev</button>
+        <span class="plate-num" data-plate-num>No. 01 / ${String(plates.length).padStart(2, '0')}</span>
+        <button type="button" data-plate-next>Next</button>
+      </div>
+    </div>`
+        : ''
+    }
+    <div class="scroll-cue plate-scroll" aria-hidden="true"><i></i>Scroll</div>
+    <div class="plate-bar" data-plate-bar aria-hidden="true"></div>
   </section>
 
   ${marquee(

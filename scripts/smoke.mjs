@@ -421,23 +421,31 @@ for (const [label, fn] of deskCases) {
     errors.push('productCard: data-cycle leaked onto an item with no carousel');
 }
 
-/* Hero backdrop pins — the rotation's markup contract. */
+/* Landing plate pins — the rotation's markup contract (mountPlate in
+   src/lib/motion.js reads exactly this shape). The smoke's store is never
+   init()ed, so the curated catalogue has no photography here and the plate
+   renders as the lockup alone — the same shape the live page takes when the
+   inventory API is unreachable. With photography: at least two slides,
+   exactly one eager, the rest deferred through data-src. */
 {
   const hero = home();
+  if (!hero.includes('data-plate') || !hero.includes('plate-lockup') || !hero.includes('data-plate-mark'))
+    errors.push('home: the landing plate (data-plate, plate-lockup, data-plate-mark) is missing');
   const n = (hero.match(/class="hero-slide/g) || []).length;
-  // Count-agnostic on purpose: the rotation grew from 3 to the whole photo
-  // folder, and a hardcoded number here would have to be edited every time.
-  // What must hold is the shape — at least two slides, exactly one eager.
-  if (n < 2) errors.push(`home: expected at least 2 hero slides, got ${n}`);
-  if ((hero.match(/hero-slide is-on/g) || []).length !== 1)
-    errors.push('home: exactly one slide may start is-on');
-  if (!hero.includes('hero-slide is-on'))
-    errors.push('home: no slide marked is-on — first paint would be bare parchment');
-  if (/hero-slide[^>]*loading="lazy"/.test(hero))
-    errors.push('home: hero slides must not use loading="lazy" — in-viewport lazy fetches immediately; deferral is data-src + the loader');
   const deferred = (hero.match(/data-src="/g) || []).length;
-  if (deferred !== n - 1)
-    errors.push(`home: slides 2-${n} must defer via data-src (expected ${n - 1}, got ${deferred})`);
+  if (n === 0) {
+    if (deferred) errors.push('home: no photographed stock, yet a slide defers through data-src');
+    if (hero.includes('data-plate-cap')) errors.push('home: no photographed stock, yet the caption rendered');
+  } else {
+    if (n < 2) errors.push(`home: expected at least 2 hero slides when stock is photographed, got ${n}`);
+    if ((hero.match(/hero-slide is-on/g) || []).length !== 1)
+      errors.push('home: exactly one slide may start is-on');
+    if (/hero-slide[^>]*loading="lazy"/.test(hero))
+      errors.push('home: hero slides must not use loading="lazy" — in-viewport lazy fetches immediately; deferral is data-src + the loader');
+    if (deferred !== n - 1)
+      errors.push(`home: slides 2-${n} must defer via data-src (expected ${n - 1}, got ${deferred})`);
+    if (!hero.includes('data-plate-cap')) errors.push('home: photographed stock, but no caption');
+  }
 }
 
 const C = { red: '\x1b[31m', green: '\x1b[32m', dim: '\x1b[2m', off: '\x1b[0m' };

@@ -535,36 +535,153 @@ export async function closeDrawer(drawer) {
 }
 
 /* ------------------------------------------------------------------ */
-/* Home hero backdrop rotation                                         */
+/* Home landing plate                                                  */
 /* ------------------------------------------------------------------ */
 
 /* module scope — shim-safe: inert declarations only (this module loads under
    the render smoke's DOM shim; no module-level DOM work) */
-const HERO_HOLD_MS = 5000; // cadence; the 1400ms dissolve lives in CSS. First
-//                            fire is one full period — still clear of the
-//                            ~2.6s hero entrance choreography.
-let heroTimer = null; //      singleton interval handle — the only one, ever
+const PLATE_HOLD_MS = 7000; // cadence; the 1900ms dissolve lives in CSS
+let plateTimer = null; //      singleton interval handle — the only one, ever
+let plateKeys = false; //      the arrow-key delegate is bound once per document
+
+/* The signature: brand/intro.mp4 is the intro plate's brush mark on black.
+   brand/intro-mark.webm is that mark cut out with real alpha and tinted
+   parchment (made in the landing-ideas lab, 12 Nov 2026). The mark lands at
+   ~1.75 s of clip time and holds to ~3.75 s before the clip's own wipe; at
+   MARK_RATE (2, the intro's own speed) it lands at ~0.9 s and the clip is
+   frozen at MARK_HOLD_AT so the wipe never comes. Its box in the 1080x1920
+   frame, measured: x 161-919, y 533-1386 — MARK_CROP with a margin. */
+const MARK_RATE = 2;
+const MARK_HOLD_AT = 3.0;
+const MARK_READY_MS = 4000; // a slow fetch gets its chance; the mark arrives when it can
+const MARK_CROP = { x: 150, y: 520, w: 780, h: 876 };
+const MARK_INK = [244, 240, 230]; // --parchment
 
 /**
- * Rotate the home hero backdrop. Wired via MOUNTS [/^\/$/] in main.js.
+ * Play one clip at the intro's rate and freeze it at the hold — or, when the
+ * intro has just drawn the mark (`landed`), seek straight to the held frame.
+ * `onFrame` runs per frame (the canvas route) and may throw to reject the
+ * whole route (a tainted canvas). Resolves true once the mark is showing.
+ */
+function runClip(video, { landed = false, onFrame } = {}) {
+  return new Promise((resolve) => {
+    let raf = 0;
+    let done = false;
+    let ready = 0;
+    const settle = (ok) => {
+      if (done) return;
+      done = true;
+      clearTimeout(ready);
+      cancelAnimationFrame(raf);
+      if (!ok) {
+        try { video.pause(); } catch { /* never started */ }
+      }
+      resolve(ok);
+    };
+    ready = setTimeout(() => settle(false), MARK_READY_MS);
+    const paint = () => {
+      try { onFrame && onFrame(); } catch { settle(false); }
+      return !done;
+    };
+    const frame = () => {
+      if (!paint()) return;
+      if (!video.paused && !video.ended) raf = requestAnimationFrame(frame);
+    };
+    video.addEventListener('error', () => settle(false), { once: true });
+    video.preload = 'auto';
+    if (landed) {
+      // The held frame, no play: the intro has just drawn the mark on the
+      // navy, and the plate shows it already there when the plate lifts.
+      const seek = () => {
+        video.addEventListener('seeked', () => { if (paint()) setTimeout(() => settle(true), 60); }, { once: true });
+        try { video.currentTime = MARK_HOLD_AT; } catch { settle(false); }
+      };
+      if (video.readyState >= 2) seek();
+      else video.addEventListener('loadeddata', seek, { once: true });
+      video.load();
+      return;
+    }
+    video.addEventListener('timeupdate', () => {
+      if (video.currentTime >= MARK_HOLD_AT && !video.paused) {
+        video.pause();
+        cancelAnimationFrame(raf);
+        paint();
+      }
+    });
+    video.addEventListener('playing', () => { frame(); setTimeout(() => settle(true), 120); }, { once: true });
+    video.playbackRate = MARK_RATE;
+    const p = video.play();
+    if (p && p.catch) p.catch(() => settle(false));
+  });
+}
+
+/**
+ * Put the signature on the plate. Three routes, each only if the one
+ * before cannot run: the alpha WebM (Chrome, Edge, Firefox, Android); the
+ * on-black clip keyed through a canvas (Safari — same-origin only, a
+ * tainted canvas rejects itself); the still logo. Reduced motion: the still.
+ */
+async function runMark(mark, landed) {
+  const webm = mark.querySelector('[data-plate-webm]');
+  const clip = mark.querySelector('[data-plate-src]');
+  const canvas = mark.querySelector('[data-plate-canvas]');
+  const mode = (m) => { mark.dataset.mode = m; };
+  if (reduced || !webm || !clip || !canvas) { mode('still'); return; }
+
+  if (webm.canPlayType && webm.canPlayType('video/webm; codecs="vp9"')) {
+    mode('webm');
+    if (await runClip(webm, { landed })) return;
+  }
+
+  mode('canvas');
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const box = mark.getBoundingClientRect();
+  canvas.width = Math.max(1, Math.round(box.width * dpr));
+  canvas.height = Math.max(1, Math.round(box.height * dpr));
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  const paint = () => {
+    ctx.drawImage(clip, MARK_CROP.x, MARK_CROP.y, MARK_CROP.w, MARK_CROP.h, 0, 0, canvas.width, canvas.height);
+    const im = ctx.getImageData(0, 0, canvas.width, canvas.height); // throws on a tainted canvas
+    const d = im.data;
+    for (let i = 0; i < d.length; i += 4) {
+      const a = Math.max(d[i], d[i + 1], d[i + 2]);
+      d[i] = MARK_INK[0]; d[i + 1] = MARK_INK[1]; d[i + 2] = MARK_INK[2]; d[i + 3] = a;
+    }
+    ctx.putImageData(im, 0, 0);
+  };
+  if (await runClip(clip, { landed, onFrame: paint })) return;
+
+  mode('still');
+}
+
+/**
+ * Run the landing plate: the stock rotation with its caption and controls,
+ * and the signature. Wired via MOUNTS [/^\/$/] in main.js.
  *
  * The router has no unmount hook (outlet.innerHTML wipes the page), so this
  * mount doubles as the previous visit's cleanup: clear-before-arm kills a
- * stale timer even on a sub-5s home→away→home bounce, and the tick's
+ * stale timer even on a sub-7s home→away→home bounce, and the tick's
  * liveness re-query self-disposes the timer when home is left for good.
  * Never hold node references across ticks — they detach on every navigation.
  */
-export function mountHeroBackdrop(outlet) {
-  clearInterval(heroTimer);
-  heroTimer = null;
-
-  // Reduced motion: slide 1 carries .is-on from the template and CSS shows it
-  // — the static plate needs zero JS, no timer, and slides 2–3 never fetch.
-  if (reduced) return;
+export function mountPlate(outlet) {
+  clearInterval(plateTimer);
+  plateTimer = null;
 
   const root = outlet || document;
-  const slides = root.querySelectorAll('[data-hero-backdrop] .hero-slide');
-  if (slides.length < 2) return; // only home has a backdrop
+  const plate = root.querySelector('[data-plate]');
+  if (!plate) return; // only home has the plate
+
+  const slides = [...plate.querySelectorAll('[data-hero-backdrop] .hero-slide')];
+  const cap = plate.querySelector('[data-plate-cap]');
+  const num = plate.querySelector('[data-plate-num]');
+  const bar = plate.querySelector('[data-plate-bar]');
+  const pad = (n) => String(n).padStart(2, '0');
+
+  // The signature: under the intro, prepare the landed frame so the plate
+  // lifts onto a mark already there; otherwise draw it now.
+  const mark = plate.querySelector('[data-plate-mark]');
+  if (mark) runMark(mark, !!introPending());
 
   // Loader: the absent src IS the deferral (in-viewport loading="lazy" would
   // fetch immediately). decode() rejection is "not ready yet" unless the
@@ -577,38 +694,86 @@ export function mountHeroBackdrop(outlet) {
       () => { if (img.complete && img.naturalWidth === 0) img.dataset.dead = '1'; }
     );
   };
-  load(slides[1]); // warm plate 2 during slide 1's first hold
+  const isReady = (img) => img.dataset.ready === '1' || (img.complete && img.naturalWidth > 0);
+  const current = () => slides.findIndex((el) => el.classList.contains('is-on'));
 
-  heroTimer = setInterval(() => {
-    // Liveness FIRST — before the hidden check, so an away-navigated timer
-    // self-disposes even from a hidden tab's throttled fire.
-    const bg = document.querySelector('[data-hero-backdrop]');
-    if (!bg) {
-      clearInterval(heroTimer);
-      heroTimer = null;
-      return;
+  const progress = () => {
+    if (!bar || reduced) return;
+    bar.classList.add('is-hold');
+    bar.classList.remove('is-go');
+    void bar.offsetWidth;
+    bar.classList.remove('is-hold');
+    bar.classList.add('is-go');
+  };
+  const show = (next) => {
+    const cur = current();
+    if (cur === next) return;
+    const img = slides[next];
+    if (cur !== -1) slides[cur].classList.remove('is-on');
+    img.classList.add('is-on'); // CSS runs the dissolve and the settle
+    if (cap) {
+      cap.querySelector('[data-plate-name]').textContent = img.dataset.name || '';
+      cap.querySelector('[data-plate-brand]').textContent = img.dataset.brand || '';
+      cap.querySelector('[data-plate-price]').textContent = img.dataset.price || '';
+      cap.setAttribute('href', `/item/${img.dataset.item}`);
+      if (!reduced) { cap.classList.remove('is-swap'); void cap.offsetWidth; cap.classList.add('is-swap'); }
     }
-    // Hidden tab holds the current plate: no class toggle, no invisible
-    // transitions completing in the background, zero cleanup.
-    if (document.hidden) return;
-
-    // DOM is the index bookkeeping — a remount restarts at slide 1.
-    const s = [...bg.querySelectorAll('.hero-slide')];
-    const cur = s.findIndex((el) => el.classList.contains('is-on'));
+    if (num) num.textContent = `No. ${pad(next + 1)} / ${pad(slides.length)}`;
+    progress();
+  };
+  /* Advance by `dir`. The timer holds the current plate when the next is
+     not decoded (order is editorial, never skip ahead); a press waits for
+     the decode and then deals it. */
+  const step = (dir, pressed) => {
+    if (!plate.isConnected || slides.length < 2) return;
+    const cur = current();
     if (cur === -1) return;
-
-    let next = (cur + 1) % s.length;
-    while (next !== cur && s[next].dataset.dead === '1') next = (next + 1) % s.length;
+    let next = (cur + dir + slides.length) % slides.length;
+    let guard = slides.length;
+    while (guard-- > 0 && next !== cur && slides[next].dataset.dead === '1') next = (next + dir + slides.length) % slides.length;
     if (next === cur) return;
-    const img = s[next];
+    const img = slides[next];
     load(img);
-    load(s[(next + 1) % s.length]); // decode-ahead: n+1 warms during n's dwell
-    const ready = img.dataset.ready === '1' || (img.complete && img.naturalWidth > 0);
-    if (!ready) return; // hold the current plate — order is editorial, never skip ahead
+    load(slides[(next + dir + slides.length) % slides.length]); // decode-ahead
+    if (isReady(img)) show(next);
+    else if (pressed) img.decode().then(() => { if (plate.isConnected && current() === cur) show(next); }, () => {});
+  };
+  const arm = () => {
+    clearInterval(plateTimer);
+    if (reduced) return;
+    plateTimer = setInterval(() => {
+      // Liveness FIRST — an away-navigated timer self-disposes even from a
+      // hidden tab's throttled fire.
+      if (!document.querySelector('[data-plate]')) {
+        clearInterval(plateTimer);
+        plateTimer = null;
+        return;
+      }
+      // Hidden tab holds the current plate: no class toggle, no invisible
+      // transitions completing in the background, zero cleanup.
+      if (document.hidden) return;
+      step(1, false);
+    }, PLATE_HOLD_MS);
+  };
+  const press = (dir) => { step(dir, true); arm(); };
 
-    s[cur].classList.remove('is-on');
-    img.classList.add('is-on'); // CSS runs the 1400ms dissolve
-  }, HERO_HOLD_MS);
+  plate.querySelector('[data-plate-prev]')?.addEventListener('click', () => press(-1));
+  plate.querySelector('[data-plate-next]')?.addEventListener('click', () => press(1));
+  if (!plateKeys) {
+    plateKeys = true;
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      if (!document.querySelector('[data-plate]')) return;
+      const t = e.target;
+      if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+      document.querySelector(e.key === 'ArrowRight' ? '[data-plate-next]' : '[data-plate-prev]')?.click();
+    });
+  }
+
+  if (slides.length < 2) return; // a still: caption and mark only
+  load(slides[1]); // warm plate 2 during slide 1's first hold
+  progress();
+  arm();
 }
 
 /* ------------------------------------------------------------------ */

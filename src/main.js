@@ -9,7 +9,7 @@ import {
   initMarquee,
   initCardCycle,
   mountPageMotion,
-  mountHeroBackdrop,
+  mountPlate,
   veilIn,
   veilOut,
   playIntro,
@@ -57,7 +57,7 @@ setNotFound(notFound);
 /* --------------------- per-route mount behaviours ------------------ */
 
 const MOUNTS = [
-  [/^\/$/, mountHeroBackdrop],
+  [/^\/$/, mountPlate],
   [/^\/archive$/, mountArchive],
   [/^\/item\//, mountProduct],
   [/^\/sell$/, mountSell],

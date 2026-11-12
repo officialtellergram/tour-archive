@@ -285,45 +285,20 @@ for (const c of collections) {
   }
 }
 
-/* Hero backdrop plates — audit harvests hrefs, never img srcs, so a typo'd
-   or deleted plate would otherwise ship a blank slide green. */
+/* The landing plate — the signature clips must be on disk and within
+   budget, and no course plate may linger in the template: the landing
+   rotates the stock itself now (src/pages/home.js, 12 Nov 2026). */
 {
   const homeSrc = readFileSync(join(SRC, 'pages', 'home.js'), 'utf8');
-  const m = homeSrc.match(/const HERO_BACKDROPS\s*=\s*\[([\s\S]*?)\]/);
-  if (!m) {
-    errors.push('home.js: HERO_BACKDROPS is not defined — home() would throw');
-  } else {
-    const plates = [...m[1].matchAll(/['"]([^'"]+)['"]/g)].map((x) => x[1]);
-    /* The count is free now: mountHeroBackdrop iterates whatever it finds and
-       app.css cycles its three drifts with nth-of-type(3n+k). Two is the floor
-       (one plate is a still image, and the loader bails under two), and the
-       ceiling is about weight — every plate past the first defers, but a
-       visitor who sits through the whole rotation downloads all of them. */
-    if (plates.length < 2)
-      errors.push(`home.js: HERO_BACKDROPS lists ${plates.length} plate(s) — the rotation needs at least 2`);
-    if (plates.length > 24)
-      warnings.push(`home.js: ${plates.length} hero plates — past ~24 the rotation is longer than any visit and the deferred weight stops paying for itself`);
-    for (const p of plates) {
-      const clean = p.split('?')[0];
-      if (!clean.startsWith('hero/')) {
-        errors.push(`HERO_BACKDROPS "${p}" must be a hero/-relative path under public/`);
-        continue;
-      }
-      if (!/\?v=\d+$/.test(p))
-        warnings.push(`HERO_BACKDROPS "${p}" carries no ?v — Pages serves public/ unhashed; Cloudflare fronts /hero with a 4 h browser TTL (max-age=14400) — a re-encode would ship stale`);
-      try {
-        const st = statSync(join(ROOT, 'public', ...clean.split('/')));
-        if (st.size > 600 * 1024)
-          errors.push(`${clean} is ${(st.size / 1024).toFixed(0)} KB — that is a licensed master, not a derivative; the Adobe licence forbids shipping the stand-alone file`);
-        else if (st.size > 200 * 1024)
-          warnings.push(`${clean} is ${(st.size / 1024).toFixed(0)} KB — the plate budget is 200 KB; re-encode before it ships`);
-      } catch {
-        errors.push(`HERO_BACKDROPS "${clean}" is not on disk under public/ — that ships a blank slide behind the hero`);
-      }
+  if (!homeSrc.includes('data-plate')) errors.push('home.js: the landing plate markup (data-plate) is missing — mountPlate would find nothing');
+  if (/['"`]hero\//.test(homeSrc)) errors.push('home.js: references a public/hero course plate — the landing rotates stock photography now');
+  for (const [rel, cap] of [['brand/intro-mark.webm', 150], ['brand/intro.mp4', 300], ['brand/logo.png', 200]]) {
+    try {
+      const st = statSync(join(ROOT, 'public', ...rel.split('/')));
+      if (st.size > cap * 1024) warnings.push(`${rel} is ${(st.size / 1024).toFixed(0)} KB — over its ${cap} KB budget`);
+    } catch {
+      errors.push(`${rel} is not on disk under public/ — the landing signature would not play`);
     }
-    const idxSrc = readFileSync(join(ROOT, 'index.html'), 'utf8');
-    if (plates[0] && !idxSrc.includes(plates[0]))
-      errors.push(`index.html does not reference HERO_BACKDROPS[0] "${plates[0]}" — the preload and slide 1 have drifted apart`);
   }
 }
 

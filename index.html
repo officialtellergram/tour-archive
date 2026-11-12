@@ -8,24 +8,11 @@
       name="description"
       content="Vintage and thrifted golf apparel catalogued by the championship it belongs to. One of one, every piece."
     />
-    <!-- Home route only: start hero plate 1 alongside the module/font fetches
-         (the SPA renders the hero after boot, so the preload scanner never sees
-         it). Path must equal HERO_BACKDROPS[0] in src/pages/home.js — audit
-         pins the two together. setAttribute keeps audit's href harvest quiet.
-         Sits before the font preloads so it runs at parse time. -->
+    <!-- The intro plate decision and the landing's first plate: the landing
+         rotates stock photography now (src/pages/home.js), and its first
+         slide ships in the prerendered document with fetchpriority="high",
+         so there is no fixed plate to preload here. -->
     <script>
-      (function () {
-        var base = '%BASE_URL%';
-        var p = location.pathname;
-        if (p.indexOf(base) === 0) p = '/' + p.slice(base.length);
-        if (p.replace(/\/+$/, '') !== '' && p !== '/') return;
-        var l = document.createElement('link');
-        l.setAttribute('rel', 'preload');
-        l.setAttribute('as', 'image');
-        l.setAttribute('fetchpriority', 'low');
-        l.setAttribute('href', base + 'hero/ocean-hole.jpg?v=1');
-        document.head.appendChild(l);
-      })();
       /* The intro plate (the wordmark drawing itself) shows once per tab
          session and never for: reduced motion, automation (the gates measure
          the page, not the curtain), or a URL a probe stamped. Decided here,

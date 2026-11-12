@@ -719,117 +719,330 @@ h3.display {
 .hero-slide.is-on {
   opacity: 1;
 }
-/* Per-plate framing (slots are positional — keep in step with HERO_BACKDROPS).
-   The Adobe-era plates each needed their own object-position because their
-   crops were off-centre; these three are our own 4:3 frames, composed in
-   camera, and all sit correctly on the shared default (50% 45%). Slide 1
-   carries 120px of feathered sky headroom in-file so the horizon clears the
-   header — object-position Y is a no-op at height-fit viewports, so in-file
-   headroom is the only lever for that. Add a nth-of-type hook here if a
-   future plate needs one. */
-/* Montage drift — each plate breathes on its own clock and bearing, so a
-   deal always lands mid-movement, the way cut footage does. Scale never
-   drops below 1.03 (1.5% margin per side) and translate stays under 0.9%,
-   so the drift can never expose a plate edge inside the clipped stage.
-   Animations run on the imgs; the crossfade transition owns opacity and the
-   parallax owns the parent's transform — three mechanisms, no shared target. */
-@keyframes hero-drift-a {
-  from { transform: scale(1.03); }
-  to { transform: scale(1.09) translate3d(-0.8%, 0.5%, 0); }
+/* ==== The landing plate (home) ====
+   The stock itself, one piece at a time under a navy wash, the signature
+   still in front. Markup in src/pages/home.js; rotation, caption and the
+   mark in src/lib/motion.js (mountPlate). The course-plate drift and the
+   parchment veil went with the course plates (12 Nov 2026). */
+.hero--plate {
+  background: var(--navy);
+  color: var(--parchment);
 }
-@keyframes hero-drift-b {
-  from { transform: scale(1.09) translate3d(0.7%, -0.4%, 0); }
-  to { transform: scale(1.03); }
+.hero--plate .hero-bg {
+  inset: 0;
+  background: var(--navy);
 }
-@keyframes hero-drift-c {
-  from { transform: scale(1.04) translate3d(0.5%, 0.6%, 0); }
-  to { transform: scale(1.08) translate3d(-0.5%, -0.4%, 0); }
+/* Crossfade: both plates sit at rest scale, so the outgoing one never snaps;
+   the incoming one settles from a hair larger over the whole hold. */
+.hero--plate .hero-slide {
+  object-position: 50% 28%;
+  transition: opacity 1900ms ease-in-out;
+  filter: grayscale(0.3) contrast(1.04);
 }
-/* The three drifts CYCLE across however many plates the rotation carries —
-   bound to nth-of-type(1/2/3) they stopped at slide 3 and every plate after
-   it sat perfectly still, which reads as a broken slideshow rather than a
-   calm one. Different periods (26/32/24s) keep neighbouring slides off each
-   other's clock. */
-.hero-slide:nth-of-type(3n + 1) { animation: hero-drift-a 26s ease-in-out infinite alternate; }
-.hero-slide:nth-of-type(3n + 2) { animation: hero-drift-b 32s ease-in-out infinite alternate; }
-.hero-slide:nth-of-type(3n + 3) { animation: hero-drift-c 24s ease-in-out infinite alternate; }
-@media (prefers-reduced-motion: reduce) {
-  .hero-slide {
-    animation: none;
-  }
+.hero--plate .hero-slide.is-on {
+  animation: plate-settle 8s cubic-bezier(0.33, 0, 0.2, 1) forwards;
 }
-/* The veil owns ALL muting: photographs are a muted plate under parchment,
-   never a full-strength backdrop. Strongest where the text mass sits (display
-   centre, meta rail + buttons low), clearest above the logo.
-
-   CONTRAST, re-measured 14 Sep 2026 after the pool was softened from
-   0.78/0.68 to 0.58/0.48 on request. Sampled off the RENDERED composite with
-   the copy hidden — plate plus veil, the ground a glyph actually sits on —
-   across several plates in the rotation, over the type column only:
-
-     navy display type    4.9 - 11.3:1   (AA 4.5 everywhere, mostly AAA)
-     claret em            3.2 -  6.3:1   (large-text AA is 3:1)
-
-   The claret italic is the tight one: it ran ~5:1 before and now bottoms out
-   near 3.2:1 against a bright horizon. That is still passing for display-size
-   type, with less room than it had. Soften this pool further and the claret
-   is what breaks first — raise the alphas back toward 0.7 before touching
-   the word's colour. Method: scripts/ux-probe.mjs is the routine check;
-   the one-off ground sampler is in the 14 Sep session notes. */
-/* Inverse transparency, per the deck-card rule: the scrim is owned by the
-   copy. The frame runs near-clear so the photograph leads; a soft parchment
-   pool sits behind the text column only, so every token — including the
-   brass eyebrow, which dies over a golden sky — reads on the ground it was
-   designed for. No glyph ever sits in weak alpha. */
-.hero-bg::after {
+@keyframes plate-settle {
+  from { transform: scale(1.04); }
+  to { transform: scale(1); }
+}
+/* The wash: the photograph is a plate under navy, so the lockup is the only
+   parchment on screen. */
+.hero--plate .hero-bg::before {
   content: '';
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: radial-gradient(
-      120% 80% at 50% 8%,
-      rgba(16, 30, 56, 0.05) 0%,
-      transparent 62%
-    ),
-    radial-gradient(
-      ellipse 50% 54% at 50% 46%,
-      rgba(244, 240, 230, 0.58) 0%,
-      rgba(244, 240, 230, 0.48) 48%,
-      rgba(244, 240, 230, 0) 74%
-    ),
-    linear-gradient(
-      180deg,
-      rgba(244, 240, 230, 0.16) 0%,
-      rgba(244, 240, 230, 0.12) 55%,
-      rgba(235, 229, 214, 0.5) 86%,
-      rgba(235, 229, 214, 0.8) 100%
-    );
+  background: var(--navy);
+  mix-blend-mode: color;
+  opacity: 0.22;
 }
-/* Narrow viewports: portrait's breathing room is VERTICAL — a wide pool
-   reads as the retired uniform wash. The pool shrinks to hug the text
-   stack (full-bleed horizontally only where the type is), leaving the top
-   fifth and the band beneath the buttons near-clear so the photograph
-   still leads on a phone. */
-@media (max-width: 700px) {
-  .hero-bg::after {
-    background: radial-gradient(
-        120% 80% at 50% 8%,
-        rgba(16, 30, 56, 0.05) 0%,
-        transparent 62%
-      ),
-      radial-gradient(
-        ellipse 110% 48% at 50% 46%,
-        rgba(244, 240, 230, 0.58) 0%,
-        rgba(244, 240, 230, 0.48) 50%,
-        rgba(244, 240, 230, 0) 76%
-      ),
-      linear-gradient(
-        180deg,
-        rgba(244, 240, 230, 0.14) 0%,
-        rgba(244, 240, 230, 0.1) 48%,
-        rgba(235, 229, 214, 0.4) 86%,
-        rgba(235, 229, 214, 0.8) 100%
-      );
+.hero--plate .hero-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(180deg, rgba(16, 30, 56, 0.58) 0%, rgba(16, 30, 56, 0.42) 45%, rgba(16, 30, 56, 0.8) 100%),
+    radial-gradient(60% 50% at 50% 48%, rgba(16, 30, 56, 0.35), rgba(16, 30, 56, 0) 100%);
+}
+.plate-grain {
+  position: absolute;
+  inset: -20%;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.09;
+  mix-blend-mode: screen;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: plate-grain 1.2s steps(6) infinite;
+}
+@keyframes plate-grain {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-3%, 2%); }
+  40% { transform: translate(2%, -3%); }
+  60% { transform: translate(-1%, 3%); }
+  80% { transform: translate(3%, 1%); }
+  100% { transform: translate(0, 0); }
+}
+/* The lockup is pinned to the plate, centred under the header, and the
+   caption is pinned to the foot: neither can move the other, so a
+   three-line piece name never nudges the mark. */
+.hero--plate .plate-lock {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--header-h);
+  bottom: 0;
+  z-index: 2;
+  align-self: auto;
+  align-content: center;
+  gap: clamp(18px, 4vh, 40px);
+  padding: 0 0 10vh;
+  pointer-events: none;
+}
+.plate-lock a,
+.plate-lock button {
+  pointer-events: auto;
+}
+.plate-lead {
+  color: var(--brass-soft);
+}
+.plate-lockup {
+  display: contents;
+  margin: 0;
+}
+.plate-word {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(17px, 2.2vw, 28px);
+  line-height: 1;
+  letter-spacing: 0.42em;
+  text-indent: 0.42em;
+  text-transform: uppercase;
+  color: var(--parchment);
+}
+.plate-mark {
+  position: relative;
+  display: block;
+  width: min(30vh, 240px);
+  aspect-ratio: 693 / 778;
+  filter: drop-shadow(0 18px 40px rgba(0, 0, 0, 0.35));
+}
+.plate-mark-webm,
+.plate-mark-canvas,
+.plate-mark-still {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  object-fit: contain;
+}
+.plate-mark-src {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  opacity: 0;
+  pointer-events: none;
+}
+.plate-mark[data-mode='webm'] .plate-mark-webm {
+  display: block;
+}
+.plate-mark[data-mode='canvas'] .plate-mark-canvas {
+  display: block;
+}
+.plate-mark[data-mode='still'] .plate-mark-still {
+  display: block;
+  /* the navy mark, turned to parchment */
+  filter: invert(1) sepia(0.22) brightness(1.08);
+}
+.plate-cta {
+  display: flex;
+  gap: 2.4rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 1vh;
+}
+/* Hairline links, but a 44px hit target (Fitts, scripts/ux-probe.mjs): the
+   box grows upward, the rule stays on the baseline. */
+.plate-cta a {
+  display: inline-flex;
+  align-items: flex-end;
+  min-height: 44px;
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--parchment);
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgba(244, 240, 230, 0.55);
+  transition: border-color 0.3s var(--ease);
+}
+.plate-cta a:hover {
+  border-color: var(--brass-soft);
+}
+/* The foot is not a scroll reveal: it sits at the bottom of a full-height
+   plate, where an intersection threshold would leave it half-shown. It
+   fades in on its own clock, after the lockup has had its beat. */
+.hero--plate .plate-foot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 2rem;
+  padding-bottom: 2.6rem;
+  animation: plate-cap 1s var(--ease) 1.2s both;
+}
+.plate-cap {
+  display: grid;
+  gap: 0.45rem;
+  max-width: 34ch;
+  color: var(--parchment);
+}
+.plate-cap-eyebrow {
+  color: inherit;
+  opacity: 0.6;
+  font-size: 11px;
+  letter-spacing: 0.24em;
+}
+.plate-cap-name {
+  font-family: var(--display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(20px, 2.2vw, 30px);
+  line-height: 1.15;
+}
+.plate-cap-meta {
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.8;
+  display: flex;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+.plate-cap-meta b {
+  font-weight: 400;
+  color: var(--brass-soft);
+}
+.plate-cap-view {
+  display: inline-block;
+  margin-top: 0.4rem;
+  width: max-content;
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(244, 240, 230, 0.55);
+  padding-bottom: 4px;
+}
+.plate-cap.is-swap {
+  animation: plate-cap 0.9s var(--ease);
+}
+@keyframes plate-cap {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+.plate-ctl {
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--parchment);
+}
+.plate-ctl button {
+  background: none;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+  padding: 0.4rem 0;
+  opacity: 0.75;
+  transition: opacity 0.3s var(--ease), border-color 0.3s var(--ease);
+}
+.plate-ctl button:hover {
+  opacity: 1;
+  border-color: var(--brass-soft);
+}
+.plate-num {
+  opacity: 0.7;
+  font-variant-numeric: tabular-nums;
+}
+/* The brass hairline fills across each hold. */
+.plate-bar {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 3;
+  height: 1px;
+  width: 0;
+  background: var(--brass-soft);
+  transition: width 7s linear;
+}
+.plate-bar.is-go {
+  width: 100%;
+}
+.plate-bar.is-hold {
+  transition: none;
+}
+.hero--plate .scroll-cue {
+  position: absolute;
+  left: 50%;
+  bottom: 1rem;
+  translate: -50% 0;
+  z-index: 3;
+  padding-bottom: 0;
+  color: var(--parchment);
+  opacity: 0.5;
+}
+.hero--plate .scroll-cue i {
+  background: linear-gradient(180deg, rgba(244, 240, 230, 0.8), transparent);
+}
+@media (max-width: 760px) {
+  .hero--plate .plate-foot {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+    padding-bottom: 3.2rem;
+  }
+  .plate-ctl {
+    justify-content: space-between;
+  }
+  .plate-mark {
+    width: min(26vh, 180px);
+  }
+  .plate-cta {
+    gap: 1.6rem;
+  }
+  .hero--plate .plate-lock {
+    padding-bottom: 22vh;
+  }
+  .hero--plate .scroll-cue {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero--plate .hero-slide,
+  .hero--plate .hero-slide.is-on {
+    transition: none;
+    animation: none;
+  }
+  .plate-grain,
+  .plate-cap.is-swap,
+  .hero--plate .plate-foot {
+    animation: none;
+  }
+  .plate-bar {
+    transition: none;
   }
 }
 
