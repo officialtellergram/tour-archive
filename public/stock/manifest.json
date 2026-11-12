@@ -4838,7 +4838,16 @@
         "listedAt": "2026-11-12",
         "pictures": "sq1"
       },
-      "_ebayUrl": "https://www.ebay.com/itm/377640397049"
+      "_ebayUrl": "https://www.ebay.com/itm/377640397049",
+      "photos": [
+        "carousel/rlx-dark-camo-q-zip/01.jpg",
+        "carousel/rlx-dark-camo-q-zip/02.jpg",
+        "carousel/rlx-dark-camo-q-zip/03.jpg",
+        "carousel/rlx-dark-camo-q-zip/04.jpg",
+        "carousel/rlx-dark-camo-q-zip/05.jpg",
+        "carousel/rlx-dark-camo-q-zip/06.jpg"
+      ],
+      "_photosPulled": "2026-11-12"
     },
     {
       "id": "stock-scotty-cameron-x-peter-millar-navy-polo",
@@ -4889,7 +4898,15 @@
         "listedAt": "2026-11-12",
         "pictures": "sq1"
       },
-      "_ebayUrl": "https://www.ebay.com/itm/377640397077"
+      "_ebayUrl": "https://www.ebay.com/itm/377640397077",
+      "photos": [
+        "carousel/scotty-cameron-x-peter-millar-navy-polo/01.jpg",
+        "carousel/scotty-cameron-x-peter-millar-navy-polo/02.jpg",
+        "carousel/scotty-cameron-x-peter-millar-navy-polo/03.jpg",
+        "carousel/scotty-cameron-x-peter-millar-navy-polo/04.jpg",
+        "carousel/scotty-cameron-x-peter-millar-navy-polo/05.jpg"
+      ],
+      "_photosPulled": "2026-11-12"
     },
     {
       "id": "stock-keswick-golf-club-striped-polo",
@@ -4940,7 +4957,14 @@
         "listedAt": "2026-11-12",
         "pictures": "sq1"
       },
-      "_ebayUrl": "https://www.ebay.com/itm/377640397109"
+      "_ebayUrl": "https://www.ebay.com/itm/377640397109",
+      "photos": [
+        "carousel/keswick-golf-club-striped-polo/01.jpg",
+        "carousel/keswick-golf-club-striped-polo/02.jpg",
+        "carousel/keswick-golf-club-striped-polo/03.jpg",
+        "carousel/keswick-golf-club-striped-polo/04.jpg"
+      ],
+      "_photosPulled": "2026-11-12"
     },
     {
       "id": "stock-malbon-cartoon-crewneck",
@@ -4984,7 +5008,15 @@
         "minted": "2026-11-12"
       },
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/9B614mdCYd1X0Bw0pk9k41E"
+      "listingUrl": "https://buy.stripe.com/9B614mdCYd1X0Bw0pk9k41E",
+      "photos": [
+        "carousel/malbon-cartoon-crewneck/01.jpg",
+        "carousel/malbon-cartoon-crewneck/02.jpg",
+        "carousel/malbon-cartoon-crewneck/03.jpg",
+        "carousel/malbon-cartoon-crewneck/04.jpg",
+        "carousel/malbon-cartoon-crewneck/05.jpg"
+      ],
+      "_photosPulled": "2026-11-12"
     },
     {
       "id": "stock-burnt-red-malbon-longsleeve",
@@ -5036,7 +5068,13 @@
         "listedAt": "2026-11-12",
         "pictures": "sq1"
       },
-      "_ebayUrl": "https://www.ebay.com/itm/377640397158"
+      "_ebayUrl": "https://www.ebay.com/itm/377640397158",
+      "photos": [
+        "carousel/burnt-red-malbon-longsleeve/01.jpg",
+        "carousel/burnt-red-malbon-longsleeve/02.jpg",
+        "carousel/burnt-red-malbon-longsleeve/03.jpg"
+      ],
+      "_photosPulled": "2026-11-12"
     }
   ],
   "_inPerson": {
