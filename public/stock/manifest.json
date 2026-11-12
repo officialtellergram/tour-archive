@@ -4975,7 +4975,7 @@
       "year": "—",
       "category": "Knitwear",
       "garment": "sweater",
-      "size": "See photos",
+      "size": "L",
       "condition": "Pre-owned",
       "price": 74.99,
       "colorway": [
@@ -5016,7 +5016,8 @@
         "carousel/malbon-cartoon-crewneck/04.jpg",
         "carousel/malbon-cartoon-crewneck/05.jpg"
       ],
-      "_photosPulled": "2026-11-12"
+      "_photosPulled": "2026-11-12",
+      "_sizeSource": "neck label, photographed (carousel frame 04, IMG_2681), 12 Nov 2026"
     },
     {
       "id": "stock-burnt-red-malbon-longsleeve",
