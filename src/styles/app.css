@@ -806,9 +806,6 @@ h3.display {
 .plate-lock button {
   pointer-events: auto;
 }
-.plate-lead {
-  color: var(--brass-soft);
-}
 .plate-lockup {
   display: contents;
   margin: 0;
@@ -856,7 +853,7 @@ h3.display {
 .plate-mark[data-mode='still'] .plate-mark-still {
   display: block;
   /* the navy mark, turned to parchment */
-  filter: invert(1) sepia(0.22) brightness(1.08);
+  filter: invert(1) saturate(0.45) brightness(1.05);
 }
 .plate-cta {
   display: flex;

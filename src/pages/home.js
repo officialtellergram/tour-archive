@@ -168,8 +168,10 @@ export function home() {
   /* The plate: the stock itself, one piece at a time under a navy wash, the
      signature still in front (motion.js mountPlate runs the rotation, the
      caption and the mark; the markup contract is pinned by scripts/smoke.mjs).
-     The signature is the intro plate's own clip, drawn on once per visit —
-     or already landed when the intro has just drawn it. */
+     The signature is the intro plate's own clip, drawn on once per visit.
+     This is the off-season hero and carries no drop messaging (Karen,
+     12 Nov 2026): the drop pane below the marquee still leads the page while
+     a drop window is open. */
   return `
   <section class="hero hero--plate" data-hero data-plate>
     <div class="hero-bg" data-hero-backdrop>
@@ -177,11 +179,6 @@ export function home() {
     </div>
     <div class="plate-grain" aria-hidden="true"></div>
     <div class="wrap hero-inner plate-lock">
-      ${
-        eventLed && coll
-          ? `<p class="eyebrow plate-lead" data-hero-lead><span>${coll.drop}${status.chip === coll.drop ? '' : ` · ${status.chip}`}</span></p>`
-          : ''
-      }
       <h1 class="plate-lockup">
         <span class="plate-word" data-hero-cta>Tour</span>
         <span class="plate-mark" data-plate-mark role="img" aria-label="Tour Archive signature">
@@ -193,13 +190,8 @@ export function home() {
         <span class="plate-word" data-hero-cta>Archive</span>
       </h1>
       <div class="plate-cta" data-hero-cta>
-        ${
-          eventLed && coll
-            ? `<a href="/collections/${coll.id}">${ev.phase === 'live' ? `Shop ${coll.drop}` : `Preview ${coll.drop}`}</a>
-        <a href="/archive">Shop the archive</a>`
-            : `<a href="/archive">Shop the archive</a>
-        <a href="/sell">Sell to us</a>`
-        }
+        <a href="/archive">Shop the archive</a>
+        <a href="/sell">Sell to us</a>
       </div>
     </div>
     ${

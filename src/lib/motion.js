@@ -558,12 +558,15 @@ const MARK_CROP = { x: 150, y: 520, w: 780, h: 876 };
 const MARK_INK = [244, 240, 230]; // --parchment
 
 /**
- * Play one clip at the intro's rate and freeze it at the hold — or, when the
- * intro has just drawn the mark (`landed`), seek straight to the held frame.
+ * Play one clip at the intro's rate and freeze it at the hold. Under the
+ * intro plate it plays covered — the intro lifts at about the moment the
+ * mark lands, so the plate shows a mark already there or just finishing.
+ * (A seek straight to the held frame was tried for that case and failed on
+ * first visits over the network, 12 Nov 2026; playing is the proven path.)
  * `onFrame` runs per frame (the canvas route) and may throw to reject the
  * whole route (a tainted canvas). Resolves true once the mark is showing.
  */
-function runClip(video, { landed = false, onFrame } = {}) {
+function runClip(video, { onFrame } = {}) {
   return new Promise((resolve) => {
     let raf = 0;
     let done = false;
@@ -589,18 +592,6 @@ function runClip(video, { landed = false, onFrame } = {}) {
     };
     video.addEventListener('error', () => settle(false), { once: true });
     video.preload = 'auto';
-    if (landed) {
-      // The held frame, no play: the intro has just drawn the mark on the
-      // navy, and the plate shows it already there when the plate lifts.
-      const seek = () => {
-        video.addEventListener('seeked', () => { if (paint()) setTimeout(() => settle(true), 60); }, { once: true });
-        try { video.currentTime = MARK_HOLD_AT; } catch { settle(false); }
-      };
-      if (video.readyState >= 2) seek();
-      else video.addEventListener('loadeddata', seek, { once: true });
-      video.load();
-      return;
-    }
     video.addEventListener('timeupdate', () => {
       if (video.currentTime >= MARK_HOLD_AT && !video.paused) {
         video.pause();
@@ -621,7 +612,7 @@ function runClip(video, { landed = false, onFrame } = {}) {
  * on-black clip keyed through a canvas (Safari — same-origin only, a
  * tainted canvas rejects itself); the still logo. Reduced motion: the still.
  */
-async function runMark(mark, landed) {
+async function runMark(mark) {
   const webm = mark.querySelector('[data-plate-webm]');
   const clip = mark.querySelector('[data-plate-src]');
   const canvas = mark.querySelector('[data-plate-canvas]');
@@ -630,7 +621,7 @@ async function runMark(mark, landed) {
 
   if (webm.canPlayType && webm.canPlayType('video/webm; codecs="vp9"')) {
     mode('webm');
-    if (await runClip(webm, { landed })) return;
+    if (await runClip(webm)) return;
   }
 
   mode('canvas');
@@ -649,7 +640,7 @@ async function runMark(mark, landed) {
     }
     ctx.putImageData(im, 0, 0);
   };
-  if (await runClip(clip, { landed, onFrame: paint })) return;
+  if (await runClip(clip, { onFrame: paint })) return;
 
   mode('still');
 }
@@ -678,10 +669,10 @@ export function mountPlate(outlet) {
   const bar = plate.querySelector('[data-plate-bar]');
   const pad = (n) => String(n).padStart(2, '0');
 
-  // The signature: under the intro, prepare the landed frame so the plate
-  // lifts onto a mark already there; otherwise draw it now.
+  // The signature draws now — under the intro it draws covered, and the
+  // intro lifts at about the moment it lands.
   const mark = plate.querySelector('[data-plate-mark]');
-  if (mark) runMark(mark, !!introPending());
+  if (mark) runMark(mark);
 
   // Loader: the absent src IS the deferral (in-viewport loading="lazy" would
   // fetch immediately). decode() rejection is "not ready yet" unless the
