@@ -4830,7 +4830,14 @@
         "minted": "2026-11-12"
       },
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/6oU00iaqMge9bgadc69k41B"
+      "listingUrl": "https://buy.stripe.com/6oU00iaqMge9bgadc69k41B",
+      "_ebay": {
+        "itemId": "377640397049",
+        "sku": "TA_GS_111",
+        "price": 35.99,
+        "listedAt": "2026-11-12"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377640397049"
     },
     {
       "id": "stock-scotty-cameron-x-peter-millar-navy-polo",
@@ -4873,7 +4880,14 @@
         "minted": "2026-11-12"
       },
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/4gMcN4aqMbXTdoi7RM9k41C"
+      "listingUrl": "https://buy.stripe.com/4gMcN4aqMbXTdoi7RM9k41C",
+      "_ebay": {
+        "itemId": "377640397077",
+        "sku": "TA_GS_112",
+        "price": 116.99,
+        "listedAt": "2026-11-12"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377640397077"
     },
     {
       "id": "stock-keswick-golf-club-striped-polo",
@@ -4916,7 +4930,14 @@
         "minted": "2026-11-12"
       },
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/fZu00idCY1jf1FA1to9k41D"
+      "listingUrl": "https://buy.stripe.com/fZu00idCY1jf1FA1to9k41D",
+      "_ebay": {
+        "itemId": "377640397109",
+        "sku": "TA_GS_90",
+        "price": 29.99,
+        "listedAt": "2026-11-12"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377640397109"
     },
     {
       "id": "stock-malbon-cartoon-crewneck",
@@ -5004,7 +5025,14 @@
         "minted": "2026-11-12"
       },
       "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/aFaaEW56sge9ac6b3Y9k41F"
+      "listingUrl": "https://buy.stripe.com/aFaaEW56sge9ac6b3Y9k41F",
+      "_ebay": {
+        "itemId": "377640397158",
+        "sku": "TA_GS_67",
+        "price": 87.99,
+        "listedAt": "2026-11-12"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377640397158"
     }
   ],
   "_inPerson": {
