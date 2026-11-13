@@ -183,21 +183,7 @@ export function home() {
         <span class="plate-word" data-hero-cta>Tour</span>
         <span class="plate-mark" data-plate-mark role="img" aria-label="Tour Archive signature">
           <video class="plate-mark-webm" data-plate-webm muted playsinline preload="none" src="${BASE_URL}brand/intro-mark.webm?v=1"></video>
-          <video class="plate-mark-src" data-plate-src muted playsinline preload="none" src="${BASE_URL}brand/intro.mp4?v=2"></video>
-          <canvas class="plate-mark-canvas" data-plate-canvas></canvas>
-          <svg class="plate-mark-draw" viewBox="0 0 693 778" data-ink-src="${BASE_URL}brand/logo-parchment.png?v=1" aria-hidden="true" focusable="false">
-            <defs>
-              <mask id="plate-pen" maskUnits="userSpaceOnUse" x="-60" y="-60" width="813" height="898">
-                <path class="pen" pathLength="1" style="--pen-t:.55s;--pen-d:.2s" stroke-width="78" d="M432,4 L236,262 L140,418 L22,650 Q0,742 30,770" />
-                <path class="pen" pathLength="1" style="--pen-t:.4s;--pen-d:.72s" stroke-width="72" d="M30,770 Q62,772 120,716 L208,606 L422,388" />
-                <path class="pen" pathLength="1" style="--pen-t:.38s;--pen-d:1.08s" stroke-width="70" d="M422,388 Q404,470 404,560 L410,640 Q424,692 470,688 Q510,680 498,654" />
-                <path class="pen" pathLength="1" style="--pen-t:.42s;--pen-d:1.4s" stroke-width="84" d="M8,284 Q150,302 300,290 Q500,268 690,222" />
-                <rect class="all" x="-60" y="-60" width="813" height="898" />
-              </mask>
-            </defs>
-            <image width="693" height="778" mask="url(#plate-pen)" />
-          </svg>
-          <img class="plate-mark-still" src="${BASE_URL}brand/logo-parchment.png?v=1" alt=""${sizeAttrs('brand/logo-parchment.png')} loading="lazy" decoding="async" />
+          <img class="plate-mark-still" src="${BASE_URL}brand/logo-parchment.png?v=1" alt=""${sizeAttrs('brand/logo-parchment.png')} decoding="async" />
         </span>
         <span class="plate-word" data-hero-cta>Archive</span>
       </h1>

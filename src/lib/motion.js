@@ -544,62 +544,44 @@ const PLATE_HOLD_MS = 7000; // cadence; the 1900ms dissolve lives in CSS
 let plateTimer = null; //      singleton interval handle — the only one, ever
 let plateKeys = false; //      the arrow-key delegate is bound once per document
 
-/* The signature: brand/intro.mp4 is the intro plate's brush mark on black.
-   brand/intro-mark.webm is that mark cut out with real alpha and tinted
-   parchment (made in the landing-ideas lab, 12 Nov 2026). The mark lands at
-   ~1.75 s of clip time and holds to ~3.75 s before the clip's own wipe; at
-   MARK_RATE (2, the intro's own speed) it lands at ~0.9 s and the clip is
-   frozen at MARK_HOLD_AT so the wipe never comes. Its box in the 1080x1920
-   frame, measured: x 161-919, y 533-1386 — MARK_CROP with a margin. */
+/* The signature: brand/intro-mark.webm is the intro plate's brush mark cut
+   out of brand/intro.mp4 with real alpha and tinted parchment (made in the
+   landing-ideas lab, 12 Nov 2026). The mark lands at ~1.75 s of clip time
+   and holds to ~3.75 s before the clip's own wipe; at MARK_RATE (2, the
+   intro's own speed) it lands at ~0.9 s and the clip is frozen at
+   MARK_HOLD_AT so the wipe never comes. */
 const MARK_RATE = 2;
 const MARK_HOLD_AT = 3.0;
 const MARK_READY_MS = 4000; // a slow fetch gets its chance; the mark arrives when it can
-const MARK_CROP = { x: 150, y: 520, w: 780, h: 876 };
-const MARK_INK = [244, 240, 230]; // --parchment
 
 /**
- * Play one clip at the intro's rate and freeze it at the hold. Under the
+ * Play the clip at the intro's rate and freeze it at the hold. Under the
  * intro plate it plays covered — the intro lifts at about the moment the
  * mark lands, so the plate shows a mark already there or just finishing.
  * (A seek straight to the held frame was tried for that case and failed on
  * first visits over the network, 12 Nov 2026; playing is the proven path.)
- * `onFrame` runs per frame (the canvas route) and may throw to reject the
- * whole route (a tainted canvas). Resolves true once the mark is showing.
+ * Resolves true once the clip is playing, false when it cannot.
  */
-function runClip(video, { onFrame } = {}) {
+function runClip(video) {
   return new Promise((resolve) => {
-    let raf = 0;
     let done = false;
     let ready = 0;
     const settle = (ok) => {
       if (done) return;
       done = true;
       clearTimeout(ready);
-      cancelAnimationFrame(raf);
       if (!ok) {
         try { video.pause(); } catch { /* never started */ }
       }
       resolve(ok);
     };
     ready = setTimeout(() => settle(false), MARK_READY_MS);
-    const paint = () => {
-      try { onFrame && onFrame(); } catch { settle(false); }
-      return !done;
-    };
-    const frame = () => {
-      if (!paint()) return;
-      if (!video.paused && !video.ended) raf = requestAnimationFrame(frame);
-    };
     video.addEventListener('error', () => settle(false), { once: true });
     video.preload = 'auto';
     video.addEventListener('timeupdate', () => {
-      if (video.currentTime >= MARK_HOLD_AT && !video.paused) {
-        video.pause();
-        cancelAnimationFrame(raf);
-        paint();
-      }
+      if (video.currentTime >= MARK_HOLD_AT && !video.paused) video.pause();
     });
-    video.addEventListener('playing', () => { frame(); setTimeout(() => settle(true), 120); }, { once: true });
+    video.addEventListener('playing', () => setTimeout(() => settle(true), 120), { once: true });
     video.playbackRate = MARK_RATE;
     const p = video.play();
     if (p && p.catch) p.catch(() => settle(false));
@@ -609,7 +591,7 @@ function runClip(video, { onFrame } = {}) {
 /* Safari (iOS and Mac) plays VP9 WebM now but drops its alpha plane, and
    canPlayType says "probably" regardless. The clip's colour plane is flat
    parchment with the mark carried in alpha, so Safari showed a solid
-   parchment card (iPhone, 13 Nov 2026). Safari takes the canvas route. */
+   parchment card (iPhone, 13 Nov 2026). Safari gets the still. */
 const SAFARI =
   typeof navigator !== 'undefined' &&
   /AppleWebKit/.test(navigator.userAgent) &&
@@ -633,18 +615,27 @@ function clipHasAlpha(video) {
 }
 
 /**
- * Put the signature on the plate. Three routes, each only if the one
- * before cannot run: the alpha WebM (Chrome, Edge, Firefox, Android); the
- * on-black clip keyed through a canvas (Safari — same-origin only, a
- * tainted canvas rejects itself); the logo drawn on through a CSS pen mask
- * (no video can play, e.g. iOS Low Power Mode). Reduced motion: the still.
+ * Put the signature on the plate: the alpha clip where it plays cleanly
+ * (Chrome, Edge, Firefox, Android), otherwise the parchment still, which
+ * fades in on the same clock as the words (Safari, iOS, anything that will
+ * not autoplay — Karen, 13 Nov 2026: the keyed and drawn routes read as
+ * messy on the phone; a plain fade is the house manner). Reduced motion:
+ * the still, at once.
  */
 async function runMark(mark) {
   const webm = mark.querySelector('[data-plate-webm]');
-  const clip = mark.querySelector('[data-plate-src]');
-  const canvas = mark.querySelector('[data-plate-canvas]');
   const mode = (m) => { mark.dataset.mode = m; };
-  if (reduced || !webm || !clip || !canvas) { mode('still'); return; }
+  const still = () => {
+    mode('still');
+    if (reduced) { mark.classList.add('is-in'); return; }
+    // On the words' clock: heroSequence lifts them about a second after the
+    // page motion starts, which is after the intro plate begins to lift.
+    const go = () => setTimeout(() => mark.classList.add('is-in'), 900);
+    const pending = introPending();
+    if (pending) pending.then(go);
+    else go();
+  };
+  if (reduced || !webm) { still(); return; }
 
   if (!SAFARI && webm.canPlayType && webm.canPlayType('video/webm; codecs="vp9"')) {
     mode('webm');
@@ -653,33 +644,7 @@ async function runMark(mark) {
       try { webm.pause(); } catch { /* fine */ }
     }
   }
-
-  mode('canvas');
-  const dpr = Math.min(2, window.devicePixelRatio || 1);
-  const box = mark.getBoundingClientRect();
-  canvas.width = Math.max(1, Math.round(box.width * dpr));
-  canvas.height = Math.max(1, Math.round(box.height * dpr));
-  const ctx = canvas.getContext('2d', { willReadFrequently: true });
-  const paint = () => {
-    ctx.drawImage(clip, MARK_CROP.x, MARK_CROP.y, MARK_CROP.w, MARK_CROP.h, 0, 0, canvas.width, canvas.height);
-    const im = ctx.getImageData(0, 0, canvas.width, canvas.height); // throws on a tainted canvas
-    const d = im.data;
-    for (let i = 0; i < d.length; i += 4) {
-      const a = Math.max(d[i], d[i + 1], d[i + 2]);
-      d[i] = MARK_INK[0]; d[i + 1] = MARK_INK[1]; d[i + 2] = MARK_INK[2]; d[i + 3] = a;
-    }
-    ctx.putImageData(im, 0, 0);
-  };
-  if (await runClip(clip, { onFrame: paint })) return;
-
-  // No clip will play (iOS Low Power Mode refuses video autoplay outright):
-  // the logo draws on through a pen-order mask in CSS — no video, no canvas.
-  // The image's href is set here, not in the template, so the audit's route
-  // harvest (every href must be an absolute route) never sees an asset path.
-  const draw = mark.querySelector('.plate-mark-draw');
-  const ink = draw?.querySelector('image');
-  if (draw && ink && !ink.getAttribute('href')) ink.setAttribute('href', draw.dataset.inkSrc || '');
-  mode('drawn');
+  still();
 }
 
 /**

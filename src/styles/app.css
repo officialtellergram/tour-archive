@@ -828,7 +828,6 @@ h3.display {
   filter: drop-shadow(0 18px 40px rgba(0, 0, 0, 0.35));
 }
 .plate-mark-webm,
-.plate-mark-canvas,
 .plate-mark-still {
   position: absolute;
   inset: 0;
@@ -837,60 +836,20 @@ h3.display {
   display: none;
   object-fit: contain;
 }
-.plate-mark-src {
-  position: absolute;
-  width: 2px;
-  height: 2px;
-  opacity: 0;
-  pointer-events: none;
-}
 .plate-mark[data-mode='webm'] .plate-mark-webm {
   display: block;
 }
-.plate-mark[data-mode='canvas'] .plate-mark-canvas {
-  display: block;
-}
+/* The still fades in on the words' clock (heroSequence lifts them over
+   ~1.2 s) — the mark arrives with "Tour" and "Archive", not before them. */
 .plate-mark[data-mode='still'] .plate-mark-still {
   display: block;
-}
-/* The drawn route: the parchment logo revealed through a mask that follows
-   the pen — stem down, sweep up into the A, the A's leg and tail, then the
-   crossbar — and a final full reveal so no edge depends on the strokes. */
-.plate-mark-draw {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: none;
-  overflow: visible;
-}
-.plate-mark[data-mode='drawn'] .plate-mark-draw {
-  display: block;
-}
-.plate-mark-draw .pen {
-  fill: none;
-  stroke: #fff;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-}
-.plate-mark-draw .all {
-  fill: #fff;
   opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 1.2s var(--ease-out), transform 1.2s var(--ease-out);
 }
-.plate-mark[data-mode='drawn'] .pen {
-  animation: plate-pen var(--pen-t) cubic-bezier(0.4, 0, 0.3, 1) forwards;
-  animation-delay: var(--pen-d);
-}
-.plate-mark[data-mode='drawn'] .all {
-  animation: plate-reveal 0.5s ease forwards 1.75s;
-}
-@keyframes plate-pen {
-  to { stroke-dashoffset: 0; }
-}
-@keyframes plate-reveal {
-  to { opacity: 1; }
+.plate-mark[data-mode='still'].is-in .plate-mark-still {
+  opacity: 1;
+  transform: none;
 }
 .plate-cta {
   display: flex;
