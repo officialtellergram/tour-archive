@@ -606,6 +606,32 @@ function runClip(video, { onFrame } = {}) {
   });
 }
 
+/* Safari (iOS and Mac) plays VP9 WebM now but drops its alpha plane, and
+   canPlayType says "probably" regardless. The clip's colour plane is flat
+   parchment with the mark carried in alpha, so Safari showed a solid
+   parchment card (iPhone, 13 Nov 2026). Safari takes the canvas route. */
+const SAFARI =
+  typeof navigator !== 'undefined' &&
+  /AppleWebKit/.test(navigator.userAgent) &&
+  !/Chrome|Chromium|CriOS|Edg|OPR|Android|FxiOS/.test(navigator.userAgent);
+
+/* Did the alpha plane survive? A corner of the held frame is clear in the
+   clip; a player that dropped alpha paints it solid. Unknowable (a tainted
+   canvas) counts as fine — same-origin play never taints. */
+function clipHasAlpha(video) {
+  try {
+    const c = document.createElement('canvas');
+    c.width = 8;
+    c.height = 8;
+    const x = c.getContext('2d');
+    x.drawImage(video, 0, 0, 8, 8);
+    const d = x.getImageData(0, 0, 1, 1).data;
+    return d[3] < 128;
+  } catch {
+    return true;
+  }
+}
+
 /**
  * Put the signature on the plate. Three routes, each only if the one
  * before cannot run: the alpha WebM (Chrome, Edge, Firefox, Android); the
@@ -619,9 +645,12 @@ async function runMark(mark) {
   const mode = (m) => { mark.dataset.mode = m; };
   if (reduced || !webm || !clip || !canvas) { mode('still'); return; }
 
-  if (webm.canPlayType && webm.canPlayType('video/webm; codecs="vp9"')) {
+  if (!SAFARI && webm.canPlayType && webm.canPlayType('video/webm; codecs="vp9"')) {
     mode('webm');
-    if (await runClip(webm)) return;
+    if (await runClip(webm)) {
+      if (clipHasAlpha(webm)) return;
+      try { webm.pause(); } catch { /* fine */ }
+    }
   }
 
   mode('canvas');
