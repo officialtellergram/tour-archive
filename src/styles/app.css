@@ -525,6 +525,114 @@ h3.display {
   color: var(--ink-soft);
 }
 
+/* Search: a word in the right-hand nav (it stays when the others hide on a
+   phone), and a strip that drops from the header's foot. */
+.nav-search {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding-block: 0.4rem;
+  /* the UA sheet resets a button's tracking and case — take the nav's back */
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: var(--ink-soft);
+  position: relative;
+  transition: color 0.3s var(--ease);
+}
+.nav-search::after {
+  content: '';
+  position: absolute;
+  inset: -14px -12px;
+  min-width: 44px;
+  min-height: 44px;
+}
+.nav-search svg {
+  width: 12px;
+  height: 12px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.6;
+}
+.nav-search:hover,
+.nav-search[aria-expanded='true'] {
+  color: var(--navy);
+}
+.search-strip {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: color-mix(in srgb, var(--parchment) 96%, transparent);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--rule);
+  transform: translateY(-8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s var(--ease), transform 0.45s var(--ease);
+}
+.search-strip.is-open {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.search-form {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 0.9rem;
+}
+.search-form svg {
+  width: 16px;
+  height: 16px;
+  stroke: var(--ink-faint);
+  fill: none;
+  stroke-width: 1.5;
+}
+.search-form input {
+  font: 300 clamp(1.25rem, 2.2vw, 1.8rem) / 1.2 var(--display);
+  color: var(--ink);
+  background: none;
+  border: 0;
+  outline: none;
+  min-height: 44px;
+  width: 100%;
+}
+.search-form input::placeholder {
+  color: var(--ink-faint);
+  font-style: italic;
+}
+.search-form input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+.search-form button {
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  min-height: 44px;
+  padding-inline: 0.6rem;
+}
+.search-form button:hover {
+  color: var(--navy);
+}
+.search-hint {
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: -0.2rem 0 0;
+  padding-bottom: 0.9rem;
+}
+.search-hint b {
+  font-weight: 400;
+  color: var(--ink-soft);
+}
+
 /* drawer nav (mobile + "Collections" menu) */
 .drawer {
   position: fixed;
@@ -1757,7 +1865,7 @@ h3.display {
 .filters {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.5rem 0.75rem;
   align-items: center;
   padding-block: 1.1rem;
   border-block: 1px solid var(--rule);
@@ -1797,12 +1905,300 @@ h3.display {
   color: var(--parchment);
 }
 .filters .count {
-  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-height: 44px;
   font-family: var(--sans);
   font-size: 10px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--ink-faint);
+  white-space: nowrap;
+}
+.filters .count button {
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: var(--navy);
+  border-bottom: 1px solid var(--rule-strong);
+  min-height: 44px;
+}
+.filters .count q {
+  quotes: '\201C' '\201D';
+  font-family: var(--display);
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--ink);
+}
+/* the collection chips take part in the bar's own wrap on a wide screen */
+.filter-chips {
+  display: contents;
+}
+.filter-spacer {
+  flex: 1 1 0;
+}
+
+/* The four menus — Brand, Color, Price, Sort: a word and a caret, a card
+   beneath. Native <details>, so open/shut needs no script and a keyboard
+   gets it for free; the page script only keeps one open at a time. */
+.fmenu {
+  position: relative;
+}
+.fmenu > summary {
+  list-style: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  min-height: 44px;
+  padding: 0 0.2rem;
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  transition: color 0.3s var(--ease);
+}
+.fmenu > summary::-webkit-details-marker {
+  display: none;
+}
+.fmenu > summary::after {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform 0.3s var(--ease);
+}
+.fmenu[open] > summary::after {
+  transform: translateY(1px) rotate(225deg);
+}
+.fmenu > summary:hover,
+.fmenu[open] > summary,
+.fmenu.is-set > summary {
+  color: var(--navy);
+}
+/* a set menu wears a brass dot and shows its choice */
+.fmenu.is-set > summary::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--brass);
+}
+.fmenu-val {
+  color: var(--ink);
+}
+.fmenu-val:empty {
+  display: none;
+}
+/* Shut, the card is gone from layout — Chromium still gives a closed
+   <details>' children a box, which the layout and tap-target probes would
+   measure. Open, it hangs from the menu's right edge: the menus live at
+   the right end of the bar, so a card hung from the left would run off
+   the page. */
+.fmenu:not([open]) .fmenu-pop {
+  display: none;
+}
+.fmenu-pop {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  right: 0;
+  z-index: 20;
+  min-width: 230px;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  box-shadow: 0 18px 40px -24px rgba(22, 21, 15, 0.35);
+  padding: 0.5rem 0.4rem;
+}
+.fmenu-pop ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: min(50vh, 440px);
+  overflow: auto;
+}
+.fmenu-pop li button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-height: 44px;
+  padding: 0 0.7rem;
+  text-align: left;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.fmenu-pop li button:hover {
+  color: var(--navy);
+  background: var(--parchment-deep);
+}
+.fmenu-pop li button[aria-pressed='true'] {
+  color: var(--navy);
+}
+.fmenu-pop li button[aria-pressed='true']::after {
+  content: '';
+  margin-left: auto;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--navy);
+}
+.fmenu-pop li button .n {
+  margin-left: auto;
+  color: var(--ink-faint);
+  font-size: 9px;
+}
+.fmenu-pop li button[aria-pressed='true'] .n {
+  display: none;
+}
+.swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid rgba(22, 21, 15, 0.18);
+  flex: none;
+}
+
+/* price: two thumbs on one hairline */
+.price-pop {
+  padding: 0.6rem 0.7rem 0.4rem;
+  min-width: 260px;
+}
+.price-read {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--display);
+  font-size: 1.15rem;
+  color: var(--ink);
+  margin-bottom: 0.4rem;
+}
+.price-read-hi {
+  text-align: right;
+}
+.price-read small {
+  display: block;
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.range {
+  position: relative;
+  height: 44px;
+}
+.range-track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: var(--rule-strong);
+}
+.range-fill {
+  position: absolute;
+  top: 50%;
+  height: 1px;
+  background: var(--navy);
+}
+.range input[type='range'] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  -webkit-appearance: none;
+  appearance: none;
+  background: none;
+  pointer-events: none;
+}
+.range input[type='range']::-webkit-slider-runnable-track {
+  background: none;
+}
+.range input[type='range']::-moz-range-track {
+  background: none;
+}
+.range input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--parchment);
+  border: 1px solid var(--navy);
+  box-shadow: 0 1px 2px rgba(22, 21, 15, 0.2);
+  pointer-events: auto;
+  cursor: pointer;
+}
+.range input[type='range']::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--parchment);
+  border: 1px solid var(--navy);
+  pointer-events: auto;
+  cursor: pointer;
+}
+.price-reset {
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  min-height: 44px;
+  padding: 0;
+}
+.price-reset:hover {
+  color: var(--navy);
+}
+
+/* A phone: the chips in one row that slides, the menus under them, the count
+   on its own line — three short rows, so the sticky bar keeps its manners. */
+@media (max-width: 760px) {
+  .filters {
+    gap: 0.25rem 0.6rem;
+    padding-block: 0.6rem;
+  }
+  .filters .label,
+  .filter-spacer {
+    display: none;
+  }
+  .filter-chips {
+    display: flex;
+    gap: 0.4rem;
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-block: 0.1rem;
+  }
+  .filter-chips::-webkit-scrollbar {
+    display: none;
+  }
+  .fmenu > summary {
+    font-size: 9.5px;
+    padding: 0;
+  }
+  .fmenu-pop {
+    position: fixed;
+    left: var(--gutter);
+    right: var(--gutter);
+    top: auto;
+    min-width: 0;
+  }
+  .filters .count {
+    width: 100%;
+    justify-content: space-between;
+    border-top: 1px solid var(--rule);
+    margin-top: 0.2rem;
+  }
 }
 
 .empty-state {

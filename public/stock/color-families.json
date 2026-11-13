@@ -1,0 +1,387 @@
+{
+  "1988-tc-pebble-beach-snapback.jpg": {
+    "family": "red",
+    "swatch": "#a62a3a",
+    "share": 0.76
+  },
+  "1990s-titleist-coach-jacket.jpg": {
+    "family": "grey",
+    "swatch": "#4a4b58",
+    "share": 0.49
+  },
+  "2002-tc-magazine-fan-guide.jpg": {
+    "family": "navy",
+    "swatch": "#3f5f8d",
+    "share": 0.44
+  },
+  "abstract-grand-slam-golf-polo.jpg": {
+    "family": "grey",
+    "swatch": "#61606a",
+    "share": 0.7
+  },
+  "all-over-print-golf-sweater.jpg": {
+    "family": "navy",
+    "swatch": "#2d4e58",
+    "share": 0.5
+  },
+  "black-cotton-ralph-lauren-cardigan.jpg": {
+    "family": "black",
+    "swatch": "#10111d",
+    "share": 0.79
+  },
+  "boones-trace-national-polo.jpg": {
+    "family": "grey",
+    "swatch": "#6e6c6f",
+    "share": 0.33
+  },
+  "bugle-boy-polo.jpg": {
+    "family": "grey",
+    "swatch": "#7b797a",
+    "share": 0.3
+  },
+  "burnt-red-malbon-longsleeve.jpg": {
+    "family": "red",
+    "swatch": "#ab5c6d",
+    "share": 0.47
+  },
+  "callaway-retro-logo-polo.jpg": {
+    "family": "cream",
+    "swatch": "#d2d4d9",
+    "share": 0.48
+  },
+  "cotton-callaway-bomber-jacket.jpg": {
+    "family": "navy",
+    "swatch": "#435084",
+    "share": 0.85
+  },
+  "cross-creek-polo.jpg": {
+    "family": "navy",
+    "swatch": "#5c78a1",
+    "share": 0.86
+  },
+  "footjoy-titleist-polo.jpg": {
+    "family": "navy",
+    "swatch": "#65789b",
+    "share": 0.83
+  },
+  "heavy-ralph-lauren-knit-xl.jpg": {
+    "family": "navy",
+    "swatch": "#7d7ba6",
+    "share": 0.54
+  },
+  "houndstooth-cotton-golf-polo.jpg": {
+    "family": "grey",
+    "swatch": "#625b6c",
+    "share": 0.42
+  },
+  "izod-abstract-golf-polo.jpg": {
+    "family": "navy",
+    "swatch": "#536e7d",
+    "share": 0.44
+  },
+  "izod-club-tc-polo.jpg": {
+    "family": "black",
+    "swatch": "#0c0a1c",
+    "share": 0.49
+  },
+  "japan-exclusive-taylormade-knit-size-l.jpg": {
+    "family": "navy",
+    "swatch": "#4d476f",
+    "share": 0.78
+  },
+  "keswick-golf-club-striped-polo.jpg": {
+    "family": "red",
+    "swatch": "#661d30",
+    "share": 0.57
+  },
+  "malbon-cartoon-crewneck.jpg": {
+    "family": "navy",
+    "swatch": "#4a4b66",
+    "share": 0.63
+  },
+  "masters-peter-millar-quarter-zip-blue.jpg": {
+    "family": "navy",
+    "swatch": "#3f68a3",
+    "share": 0.89
+  },
+  "masters-tech-striped-polo.jpg": {
+    "family": "navy",
+    "swatch": "#45608a",
+    "share": 0.9
+  },
+  "nike-ryder-cup-polo-valhalla.jpg": {
+    "family": "red",
+    "swatch": "#93213d",
+    "share": 0.9
+  },
+  "nike-tiger-woods-tshirt.jpg": {
+    "family": "purple",
+    "swatch": "#862b5a",
+    "share": 0.91
+  },
+  "overbranded-callaway-polo.jpg": {
+    "family": "black",
+    "swatch": "#111320",
+    "share": 0.59
+  },
+  "peter-millar-club-quarter-zip-navy.jpg": {
+    "family": "black",
+    "swatch": "#0e1321",
+    "share": 0.62
+  },
+  "peter-millar-country-club-of-virginia-polo.jpg": {
+    "family": "grey",
+    "swatch": "#778489",
+    "share": 0.48
+  },
+  "peter-millar-east-lake-quarter-zip.jpg": {
+    "family": "black",
+    "swatch": "#0a0e21",
+    "share": 0.51
+  },
+  "peter-millar-hermitage-polo-navy.jpg": {
+    "family": "navy",
+    "swatch": "#415491",
+    "share": 0.87
+  },
+  "peter-millar-hermitage-polo-teal.jpg": {
+    "family": "navy",
+    "swatch": "#46808e",
+    "share": 0.89
+  },
+  "peter-millar-pine-valley-polo.jpg": {
+    "family": "navy",
+    "swatch": "#3b6993",
+    "share": 0.88
+  },
+  "peter-millar-quarter-zip-navy.jpg": {
+    "family": "navy",
+    "swatch": "#39477f",
+    "share": 0.8
+  },
+  "peter-millar-sahalee-cc-polo.jpg": {
+    "family": "cream",
+    "swatch": "#c6c9cd",
+    "share": 0.33
+  },
+  "peter-millar-scotty-cameron-quarter-zip.jpg": {
+    "family": "purple",
+    "swatch": "#5b3951",
+    "share": 0.63
+  },
+  "peter-millar-taylormade-quarter-zip.jpg": {
+    "family": "black",
+    "swatch": "#1d0f25",
+    "share": 0.56
+  },
+  "peter-millar-x-pebble-beach-cashmere-sweater.jpg": {
+    "family": "purple",
+    "swatch": "#473432",
+    "share": 0.48
+  },
+  "peter-millar-x-scotty-cameron-polo.jpg": {
+    "family": "navy",
+    "swatch": "#749fa0",
+    "share": 0.64
+  },
+  "pga-national-honda-classic-polo.jpg": {
+    "family": "grey",
+    "swatch": "#6f6e7d",
+    "share": 0.47
+  },
+  "pinehurst-tc-reverse-weave.jpg": {
+    "family": "red",
+    "swatch": "#8d203a",
+    "share": 0.81
+  },
+  "polo-golf-pinehurst-shirt.jpg": {
+    "family": "red",
+    "swatch": "#9f2c43",
+    "share": 0.75
+  },
+  "presidents-cup-robert-trent-jones-gc-polo.jpg": {
+    "family": "purple",
+    "swatch": "#642a3e",
+    "share": 0.62
+  },
+  "presidents-cup-usa-cashmere-sweater.jpg": {
+    "family": "red",
+    "swatch": "#881f2b",
+    "share": 0.8
+  },
+  "rlx-dark-camo-q-zip.jpg": {
+    "family": "navy",
+    "swatch": "#394d83",
+    "share": 0.83
+  },
+  "ryder-cup-print-polo.jpg": {
+    "family": "grey",
+    "swatch": "#6d7073",
+    "share": 0.42
+  },
+  "scotty-cameron-x-peter-millar-navy-polo.jpg": {
+    "family": "navy",
+    "swatch": "#353c67",
+    "share": 0.4
+  },
+  "seminole-gc-gingham-polo.jpg": {
+    "family": "navy",
+    "swatch": "#637da4",
+    "share": 0.91
+  },
+  "shinnecock-hills-polo.jpg": {
+    "family": "navy",
+    "swatch": "#a4b0c1",
+    "share": 0.39
+  },
+  "slazenger-golden-horseshoe-wind-shirt.jpg": {
+    "family": "navy",
+    "swatch": "#2f5f72",
+    "share": 0.6
+  },
+  "slazenger-pga-tc-polo.jpg": {
+    "family": "grey",
+    "swatch": "#787678",
+    "share": 0.63
+  },
+  "southern-hills-tc-hat.jpg": {
+    "family": "cream",
+    "swatch": "#c8c7cd",
+    "share": 0.38
+  },
+  "sun-faded-golf-pullover.jpg": {
+    "family": "navy",
+    "swatch": "#2f446c",
+    "share": 0.79
+  },
+  "tartan-callaway-jacket.jpg": {
+    "family": "black",
+    "swatch": "#0c0e16",
+    "share": 0.73
+  },
+  "tasmanian-devil-golf-polo.jpg": {
+    "family": "green",
+    "swatch": "#3a665b",
+    "share": 0.7
+  },
+  "taylormade-knit-vest.jpg": {
+    "family": "navy",
+    "swatch": "#4f698b",
+    "share": 0.91
+  },
+  "taylormade-navy-sweater.jpg": {
+    "family": "navy",
+    "swatch": "#38405a",
+    "share": 0.73
+  },
+  "taylormade-richmond-cc-snapback.jpg": {
+    "family": "cream",
+    "swatch": "#cccbc5",
+    "share": 0.4
+  },
+  "tc-east-lake-bag-towel.jpg": {
+    "family": "black",
+    "swatch": "#050710",
+    "share": 0.29
+  },
+  "tc-navy-golf-vest.jpg": {
+    "family": "navy",
+    "swatch": "#263861",
+    "share": 0.77
+  },
+  "tiger-woods-presidents-cup-polo.jpg": {
+    "family": "navy",
+    "swatch": "#58629a",
+    "share": 0.88
+  },
+  "tpc-sawgrass-polo.jpg": {
+    "family": "red",
+    "swatch": "#a62c42",
+    "share": 0.89
+  },
+  "university-of-kentucky-polo.jpg": {
+    "family": "navy",
+    "swatch": "#1c3e8d",
+    "share": 0.75
+  },
+  "vintage-country-club-of-virginia-sweater.jpg": {
+    "family": "navy",
+    "swatch": "#323a5b",
+    "share": 0.64
+  },
+  "vintage-grand-slam-golf-polo.jpg": {
+    "family": "black",
+    "swatch": "#13131d",
+    "share": 0.46
+  },
+  "vintage-greenbrier-resort-polo.jpg": {
+    "family": "navy",
+    "swatch": "#443567",
+    "share": 0.42
+  },
+  "vintage-izod-golf-knit.jpg": {
+    "family": "navy",
+    "swatch": "#383c5f",
+    "share": 0.69
+  },
+  "vintage-kiskiack-work-coat.jpg": {
+    "family": "navy",
+    "swatch": "#505671",
+    "share": 0.48
+  },
+  "vintage-masters-polo.jpg": {
+    "family": "cream",
+    "swatch": "#cecccb",
+    "share": 0.47
+  },
+  "vintage-medinah-country-club-knit-polo.jpg": {
+    "family": "black",
+    "swatch": "#121524",
+    "share": 0.5
+  },
+  "vintage-multicolor-chaps-polo.jpg": {
+    "family": "grey",
+    "swatch": "#707573",
+    "share": 0.26
+  },
+  "vintage-patterned-haggar-polo.jpg": {
+    "family": "red",
+    "swatch": "#8d3044",
+    "share": 0.51
+  },
+  "vintage-presidents-cup-tee-shirt.jpg": {
+    "family": "cream",
+    "swatch": "#dbd9d8",
+    "share": 0.43
+  },
+  "vintage-silver-club-sweatshirt-by-sdi.jpg": {
+    "family": "purple",
+    "swatch": "#8a5b74",
+    "share": 0.84
+  },
+  "vintage-taylormade-retro-logo-polo.jpg": {
+    "family": "black",
+    "swatch": "#11121f",
+    "share": 0.43
+  },
+  "vintage-titleist-logo-sweater.jpg": {
+    "family": "navy",
+    "swatch": "#222a47",
+    "share": 0.64
+  },
+  "vintage-tpc-windbreaker.jpg": {
+    "family": "navy",
+    "swatch": "#323c5b",
+    "share": 0.44
+  },
+  "wild-dunes-multicolor-polo.jpg": {
+    "family": "grey",
+    "swatch": "#6c766a",
+    "share": 0.84
+  },
+  "willow-oaks-cc-reverse-weave.jpg": {
+    "family": "grey",
+    "swatch": "#75757f",
+    "share": 0.62
+  }
+}

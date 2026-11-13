@@ -6,7 +6,12 @@
 import { BRAND, launchCollections, items, isAvailable } from '../data/store.js';
 import { openDrawer, closeDrawer, toast } from '../lib/motion.js';
 import { joinList } from '../lib/list.js';
-import { currentPath, applyBaseToLinks, stripBase, hashHTML } from '../lib/router.js';
+import { matchesQuery, normalizeQuery } from '../lib/search.js';
+import { currentPath, applyBaseToLinks, stripBase, hashHTML, navigate } from '../lib/router.js';
+
+const SEARCH_ICON =
+  '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><circle cx="6.8" cy="6.8" r="5.2"/><path d="M10.6 10.6 15 15"/></svg>';
+const SEARCH_HINT = 'Brand, piece, color, size, club or championship';
 
 const BASE_URL = (import.meta.env?.BASE_URL || '/').replace(/\/*$/, '/');
 
@@ -40,7 +45,25 @@ export function headerHTML() {
         ${NAV_SECONDARY.map(
           (n) => `<a href="${n.href}" class="nav-hide-sm">${n.label}</a>`
         ).join('')}
+        <button class="nav-search" type="button" data-search-open aria-expanded="false" aria-controls="site-search">
+          ${SEARCH_ICON}<span>Search</span>
+        </button>
       </nav>
+    </div>
+    <!-- The search strip drops from the header (Karen, 13 Nov 2026). Shut, it
+         is inert like the drawer, so a Tab never lands in a hidden field. On
+         /archive it filters the grid as you type; anywhere else, Enter takes
+         you to /archive?q=. -->
+    <div class="search-strip" id="site-search" data-search-strip aria-hidden="true" inert>
+      <div class="wrap">
+        <form class="search-form" data-search-form role="search">
+          ${SEARCH_ICON}
+          <input type="search" name="q" autocomplete="off" autocapitalize="off" spellcheck="false"
+            placeholder="Search the archive" aria-label="Search the archive" data-search-input />
+          <button type="button" data-search-close>Close</button>
+        </form>
+        <p class="search-hint" data-search-hint>${SEARCH_HINT}</p>
+      </div>
     </div>
   </div>
 
@@ -177,8 +200,72 @@ export function mountChrome() {
   drawer?.addEventListener('click', (e) => {
     if (e.target.closest('a')) close();
   });
+  /* ---- the search strip ---- */
+  const strip = document.querySelector('[data-search-strip]');
+  const searchBtn = document.querySelector('[data-search-open]');
+  const searchInput = document.querySelector('[data-search-input]');
+  const searchHint = document.querySelector('[data-search-hint]');
+  const onArchive = () => currentPath() === '/archive';
+  const searchOpen = () => strip?.classList.contains('is-open');
+  const openSearch = () => {
+    if (!strip) return;
+    strip.classList.add('is-open');
+    strip.setAttribute('aria-hidden', 'false');
+    strip.removeAttribute('inert');
+    searchBtn?.setAttribute('aria-expanded', 'true');
+    setTimeout(() => searchInput?.focus({ preventScroll: true }), 60);
+  };
+  const closeSearch = () => {
+    if (!searchOpen()) return;
+    const hadFocus = strip.contains(document.activeElement);
+    strip.classList.remove('is-open');
+    strip.setAttribute('aria-hidden', 'true');
+    strip.setAttribute('inert', '');
+    searchBtn?.setAttribute('aria-expanded', 'false');
+    if (hadFocus) searchBtn?.focus({ preventScroll: true });
+  };
+  const hint = () => {
+    if (!searchHint) return;
+    const q = normalizeQuery(searchInput?.value);
+    if (!q) {
+      searchHint.textContent = SEARCH_HINT;
+      return;
+    }
+    const n = items().filter((i) => matchesQuery(i, q)).length;
+    const noun = n === 1 ? 'piece' : 'pieces';
+    searchHint.innerHTML = onArchive()
+      ? `<b>${n} ${noun}</b>`
+      : `<b>${n} ${noun}</b> — press Enter to see them`;
+  };
+  searchBtn?.addEventListener('click', () => (searchOpen() ? closeSearch() : openSearch()));
+  document.querySelector('[data-search-close]')?.addEventListener('click', closeSearch);
+  let searchTimer = 0;
+  searchInput?.addEventListener('input', () => {
+    hint();
+    if (!onArchive()) return;
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => {
+      document.dispatchEvent(new CustomEvent('ta:search', { detail: { q: normalizeQuery(searchInput.value) } }));
+    }, 120);
+  });
+  document.querySelector('[data-search-form]')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const q = normalizeQuery(searchInput?.value);
+    if (onArchive()) {
+      clearTimeout(searchTimer);
+      document.dispatchEvent(new CustomEvent('ta:search', { detail: { q } }));
+      closeSearch();
+      return;
+    }
+    closeSearch();
+    navigate(q ? `/archive?q=${encodeURIComponent(q)}` : '/archive');
+  });
+
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') close();
+    if (e.key === 'Escape') {
+      close();
+      closeSearch();
+    }
   });
   // While the drawer is open it is the whole page for the keyboard: Tab past
   // its last link wraps to Close, Shift+Tab before Close wraps to the last

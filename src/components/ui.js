@@ -3,6 +3,7 @@
 import { garmentSVG, collectionMark } from './garment.js';
 import { getCollection, itemsIn, isAvailable, BASIC_STOCK } from '../data/store.js';
 import { webpURL, sizeAttrs } from '../lib/media.js';
+import { colorLabel } from '../data/colors.js';
 
 export { webpURL, sizeAttrs, imageSize } from '../lib/media.js';
 
@@ -132,7 +133,8 @@ export function productCard(item, opts) {
     <div class="card-body">
       <div class="card-brand">
         <span>${item.brand}</span>
-        <span>${item.year}</span>
+        <!-- the colour family the archive filters by; the year where there is no family -->
+        <span>${item.colorFamily ? escapeHtml(colorLabel(item.colorFamily)) : item.year}</span>
       </div>
       <h${level} class="card-name">${item.name}</h${level}>
       <div class="card-foot">

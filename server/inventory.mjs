@@ -18,6 +18,18 @@ export const CACHE_KEY = 'inventory';
 
 const MANIFEST_PATH = fileURLToPath(new URL('../public/stock/manifest.json', import.meta.url));
 
+/* The colour family of each photographed piece, read from its hero by
+   scripts/color-families.mjs (keyed by the manifest `file`). Missing or
+   unreadable → no families; the archive's Color menu then simply offers
+   nothing, which is honest rather than wrong. */
+const FAMILIES_PATH = fileURLToPath(new URL('../public/stock/color-families.json', import.meta.url));
+let colorFamilies = {};
+try {
+  if (existsSync(FAMILIES_PATH)) colorFamilies = JSON.parse(readFileSync(FAMILIES_PATH, 'utf8')) || {};
+} catch {
+  colorFamilies = {};
+}
+
 /**
  * Photographed stock — the site's own listings, from the drop-folder manifest.
  *
@@ -119,6 +131,12 @@ export function mapManifestItem(entry) {
     // displayed verbatim, never routed through condition normalisation.
     size: preferFact(item.size, specifics.Size),
     condition: preferFact(item.condition, specifics.Condition),
+    // The archive's Color filter. A family written by hand on the entry
+    // wins; otherwise the one the camera read (src/data/colors.js ids).
+    colorFamily:
+      typeof item.colorFamily === 'string' && item.colorFamily
+        ? item.colorFamily
+        : (file && colorFamilies[file]?.family) || '',
     specifics,
     market: syndicated
       ? { label: listings[0].label, url: listings[0].url }

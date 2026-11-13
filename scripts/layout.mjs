@@ -49,8 +49,9 @@ if (!BROWSER) {
 
 /**
  * Elements allowed to exceed the viewport because an ancestor clips them:
- * the marquee track (inside `overflow:hidden`) and SVG internals (bounded by
- * their own viewBox).
+ * the marquee track (inside `overflow:hidden`), SVG internals (bounded by
+ * their own viewBox) and the archive's collection chips on a phone, which
+ * are one row that slides sideways inside `.filter-chips` (overflow-x: auto).
  */
 const PROBE = `(() => {
   // Freeze animations before measuring: the gate's subject is LAYOUT, and a
@@ -69,7 +70,7 @@ const PROBE = `(() => {
   for (const el of document.querySelectorAll('body *')) {
     const tag = el.tagName.toLowerCase();
     if (skip.test(tag)) continue;
-    if (el.closest('.marquee, .grain, svg')) continue;
+    if (el.closest('.marquee, .grain, svg, .filter-chips')) continue;
     const r = el.getBoundingClientRect();
     if (r.width > vw + 1 || r.right > vw + 1) {
       const cls = typeof el.className === 'string' && el.className.trim()
