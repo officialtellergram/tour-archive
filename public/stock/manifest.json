@@ -5005,10 +5005,9 @@
         "link": "plink_1Ub19zC1bWq01lTKFM6jCtLP",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-11-12"
+        "minted": "2026-11-12",
+        "soldSession": "cs_live_b0brhx5UT5h7jY8FvJXjGEQgmQ2lQFMvdj1MhCTqBPza0KkGZOP2L3ogkz"
       },
-      "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/9B614mdCYd1X0Bw0pk9k41E",
       "photos": [
         "carousel/malbon-cartoon-crewneck/01.jpg",
         "carousel/malbon-cartoon-crewneck/02.jpg",
@@ -5023,9 +5022,12 @@
         "sku": "TA_GS_68",
         "price": 87.99,
         "listedAt": "2026-11-12",
-        "pictures": "sq1"
+        "pictures": "sq1",
+        "endedAt": "2026-11-13"
       },
-      "_ebayUrl": "https://www.ebay.com/itm/377640552311"
+      "_ebayUrl": "https://www.ebay.com/itm/377640552311",
+      "sold": true,
+      "_saleNotified": "2026-11-13"
     },
     {
       "id": "stock-burnt-red-malbon-longsleeve",
