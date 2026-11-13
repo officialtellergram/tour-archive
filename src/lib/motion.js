@@ -636,7 +636,8 @@ function clipHasAlpha(video) {
  * Put the signature on the plate. Three routes, each only if the one
  * before cannot run: the alpha WebM (Chrome, Edge, Firefox, Android); the
  * on-black clip keyed through a canvas (Safari — same-origin only, a
- * tainted canvas rejects itself); the still logo. Reduced motion: the still.
+ * tainted canvas rejects itself); the logo drawn on through a CSS pen mask
+ * (no video can play, e.g. iOS Low Power Mode). Reduced motion: the still.
  */
 async function runMark(mark) {
   const webm = mark.querySelector('[data-plate-webm]');
@@ -671,7 +672,14 @@ async function runMark(mark) {
   };
   if (await runClip(clip, { onFrame: paint })) return;
 
-  mode('still');
+  // No clip will play (iOS Low Power Mode refuses video autoplay outright):
+  // the logo draws on through a pen-order mask in CSS — no video, no canvas.
+  // The image's href is set here, not in the template, so the audit's route
+  // harvest (every href must be an absolute route) never sees an asset path.
+  const draw = mark.querySelector('.plate-mark-draw');
+  const ink = draw?.querySelector('image');
+  if (draw && ink && !ink.getAttribute('href')) ink.setAttribute('href', draw.dataset.inkSrc || '');
+  mode('drawn');
 }
 
 /**

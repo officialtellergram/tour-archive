@@ -29,6 +29,7 @@ export const HERO_SIZES = {
 /** Brand art (public/brand), by file. */
 export const BRAND_SIZES = {
   'brand/logo.png': { width: 693, height: 778 },
+  'brand/logo-parchment.png': { width: 693, height: 778 },
   'brand/lockup.png': { width: 1067, height: 1419 },
   'brand/favicon.png': { width: 512, height: 512 },
   'brand/presidents-cup-title.webp': { width: 1400, height: 600 },
