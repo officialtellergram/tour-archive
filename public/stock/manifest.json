@@ -1725,11 +1725,7 @@
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
         "minted": "2026-09-11",
-        "repriced": "2026-10-02",
-        "soldCharge": "ch_3UUWngC1bWq01lTK0t2uBMcu",
-        "soldAt": "2026-10-25",
-        "soldAmount": 42.5,
-        "soldInPerson": true
+        "repriced": "2026-10-02"
       },
       "_ebay": {
         "itemId": "377555832373",
@@ -1740,8 +1736,9 @@
         "endedAt": "2026-10-26"
       },
       "sku": "TA_GS_23",
-      "sold": true,
-      "_saleNotified": "2026-10-26"
+      "sold": false,
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/7sY9AS42o0fbfwq4FA9k40X"
     },
     {
       "id": "stock-pga-national-honda-classic-polo",
@@ -1878,7 +1875,7 @@
         "repriced": "2026-10-02",
         "soldCharge": "ch_3UUWngC1bWq01lTK0t2uBMcu",
         "soldAt": "2026-10-25",
-        "soldAmount": 42.5,
+        "soldAmount": 85,
         "soldInPerson": true
       },
       "_ebay": {
@@ -5167,21 +5164,13 @@
     },
     "ch_3UUWngC1bWq01lTK0t2uBMcu": {
       "status": "matched",
-      "how": "by description (bundle)",
+      "how": "by description",
       "amount": 85,
       "description": "TAGS22 TAGS23 uva belt ",
       "at": "2026-10-25T19:09:52.000Z",
-      "bundle": true,
-      "pieces": [
-        "stock-peter-millar-hermitage-polo-teal",
-        "stock-peter-millar-hermitage-polo-navy"
-      ],
-      "shares": {
-        "stock-peter-millar-hermitage-polo-teal": 42.5,
-        "stock-peter-millar-hermitage-polo-navy": 42.5
-      },
-      "piece": "stock-peter-millar-hermitage-polo-teal",
-      "extras": "UVA belt (not catalogued, no separate price)"
+      "piece": "stock-peter-millar-hermitage-polo-navy",
+      "extras": "UVA belt (not catalogued, no separate price)",
+      "corrected": "2026-11-18: TAGS23 typed on the charge in error; the teal polo did not sell. Was read as a bundle of 22 + 23."
     },
     "ch_3UX0lSC1bWq01lTK1fBY6aD2": {
       "status": "matched-held",
