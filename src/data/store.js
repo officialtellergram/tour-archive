@@ -152,6 +152,11 @@ export const isAvailable = (item) => !item.sold && !item.upcoming;
     order (Karen, 16 Oct 2026: sold work sits respectfully at the bottom of
     a collection or the archive, never ahead of what can still be bought). */
 export const soldLast = (list) => [...list.filter((i) => !i.sold), ...list.filter((i) => i.sold)];
+/** Newest catalogue entries first — by the day each piece was added — with
+    ties keeping catalogue order (Karen, 18 Nov 2026: the landing grid and the
+    archive lead with the latest pieces, not the latest collection). */
+export const newestFirst = (list) =>
+  [...list].sort((a, b) => String(b.added || '').localeCompare(String(a.added || '')));
 export const itemStatus = (item) =>
   item.sold ? 'Sold' : item.upcoming ? 'Reserved for the drop' : 'Available — 1 of 1';
 

@@ -13,14 +13,14 @@
  * Params: q, collection, brand, color, min, max, sort, filter=available.
  */
 
-import { items, collections, isAvailable, getCollection, soldLast } from '../data/store.js';
+import { items, collections, isAvailable, getCollection, soldLast, newestFirst } from '../data/store.js';
 import { COLOR_FAMILIES, colorLabel } from '../data/colors.js';
 import { matchesQuery, normalizeQuery } from '../lib/search.js';
 import { productCard, breadcrumb, marquee, escapeHtml, money } from '../components/ui.js';
 import { initGridStagger } from '../lib/motion.js';
 
+/* Newest leads and is the default: the archive opens on the latest pieces. */
 const SORTS = [
-  { id: 'featured', label: 'Featured' },
   { id: 'newest', label: 'Newest' },
   { id: 'price-asc', label: 'Price, low to high' },
   { id: 'price-desc', label: 'Price, high to low' },
@@ -56,7 +56,7 @@ function readState() {
     color: q.get('color') || 'all',
     min: Math.min(bounds.max, Math.max(bounds.min, num('min', bounds.min))),
     max: Math.max(bounds.min, Math.min(bounds.max, num('max', bounds.max))),
-    sort: SORTS.some((s) => s.id === sort) ? sort : 'featured',
+    sort: SORTS.some((s) => s.id === sort) ? sort : 'newest',
     bounds,
   };
 }
@@ -79,8 +79,7 @@ function poolFor(state, except) {
 
 function applyFilters(state) {
   let out = poolFor(state, null);
-  if (state.sort === 'newest')
-    out = [...out].sort((a, b) => String(b.added || '').localeCompare(String(a.added || '')));
+  if (state.sort === 'newest') out = newestFirst(out);
   if (state.sort === 'price-asc') out = [...out].sort((a, b) => a.price - b.price);
   if (state.sort === 'price-desc') out = [...out].sort((a, b) => b.price - a.price);
   return soldLast(out); // whatever the sort, sold pieces close the list
@@ -327,7 +326,7 @@ export function mountArchive(outlet) {
     setMenuVal('brand', state.brand !== 'all', state.brand);
     setMenuVal('color', state.color !== 'all', colorLabel(state.color) || state.color);
     setMenuVal('price', priced(state), `${money(state.min)} – ${money(state.max)}`);
-    setMenuVal('sort', state.sort !== 'featured', SORTS.find((s) => s.id === state.sort)?.label || '');
+    setMenuVal('sort', state.sort !== 'newest', SORTS.find((s) => s.id === state.sort)?.label || '');
     paintPrice(state);
     const count = $('[data-result-count]');
     if (count) count.innerHTML = countHTML(state, list.length);
@@ -342,7 +341,7 @@ export function mountArchive(outlet) {
       const isDefault =
         value === '' ||
         value === 'all' ||
-        (key === 'sort' && value === 'featured') ||
+        (key === 'sort' && value === 'newest') ||
         (key === 'min' && Number(value) <= bounds.min) ||
         (key === 'max' && Number(value) >= bounds.max);
       if (isDefault) q.delete(key);

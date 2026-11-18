@@ -9,6 +9,7 @@ import {
   daysUntil,
   dateRange,
   soldLast,
+  newestFirst,
 } from '../data/store.js';
 import { productCard, collectionTile, marquee, sectionHead, sizeAttrs, mediaURL, money, escapeHtml } from '../components/ui.js';
 
@@ -44,7 +45,8 @@ function eventStatus(event) {
       return { chip: 'Final days', line: 'The trophy is handed over; the drop closes shortly.' };
     case 'featured':
       // Weeks after the trophy: still the drop, still one of one, no clock.
-      return { chip: 'Drop No. 02', line: 'The championship is played. The drop stays open — one of each, while it lasts.' };
+      // The eyebrow already names the drop, so the chip must not repeat it.
+      return { chip: 'Still open', line: 'The championship is played. The drop stays open — one of each, while it lasts.' };
     case 'past':
       // The drop's WINDOW is shut; its pieces are still one-of-one stock and
       // still buyable, so this must never read as "the shop is closed".
@@ -63,7 +65,8 @@ export function home() {
   const featured = featuredCollection();
   // Sold pieces STAY on the page, marked — the record of demand is the point.
   // Counts still speak to availability.
-  const stock = soldLast(items());
+  // Newest pieces lead the grid (Karen, 18 Nov 2026), sold ones close it.
+  const stock = soldLast(newestFirst(items()));
   const available = stock.filter(isAvailable);
 
   const ev = featured?.event;
@@ -71,9 +74,11 @@ export function home() {
   const status = ev ? eventStatus(ev) : null;
   const drop = coll ? soldLast(itemsIn(coll.id)) : [];
 
-  /* The drop pane LEADS the page while its window is open (live/closing);
-     outside the window the shop leads and the drop trails as a preview. */
-  const dropFirst = !!ev && (ev.phase === 'live' || ev.phase === 'closing' || ev.phase === 'featured');
+  /* The drop pane LEADS the page only while its window is open (live/closing).
+     Otherwise the shop leads, newest pieces first, and the drop trails — even
+     in the weeks it stays featured (Karen, 18 Nov 2026: new pieces before the
+     most recent collection). */
+  const dropFirst = !!ev && (ev.phase === 'live' || ev.phase === 'closing');
 
   /*
    * OFF SEASON. featuredEvent() never returns null — it falls back to the
@@ -93,7 +98,7 @@ export function home() {
   <section class="section" id="shop">
     <div class="wrap">
       ${sectionHead({
-        eyebrow: available.length ? `${available.length} piece${available.length === 1 ? '' : 's'} available` : 'The shop',
+        eyebrow: available.length ? `Newest first · ${available.length} piece${available.length === 1 ? '' : 's'} available` : 'The shop',
         title: 'In the shop now',
         link: { href: '/archive', label: 'The full archive' },
       })}
