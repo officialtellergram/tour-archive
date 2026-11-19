@@ -14,10 +14,15 @@
  *
  * What Henry types, and where it lands:
  *   name          → entry.name (and the slug/id/filename)
- *   description   → first line becomes the story; a "Size XL" line becomes
- *                   the size; a "Measurements: …" line is parsed into the
+ *   description   → first line becomes the story; a "Size XL" statement
+ *                   (its own line, or its own sentence: "Size M.") becomes
+ *                   the size — a size mentioned mid-sentence counts only when
+ *                   no statement exists, and the sentence is kept whole; a
+ *                   "Measurements: …" line, or a bare run of inch-marked
+ *                   pairs (29" Length / 23" Chest), is parsed into the
  *                   measurements map; the rest is kept verbatim as
- *                   description[] paragraphs
+ *                   description[] paragraphs. `--parse "<text>" ["<name>"]`
+ *                   prints that reading for one description, offline.
  *   price         → entry.price (the product's default_price, one-time, USD)
  *   images        → images[0] is the hero (<slug>.jpg), the rest the carousel
  *
@@ -90,8 +95,13 @@ async function stripe(method, path, params) {
 
 /* ---------------- 1. what Henry listed ---------------- */
 
+// --parse "<description>" ["<name>"]: run Henry's text through the parser
+// alone — no Stripe, no manifest write — and print what scaffold would make
+// of it. For checking a new shape of his before a drop.
+const PARSE = (() => { const i = args.indexOf('--parse'); return i >= 0 ? { description: args[i + 1] || '', name: args[i + 2] || 'Parse Test Polo' } : null; })();
+
 const products = [];
-{
+if (!PARSE) {
   let after = '';
   for (;;) {
     const page = await stripe('GET', `/v1/products?active=true&limit=100&expand[]=data.default_price${after ? `&starting_after=${after}` : ''}`);
@@ -146,6 +156,39 @@ const sizeFromName = (name) => {
   const m = String(name || '').match(NAME_SIZE_RX);
   return m ? m[1].toUpperCase() : '';
 };
+const sizeOf = (w) => SIZE_WORDS[w.toLowerCase()] || (w === 'One size' ? w : w.toUpperCase());
+// A size that stands as its own statement — "Size M." / "Size: XL" / a whole
+// segment — is Henry's listed size. A size inside a sentence ("Marked a size
+// large, but fits more like a medium") is a fact about the label, not the
+// listing, and the sentence keeps its words (19 Nov 2026, Sea Island crewneck:
+// the first pass took the L and cut "size large" out of the copy).
+const SIZE_STMT_RX = /(^|[.!?]\s+)(?:tagged\s+)?size\s*:?\s*(XS|S|M|L|XL|XXL|2XL|3XL|small|medium|large|x-large|xx-large)\s*(?:[.!?]+(?=\s|$)|$)/i;
+const tidy = (s) => s.replace(/\.\s*\./g, '.').replace(/\s{2,}/g, ' ').replace(/^\s*[,;:.-]\s*/, '').trim();
+
+/** The listed size, and the copy with the size statement taken out of it. */
+function readSize(lines, name) {
+  let size = sizeFromName(name);
+  let stated = false;
+  const copy = [];
+  for (const l of lines) {
+    const st = l.match(SIZE_STMT_RX);
+    if (st) {
+      size = sizeOf(st[2]);
+      stated = true;
+      const rest = tidy(l.replace(SIZE_STMT_RX, '$1'));
+      if (rest.length >= 4) copy.push(rest);   // "100% cotton" survives, "Size XL" alone does not
+      continue;
+    }
+    const inl = l.match(SIZE_RX) || (ONE_SIZE_RX.test(l) ? [l, 'One size'] : null);
+    if (inl && !stated) {
+      size = sizeOf(inl[1]);
+      // a line that is only the size is not copy; a sentence that mentions one keeps its words
+      if (tidy(l.replace(SIZE_RX, '').replace(ONE_SIZE_RX, '')).length < 4) continue;
+    }
+    copy.push(l);
+  }
+  return { size: size || 'See photos', copy };
+}
 
 /**
  * "26\" Length - 24\" Pit to Pit"  →  { Length: '26 in', 'Pit to Pit': '24 in' }
@@ -181,7 +224,12 @@ function segments(text) {
   // (15 Oct 2026) Henry now runs "Measurements:" on from the sentence before
   // it — `Made in Scotland. Measurements: 30" Length / 24" Chest` — so a
   // mid-line "Measurements:" is cut onto its own segment first.
-  const cut = String(text || '').replace(/([^\n])\s+(?=measurements?\s*:)/gi, '$1\n');
+  const labelled = String(text || '').replace(/([^\n])\s+(?=measurements?\s*:)/gi, '$1\n');
+  // (19 Nov 2026) ...and sometimes with no "Measurements:" at all —
+  // `Size XL. 29" Length / 23" Chest / 30" Sleeve` — so a run that opens with
+  // an inch-marked number straight after a sentence (or a line break) is cut
+  // onto its own line and given the label the rest of the parser expects.
+  const cut = labelled.replace(/(^|[.!?]\s+|\n\s*)(?=[\d.]+\s*["”″]\s*[A-Za-z])/g, (_, lead) => `${lead.trimEnd()}\nMeasurements: `);
   const raw = cut.split(/\r?\n|\s\/\s|\s[-–—]\s/).map((l) => l.replace(/</g, '').trim()).filter(Boolean)
     // a "HELD" line left from the piece's time in the held pen is not copy
     .filter((l) => !/^\[?held\]?\s*:?$/i.test(l));
@@ -208,21 +256,14 @@ function segments(text) {
 function scaffold(p, file, photos, sku) {
   const lines = segments(p.description);
   const hay = `${p.name} ${lines.join(' ')}`;
-  let size = sizeFromName(p.name) || 'See photos';
   let measurements = {};
-  const paras = [];
+  const prose = [];
   for (const l of lines) {
-    const s = l.match(SIZE_RX) || (ONE_SIZE_RX.test(l) ? [l, 'One size'] : null);
     const m = l.match(MEAS_RX);
-    if (m) { measurements = { ...measurements, ...parseMeasurements(m[1]) }; continue; }
-    if (s) {
-      size = SIZE_WORDS[s[1].toLowerCase()] || (s[1] === 'One size' ? s[1] : s[1].toUpperCase());
-      const rest = l.replace(SIZE_RX, '').replace(/^\s*[,;:-]\s*/, '').trim();
-      if (rest.length >= 4) paras.push(rest);   // "100% cotton" survives, "Size XL" alone does not
-      continue;
-    }
-    paras.push(l);
+    if (m) measurements = { ...measurements, ...parseMeasurements(m[1]) };
+    else prose.push(l);
   }
+  const { size, copy: paras } = readSize(prose, p.name);
   // a tee has no silhouette of its own; the collared shirt is the nearest
   // drawn fallback and only matters if the photograph ever fails to load
   const garment = /\bt-?shirt\b|\btee\b/i.test(hay) ? 'polo' : inferGarment(hay);
@@ -253,6 +294,14 @@ function scaffold(p, file, photos, sku) {
     description: paras,
     _stripe: { mode: MODE, product: p.id, price: p.default_price.id },
   };
+}
+
+if (PARSE) {
+  const fake = { id: 'prod_parse', name: PARSE.name, description: PARSE.description, default_price: { id: 'price_parse', unit_amount: 0 } };
+  const e = scaffold(fake, 'parse.jpg', [], 'TA_GS_00');
+  console.log(`${C.dim}   segments: ${JSON.stringify(segments(PARSE.description))}${C.off}`);
+  console.log(`   size: ${e.size}\n   measurements: ${JSON.stringify(e.measurements)}\n   story: ${JSON.stringify(e.story)}\n   description: ${JSON.stringify(e.description)}`);
+  process.exit(0);
 }
 
 /* ---------------- 3. drain ---------------- */
@@ -304,10 +353,8 @@ if (REFRESH) {
     // a size the first pass did not have: Henry has since written "Size L"
     // into the Stripe description, and the catalogue still says See photos
     if (!entry.size || entry.size === 'See photos') {
-      const line = segments(p.description).find((l) => SIZE_RX.test(l) || ONE_SIZE_RX.test(l));
-      const s = (sizeFromName(p.name) && [p.name, sizeFromName(p.name)]) || (line && (line.match(SIZE_RX) || (ONE_SIZE_RX.test(line) ? [line, 'One size'] : null)));
-      if (s) {
-        const size = SIZE_WORDS[s[1].toLowerCase()] || (s[1] === 'One size' ? s[1] : s[1].toUpperCase());
+      const { size } = readSize(segments(p.description).filter((l) => !MEAS_RX.test(l)), p.name);
+      if (size !== 'See photos') {
         console.log(`${C.dim}   ${WRITE ? 'sizing' : 'would size'} ${entry.id} — ${size} (from the Stripe description)${C.off}`);
         if (WRITE) {
           entry.size = size;
