@@ -19,6 +19,11 @@
     "swatch": "#61606a",
     "share": 0.7
   },
+  "abstract-navy-ashworth-polo.jpg": {
+    "family": "navy",
+    "swatch": "#3a4059",
+    "share": 0.45
+  },
   "all-over-print-golf-sweater.jpg": {
     "family": "navy",
     "swatch": "#2d4e58",
@@ -88,6 +93,11 @@
     "family": "navy",
     "swatch": "#4d476f",
     "share": 0.78
+  },
+  "kapalua-floral-polo.jpg": {
+    "family": "brown",
+    "swatch": "#b58b78",
+    "share": 0.53
   },
   "keswick-golf-club-striped-polo.jpg": {
     "family": "red",
@@ -169,6 +179,11 @@
     "swatch": "#5b3951",
     "share": 0.63
   },
+  "peter-millar-taylormade-knit.jpg": {
+    "family": "black",
+    "swatch": "#0d1225",
+    "share": 0.54
+  },
   "peter-millar-taylormade-quarter-zip.jpg": {
     "family": "black",
     "swatch": "#1d0f25",
@@ -208,6 +223,11 @@
     "family": "red",
     "swatch": "#881f2b",
     "share": 0.8
+  },
+  "pro-style-ashworth-polo.jpg": {
+    "family": "cream",
+    "swatch": "#ced1d6",
+    "share": 0.59
   },
   "rlx-dark-camo-q-zip.jpg": {
     "family": "navy",
@@ -253,6 +273,11 @@
     "family": "navy",
     "swatch": "#2f446c",
     "share": 0.79
+  },
+  "sun-faded-sea-island-crewneck.jpg": {
+    "family": "red",
+    "swatch": "#a73e4d",
+    "share": 0.9
   },
   "tartan-callaway-jacket.jpg": {
     "family": "black",

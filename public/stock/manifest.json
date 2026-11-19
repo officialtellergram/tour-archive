@@ -5083,6 +5083,260 @@
         "carousel/burnt-red-malbon-longsleeve/03.jpg"
       ],
       "_photosPulled": "2026-11-12"
+    },
+    {
+      "id": "stock-abstract-navy-ashworth-polo",
+      "sku": "TA_GS_93",
+      "file": "abstract-navy-ashworth-polo.jpg",
+      "name": "Abstract Navy Ashworth Polo",
+      "brand": "Ashworth",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "XL",
+      "condition": "Pre-owned",
+      "price": 19.99,
+      "colorway": [
+        "#25324F",
+        "#1A2338",
+        "#0E1524"
+      ],
+      "colorName": "Navy",
+      "story": "Thick cotton Ashworth piece with a knit pattern woven in. .",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "31 in",
+        "Chest": "26 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-11-19",
+      "_source": "stripe:prod_VVGbTzTnq1xeWZ",
+      "description": [
+        "Thick cotton Ashworth piece with a knit pattern woven in. ."
+      ],
+      "_stripe": {
+        "product": "prod_VVGbTzTnq1xeWZ",
+        "price": "price_1UUG4eC1bWq01lTKi4sioP7I",
+        "link": "plink_1UdYXjC1bWq01lTKB7WwvFv1",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-11-19"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/6oU4gy8iE9PLesmc829k41G",
+      "photos": [
+        "carousel/abstract-navy-ashworth-polo/01.jpg",
+        "carousel/abstract-navy-ashworth-polo/02.jpg",
+        "carousel/abstract-navy-ashworth-polo/03.jpg"
+      ],
+      "_photosPulled": "2026-11-19"
+    },
+    {
+      "id": "stock-kapalua-floral-polo",
+      "sku": "TA_GS_74",
+      "file": "kapalua-floral-polo.jpg",
+      "name": "Kapalua Floral Polo",
+      "brand": "Unattributed",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "XXL",
+      "condition": "Pre-owned",
+      "price": 34.99,
+      "colorway": [
+        "#D9743F",
+        "#B85C2E",
+        "#78391A"
+      ],
+      "colorName": "Coral",
+      "story": "Beautiful Burnt Orange Floral Print for the iconic Hawaiian course. .",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "30 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-11-19",
+      "_source": "stripe:prod_VVF7xW02T4QRmv",
+      "description": [
+        "Beautiful Burnt Orange Floral Print for the iconic Hawaiian course. ."
+      ],
+      "_stripe": {
+        "product": "prod_VVF7xW02T4QRmv",
+        "price": "price_1UUEcrC1bWq01lTKZzgrOt7I",
+        "link": "plink_1UdYXjC1bWq01lTKqR7xEs3m",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-11-19"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/8x2cN41Ug7HDgAub3Y9k41H",
+      "photos": [
+        "carousel/kapalua-floral-polo/01.jpg",
+        "carousel/kapalua-floral-polo/02.jpg",
+        "carousel/kapalua-floral-polo/03.jpg"
+      ],
+      "_photosPulled": "2026-11-19"
+    },
+    {
+      "id": "stock-peter-millar-taylormade-knit",
+      "sku": "TA_GS_70",
+      "file": "peter-millar-taylormade-knit.jpg",
+      "name": "Peter Millar Taylormade Knit",
+      "brand": "Peter Millar",
+      "year": "—",
+      "category": "Knitwear",
+      "garment": "sweater",
+      "size": "XL",
+      "condition": "Pre-owned",
+      "price": 44.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "Soft cotton Knit from two of Golf's Heavyweights featuring a ribbed collar and embroidered branding.",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "29 in",
+        "Chest": "23 in",
+        "Sleeve": "30 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-11-19",
+      "_source": "stripe:prod_VVEy1L1Zsz4guj",
+      "description": [
+        "Soft cotton Knit from two of Golf's Heavyweights featuring a ribbed collar and embroidered branding.",
+        "Size XL.",
+        "29\" Length / 23\" Chest / 30\" Sleeve"
+      ],
+      "_stripe": {
+        "product": "prod_VVEy1L1Zsz4guj",
+        "price": "price_1UUEUxC1bWq01lTKtL0F4LlR",
+        "link": "plink_1UdYXkC1bWq01lTKP35O7sNY",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-11-19"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/5kQeVc7eA9PLgAufke9k41I",
+      "photos": [
+        "carousel/peter-millar-taylormade-knit/01.jpg",
+        "carousel/peter-millar-taylormade-knit/02.jpg",
+        "carousel/peter-millar-taylormade-knit/03.jpg",
+        "carousel/peter-millar-taylormade-knit/04.jpg",
+        "carousel/peter-millar-taylormade-knit/05.jpg"
+      ],
+      "_photosPulled": "2026-11-19"
+    },
+    {
+      "id": "stock-sun-faded-sea-island-crewneck",
+      "sku": "TA_GS_64",
+      "file": "sun-faded-sea-island-crewneck.jpg",
+      "name": "Sun-Faded Sea Island Crewneck",
+      "brand": "Bobby Jones",
+      "year": "—",
+      "category": "Knitwear",
+      "garment": "sweater",
+      "size": "M",
+      "condition": "Pre-owned",
+      "price": 29.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "Nicely faded vintage piece from the iconic Georgia resort. Marked a size large, but fits more like a medium. Bobby Jones branding.",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "26 in",
+        "Chest": "23 in",
+        "Sleeves": "26 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-11-19",
+      "_source": "stripe:prod_VVEoK6eLYNBkWf",
+      "description": [
+        "Nicely faded vintage piece from the iconic Georgia resort. Marked a size large, but fits more like a medium. Bobby Jones branding.",
+        "Size M.",
+        "Measurements: 26\" Length / 23\" Chest / 26\" Sleeves"
+      ],
+      "_stripe": {
+        "product": "prod_VVEoK6eLYNBkWf",
+        "price": "price_1UUEKWC1bWq01lTKVPWXdzoL",
+        "link": "plink_1UdYXkC1bWq01lTKU0swKz1u",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-11-19"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/9B6aEWaqMge9ac62xs9k41J",
+      "photos": [
+        "carousel/sun-faded-sea-island-crewneck/01.jpg",
+        "carousel/sun-faded-sea-island-crewneck/02.jpg",
+        "carousel/sun-faded-sea-island-crewneck/03.jpg",
+        "carousel/sun-faded-sea-island-crewneck/04.jpg",
+        "carousel/sun-faded-sea-island-crewneck/05.jpg"
+      ],
+      "_photosPulled": "2026-11-19"
+    },
+    {
+      "id": "stock-pro-style-ashworth-polo",
+      "sku": "TA_GS_62",
+      "file": "pro-style-ashworth-polo.jpg",
+      "name": "Pro Style Ashworth Polo",
+      "brand": "Ashworth",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "XL",
+      "condition": "Pre-owned",
+      "price": 24.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "Chicago Bulls Color Scheme on a Heavy Cotton Vintage Ashworth piece. .",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "30 in",
+        "Chest": "25 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-11-19",
+      "_source": "stripe:prod_VVEjN8O1ojX3Y4",
+      "description": [
+        "Chicago Bulls Color Scheme on a Heavy Cotton Vintage Ashworth piece. ."
+      ],
+      "_stripe": {
+        "product": "prod_VVEjN8O1ojX3Y4",
+        "price": "price_1UUEFuC1bWq01lTKSXYuRjvb",
+        "link": "plink_1UdYXkC1bWq01lTKUOnZzzyf",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-11-19"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/cNi14m6aw8LHac66NI9k41K",
+      "photos": [
+        "carousel/pro-style-ashworth-polo/01.jpg",
+        "carousel/pro-style-ashworth-polo/02.jpg",
+        "carousel/pro-style-ashworth-polo/03.jpg"
+      ],
+      "_photosPulled": "2026-11-19"
     }
   ],
   "_inPerson": {
