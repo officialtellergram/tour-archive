@@ -5131,7 +5131,14 @@
         "carousel/abstract-navy-ashworth-polo/02.jpg",
         "carousel/abstract-navy-ashworth-polo/03.jpg"
       ],
-      "_photosPulled": "2026-11-19"
+      "_photosPulled": "2026-11-19",
+      "_ebay": {
+        "itemId": "377659412283",
+        "sku": "TA_GS_93",
+        "price": 23.99,
+        "listedAt": "2026-11-19"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377659412283"
     },
     {
       "id": "stock-kapalua-floral-polo",
@@ -5179,7 +5186,14 @@
         "carousel/kapalua-floral-polo/02.jpg",
         "carousel/kapalua-floral-polo/03.jpg"
       ],
-      "_photosPulled": "2026-11-19"
+      "_photosPulled": "2026-11-19",
+      "_ebay": {
+        "itemId": "377659412305",
+        "sku": "TA_GS_74",
+        "price": 40.99,
+        "listedAt": "2026-11-19"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377659412305"
     },
     {
       "id": "stock-peter-millar-taylormade-knit",
@@ -5234,7 +5248,14 @@
         "carousel/peter-millar-taylormade-knit/05.jpg"
       ],
       "_photosPulled": "2026-11-19",
-      "colorFamily": "navy"
+      "colorFamily": "navy",
+      "_ebay": {
+        "itemId": "377659412333",
+        "sku": "TA_GS_70",
+        "price": 52.99,
+        "listedAt": "2026-11-19"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377659412333"
     },
     {
       "id": "stock-sun-faded-sea-island-crewneck",
@@ -5288,7 +5309,14 @@
         "carousel/sun-faded-sea-island-crewneck/04.jpg",
         "carousel/sun-faded-sea-island-crewneck/05.jpg"
       ],
-      "_photosPulled": "2026-11-19"
+      "_photosPulled": "2026-11-19",
+      "_ebay": {
+        "itemId": "377659412373",
+        "sku": "TA_GS_64",
+        "price": 35.99,
+        "listedAt": "2026-11-19"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377659412373"
     },
     {
       "id": "stock-pro-style-ashworth-polo",
@@ -5337,7 +5365,14 @@
         "carousel/pro-style-ashworth-polo/02.jpg",
         "carousel/pro-style-ashworth-polo/03.jpg"
       ],
-      "_photosPulled": "2026-11-19"
+      "_photosPulled": "2026-11-19",
+      "_ebay": {
+        "itemId": "377659412427",
+        "sku": "TA_GS_62",
+        "price": 29.99,
+        "listedAt": "2026-11-19"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377659412427"
     }
   ],
   "_inPerson": {
