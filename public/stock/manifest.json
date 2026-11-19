@@ -5362,8 +5362,6 @@
         "mode": "live",
         "minted": "2026-11-19"
       },
-      "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/cNi14m6aw8LHac66NI9k41K",
       "photos": [
         "carousel/pro-style-ashworth-polo/01.jpg",
         "carousel/pro-style-ashworth-polo/02.jpg",
@@ -5375,9 +5373,17 @@
         "sku": "TA_GS_62",
         "price": 29.99,
         "listedAt": "2026-11-19",
-        "pictures": "sq1"
+        "pictures": "sq1",
+        "endedAt": "2026-11-19"
       },
-      "_ebayUrl": "https://www.ebay.com/itm/377659412427"
+      "_ebayUrl": "https://www.ebay.com/itm/377659412427",
+      "retired": true,
+      "_reshoot": {
+        "since": "2026-11-19",
+        "why": "background off colour; new hero images coming",
+        "wasChannel": "stripe",
+        "wasListingUrl": "https://buy.stripe.com/cNi14m6aw8LHac66NI9k41K"
+      }
     }
   ],
   "_inPerson": {
