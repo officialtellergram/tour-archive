@@ -5536,7 +5536,14 @@
         "carousel/ralph-lauren-x-scotty-cameron-polo/06.jpg",
         "carousel/ralph-lauren-x-scotty-cameron-polo/07.jpg"
       ],
-      "_photosPulled": "2026-11-25"
+      "_photosPulled": "2026-11-25",
+      "_ebay": {
+        "itemId": "377676340810",
+        "sku": "TA_GS_115",
+        "price": 87.99,
+        "listedAt": "2026-11-25"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377676340810"
     },
     {
       "id": "stock-abstract-ashworth-art-polo",
@@ -5589,7 +5596,14 @@
         "carousel/abstract-ashworth-art-polo/06.jpg",
         "carousel/abstract-ashworth-art-polo/07.jpg"
       ],
-      "_photosPulled": "2026-11-25"
+      "_photosPulled": "2026-11-25",
+      "_ebay": {
+        "itemId": "377676340919",
+        "sku": "TA_GS_116",
+        "price": 58.99,
+        "listedAt": "2026-11-25"
+      },
+      "_ebayUrl": "https://www.ebay.com/itm/377676340919"
     },
     {
       "id": "stock-vintage-taylormade-polo",
