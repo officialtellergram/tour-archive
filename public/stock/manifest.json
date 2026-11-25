@@ -5102,7 +5102,7 @@
         "#0E1524"
       ],
       "colorName": "Navy",
-      "story": "Thick cotton Ashworth piece with a knit pattern woven in. .",
+      "story": "Thick cotton Ashworth piece with a knit pattern woven in.",
       "details": [
         "Checkout completes with Stripe"
       ],
@@ -5114,7 +5114,7 @@
       "_ingested": "2026-11-19",
       "_source": "stripe:prod_VVGbTzTnq1xeWZ",
       "description": [
-        "Thick cotton Ashworth piece with a knit pattern woven in. ."
+        "Thick cotton Ashworth piece with a knit pattern woven in."
       ],
       "_stripe": {
         "product": "prod_VVGbTzTnq1xeWZ",
@@ -5159,7 +5159,7 @@
         "#78391A"
       ],
       "colorName": "Coral",
-      "story": "Beautiful Burnt Orange Floral Print for the iconic Hawaiian course. .",
+      "story": "Beautiful Burnt Orange Floral Print for the iconic Hawaiian course.",
       "details": [
         "Checkout completes with Stripe"
       ],
@@ -5170,7 +5170,7 @@
       "_ingested": "2026-11-19",
       "_source": "stripe:prod_VVF7xW02T4QRmv",
       "description": [
-        "Beautiful Burnt Orange Floral Print for the iconic Hawaiian course. ."
+        "Beautiful Burnt Orange Floral Print for the iconic Hawaiian course."
       ],
       "_stripe": {
         "product": "prod_VVF7xW02T4QRmv",
@@ -5384,6 +5384,474 @@
         "wasChannel": "stripe",
         "wasListingUrl": "https://buy.stripe.com/cNi14m6aw8LHac66NI9k41K"
       }
+    },
+    {
+      "id": "stock-malbon-landscape-hat",
+      "sku": "TA_GS_113",
+      "file": "malbon-landscape-hat.jpg",
+      "name": "Malbon Landscape Hat",
+      "brand": "Malbon",
+      "year": "—",
+      "category": "Headwear",
+      "garment": "cap",
+      "size": "One size",
+      "condition": "Pre-owned",
+      "price": 64.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "Beautiful heavy cotton hat from Malbon. This features an embroidered landscape scene underneath a whispy Malbon script. Great for outfits outside and on the course.",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {},
+      "collection": "basic-stock",
+      "_ingested": "2026-11-25",
+      "_source": "stripe:prod_VgSadaw8n2r71e",
+      "description": [
+        "Beautiful heavy cotton hat from Malbon. This features an embroidered landscape scene underneath a whispy Malbon script. Great for outfits outside and on the course."
+      ],
+      "_stripe": {
+        "product": "prod_VgSadaw8n2r71e",
+        "price": "price_1UfgriC1bWq01lTKm2bw1p4d",
+        "link": "plink_1UfhvUC1bWq01lTKkaqnabHR",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-11-25"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/8x29ASfL6fa53NI1to9k41L",
+      "photos": [
+        "carousel/malbon-landscape-hat/01.jpg",
+        "carousel/malbon-landscape-hat/02.jpg",
+        "carousel/malbon-landscape-hat/03.jpg"
+      ],
+      "_photosPulled": "2026-11-25",
+      "colorFamily": "brown"
+    },
+    {
+      "id": "stock-khaki-masters-anorak",
+      "sku": "TA_GS_114",
+      "file": "khaki-masters-anorak.jpg",
+      "name": "Khaki Masters Anorak",
+      "brand": "Masters Collection",
+      "year": "—",
+      "category": "Outerwear",
+      "garment": "windshirt",
+      "size": "L",
+      "condition": "Pre-owned",
+      "price": 39.99,
+      "colorway": [
+        "#C8B489",
+        "#A8946B",
+        "#6A5C3E"
+      ],
+      "colorName": "Sand",
+      "story": "Vintage Masters piece featuring embroidered Masters branding on the chest, sleeve, and collar.",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "28 in",
+        "Chest": "27 in",
+        "Sleeves": "25 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-11-25",
+      "_source": "stripe:prod_VgRnh6WPu9SxVI",
+      "description": [
+        "Vintage Masters piece featuring embroidered Masters branding on the chest, sleeve, and collar."
+      ],
+      "_stripe": {
+        "product": "prod_VgRnh6WPu9SxVI",
+        "price": "price_1UfgreC1bWq01lTKYOpPzNHy",
+        "link": "plink_1UfhvVC1bWq01lTKIMCIcpNb",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-11-25"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/28E14m2Yk4vr4RM2xs9k41M",
+      "photos": [
+        "carousel/khaki-masters-anorak/01.jpg",
+        "carousel/khaki-masters-anorak/02.jpg",
+        "carousel/khaki-masters-anorak/03.jpg",
+        "carousel/khaki-masters-anorak/04.jpg",
+        "carousel/khaki-masters-anorak/05.jpg"
+      ],
+      "_photosPulled": "2026-11-25",
+      "colorFamily": "brown"
+    },
+    {
+      "id": "stock-ralph-lauren-x-scotty-cameron-polo",
+      "sku": "TA_GS_115",
+      "file": "ralph-lauren-x-scotty-cameron-polo.jpg",
+      "name": "Ralph Lauren x Scotty Cameron Polo",
+      "brand": "Ralph Lauren",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "M",
+      "condition": "Pre-owned",
+      "price": 74.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "One of the more unique Scotty Cameron polos you'll be able to find. The shirt features Scotty Branding all-over alongside Titleist and RLX embroidery.",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "27 in",
+        "Chest": "22 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-11-25",
+      "_source": "stripe:prod_VgRklx7Y3GkJmG",
+      "description": [
+        "One of the more unique Scotty Cameron polos you'll be able to find. The shirt features Scotty Branding all-over alongside Titleist and RLX embroidery."
+      ],
+      "_stripe": {
+        "product": "prod_VgRklx7Y3GkJmG",
+        "price": "price_1UfgrZC1bWq01lTKkSijikdH",
+        "link": "plink_1UfhvVC1bWq01lTKVxoO75rz",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-11-25"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/aFadR89mI6Dzfwq6NI9k41N",
+      "photos": [
+        "carousel/ralph-lauren-x-scotty-cameron-polo/01.jpg",
+        "carousel/ralph-lauren-x-scotty-cameron-polo/02.jpg",
+        "carousel/ralph-lauren-x-scotty-cameron-polo/03.jpg",
+        "carousel/ralph-lauren-x-scotty-cameron-polo/04.jpg",
+        "carousel/ralph-lauren-x-scotty-cameron-polo/05.jpg",
+        "carousel/ralph-lauren-x-scotty-cameron-polo/06.jpg",
+        "carousel/ralph-lauren-x-scotty-cameron-polo/07.jpg"
+      ],
+      "_photosPulled": "2026-11-25"
+    },
+    {
+      "id": "stock-abstract-ashworth-art-polo",
+      "sku": "TA_GS_116",
+      "file": "abstract-ashworth-art-polo.jpg",
+      "name": "Abstract Ashworth Art Polo",
+      "brand": "Ashworth",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "L",
+      "condition": "Pre-owned",
+      "price": 49.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "A very unique piece from a pioneering brand in the golf world. The shirt sports an abstract art design alongside a two-tone collar and unorthodox construction. Rancho Murieta CC branding on the sleeve. Made in the USA.",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "28 in",
+        "Chest": "23 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-11-25",
+      "_source": "stripe:prod_VgRg7VzDg5IzEK",
+      "description": [
+        "A very unique piece from a pioneering brand in the golf world. The shirt sports an abstract art design alongside a two-tone collar and unorthodox construction. Rancho Murieta CC branding on the sleeve. Made in the USA."
+      ],
+      "_stripe": {
+        "product": "prod_VgRg7VzDg5IzEK",
+        "price": "price_1UfgrVC1bWq01lTKzt5kafzc",
+        "link": "plink_1UfhvVC1bWq01lTKWhnDFWdU",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-11-25"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/dRm6oGeH2d1Xesm0pk9k41O",
+      "photos": [
+        "carousel/abstract-ashworth-art-polo/01.jpg",
+        "carousel/abstract-ashworth-art-polo/02.jpg",
+        "carousel/abstract-ashworth-art-polo/03.jpg",
+        "carousel/abstract-ashworth-art-polo/04.jpg",
+        "carousel/abstract-ashworth-art-polo/05.jpg",
+        "carousel/abstract-ashworth-art-polo/06.jpg",
+        "carousel/abstract-ashworth-art-polo/07.jpg"
+      ],
+      "_photosPulled": "2026-11-25"
+    },
+    {
+      "id": "stock-vintage-taylormade-polo",
+      "sku": "TA_GS_117",
+      "file": "vintage-taylormade-polo.jpg",
+      "name": "Vintage Taylormade Polo",
+      "brand": "TaylorMade",
+      "year": "—",
+      "category": "Shirting",
+      "garment": "polo",
+      "size": "L",
+      "condition": "Pre-owned",
+      "price": 44.99,
+      "colorway": [
+        "#6F7F4E",
+        "#55633B",
+        "#333D22"
+      ],
+      "colorName": "Olive",
+      "story": "Heavy cotton Taylormade piece in a sun-faded grey. The shirt features olive-green piping and Taylormade branding on the chest and sleeve.",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "30 in",
+        "Chest": "23 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-11-25",
+      "_source": "stripe:prod_VgRb8Ah2JltJsg",
+      "description": [
+        "Heavy cotton Taylormade piece in a sun-faded grey. The shirt features olive-green piping and Taylormade branding on the chest and sleeve."
+      ],
+      "_stripe": {
+        "product": "prod_VgRb8Ah2JltJsg",
+        "price": "price_1UfgrNC1bWq01lTK6bDkGBlu",
+        "link": "plink_1UfhvWC1bWq01lTKpKKxO1cm",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-11-25"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/00w7sK9mIe61982fke9k41P",
+      "photos": [
+        "carousel/vintage-taylormade-polo/01.jpg",
+        "carousel/vintage-taylormade-polo/02.jpg",
+        "carousel/vintage-taylormade-polo/03.jpg"
+      ],
+      "_photosPulled": "2026-11-25",
+      "colorFamily": "grey"
+    },
+    {
+      "id": "stock-peter-millar-bob-o-link-pullover",
+      "sku": "TA_GS_118",
+      "file": "peter-millar-bob-o-link-pullover.jpg",
+      "name": "Peter Millar Bob O' Link Pullover",
+      "brand": "Peter Millar",
+      "year": "—",
+      "category": "Knitwear",
+      "garment": "sweater",
+      "size": "M",
+      "condition": "Pre-owned",
+      "price": 44.99,
+      "colorway": [
+        "#A8C0D6",
+        "#7A9BB8",
+        "#3D5A72"
+      ],
+      "colorName": "Powder Blue",
+      "story": "Crown Sport Quarterzip featuring a blue camo zipper and embroidered branding from Bob O' Link GC in Illinois. Peter Millar branding screened on the back.",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "26 in",
+        "Chest": "22 in",
+        "Sleeves": "24 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-11-25",
+      "_source": "stripe:prod_VgRX1JN4QChLxg",
+      "description": [
+        "Crown Sport Quarterzip featuring a blue camo zipper and embroidered branding from Bob O' Link GC in Illinois. Peter Millar branding screened on the back."
+      ],
+      "_stripe": {
+        "product": "prod_VgRX1JN4QChLxg",
+        "price": "price_1UfgrIC1bWq01lTKWcF32tlE",
+        "link": "plink_1UfhvWC1bWq01lTKOyrJ2dVW",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-11-25"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/00wdR89mI2njfwq4FA9k41Q",
+      "photos": [
+        "carousel/peter-millar-bob-o-link-pullover/01.jpg",
+        "carousel/peter-millar-bob-o-link-pullover/02.jpg",
+        "carousel/peter-millar-bob-o-link-pullover/03.jpg",
+        "carousel/peter-millar-bob-o-link-pullover/04.jpg",
+        "carousel/peter-millar-bob-o-link-pullover/05.jpg",
+        "carousel/peter-millar-bob-o-link-pullover/06.jpg"
+      ],
+      "_photosPulled": "2026-11-25"
+    },
+    {
+      "id": "stock-japan-exclusive-titleist-cashmere",
+      "sku": "TA_GS_119",
+      "file": "japan-exclusive-titleist-cashmere.jpg",
+      "name": "Japan Exclusive Titleist Cashmere",
+      "brand": "Titleist",
+      "year": "—",
+      "category": "Knitwear",
+      "garment": "sweater",
+      "size": "L",
+      "condition": "Pre-owned",
+      "price": 149.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "Rare Titleist cashmere sweater only available in the Japanese market. The piece sports a royal purple shade and Titleist box logo embroidery on the back. This is marked as \"LL\" in Japanese sizing, but fits smaller than normal.",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "25 in",
+        "Chest": "24 in",
+        "Sleeves": "25 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-11-25",
+      "_source": "stripe:prod_VgRQHaG3uZlqH8",
+      "description": [
+        "Rare Titleist cashmere sweater only available in the Japanese market. The piece sports a royal purple shade and Titleist box logo embroidery on the back. This is marked as \"LL\" in Japanese sizing, but fits smaller than normal."
+      ],
+      "_stripe": {
+        "product": "prod_VgRQHaG3uZlqH8",
+        "price": "price_1UfgrAC1bWq01lTKuYoQspzU",
+        "link": "plink_1UfhvWC1bWq01lTKcN0JsTFt",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-11-25"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/dRmaEW42o5zvac6goi9k41R",
+      "photos": [
+        "carousel/japan-exclusive-titleist-cashmere/01.jpg",
+        "carousel/japan-exclusive-titleist-cashmere/02.jpg",
+        "carousel/japan-exclusive-titleist-cashmere/03.jpg",
+        "carousel/japan-exclusive-titleist-cashmere/04.jpg",
+        "carousel/japan-exclusive-titleist-cashmere/05.jpg",
+        "carousel/japan-exclusive-titleist-cashmere/06.jpg",
+        "carousel/japan-exclusive-titleist-cashmere/07.jpg"
+      ],
+      "_photosPulled": "2026-11-25",
+      "colorFamily": "purple"
+    },
+    {
+      "id": "stock-overbranded-titleist-pullover",
+      "sku": "TA_GS_75",
+      "file": "overbranded-titleist-pullover.jpg",
+      "name": "Overbranded Titleist Pullover",
+      "brand": "Titleist",
+      "year": "—",
+      "category": "Knitwear",
+      "garment": "sweater",
+      "size": "XL",
+      "condition": "Pre-owned",
+      "price": 74.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "Beautifully Sun-faded Titleist Pullover with embroidered branding on the sleeve and left chest. Made as part of the long-running 1990s collaboration between Titleist and Corbin.",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "26 in",
+        "Chest": "27 in",
+        "Sleeves": "25 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-11-25",
+      "_source": "stripe:prod_VVF8OCZmKvrwW7",
+      "description": [
+        "Beautifully Sun-faded Titleist Pullover with embroidered branding on the sleeve and left chest. Made as part of the long-running 1990s collaboration between Titleist and Corbin."
+      ],
+      "_stripe": {
+        "product": "prod_VVF8OCZmKvrwW7",
+        "price": "price_1UUEeNC1bWq01lTKejUhxUt6",
+        "link": "plink_1UfhvXC1bWq01lTKVvPDKc61",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-11-25"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/14AeVc42o2njbga2xs9k41S",
+      "photos": [
+        "carousel/overbranded-titleist-pullover/01.jpg",
+        "carousel/overbranded-titleist-pullover/02.jpg",
+        "carousel/overbranded-titleist-pullover/03.jpg"
+      ],
+      "_photosPulled": "2026-11-25"
+    },
+    {
+      "id": "stock-titleist-raincoat",
+      "sku": "TA_GS_69",
+      "file": "titleist-raincoat.jpg",
+      "name": "Titleist Raincoat",
+      "brand": "FootJoy",
+      "year": "—",
+      "category": "Outerwear",
+      "garment": "jacket",
+      "size": "L",
+      "condition": "Pre-owned",
+      "price": 74.99,
+      "colorway": [
+        "#C4BCA6",
+        "#A39A82",
+        "#5E594A"
+      ],
+      "colorName": "Undyed",
+      "story": "Heavy Titleist raincoat with a sleek formal collar. The jacket features Footjoy branding on the sleeve, back, and metal hardware.",
+      "details": [
+        "Checkout completes with Stripe"
+      ],
+      "measurements": {
+        "Length": "27 in",
+        "Chest": "25 in",
+        "Sleeves": "25 in"
+      },
+      "collection": "basic-stock",
+      "_ingested": "2026-11-25",
+      "_source": "stripe:prod_VVEwAmBUImSGRx",
+      "description": [
+        "Heavy Titleist raincoat with a sleek formal collar. The jacket features Footjoy branding on the sleeve, back, and metal hardware."
+      ],
+      "_stripe": {
+        "product": "prod_VVEwAmBUImSGRx",
+        "price": "price_1UUESeC1bWq01lTKabtCSfwu",
+        "link": "plink_1UfhvXC1bWq01lTK3F7020yL",
+        "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
+        "mode": "live",
+        "minted": "2026-11-25"
+      },
+      "channel": "stripe",
+      "listingUrl": "https://buy.stripe.com/dRmfZg9mIe614RM3Bw9k41T",
+      "photos": [
+        "carousel/titleist-raincoat/01.jpg",
+        "carousel/titleist-raincoat/02.jpg",
+        "carousel/titleist-raincoat/03.jpg",
+        "carousel/titleist-raincoat/04.jpg",
+        "carousel/titleist-raincoat/05.jpg",
+        "carousel/titleist-raincoat/06.jpg",
+        "carousel/titleist-raincoat/07.jpg"
+      ],
+      "_photosPulled": "2026-11-25"
     }
   ],
   "_inPerson": {

@@ -14,6 +14,11 @@
     "swatch": "#3f5f8d",
     "share": 0.44
   },
+  "abstract-ashworth-art-polo.jpg": {
+    "family": "navy",
+    "swatch": "#91a8bb",
+    "share": 0.6
+  },
   "abstract-grand-slam-golf-polo.jpg": {
     "family": "grey",
     "swatch": "#61606a",
@@ -94,6 +99,11 @@
     "swatch": "#4d476f",
     "share": 0.78
   },
+  "japan-exclusive-titleist-cashmere.jpg": {
+    "family": "navy",
+    "swatch": "#383198",
+    "share": 0.9
+  },
   "kapalua-floral-polo.jpg": {
     "family": "brown",
     "swatch": "#b58b78",
@@ -104,10 +114,20 @@
     "swatch": "#661d30",
     "share": 0.57
   },
+  "khaki-masters-anorak.jpg": {
+    "family": "cream",
+    "swatch": "#dad2ca",
+    "share": 0.45
+  },
   "malbon-cartoon-crewneck.jpg": {
     "family": "navy",
     "swatch": "#4a4b66",
     "share": 0.63
+  },
+  "malbon-landscape-hat.jpg": {
+    "family": "grey",
+    "swatch": "#695d59",
+    "share": 0.52
   },
   "masters-peter-millar-quarter-zip-blue.jpg": {
     "family": "navy",
@@ -133,6 +153,16 @@
     "family": "black",
     "swatch": "#111320",
     "share": 0.59
+  },
+  "overbranded-titleist-pullover.jpg": {
+    "family": "navy",
+    "swatch": "#55697d",
+    "share": 0.63
+  },
+  "peter-millar-bob-o-link-pullover.jpg": {
+    "family": "navy",
+    "swatch": "#323873",
+    "share": 0.83
   },
   "peter-millar-club-quarter-zip-navy.jpg": {
     "family": "black",
@@ -229,6 +259,11 @@
     "swatch": "#ced1d6",
     "share": 0.59
   },
+  "ralph-lauren-x-scotty-cameron-polo.jpg": {
+    "family": "green",
+    "swatch": "#70b07c",
+    "share": 0.95
+  },
   "rlx-dark-camo-q-zip.jpg": {
     "family": "navy",
     "swatch": "#394d83",
@@ -319,6 +354,11 @@
     "swatch": "#58629a",
     "share": 0.88
   },
+  "titleist-raincoat.jpg": {
+    "family": "navy",
+    "swatch": "#38415c",
+    "share": 0.62
+  },
   "tpc-sawgrass-polo.jpg": {
     "family": "red",
     "swatch": "#a62c42",
@@ -383,6 +423,11 @@
     "family": "purple",
     "swatch": "#8a5b74",
     "share": 0.84
+  },
+  "vintage-taylormade-polo.jpg": {
+    "family": "navy",
+    "swatch": "#41405c",
+    "share": 0.62
   },
   "vintage-taylormade-retro-logo-polo.jpg": {
     "family": "black",
