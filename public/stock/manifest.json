@@ -5749,10 +5749,9 @@
         "link": "plink_1UfhvWC1bWq01lTKcN0JsTFt",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-11-25"
+        "minted": "2026-11-25",
+        "soldSession": "cs_live_b0LsIcd1ab3bYfKUcylZn1weTY6ks9s69fo5iWJJa55cBTF6nEMg2wbdrV"
       },
-      "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/dRmaEW42o5zvac6goi9k41R",
       "photos": [
         "carousel/japan-exclusive-titleist-cashmere/01.jpg",
         "carousel/japan-exclusive-titleist-cashmere/02.jpg",
@@ -5763,7 +5762,9 @@
         "carousel/japan-exclusive-titleist-cashmere/07.jpg"
       ],
       "_photosPulled": "2026-11-25",
-      "colorFamily": "purple"
+      "colorFamily": "purple",
+      "sold": true,
+      "_saleNotified": "2026-11-25"
     },
     {
       "id": "stock-overbranded-titleist-pullover",
