@@ -5855,10 +5855,9 @@
         "link": "plink_1UfhvXC1bWq01lTK3F7020yL",
         "shippingRate": "shr_1UEIXYC1bWq01lTKyuUCUtDO",
         "mode": "live",
-        "minted": "2026-11-25"
+        "minted": "2026-11-25",
+        "soldSession": "cs_live_b0iq0TdO1mk7NY1WlUC09lY9N3fTkPlUIgOwCuM5ceSHz9dTGFyEhugpXH"
       },
-      "channel": "stripe",
-      "listingUrl": "https://buy.stripe.com/dRmfZg9mIe614RM3Bw9k41T",
       "photos": [
         "carousel/titleist-raincoat/01.jpg",
         "carousel/titleist-raincoat/02.jpg",
@@ -5868,7 +5867,9 @@
         "carousel/titleist-raincoat/06.jpg",
         "carousel/titleist-raincoat/07.jpg"
       ],
-      "_photosPulled": "2026-11-25"
+      "_photosPulled": "2026-11-25",
+      "sold": true,
+      "_saleNotified": "2026-11-25"
     }
   ],
   "_inPerson": {
