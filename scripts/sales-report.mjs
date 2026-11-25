@@ -8,7 +8,11 @@
  *                  --ebay: Desktop/Tour Archive/ebay-sales-report.csv
  *
  * A LEFT JOIN from the catalogue: every piece marked sold is a row, whether
- * or not a channel record exists for it. The channel record fills the money
+ * or not a channel record exists for it. Two price columns sit side by side:
+ * site_price is always the site (Stripe) price; list_price is what the piece
+ * was listed at on the channel it sold on — the eBay listing price for an
+ * eBay row (from the `_ebay.price` stamp), the site price elsewhere. Subtotal
+ * is what the buyer actually paid. The channel record fills the money
  * columns —
  *   eBay    Fulfillment order + Finances API: subtotal, shipping, sales tax,
  *           order total, transaction fees, shipping label, earnings, funds
@@ -114,6 +118,9 @@ function ebayRow(e, o) {
     piece: e?.name || li.title || '',
     id: e?.id || li.sku || '',
     sitePrice: e ? Number(e.price).toFixed(2) : '',
+    // the eBay listing price at the time of sale (the sync stops repricing a
+    // sold piece); an order with no stamp behind it lists at what was paid
+    listPrice: e?._ebay?.price != null ? Number(e._ebay.price).toFixed(2) : b.subtotal.toFixed(2),
     subtotal: b.subtotal.toFixed(2),
     shipping: b.shipping.toFixed(2),
     salesTax: b.tax.toFixed(2),
@@ -138,6 +145,7 @@ async function stripeRow(e) {
     piece: e.name,
     id: e.id,
     sitePrice: Number(e.price).toFixed(2),
+    listPrice: Number(e.price).toFixed(2),
     subtotal: Number(e.price).toFixed(2),
     shipping: FLAT_SHIPPING.toFixed(2),
     salesTax: '',
@@ -185,7 +193,7 @@ async function stripeRow(e) {
 async function inPersonRow(e) {
   const base = {
     channel: 'in-person', date: e._stripe.soldAt || '', piece: e.name, id: e.id,
-    sitePrice: Number(e.price).toFixed(2), subtotal: Number(e._stripe.soldAmount ?? e.price).toFixed(2), shipping: '0.00',
+    sitePrice: Number(e.price).toFixed(2), listPrice: Number(e.price).toFixed(2), subtotal: Number(e._stripe.soldAmount ?? e.price).toFixed(2), shipping: '0.00',
     salesTax: '', orderTotal: '', fees: '', label: '', earnings: '', funds: '', status: 'paid', refunded: '', buyer: '',
     reference: e._stripe.soldCharge, stripeInvoice: '',
   };
@@ -234,6 +242,7 @@ for (const e of manifest.items.filter((x) => x.sold)) {
       piece: e.name,
       id: e.id,
       sitePrice: Number(e.price).toFixed(2),
+      listPrice: Number(e.price).toFixed(2),
       subtotal: Number(e.price).toFixed(2),
       shipping: FLAT_SHIPPING.toFixed(2),
       salesTax: '',
@@ -291,10 +300,13 @@ if (PERIOD) {
   const undated = rows.filter((r) => !r.date);
   out = rows.filter((r) => r.date >= PERIOD.from && r.date <= PERIOD.to);
   extra.push(totalRow(`TOTAL ${PERIOD.label}`, out), totalRow(`CUMULATIVE to ${PERIOD.to}`, rows.filter((r) => r.date && r.date <= PERIOD.to)));
+  // A quiet period says so in the body, so the statement reads as a
+  // deliberate zero rather than a broken file (totals are already summed).
+  if (!out.length) out = [{ ...totalRow('none', []), piece: `No sales ${PERIOD.label}`, status: 'none', ...Object.fromEntries(MONEY.map((k) => [k, ''])) }];
   if (undated.length) console.log(`${C.yellow}   ⚠ ${undated.length} sale(s) with no date (before the automations) are outside any period and left out of both lines${C.off}`);
 }
 
-const head = ['channel', 'date', 'piece', 'id', 'site_price', 'subtotal', 'shipping_charged', 'sales_tax', 'order_total', 'transaction_fees', 'shipping_label', 'earnings', 'funds_status', 'status', 'refunded', 'buyer', 'reference', 'stripe_invoice'];
+const head = ['channel', 'date', 'piece', 'id', 'site_price', 'list_price', 'subtotal', 'shipping_charged', 'sales_tax', 'order_total', 'transaction_fees', 'shipping_label', 'earnings', 'funds_status', 'status', 'refunded', 'buyer', 'reference', 'stripe_invoice'];
 const csv = (v) => (/[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : String(v));
 let written = true;
 try {

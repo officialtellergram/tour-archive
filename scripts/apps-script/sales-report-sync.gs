@@ -4,8 +4,10 @@
  * Lives in Karen's Google account as an Apps Script (script.google.com).
  * Once an hour it asks the Cloudflare Worker whether a new sales report has
  * been handed over (the GitHub job puts one there on Mondays and on the 1st)
- * and writes anything new into the "Transaction Invoices" folder, replacing
- * a file of the same name in place so its link and version history stay.
+ * and writes anything new into the "Transaction Invoices" folder (week and
+ * month statements into their month's subfolder, e.g. "November Sales
+ * 2026"), replacing a file of the same name in place so its link and version
+ * history stay.
  *
  * Setup, once:
  *   1. script.google.com → New project → paste this file over Code.gs → save.
@@ -39,8 +41,11 @@ function syncReports() {
     var res = UrlFetchApp.fetch(WORKER + '/report/' + encodeURIComponent(f.name), { headers: headers, muteHttpExceptions: true });
     if (res.getResponseCode() !== 200) { console.warn('fetch ' + f.name + ': ' + res.getResponseCode()); return; }
     var csv = res.getContentText('UTF-8');
-    // the mailing list is not a finance record: it goes to its own folder
-    var dest = /^mailing-list/i.test(f.name) ? listFolder_() : folder;
+    // the mailing list is not a finance record: it goes to its own folder;
+    // a week or month statement is filed in its month's subfolder, where the
+    // team keeps them ("November Sales 2026"); the all-time report stays at
+    // the top of the folder
+    var dest = /^mailing-list/i.test(f.name) ? listFolder_() : monthFolder_(folder, f.name);
     var existing = dest.getFilesByName(f.name);
     if (existing.hasNext()) {
       existing.next().setContent(csv); // same file, new version
@@ -60,6 +65,21 @@ function targetFolder_(props) {
   var it = DriveApp.getFoldersByName(FOLDER_NAME);
   if (!it.hasNext()) throw new Error('No folder called "' + FOLDER_NAME + '" in this Drive; set FOLDER_ID');
   return it.next();
+}
+
+/**
+ * The subfolder a statement belongs in, made on first use:
+ *   sales-report-week-2026-11-16.csv → "November Sales 2026" (the Monday's month)
+ *   sales-report-2026-10.csv         → "October Sales 2026"
+ * Anything else (sales-report.csv, sku lists) stays in the folder itself.
+ */
+function monthFolder_(folder, name) {
+  var m = /^sales-report-(?:week-)?(\d{4})-(\d{2})/.exec(name);
+  if (!m) return folder;
+  var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  var sub = MONTHS[Number(m[2]) - 1] + ' Sales ' + m[1];
+  var it = folder.getFoldersByName(sub);
+  return it.hasNext() ? it.next() : folder.createFolder(sub);
 }
 
 /** Installs the hourly check (replacing any earlier one). Run once. */

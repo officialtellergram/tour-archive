@@ -1,9 +1,18 @@
 # Sales report
 
 One CSV, both channels, one row per sold piece, the same columns for each:
-channel, date, piece, site price, subtotal, shipping charged, sales tax,
-order total, transaction fees, shipping label, earnings, funds status,
-status, refunded, buyer, the order or payment reference, the Stripe invoice.
+channel, date, piece, site price, list price, subtotal, shipping charged,
+sales tax, order total, transaction fees, shipping label, earnings, funds
+status, status, refunded, buyer, the order or payment reference, the Stripe
+invoice.
+
+- `site_price` is always the site (Stripe) price. `list_price` is what the
+  piece was listed at on the channel it sold on: the eBay listing price for
+  an eBay row, the site price for a site or stall sale. `subtotal` is what
+  the buyer actually paid, so an accepted offer or a discount shows as the
+  gap between list price and subtotal.
+- A week or month with no sales carries one body row, `No sales …`, above
+  its TOTAL and CUMULATIVE lines, so the statement is never a blank file.
 
 - eBay rows reproduce Seller Hub's "Payment" panel by API (Fulfillment
   order + Finances API, `scripts/lib/ebay-finance.mjs`).
@@ -43,8 +52,12 @@ Bearer `REPORT_SECRET`, a narrow secret that can only read and write
 reports). An Apps Script in Karen's Google account checks the store once an
 hour (`GET /report`, then `GET /report/<name>`) and writes anything new into
 the Transaction Invoices folder, replacing a same-named file in place so its
-link and version history stay. No Google credentials or Cloud Console: the
-script runs as Karen with Google's own one-click permission.
+link and version history stay. Week and month statements are filed in their
+month's subfolder (`November Sales 2026`, made on first use; a week goes by
+its Monday's month); the all-time `sales-report.csv` stays at the top. No
+Google credentials or Cloud Console: the script runs as Karen with Google's
+own one-click permission. After a change to the `.gs`, paste it over the
+project's `Code.gs` again and save; the trigger keeps running.
 
 One-time setup of the script, in Karen's Google account:
 
