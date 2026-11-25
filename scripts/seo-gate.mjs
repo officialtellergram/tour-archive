@@ -88,6 +88,7 @@ const pageModules = await Promise.all([
   import('../src/pages/journal.js'),
   import('../src/pages/house.js'),
   import('../src/pages/curate.js'),
+  import('../src/pages/cart.js'),
 ]);
 const handlers = Object.assign({}, ...pageModules);
 const { mountChrome } = await import('../src/components/chrome.js');

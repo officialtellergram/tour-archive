@@ -8,6 +8,7 @@ import { openDrawer, closeDrawer, toast } from '../lib/motion.js';
 import { joinList } from '../lib/list.js';
 import { matchesQuery, normalizeQuery } from '../lib/search.js';
 import { currentPath, applyBaseToLinks, stripBase, hashHTML, navigate } from '../lib/router.js';
+import { cartCount } from '../lib/cart.js';
 
 const SEARCH_ICON =
   '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><circle cx="6.8" cy="6.8" r="5.2"/><path d="M10.6 10.6 15 15"/></svg>';
@@ -48,6 +49,9 @@ export function headerHTML() {
         <button class="nav-search" type="button" data-search-open aria-expanded="false" aria-controls="site-search">
           ${SEARCH_ICON}<span>Search</span>
         </button>
+        <!-- the cart: its count is painted at boot and on every ta:cart event
+             (src/lib/cart.js), so the prerendered header never carries one -->
+        <a class="nav-cart" href="/cart" data-cart-link>Cart<span class="nav-cart-n" data-cart-count hidden>0</span></a>
       </nav>
     </div>
     <!-- The search strip drops from the header (Karen, 13 Nov 2026). Shut, it
@@ -94,6 +98,7 @@ export function headerHTML() {
           <li><a href="/archive?filter=available"><span>Available Now</span><span class="meta">${
             items().filter(isAvailable).length
           } pieces</span></a></li>
+          <li><a href="/cart"><span>Your Cart</span></a></li>
         </ul>
       </div>
     </div>
@@ -169,6 +174,17 @@ export function mountChrome() {
   // Chrome renders once, outside the router, so it needs the base applied here.
   applyBaseToLinks(header);
   applyBaseToLinks(footer);
+
+  /* ---- the cart count ---- */
+  const cartN = document.querySelector('[data-cart-count]');
+  const paintCart = () => {
+    if (!cartN) return;
+    const n = cartCount();
+    cartN.textContent = String(n);
+    cartN.hidden = n === 0;
+  };
+  paintCart();
+  document.addEventListener('ta:cart', paintCart);
 
   const drawer = document.querySelector('[data-drawer]');
   const openBtn = document.querySelector('[data-drawer-open]');

@@ -13,6 +13,13 @@ invoice.
   gap between list price and subtotal.
 - A week or month with no sales carries one body row, `No sales …`, above
   its TOTAL and CUMULATIVE lines, so the statement is never a blank file.
+- A cart order (several pieces in one Stripe Checkout Session, since the
+  Black Friday sale of Nov 2026 — docs/SALE.md) is one row per piece: the
+  piece's own line after its discounts as `subtotal`, and shipping, tax,
+  fee and refund shared in proportion to the lines' totals. The rows share
+  the order's `reference`. A Stripe row's `subtotal` is the amount after any
+  discount (a sale price, the cart tier's share, a promotion code), so
+  `list_price − subtotal` is the whole saving on the piece.
 
 - eBay rows reproduce Seller Hub's "Payment" panel by API (Fulfillment
   order + Finances API, `scripts/lib/ebay-finance.mjs`).

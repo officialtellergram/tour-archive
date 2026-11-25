@@ -195,9 +195,12 @@ try {
   } else {
     await sleep(1200);
     const pdp = await evaluate(`(() => {
-      const btns = [...document.querySelectorAll('.pdp-actions a.btn--solid')];
+      // During a sale window the primary button is the cart's checkout (a
+      // data-buy button the Worker answers), not the Payment Link.
+      const btns = [...document.querySelectorAll('.pdp-actions a.btn--solid, .pdp-actions button[data-buy]')];
       const b = btns[0];
       return JSON.stringify({
+        sale: b ? b.hasAttribute('data-buy') : false,
         label: b ? b.textContent.trim() : '',
         href: b ? b.getAttribute('href') : '',
         target: b ? b.getAttribute('target') : '',
@@ -211,12 +214,14 @@ try {
       });
     })()`);
     const p = JSON.parse(pdp || '{}');
-    if (/^https:\/\/buy\.stripe\.com\//.test(p.href || '')) pass(`PDP buy button → ${p.href}`);
+    if (p.sale) pass('PDP buy button is the sale checkout (a Checkout Session from the Worker)');
+    else if (/^https:\/\/buy\.stripe\.com\//.test(p.href || '')) pass(`PDP buy button → ${p.href}`);
     else fail(`PDP buy button href is "${p.href}" — not a Stripe payment link`);
     if (/buy\.stripe\.com\/test_/.test(p.href || '')) fail('PDP buy button is a TEST-mode link');
     if (/Buy now/i.test(p.label || '')) pass(`button reads "${p.label}"`);
     else fail(`button reads "${p.label}", expected "Buy now"`);
-    if (p.target === '_blank') pass('checkout opens in a new tab');
+    if (p.sale) pass('sale checkout opens in this tab (Stripe returns to /thanks)');
+    else if (p.target === '_blank') pass('checkout opens in a new tab');
     else fail(`button target is "${p.target}"`);
     if (p.note) pass(`checkout note: "${p.note}"`);
     else fail('the Stripe checkout note is missing from the PDP');

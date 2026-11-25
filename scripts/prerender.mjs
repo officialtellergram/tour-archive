@@ -117,6 +117,7 @@ async function main() {
   const { archive } = await import('../src/pages/archive.js');
   const { product } = await import('../src/pages/product.js');
   const { mission, sell, sizing, privacy, terms } = await import('../src/pages/house.js');
+  const { cart, thanks } = await import('../src/pages/cart.js');
   const seo = await import('../src/data/seo.js');
 
   store.hydrate(payload);
@@ -147,6 +148,12 @@ async function main() {
     staticPage('/sizing', sizing),
     staticPage('/privacy', privacy),
     staticPage('/terms', terms),
+    // The cart and the order's landing page: real HTML so Pages answers 200
+    // (Stripe sends a paid order back to /thanks), but private to a visit —
+    // noindex, out of the sitemap. The cart prerenders empty; the browser
+    // fills it from localStorage.
+    { ...staticPage('/cart', cart), noindex: true },
+    { ...staticPage('/thanks', thanks), noindex: true },
     ...store.collections().map((c) => ({
       route: `/collections/${c.id}`,
       render: () => collectionDetail({ id: c.id }),
@@ -246,6 +253,7 @@ async function main() {
           ]
         : []),
       `<meta name="twitter:card" content="summary_large_image" />`,
+      ...(page.noindex ? ['<meta name="robots" content="noindex" />'] : []),
       ...jsonLd(page, canonical, desc, image).map(
         (block) => `<script type="application/ld+json">${block}</script>`
       ),
@@ -419,7 +427,7 @@ async function main() {
   /* -------------------------------------------------------------- */
 
   function sitemapXML(list) {
-    const rows = list.map((p) => {
+    const rows = list.filter((p) => !p.noindex).map((p) => {
       const loc = p.route === '/' ? `${ORIGIN}/` : `${ORIGIN}${p.route}`;
       return `  <url>\n    <loc>${esc(loc)}</loc>\n    <lastmod>${esc(p.lastmod)}</lastmod>\n  </url>`;
     });

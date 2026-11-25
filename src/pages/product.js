@@ -2,6 +2,10 @@ import { getItem, getCollection, itemsIn, itemStatus, isAvailable, featuredEvent
 import { garmentSVG } from '../components/garment.js';
 import { productCard, breadcrumb, money, plateTag, plateMedia, pictureTag, sectionHead, mediaURL, escapeHtml, isPlaceholder } from '../components/ui.js';
 import { toast, setFrame } from '../lib/motion.js';
+import { navigate } from '../lib/router.js';
+import { saleOn } from '../data/sale.js';
+import { priceHTML, saleNote } from '../components/sale.js';
+import { addToCart, inCart, checkout } from '../lib/cart.js';
 
 /**
  * Commerce model: checkout is a redirect-out to a Stripe Payment Link — our
@@ -14,8 +18,14 @@ import { toast, setFrame } from '../lib/motion.js';
  * still use the prototype reserve button; that flow needs a real decision
  * about payments before it means anything.
  */
-export function primaryAction(item) {
+export function primaryAction(item, { sale = saleOn() } = {}) {
   if (isAvailable(item) && item.syndicated) {
+    // While the sale is on, Buy now goes through the cart's checkout (the
+    // Worker makes a Checkout Session at the sale prices and applies the
+    // cart tier); the Payment Link would charge the plain price.
+    if (sale && item.channel === 'stripe') {
+      return `<button class="btn btn--solid" data-buy="${item.id}" data-magnetic>Buy now <span aria-hidden="true">↗</span></button>`;
+    }
     // One button per checkout the piece offers. Today that is one Payment
     // Link; the array shape stays so a second channel is still just data.
     const listings = item.listings?.length
@@ -41,8 +51,15 @@ export function primaryAction(item) {
 }
 
 function secondaryAction(item) {
-  // For syndicated stock the primary button already is the listing, so the
-  // secondary slot is better spent on a way to ask us about the piece.
+  // Direct stock: the cart, so several pieces ship as one order (one $8
+  // shipping charge; the sale's cart tiers). Asking about the piece moves to
+  // a line under the buttons.
+  if (isAvailable(item) && item.syndicated && item.channel === 'stripe') {
+    const held = inCart(item.id);
+    return `<button class="btn btn--ghost" data-add="${item.id}"${held ? ' data-in-cart' : ''}>${held ? 'In your cart' : 'Add to cart'}</button>`;
+  }
+  // For other syndicated stock the primary button already is the listing, so
+  // the secondary slot is better spent on a way to ask us about the piece.
   if (isAvailable(item) && item.syndicated) {
     return `<a class="btn btn--ghost" href="mailto:tourarchive.help@gmail.com?subject=${encodeURIComponent(
       `${item.name} (${item.id})`
@@ -268,9 +285,10 @@ export function product({ id }) {
           ${pdpSpecifics(item)}
 
           <div style="display:flex;align-items:baseline;gap:1rem;padding-top:.6rem;border-top:1px solid var(--rule)">
-            <span class="pdp-price">${money(item.price)}</span>
+            ${priceHTML(item, 'pdp-price')}
             <span class="eyebrow">${itemStatus(item)}</span>
           </div>
+          ${isAvailable(item) ? saleNote(item) : ''}
 
           ${
             isAvailable(item) && item.syndicated
@@ -288,6 +306,13 @@ export function product({ id }) {
             ${primaryAction(item)}
             ${secondaryAction(item)}
           </div>
+          ${
+            isAvailable(item) && item.syndicated && item.channel === 'stripe'
+              ? `<p class="eyebrow" style="margin:-.2rem 0 0"><a href="mailto:tourarchive.help@gmail.com?subject=${encodeURIComponent(
+                  `${item.name} (${item.id})`
+                )}" style="border-bottom:1px solid var(--rule-strong)">Ask about this piece</a></p>`
+              : ''
+          }
 
           <ul class="detail-list">
             ${item.details.map((d) => `<li>${d}</li>`).join('')}
@@ -393,6 +418,38 @@ export function mountProduct(outlet) {
       showFrame(Number(btn.dataset.idx));
     });
   }
+
+  // The cart. Add keeps the visitor on the page (the header count moves and
+  // the button turns into the way to the cart); Buy now asks the Worker for
+  // a Checkout Session holding just this piece and goes straight to Stripe.
+  outlet.querySelector('[data-add]')?.addEventListener('click', (e) => {
+    const b = e.currentTarget;
+    if (b.hasAttribute('data-in-cart')) {
+      navigate('/cart');
+      return;
+    }
+    if (addToCart(b.dataset.add)) {
+      b.setAttribute('data-in-cart', '');
+      b.textContent = 'In your cart';
+      toast('Added to your cart');
+    } else {
+      toast('That piece cannot be added right now');
+    }
+  });
+  outlet.querySelector('[data-buy]')?.addEventListener('click', async (e) => {
+    const b = e.currentTarget;
+    if (b.disabled) return;
+    b.disabled = true;
+    b.textContent = 'Opening checkout';
+    const r = await checkout([b.dataset.buy]);
+    if (r.ok) {
+      window.location.assign(r.url);
+      return;
+    }
+    b.disabled = false;
+    b.innerHTML = 'Buy now <span aria-hidden="true">↗</span>';
+    toast(r.error === 'gone' ? 'This piece has just sold' : 'Checkout did not open. Try again in a moment.');
+  });
 
   outlet.querySelector('[data-reserve]')?.addEventListener('click', () => {
     toast(`${item?.name || 'Piece'} held for 20 minutes`);

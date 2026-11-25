@@ -93,13 +93,22 @@ async function stripe(method, path, params) {
 /* ---------------- 1. every completed, paid session ---------------- */
 
 const paidByLink = new Map(); // plink id -> newest paid session
+// A cart order (the Worker's Checkout Session, metadata ta_ids) has no
+// Payment Link: it names its pieces, one session for several of them.
+const paidById = new Map(); // piece id -> newest paid cart session
 try {
   let after = '';
   for (;;) {
     const page = await stripe('GET', `/v1/checkout/sessions?status=complete&limit=100${after ? `&starting_after=${after}` : ''}`);
     for (const s of page.data) {
-      if (s.payment_link && s.payment_status === 'paid' && !paidByLink.has(s.payment_link))
-        paidByLink.set(s.payment_link, s);
+      if (s.payment_status !== 'paid') continue;
+      if (s.payment_link) {
+        if (!paidByLink.has(s.payment_link)) paidByLink.set(s.payment_link, s);
+      } else if (s.metadata?.ta_ids) {
+        for (const id of String(s.metadata.ta_ids).split(',').map((x) => x.trim()).filter(Boolean)) {
+          if (!paidById.has(id)) paidById.set(id, s);
+        }
+      }
     }
     if (!page.has_more || !page.data.length) break;
     after = page.data[page.data.length - 1].id;
@@ -108,7 +117,7 @@ try {
   say(`${C.red}✖ sessions list failed — ${err.message}${C.off}`);
   process.exit(1);
 }
-say(`${C.dim}   ${paidByLink.size} paid checkout(s) on record${C.off}`);
+say(`${C.dim}   ${paidByLink.size} paid checkout(s) on record${paidById.size ? ` · ${paidById.size} piece(s) in cart orders` : ''}${C.off}`);
 
 /* ---------------- 2. reconcile ---------------- */
 
@@ -117,11 +126,11 @@ const sold = [];
 for (const e of manifest.items) {
   if (!e._stripe?.link || e.sold || e.retired) continue;
   if (e._stripe.mode !== MODE) continue; // never judge test entries by live data or vice versa
-  const session = paidByLink.get(e._stripe.link);
+  const session = paidByLink.get(e._stripe.link) || paidById.get(e.id);
   if (session) {
     const when = new Date(session.created * 1000).toISOString().slice(0, 10);
     sold.push({ e, session, when });
-    say(`${C.green}   ✔ ${e.id} — SOLD (session ${session.id}, ${when})${C.off}`);
+    say(`${C.green}   ✔ ${e.id} — SOLD (${session.payment_link ? 'session' : 'cart order'} ${session.id}, ${when})${C.off}`);
   }
 }
 if (!sold.length) say(`${C.dim}   nothing new — every linked piece is still for sale${C.off}`);

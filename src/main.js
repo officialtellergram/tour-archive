@@ -1,5 +1,6 @@
 import './styles/fonts.css';
 import './styles/app.css';
+import './styles/sale.css';
 
 import { route, setNotFound, hooks, start, routeTable } from './lib/router.js';
 import {
@@ -25,9 +26,24 @@ import { product, mountProduct } from './pages/product.js';
 import { journalIndex, journalEntry } from './pages/journal.js';
 import { mission, sell, mountSell, sizing, privacy, terms, notFound } from './pages/house.js';
 import { curate, mountCurate, curateReview, mountCurateReview } from './pages/curate.js';
+import { cart, mountCart, thanks, mountThanks } from './pages/cart.js';
 
 import { getCollection, getItem, getJournal, init as initStore, status as storeStatus } from './data/store.js';
 import { pageTitle } from './data/seo.js';
+import { PREVIEW_KEY } from './data/sale.js';
+
+/* `?sale=<word>` keeps the sale on for this tab before its window opens
+   (src/data/sale.js): the team's preview. Captured before anything renders. */
+{
+  const word = new URLSearchParams(window.location.search).get('sale');
+  if (word) {
+    try {
+      sessionStorage.setItem(PREVIEW_KEY, word);
+    } catch {
+      /* private mode: the parameter still has to stay on the URL */
+    }
+  }
+}
 
 /* ----------------------------- routes ----------------------------- */
 
@@ -51,6 +67,8 @@ route('/privacy', privacy, { title: pageTitle('/privacy') });
 route('/terms', terms, { title: pageTitle('/terms') });
 route('/curate', curate, { title: pageTitle('/curate') });
 route('/curate/review', curateReview, { title: pageTitle('/curate/review') });
+route('/cart', cart, { title: pageTitle('/cart') });
+route('/thanks', thanks, { title: pageTitle('/thanks') });
 
 setNotFound(notFound);
 
@@ -63,6 +81,8 @@ const MOUNTS = [
   [/^\/sell$/, mountSell],
   [/^\/curate$/, mountCurate],
   [/^\/curate\/review$/, mountCurateReview],
+  [/^\/cart$/, mountCart],
+  [/^\/thanks$/, mountThanks],
 ];
 
 /* --------------------------- lifecycle ---------------------------- */

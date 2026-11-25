@@ -4,6 +4,8 @@ import { garmentSVG, collectionMark } from './garment.js';
 import { getCollection, itemsIn, isAvailable, BASIC_STOCK } from '../data/store.js';
 import { webpURL, sizeAttrs } from '../lib/media.js';
 import { colorLabel } from '../data/colors.js';
+import { onSale } from '../data/sale.js';
+import { saleTag, priceHTML } from './sale.js';
 
 export { webpURL, sizeAttrs, imageSize } from '../lib/media.js';
 
@@ -79,9 +81,15 @@ export function plateTag(item) {
   // plate (.is-sold ::after). No channel chip — it isn't on the marketplace.
   if (item.sold) return `<span class="plate-sash" aria-label="Sold">Sold</span>`;
   if (item.upcoming) return `<span class="plate-tag plate-tag--soon">Next drop</span>`;
-  // New: a piece added in the last two weeks wears a brass star for that
-  // long (Karen, 23 Oct 2026); the daily rebuild lets the star fall away.
-  if (isNew(item)) return `<span class="plate-tag plate-tag--new" aria-label="New this fortnight">${STAR}New</span>`;
+  // Sale: a select piece wears the brass ticket while the window is open
+  // (src/data/sale.js); New: a piece added in the last two weeks wears a
+  // brass star for that long (Karen, 23 Oct 2026); the daily rebuild lets
+  // the star fall away. Both at once sit side by side.
+  const tags = [];
+  if (onSale(item)) tags.push(saleTag());
+  if (isNew(item)) tags.push(`<span class="plate-tag plate-tag--new" aria-label="New this fortnight">${STAR}New</span>`);
+  if (tags.length > 1) return `<span class="plate-tags">${tags.join('')}</span>`;
+  if (tags.length) return tags[0];
   // Direct stock: checkout is our own Stripe payment page, so the card needs
   // no channel warning — every piece is simply what it says it is.
   // (.plate-tag--channel CSS stays: curate.js still chips marketplace finds.)
@@ -139,7 +147,7 @@ export function productCard(item, opts) {
       <h${level} class="card-name">${item.name}</h${level}>
       <div class="card-foot">
         <span>${coll ? coll.name : item.category}${isPlaceholder(item.size) ? '' : ` · ${escapeHtml(item.size)}`}</span>
-        <span class="card-price">${money(item.price)}</span>
+        ${priceHTML(item, 'card-price')}
       </div>
     </div>
   </a>`;
@@ -204,8 +212,8 @@ export function collectionTile(collection, opts) {
   </a>`;
 }
 
-export function marquee(words) {
-  return `<div class="marquee"><div class="marquee-track" data-marquee>${words
+export function marquee(words, className = '') {
+  return `<div class="marquee${className ? ` ${className}` : ''}"><div class="marquee-track" data-marquee>${words
     .map((w) => `<span>${w}</span>`)
     .join('')}</div></div>`;
 }

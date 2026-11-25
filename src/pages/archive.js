@@ -15,6 +15,7 @@
 
 import { items, collections, isAvailable, getCollection, soldLast, newestFirst } from '../data/store.js';
 import { COLOR_FAMILIES, colorLabel } from '../data/colors.js';
+import { onSale } from '../data/sale.js';
 import { matchesQuery, normalizeQuery } from '../lib/search.js';
 import { productCard, breadcrumb, marquee, escapeHtml, money } from '../components/ui.js';
 import { initGridStagger } from '../lib/motion.js';
@@ -50,7 +51,7 @@ function readState() {
   const sort = q.get('sort');
   return {
     q: normalizeQuery(q.get('q')),
-    filter: q.get('filter') === 'available' ? 'available' : 'all',
+    filter: ['available', 'sale'].includes(q.get('filter')) ? q.get('filter') : 'all',
     collection: q.get('collection') || 'all',
     brand: q.get('brand') || 'all',
     color: q.get('color') || 'all',
@@ -69,6 +70,7 @@ const anyActive = (s) =>
 function poolFor(state, except) {
   return items().filter((i) => {
     if (state.filter === 'available' && !isAvailable(i)) return false;
+    if (state.filter === 'sale' && !onSale(i)) return false; // the sale's select pieces (home banner link)
     if (except !== 'collection' && state.collection !== 'all' && i.collection !== state.collection) return false;
     if (except !== 'brand' && state.brand !== 'all' && i.brand !== state.brand) return false;
     if (except !== 'color' && state.color !== 'all' && i.colorFamily !== state.color) return false;
@@ -144,7 +146,7 @@ function sortList(state) {
 
 function countHTML(state, n) {
   const noun = n === 1 ? 'piece' : 'pieces';
-  const avail = state.filter === 'available' ? ' available' : '';
+  const avail = state.filter === 'available' ? ' available' : state.filter === 'sale' ? ' on sale' : '';
   const q = state.q ? ` for <q>${escapeHtml(state.q)}</q>` : '';
   const clear = anyActive(state) ? `<button type="button" data-filter-reset>Clear</button>` : '';
   return `<span>${n}${avail} ${noun}${q}</span>${clear}`;

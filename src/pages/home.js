@@ -12,6 +12,8 @@ import {
   newestFirst,
 } from '../data/store.js';
 import { productCard, collectionTile, marquee, sectionHead, sizeAttrs, mediaURL, money, escapeHtml } from '../components/ui.js';
+import { saleOn } from '../data/sale.js';
+import { saleBanner, tickerWords } from '../components/sale.js';
 
 const BASE_URL = (import.meta.env?.BASE_URL || '/').replace(/\/*$/, '/');
 
@@ -215,7 +217,9 @@ export function home() {
   </section>
 
   ${marquee(
-    eventLed
+    saleOn()
+      ? tickerWords()
+      : eventLed
       ? [
           `${coll ? coll.drop : 'The drop'} — ${coll ? coll.name : 'Tour Archive'}`,
           coll ? coll.place : 'East Lake, Atlanta',
@@ -231,8 +235,11 @@ export function home() {
           'Sourced by championship',
           'Virginia thrift &amp; estate sourcing',
           'Global submissions welcome',
-        ]
+        ],
+    saleOn() ? 'marquee--sale' : ''
   )}
+
+  ${saleBanner()}
 
   ${dropFirst ? featuredSection + shopSection : shopSection + featuredSection}
 

@@ -50,7 +50,11 @@ async function stripeDetails(sessionId) {
     buyer: ship.name || s.customer_details?.name || '',
     email: s.customer_details?.email || '',
     address: addr(ship.address),
-    paid: s.amount_total != null ? money(s.amount_total / 100) : '',
+    // A cart order holds several pieces in one session (metadata ta_ids);
+    // each piece's notice shows the order's total and says so.
+    paid: s.amount_total != null
+      ? `${money(s.amount_total / 100)}${(() => { const n = String(s.metadata?.ta_ids || '').split(',').filter(Boolean).length; return n > 1 ? ` — the whole order, ${n} pieces${s.metadata?.ta_tier ? `, $${s.metadata.ta_tier} cart discount` : ''}` : ''; })()}`
+      : '',
     when: s.created ? new Date(s.created * 1000) : null,
     link: s.payment_intent ? `https://dashboard.stripe.com/payments/${s.payment_intent}` : 'https://dashboard.stripe.com/payments',
     shipBy: 'within 3 business days of the order (our terms)',

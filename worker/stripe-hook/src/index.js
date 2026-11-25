@@ -24,7 +24,23 @@
  * all-time file), the 1st of the month last month's statement
  * — and /report/* is the hand-off: the job PUTs the CSV here, the Apps
  * Script in the team's Drive GETs it and files it (REPORT_SECRET).
+ *
+ * CHECKOUT (Nov 2026, for the cart and the Black Friday sale): POST /checkout
+ * turns a list of piece ids into a Stripe Checkout Session — several pieces
+ * in one order, one shipping charge, the sale's piece prices and cart tier
+ * worked out by src/data/sale.js (the same file the site uses) — and answers
+ * with the session URL. This is the one route that holds a Stripe key:
+ *   STRIPE_SECRET_KEY   a RESTRICTED live key: Checkout Sessions write,
+ *                       Payment Links read, Coupons write; everything else none
+ *   SALE_PREVIEW_KEY    (optional) the word that prices a session at the sale
+ *                       before its window opens, for the team's own test
+ * It reads the site's checkout map (dist/api/checkout-map.json, written by
+ * scripts/snapshot.mjs) for product and link ids, and refuses a piece whose
+ * Payment Link is no longer active — the sold sweep closes a link the
+ * moment its piece sells. See docs/SALE.md.
  */
+
+import { SALE, orderMath } from '../../../src/data/sale.js';
 
 const REPO = 'officialtellergram/tour-archive';
 const WORKFLOW = 'stripe-drift.yml';
@@ -32,6 +48,11 @@ const REPORT_WORKFLOW = 'sales-report.yml';
 // Cloudflare cron runs in UTC: 13:00 UTC is 09:00 in New York (08:00 in winter).
 const CRON_WEEKLY = '0 13 * * MON'; // spelled out: Cloudflare's numeric weekdays start at Sunday = 1
 const CRON_MONTHLY = '5 13 1 * *';
+// The sale window's edges (src/data/sale.js): a site rebuild five minutes
+// after it opens and after it closes, so the prerendered pages agree with
+// the live state. One-offs; delete with the sale.
+const CRON_SALE_REBUILD = new Set(['5 5 27 11 *', '5 5 1 12 *']);
+const DEPLOY_WORKFLOW = 'deploy.yml';
 const TOLERANCE_S = 300; // reject a signed payload older than five minutes (replay)
 
 /** Events that can change what the site should show. */
@@ -292,7 +313,7 @@ async function reportRoute(request, env) {
 //    address so only the link in the email can use it.
 const KV_SUB = 'sub:'; // + lower-cased email → { email, at, source, page, code, codeAt, expiresAt, welcomed, unsubscribed }
 const WELCOME_WORKFLOW = 'welcome-mail.yml';
-const SITE_ORIGINS = ['https://tourarchive.us', 'https://www.tourarchive.us', 'http://localhost:5173', 'http://localhost:4173'];
+const SITE_ORIGINS = ['https://tourarchive.us', 'https://www.tourarchive.us', 'http://localhost:5173', 'http://localhost:4173', 'http://localhost:5180'];
 const emailOk = (e) => e.length <= 120 && /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(e);
 
 function corsHeaders(request) {
@@ -374,6 +395,137 @@ async function unsubscribe(request, env) {
   return page('You are off the list. No more mail from us.');
 }
 
+// ── Checkout: a cart → one Stripe Checkout Session (see the header).
+const SITE = 'https://tourarchive.us';
+const MAP_URL = `${SITE}/api/checkout-map.json`;
+const CART_MAX = 8;
+const SESSION_TTL_S = 3600; // Stripe's floor is 30 min; an hour keeps a half-finished order from holding a piece all day
+let mapCache = { at: 0, map: null };
+
+async function checkoutMap() {
+  if (mapCache.map && Date.now() - mapCache.at < 60_000) return mapCache.map;
+  const r = await fetch(MAP_URL, { headers: { 'cache-control': 'no-cache' }, cf: { cacheTtl: 60, cacheEverything: true } });
+  if (!r.ok) throw new Error(`checkout map ${r.status}`);
+  const map = await r.json();
+  if (!map || typeof map.items !== 'object') throw new Error('checkout map malformed');
+  mapCache = { at: Date.now(), map };
+  return map;
+}
+
+/** One Stripe call, form-encoded like the scripts. Returns { ok, status, json }. */
+async function stripeCall(env, method, path, params) {
+  const init = { method, headers: { authorization: `Bearer ${env.STRIPE_SECRET_KEY}` } };
+  if (params) {
+    const body = new URLSearchParams();
+    for (const [k, v] of Object.entries(params)) if (v !== undefined && v !== null && v !== '') body.append(k, String(v));
+    init.headers['content-type'] = 'application/x-www-form-urlencoded';
+    init.body = body.toString();
+  }
+  const r = await fetch(`https://api.stripe.com${path}`, init);
+  const json = await r.json().catch(() => ({}));
+  return { ok: r.ok, status: r.status, json };
+}
+
+/** The tier's coupon, made on the spot if scripts/sale-coupons.mjs has not run. */
+async function ensureCoupon(env, tier) {
+  const r = await stripeCall(env, 'POST', '/v1/coupons', {
+    id: tier.coupon,
+    amount_off: tier.off * 100,
+    currency: 'usd',
+    duration: 'once',
+    name: `${SALE.name}: $${tier.off} off $${tier.min}+`,
+    'metadata[ta]': SALE.id,
+    'metadata[ta_min]': String(tier.min),
+  });
+  console.log(r.ok ? `coupon ${tier.coupon} made` : `coupon ${tier.coupon}: ${r.json?.error?.message || r.status}`);
+  return r.ok || /already exists/i.test(r.json?.error?.message || '');
+}
+
+async function checkoutRoute(request, env) {
+  const cors = corsHeaders(request);
+  const reply = (body, status = 200) => Response.json(body, { status, headers: { ...cors, 'cache-control': 'no-store' } });
+  if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
+  if (request.method !== 'POST') return text('method not allowed', 405);
+  if (!cors['access-control-allow-origin']) return text('origin not allowed', 403);
+  if (!env.STRIPE_SECRET_KEY) return reply({ error: 'not configured' }, 503);
+
+  let body;
+  try { body = await request.json(); } catch { return reply({ error: 'bad request' }, 400); }
+  const ids = [...new Set((Array.isArray(body?.ids) ? body.ids : []).filter((x) => typeof x === 'string' && /^stock-[a-z0-9-]{1,80}$/.test(x)))].slice(0, CART_MAX);
+  if (!ids.length) return reply({ error: 'empty' }, 400);
+
+  // Thirty sessions an hour per address is plenty for a person.
+  const ip = request.headers.get('cf-connecting-ip') || 'unknown';
+  const rlKey = `rl:checkout:${ip}:${new Date().toISOString().slice(0, 13)}`;
+  const n = Number((await env.EBAY.get(rlKey)) || 0) + 1;
+  await env.EBAY.put(rlKey, String(n), { expirationTtl: 3600 });
+  if (n > 30) return reply({ error: 'slow down' }, 429);
+
+  let map;
+  try { map = await checkoutMap(); } catch (err) { console.log(`checkout: ${err.message}`); return reply({ error: 'map' }, 502); }
+  const gone = ids.filter((id) => !map.items[id]);
+  const pieces = ids.filter((id) => map.items[id]).map((id) => ({ id, ...map.items[id] }));
+  // A piece whose Payment Link has been closed has sold (the sweep closes the
+  // link; a link-only sale closes itself after one completed session).
+  const active = await Promise.all(
+    pieces.map(async (p) => {
+      if (!p.link) return true;
+      const r = await stripeCall(env, 'GET', `/v1/payment_links/${p.link}`);
+      return r.ok ? r.json.active !== false : true; // an unreadable link is not a sale
+    })
+  );
+  pieces.forEach((p, i) => { if (!active[i]) gone.push(p.id); });
+  if (gone.length) return reply({ error: 'gone', gone }, 409);
+
+  const preview = !!env.SALE_PREVIEW_KEY && request.headers.get('x-sale-preview') === env.SALE_PREVIEW_KEY;
+  const math = orderMath(pieces, Date.now(), { preview });
+  const names = pieces.map((p) => p.name).join(', ').slice(0, 500);
+  const params = {
+    mode: 'payment',
+    success_url: `${SITE}/thanks?order={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${SITE}/cart`,
+    expires_at: Math.floor(Date.now() / 1000) + SESSION_TTL_S,
+    'shipping_address_collection[allowed_countries][0]': 'US',
+    'consent_collection[terms_of_service]': 'required',
+    'custom_text[terms_of_service_acceptance][message]': 'I agree to the [terms of sale](https://tourarchive.us/terms).',
+    'metadata[ta_ids]': ids.join(','),
+    'payment_intent_data[description]': names,
+    'payment_intent_data[metadata][ta_ids]': ids.join(','),
+  };
+  if (map.shippingRate) params['shipping_options[0][shipping_rate]'] = map.shippingRate;
+  math.lines.forEach((l, i) => {
+    params[`line_items[${i}][price_data][currency]`] = 'usd';
+    params[`line_items[${i}][price_data][unit_amount]`] = l.unit;
+    params[`line_items[${i}][price_data][product]`] = l.item.product;
+    params[`line_items[${i}][quantity]`] = 1;
+  });
+  if (math.sale) {
+    params['metadata[ta_sale]'] = SALE.id;
+    params['metadata[ta_piece_off]'] = String(math.pieceOff);
+    params['payment_intent_data[metadata][ta_sale]'] = SALE.id;
+  }
+  if (math.tier) {
+    // One discount per session is Stripe's rule, so the tier coupon and a
+    // promotion-code box cannot both be offered; the tier is worth more.
+    params['discounts[0][coupon]'] = math.tier.coupon;
+    params['metadata[ta_tier]'] = String(math.tier.off);
+    params['payment_intent_data[metadata][ta_tier]'] = String(math.tier.off);
+  } else {
+    params.allow_promotion_codes = 'true'; // the welcome code (docs/MAILING-LIST.md)
+  }
+
+  let r = await stripeCall(env, 'POST', '/v1/checkout/sessions', params);
+  if (!r.ok && math.tier && /no such coupon/i.test(r.json?.error?.message || '')) {
+    if (await ensureCoupon(env, math.tier)) r = await stripeCall(env, 'POST', '/v1/checkout/sessions', params);
+  }
+  if (!r.ok) {
+    console.log(`checkout failed for ${ids.join(',')}: ${r.status} ${r.json?.error?.message || ''}`);
+    return reply({ error: 'stripe' }, 502);
+  }
+  console.log(`checkout ${r.json.id}: ${ids.length} piece(s) · merch ${math.merch}¢${math.pieceOff ? ` (−${math.pieceOff}¢ sale)` : ''}${math.tier ? ` · tier −${math.tierOff}¢` : ''}${preview ? ' · PREVIEW' : ''}`);
+  return reply({ url: r.json.url, id: r.json.id });
+}
+
 /** Start a job on GitHub. Shared by the Stripe webhook and the cron. */
 async function dispatch(env, why, workflow = WORKFLOW, inputs) {
   if (!env.GITHUB_TOKEN) return { ok: false, status: 500, text: 'GITHUB_TOKEN is not set' };
@@ -400,6 +552,7 @@ export default {
   async scheduled(event, env, ctx) {
     if (event.cron === CRON_WEEKLY) ctx.waitUntil(dispatch(env, 'weekly statement', REPORT_WORKFLOW, { period: 'week' }));
     else if (event.cron === CRON_MONTHLY) ctx.waitUntil(dispatch(env, 'monthly statement', REPORT_WORKFLOW, { period: 'month' }));
+    else if (CRON_SALE_REBUILD.has(event.cron)) ctx.waitUntil(dispatch(env, 'sale window rebuild', DEPLOY_WORKFLOW));
     else ctx.waitUntil(dispatchSync(env, `cron ${event.cron}`));
   },
 
@@ -412,6 +565,7 @@ export default {
     if (pathname === '/ebay/token') return ebayToken(request, env);
     if (pathname === '/report' || pathname.startsWith('/report/')) return reportRoute(request, env);
     if (pathname === '/subscribe') return subscribe(request, env, ctx);
+    if (pathname === '/checkout') return checkoutRoute(request, env);
     if (pathname === '/subscribers' || pathname.startsWith('/subscribers/')) return subscribersRoute(request, env);
     if (pathname === '/unsubscribe') return unsubscribe(request, env);
     if (pathname !== '/') return text('not found', 404);

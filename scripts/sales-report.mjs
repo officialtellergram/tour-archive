@@ -161,7 +161,7 @@ async function stripeRow(e) {
     stripeInvoice: '',
   };
   if (!env.STRIPE_SECRET_KEY) return base;
-  const r = await fetch(`https://api.stripe.com/v1/checkout/sessions/${e._stripe.soldSession}?expand[]=payment_intent.latest_charge.balance_transaction`, { headers: { Authorization: `Bearer ${env.STRIPE_SECRET_KEY}` } });
+  const r = await fetch(`https://api.stripe.com/v1/checkout/sessions/${e._stripe.soldSession}?expand[]=line_items&expand[]=payment_intent.latest_charge.balance_transaction`, { headers: { Authorization: `Bearer ${env.STRIPE_SECRET_KEY}` } });
   const s = await r.json();
   if (!r.ok) {
     console.log(`${C.yellow}   ⚠ ${e.id}: ${s.error?.message || r.status}${C.off}`);
@@ -172,18 +172,34 @@ async function stripeRow(e) {
   const refunded = charge?.amount_refunded || 0;
   const fee = bt ? bt.fee : 0;
   const net = bt ? bt.net : s.amount_total;
+  // A cart order (several pieces in one session, since the Black Friday
+  // sale of Nov 2026) is split into one row per piece: this piece's line
+  // carries its own subtotal, and shipping, tax, fee and refund are shared
+  // in proportion to the lines' totals (odd cents may leave the order's
+  // rows a cent apart from the order). A one-piece session is unchanged.
+  // Subtotal is what the piece brought in after any discount on it (the
+  // sale's piece discount, the cart tier's share, a promotion code), so
+  // list_price − subtotal is the whole saving on the piece.
+  const lines = s.line_items?.data || [];
+  const productOf = (l) => (typeof l.price?.product === 'string' ? l.price.product : l.price?.product?.id);
+  const mine = lines.length > 1 ? lines.find((l) => productOf(l) === e._stripe?.product) || null : lines[0] || null;
+  const sumTotal = lines.reduce((t, l) => t + (l.amount_total || 0), 0);
+  const share = mine && lines.length > 1 ? (sumTotal ? mine.amount_total / sumTotal : 1 / lines.length) : 1;
+  const part = (c) => Math.round((c || 0) * share);
+  const subtotalC = mine ? (mine.amount_subtotal || 0) - (mine.amount_discount || 0) : (s.amount_subtotal || 0) - (s.total_details?.amount_discount || 0);
+  const orderC = part(s.amount_total);
   return {
     ...base,
     date: new Date(s.created * 1000).toISOString().slice(0, 10),
-    subtotal: money(s.amount_subtotal),
-    shipping: money(s.total_details?.amount_shipping ?? FLAT_SHIPPING * 100),
-    salesTax: money(s.total_details?.amount_tax || 0),
-    orderTotal: money(s.amount_total),
-    fees: money(fee),
-    earnings: money(net - refunded),
+    subtotal: money(subtotalC),
+    shipping: money(part(s.total_details?.amount_shipping ?? FLAT_SHIPPING * 100)),
+    salesTax: money(part(s.total_details?.amount_tax || 0)),
+    orderTotal: money(orderC),
+    fees: money(part(fee)),
+    earnings: money(part(net) - part(refunded)),
     funds: bt ? (bt.status === 'available' ? 'PAID_OUT' : 'PENDING') : '',
     status: refunded >= s.amount_total ? 'refunded' : charge?.disputed ? 'disputed' : 'paid',
-    refunded: money(refunded),
+    refunded: money(part(refunded)),
     buyer: s.customer_details?.email || '',
     reference: s.payment_intent?.id || e._stripe.soldSession,
   };

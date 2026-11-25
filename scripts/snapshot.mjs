@@ -17,7 +17,7 @@
  * switches over with no code change.
  */
 
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildInventory } from '../server/inventory.mjs';
@@ -25,6 +25,7 @@ import { buildInventory } from '../server/inventory.mjs';
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const OUT_DIR = join(ROOT, 'dist', 'api');
 const OUT_FILE = join(OUT_DIR, 'inventory.json');
+const MAP_FILE = join(OUT_DIR, 'checkout-map.json');
 
 const C = { red: '\x1b[31m', yellow: '\x1b[33m', green: '\x1b[32m', dim: '\x1b[2m', off: '\x1b[0m' };
 
@@ -67,4 +68,31 @@ if (payload.sources.some((s) => s.mock)) {
   console.log(`\n${C.yellow}⚠ snapshot contains demo fixtures (MOCK_CHANNELS=1), not live stock${C.off}`);
 }
 
-console.log(`\n${C.green}✔ wrote dist/api/inventory.json${C.off}\n`);
+console.log(`\n${C.green}✔ wrote dist/api/inventory.json${C.off}`);
+
+/* The checkout map: what the Worker needs to make a Checkout Session for a
+   cart (worker/stripe-hook/src/index.js /checkout) — each live, direct piece's
+   Stripe product, its Payment Link (closed the moment it sells, so the Worker
+   can refuse a stale cart) and its price, plus the flat shipping rate. Product
+   and link ids are not secrets; the key that uses them lives on the Worker. */
+try {
+  const manifest = JSON.parse(readFileSync(join(ROOT, 'public', 'stock', 'manifest.json'), 'utf8'));
+  const map = { generatedAt: new Date().toISOString(), shippingRate: '', items: {} };
+  for (const e of manifest.items || []) {
+    if (e.sold || e.retired || e._missing || e.channel !== 'stripe') continue;
+    if (e._stripe?.mode !== 'live' || !e._stripe?.product) continue;
+    map.items[e.id] = {
+      name: e.name,
+      price: Number(e.price),
+      product: e._stripe.product,
+      link: e._stripe.link || '',
+      ...(typeof e.sale === 'boolean' ? { sale: e.sale } : {}),
+    };
+    if (!map.shippingRate && e._stripe.shippingRate) map.shippingRate = e._stripe.shippingRate;
+  }
+  writeFileSync(MAP_FILE, JSON.stringify(map), 'utf8');
+  console.log(`${C.green}✔ wrote dist/api/checkout-map.json${C.off} ${C.dim}(${Object.keys(map.items).length} pieces)${C.off}\n`);
+} catch (err) {
+  console.log(`\n${C.red}✖ could not write the checkout map: ${err.message}${C.off}\n`);
+  process.exit(1);
+}

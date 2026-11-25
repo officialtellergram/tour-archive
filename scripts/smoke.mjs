@@ -24,6 +24,7 @@ const { product, pdpMedia, pdpDescription, pdpHeader, pdpSpecifics, pdpSizing, p
 const { mapManifestItem } = await import('../server/inventory.mjs');
 const { journalIndex, journalEntry } = await import('../src/pages/journal.js');
 const { mission, sell, sizing, privacy, terms, notFound } = await import('../src/pages/house.js');
+const { cart, thanks } = await import('../src/pages/cart.js');
 const { mosaicMedia, collectionTile, productCard } = await import('../src/components/ui.js');
 const { curate, curateReview, deskHTML, verdictHTML, reviewCardHTML } = await import(
   '../src/pages/curate.js'
@@ -41,6 +42,8 @@ const cases = [
   ['/sizing', () => sizing()],
   ['/curate', () => curate()],
   ['/curate/review', () => curateReview()],
+  ['/cart', () => cart()],
+  ['/thanks', () => thanks()],
   ['/404', () => notFound('/no-such-page')],
   ['/collections/:bad', () => collectionDetail({ id: 'does-not-exist' })],
   ['/item/:bad', () => product({ id: 'does-not-exist' })],
@@ -287,7 +290,9 @@ for (const [label, fn] of deskCases) {
    listing, never from a hardcoded channel name; "Buy on eBay" on a stripe
    piece was a real shipped-code bug and this is its tombstone. */
 {
-  const btn = primaryAction(pdpStripe);
+  // Outside a sale window the button IS the Payment Link. The flag is passed
+  // so the pin holds whatever the calendar says (src/data/sale.js).
+  const btn = primaryAction(pdpStripe, { sale: false });
   if (!btn.includes('Buy now'))
     errors.push('primaryAction stripe: the mapped "Buy now" label is missing');
   if (!btn.includes('https://buy.stripe.com/xxx'))
@@ -296,9 +301,16 @@ for (const [label, fn] of deskCases) {
     errors.push('primaryAction stripe: checkout must open in a new tab');
   if (btn.includes('Buy on eBay') || btn.includes('Buy on Depop'))
     errors.push('primaryAction stripe: a marketplace label leaked onto a stripe piece');
-  const fallback = primaryAction({ ...pdpStripe, listings: [] });
+  const fallback = primaryAction({ ...pdpStripe, listings: [] }, { sale: false });
   if (!fallback.includes('Buy now') || !fallback.includes('https://buy.stripe.com/xxx'))
     errors.push('primaryAction stripe: the market-fallback branch dropped the label or URL');
+  // During the sale Buy now goes through the cart's checkout (the Worker
+  // prices the piece), never the plain-price Payment Link.
+  const onSale = primaryAction(pdpStripe, { sale: true });
+  if (!onSale.includes('data-buy=') || !onSale.includes('Buy now'))
+    errors.push('primaryAction stripe (sale): expected a data-buy button reading "Buy now"');
+  if (onSale.includes('https://buy.stripe.com/xxx'))
+    errors.push('primaryAction stripe (sale): the plain-price Payment Link must not be offered during the sale');
 }
 
 /* Specifics facts-list pins — compaction (Size, Brand, measurements only),

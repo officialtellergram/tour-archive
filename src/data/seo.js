@@ -85,6 +85,8 @@ export const PAGES = {
       'Every piece is the only one of its kind, and that decides most of what follows. Paying, flat $8 shipping, tracked dispatch, 14-day returns and honest condition.',
   },
   '/journal': { title: 'Journal' },
+  '/cart': { title: 'Your Cart' },
+  '/thanks': { title: 'Thank You' },
   '/curate': { title: 'Procurement Desk' },
   '/curate/review': { title: 'Review Session' },
 };

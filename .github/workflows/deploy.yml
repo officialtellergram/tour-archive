@@ -7,6 +7,12 @@ on:
   # 07:20 UTC daily — an off-the-hour minute, to avoid the crowd on :00.
   schedule:
     - cron: '20 7 * * *'
+    # Black Friday 2026 (src/data/sale.js): rebuild as the window opens
+    # (Fri 27 Nov 00:05 ET) and after it closes (Tue 1 Dec 00:05 ET), so the
+    # prerendered pages show the sale state. The Worker's cron fires the same
+    # rebuilds (GitHub's scheduler is the backstop). Remove after the sale.
+    - cron: '5 5 27 11 *'
+    - cron: '5 5 1 12 *'
   workflow_dispatch:
 
 permissions:
