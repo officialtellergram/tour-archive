@@ -134,7 +134,7 @@
   color: var(--sale-ink);
   font-size: clamp(2.2rem, 5vw, 4.8rem);
   line-height: 1;
-  max-width: 24ch; /* two lines: "Twenty-five percent off" / "select pieces." */
+  max-width: 24ch; /* two lines: "25% off" / "select pieces." */
 }
 .sale-lede {
   margin: 1.2rem 0 0;

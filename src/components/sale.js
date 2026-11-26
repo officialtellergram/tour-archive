@@ -42,20 +42,17 @@ export function tickerWords() {
   ];
 }
 
-const WORDS = { 25: 'Twenty-five', 20: 'Twenty', 30: 'Thirty', 40: 'Forty', 50: 'Fifty' };
-
 /** The home banner. '' when the sale is off. */
 export function saleBanner() {
   if (!saleOn()) return '';
   const select = items().filter((i) => isAvailable(i) && isSelect(i)).length;
-  const pct = WORDS[SALE.item.percent] || String(SALE.item.percent);
   return `
   <section class="sale-banner" aria-labelledby="sale-title">
     <div class="sale-screen" aria-hidden="true"></div>
     <div class="wrap sale-inner">
       <div class="sale-head" data-reveal>
         <p class="eyebrow sale-eyebrow">${SALE.name} · Friday through Cyber Monday</p>
-        <h2 id="sale-title" class="display sale-title">${pct} percent off <br class="sale-br" />select pieces.</h2>
+        <h2 id="sale-title" class="display sale-title">${SALE.item.percent}% off <br class="sale-br" />select pieces.</h2>
         <p class="sale-lede">${select ? `${select} piece${select === 1 ? ' wears' : 's wear'} the sale tag.` : 'Every piece under the line wears the sale tag.'} The more you put in the cart, the more comes off at checkout.</p>
       </div>
       <ol class="sale-tiers" data-reveal data-reveal-delay="0.08">
