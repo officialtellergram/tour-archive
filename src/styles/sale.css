@@ -143,6 +143,24 @@
   max-width: 46ch;
   font-size: 1.05rem;
 }
+/* The tiers are a second sale, not a footnote to the first (Henry, 26 Nov
+   2026): they get their own head, and the grid hangs under it. */
+.sale-tiers-head {
+  margin-bottom: -0.5rem;
+}
+.sale-tiers-title {
+  margin: 0.5rem 0 0;
+  color: var(--sale-ink);
+  font-size: clamp(1.5rem, 2.6vw, 2.3rem);
+  line-height: 1.1;
+}
+.sale-tiers-lede {
+  margin: 0.6rem 0 0;
+  font-weight: 300;
+  color: rgba(244, 240, 230, 0.72);
+  max-width: 50ch;
+  font-size: 0.98rem;
+}
 .sale-tiers {
   list-style: none;
   margin: 0;

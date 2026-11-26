@@ -28,7 +28,7 @@ export const SALE = {
   /* Eastern Standard Time in late November is UTC-5. */
   starts: '2026-11-27T05:00:00.000Z', // Fri 27 Nov 00:00 ET
   ends: '2026-12-01T04:59:59.999Z', // Mon 30 Nov 23:59:59 ET (Cyber Monday)
-  endsLabel: 'Ends Monday night',
+  endsLabel: 'Ends 11/30 at 11:59pm', // Chal, 26 Nov 2026: the date, not "Monday night"
   item: { percent: 25, under: 60 }, // 25% off every piece priced under $60
   tiers: [
     { min: 100, off: 15, coupon: 'BF26_15' },
