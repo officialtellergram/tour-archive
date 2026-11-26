@@ -73,6 +73,17 @@
 .marquee--sale .marquee-track span::after {
   color: var(--brass-soft);
 }
+/* On the home plate the sale ticker sits across the top, right under the
+   fixed header, over the photograph and under the lockup. */
+.hero--plate .marquee--top {
+  position: absolute;
+  top: var(--header-h);
+  left: 0;
+  right: 0;
+  z-index: 2;
+  border-top: 0;
+  padding-block: 0.8rem;
+}
 
 /* ---- the home banner: a claret plate under a drifting dot screen ---- */
 .sale-banner {

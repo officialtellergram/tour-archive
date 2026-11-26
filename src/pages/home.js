@@ -179,8 +179,17 @@ export function home() {
      This is the off-season hero and carries no drop messaging (Karen,
      12 Nov 2026): the drop pane below the marquee still leads the page while
      a drop window is open. */
+  /* While the sale is on, its ticker runs across the top of the plate, right
+     under the header (Karen, 26 Nov 2026), and the plate's first link sends
+     the visitor to the sale shelf. The ticker below the plate keeps the house
+     words. */
+  const sale = saleOn();
+  const heroShop = sale
+    ? { href: '/archive?filter=sale', label: 'Shop the holiday sale' }
+    : { href: '/archive', label: 'Shop the archive' };
   return `
   <section class="hero hero--plate" data-hero data-plate>
+    ${sale ? marquee(tickerWords(), 'marquee--sale marquee--top') : ''}
     <div class="hero-bg" data-hero-backdrop>
       ${plates.map(slide).join('')}
     </div>
@@ -195,7 +204,7 @@ export function home() {
         <span class="plate-word" data-hero-cta>Archive</span>
       </h1>
       <div class="plate-cta" data-hero-cta>
-        <a href="/archive">Shop the archive</a>
+        <a href="${heroShop.href}">${heroShop.label}</a>
         <a href="/sell">Sell to us</a>
       </div>
     </div>
@@ -217,9 +226,7 @@ export function home() {
   </section>
 
   ${marquee(
-    saleOn()
-      ? tickerWords()
-      : eventLed
+    eventLed
       ? [
           `${coll ? coll.drop : 'The drop'} — ${coll ? coll.name : 'Tour Archive'}`,
           coll ? coll.place : 'East Lake, Atlanta',
@@ -235,8 +242,7 @@ export function home() {
           'Sourced by championship',
           'Virginia thrift &amp; estate sourcing',
           'Global submissions welcome',
-        ],
-    saleOn() ? 'marquee--sale' : ''
+        ]
   )}
 
   ${saleBanner()}
