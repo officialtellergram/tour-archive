@@ -56,7 +56,7 @@ export function saleBanner() {
       <div class="sale-head" data-reveal>
         <p class="eyebrow sale-eyebrow">${SALE.name} · Friday through Cyber Monday</p>
         <h2 id="sale-title" class="display sale-title">${pct} percent off <br class="sale-br" />select pieces.</h2>
-        <p class="sale-lede">${select ? `${select} piece${select === 1 ? ' wears' : 's wear'} the sale tag.` : 'Every piece under the line wears the sale tag.'} Then the more you put in the cart, the more comes off at checkout.</p>
+        <p class="sale-lede">${select ? `${select} piece${select === 1 ? ' wears' : 's wear'} the sale tag.` : 'Every piece under the line wears the sale tag.'} The more you put in the cart, the more comes off at checkout.</p>
       </div>
       <ol class="sale-tiers" data-reveal data-reveal-delay="0.08">
         ${SALE.tiers
