@@ -66,7 +66,7 @@ export function saleBanner() {
           .join('')}
       </ol>
       <div class="sale-foot" data-reveal data-reveal-delay="0.14">
-        <p class="sale-fine">Tiers count the pieces after their discounts, before shipping. One $8 shipping charge per order, however many pieces. ${SALE.endsLabel}.</p>
+        <p class="sale-fine">Tiers count the pieces after their discounts, before shipping. ${SALE.endsLabel}.</p>
         <div class="sale-cta">
           <a class="btn sale-btn" href="/archive?filter=sale" data-magnetic>Shop the sale</a>
           <a class="btn sale-btn sale-btn--ghost" href="/cart">Your cart</a>
