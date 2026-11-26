@@ -55,9 +55,8 @@ export function saleBanner() {
         <p class="sale-lede">${select ? `${select} piece${select === 1 ? ' wears' : 's wear'} the sale tag.` : 'Every piece under the line wears the sale tag.'} The more you put in the cart, the more comes off at checkout.</p>
       </div>
       <div class="sale-tiers-head" data-reveal data-reveal-delay="0.06">
-        <p class="eyebrow sale-eyebrow">Plus, on the whole cart</p>
+        <p class="eyebrow sale-eyebrow">On the whole cart</p>
         <h3 class="display sale-tiers-title">Spend more, save more at checkout.</h3>
-        <p class="sale-tiers-lede">A second saving, on top of the ${SALE.item.percent}%: the cart's total picks the tier.</p>
       </div>
       <ol class="sale-tiers" data-reveal data-reveal-delay="0.08">
         ${SALE.tiers
