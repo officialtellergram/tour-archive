@@ -134,7 +134,7 @@
   color: var(--sale-ink);
   font-size: clamp(2.2rem, 5vw, 4.8rem);
   line-height: 1;
-  max-width: 24ch; /* two lines: "Twenty-five percent off" / "every piece under $60." */
+  max-width: 24ch; /* two lines: "Twenty-five percent off" / "select pieces." */
 }
 .sale-lede {
   margin: 1.2rem 0 0;
@@ -223,17 +223,27 @@
   .sale-br {
     display: none;
   }
+  /* the tiers read as a list on a phone (Karen, 26 Nov 2026): one line per
+     tier, the sum on the left, the saving on the right, a rule between */
   .sale-tiers {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
   }
-  .sale-tiers li:nth-child(2) {
+  .sale-tiers li {
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.85rem 0;
     border-right: 0;
-  }
-  .sale-tiers li:nth-child(n + 3) {
     border-top: 1px solid rgba(201, 178, 131, 0.3);
   }
-  .sale-tiers li:nth-child(3) {
-    padding-left: 0;
+  .sale-tiers li:first-child {
+    border-top: 0;
+  }
+  .sale-tier-min {
+    font-size: 1.9rem;
+  }
+  .sale-tier-off {
+    font-size: 11px;
   }
 }
 

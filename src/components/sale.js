@@ -35,7 +35,7 @@ export function saleNote(item) {
 /** The words the home ticker runs while the sale is on. */
 export function tickerWords() {
   return [
-    `${SALE.name} — ${SALE.item.percent}% off every piece under $${SALE.item.under}`,
+    `${SALE.name} — ${SALE.item.percent}% off select pieces`,
     ...SALE.tiers.map((t) => `Spend $${t.min}, save $${t.off}`),
     'One shipping charge per order',
     SALE.endsLabel,
@@ -55,7 +55,7 @@ export function saleBanner() {
     <div class="wrap sale-inner">
       <div class="sale-head" data-reveal>
         <p class="eyebrow sale-eyebrow">${SALE.name} · Friday through Cyber Monday</p>
-        <h2 id="sale-title" class="display sale-title">${pct} percent off<br class="sale-br" />every piece under $${SALE.item.under}.</h2>
+        <h2 id="sale-title" class="display sale-title">${pct} percent off <br class="sale-br" />select pieces.</h2>
         <p class="sale-lede">${select ? `${select} piece${select === 1 ? ' wears' : 's wear'} the sale tag.` : 'Every piece under the line wears the sale tag.'} Then the more you put in the cart, the more comes off at checkout.</p>
       </div>
       <ol class="sale-tiers" data-reveal data-reveal-delay="0.08">
