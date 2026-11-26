@@ -118,9 +118,11 @@ if (existsSync(DIST)) {
   walk(DIST);
 
   let itemPages = 0;
+  let noindexPages = 0; // /cart, /thanks: real HTML, kept out of the sitemap on purpose
   for (const p of pages) {
     const html = readFileSync(p, 'utf8');
     const rel = relative(DIST, p).split(sep).join('/');
+    if (/<meta name="robots" content="noindex"/.test(html)) noindexPages += 1;
     if (html.includes('buy.stripe.com/test_'))
       errors.push(`${rel} carries a TEST-mode Stripe link — a prerendered page would put play-money checkout in front of a buyer`);
     if (!/<link rel="canonical" href="https:\/\/tourarchive\.us(\/[^"]*)?" \/>/.test(html))
@@ -136,7 +138,7 @@ if (existsSync(DIST)) {
     const xml = readFileSync(sitemapPath, 'utf8');
     check(xml.startsWith('<?xml') && xml.includes('<urlset') && xml.trimEnd().endsWith('</urlset>'), 'dist/sitemap.xml is not a sitemap');
     const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
-    check(locs.length === pages.length, `sitemap lists ${locs.length} URL(s) but ${pages.length} page(s) were prerendered`);
+    check(locs.length === pages.length - noindexPages, `sitemap lists ${locs.length} URL(s) but ${pages.length} page(s) were prerendered (${noindexPages} noindex)`);
     check(new Set(locs).size === locs.length, 'sitemap repeats a URL');
     for (const loc of locs) {
       if (!loc.startsWith('https://tourarchive.us/')) {
@@ -147,7 +149,7 @@ if (existsSync(DIST)) {
       const file = route ? join(DIST, `${route.slice(1)}.html`) : join(DIST, 'index.html');
       if (!existsSync(file)) errors.push(`sitemap URL ${loc} has no prerendered file`);
     }
-    notes.push(`prerender: ${pages.length} page(s), ${itemPages} item page(s), ${locs.length} sitemap URL(s)`);
+    notes.push(`prerender: ${pages.length} page(s), ${itemPages} item page(s), ${noindexPages} noindex, ${locs.length} sitemap URL(s)`);
   }
 
   if (existsSync(robotsPath)) {

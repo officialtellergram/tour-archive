@@ -208,6 +208,10 @@
   border-color: rgba(244, 240, 230, 0.5);
 }
 @media (max-width: 760px) {
+  /* the title's two-line break is for wide screens; a phone wraps it itself */
+  .sale-br {
+    display: none;
+  }
   .sale-tiers {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
