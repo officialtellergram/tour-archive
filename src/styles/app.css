@@ -550,9 +550,14 @@ h3.display {
 .nav-search svg {
   width: 12px;
   height: 12px;
+  flex: none; /* a tight header must never shrink the glass to nothing */
   stroke: currentColor;
   fill: none;
   stroke-width: 1.6;
+}
+.nav-search,
+.nav-cart {
+  flex: none;
 }
 .nav-search:hover,
 .nav-search[aria-expanded='true'] {
@@ -2676,6 +2681,19 @@ h3.display {
   .nav-toggle {
     display: block;
   }
+  /* Menu on the left, Search and Cart on the right (Our Mission and Sell to
+     us are in the drawer). The side tracks are EQUAL here, so the wordmark
+     is centred on the page, not on whatever the wider side leaves over —
+     the cart link had pushed it left on a phone (Karen, 26 Nov 2026). */
+  .nav--right .nav-hide-sm {
+    display: none;
+  }
+  .header-inner {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  }
+  .nav--right {
+    gap: 1.4rem;
+  }
 }
 @media (max-width: 640px) {
   :root {
@@ -2684,8 +2702,20 @@ h3.display {
   body {
     font-size: 17px;
   }
-  .nav--right .nav-hide-sm {
+  /* Search is the glass alone on a phone (the button keeps its aria-label) */
+  .nav-search {
+    padding-inline: 0; /* the UA button padding; the 44px hit box is ::after */
+  }
+  .nav-search span {
     display: none;
+  }
+  .nav-search svg {
+    width: 17px;
+    height: 17px;
+    stroke-width: 1.4;
+  }
+  .nav--right {
+    gap: 0.85rem;
   }
   /* the wordmark's tracking eats the header at this width — shrink it so the
      right-hand nav keeps its column */

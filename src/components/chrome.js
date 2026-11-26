@@ -46,7 +46,7 @@ export function headerHTML() {
         ${NAV_SECONDARY.map(
           (n) => `<a href="${n.href}" class="nav-hide-sm">${n.label}</a>`
         ).join('')}
-        <button class="nav-search" type="button" data-search-open aria-expanded="false" aria-controls="site-search">
+        <button class="nav-search" type="button" data-search-open aria-expanded="false" aria-controls="site-search" aria-label="Search">
           ${SEARCH_ICON}<span>Search</span>
         </button>
         <!-- the cart: its count is painted at boot and on every ta:cart event
